@@ -20,11 +20,7 @@ fun MenuItem.clicks(
         for (item in channel) action(item)
     }
 
-    setOnMenuItemClickListener { item ->
-        if (handled(item)) { events.offer(item) }
-        else { false }
-    }
-
+    setOnMenuItemClickListener(listener(handled = handled, emitter = events::offer))
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -34,10 +30,16 @@ fun MenuItem.clicks(
         scope: CoroutineScope,
         handled: (MenuItem) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, capacity = Channel.CONFLATED) {
-    setOnMenuItemClickListener { item ->
-        if (handled(item)) { offer(item); }
-        else { false }
-    }
-
+    setOnMenuItemClickListener(listener(handled = handled, emitter = ::offer))
     invokeOnClose { setOnMenuItemClickListener(null) }
+}
+
+// -----------------------------------------------------------------------------------------------
+
+private fun listener(
+        handled: (MenuItem) -> Boolean,
+        emitter: (MenuItem) -> Boolean
+) = MenuItem.OnMenuItemClickListener { item ->
+    if (handled(item)) { emitter(item) }
+    else { false }
 }
