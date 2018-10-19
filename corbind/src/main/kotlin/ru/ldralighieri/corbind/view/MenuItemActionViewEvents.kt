@@ -1,7 +1,6 @@
 package ru.ldralighieri.corbind.view
 
 import android.view.MenuItem
-import android.view.View
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel

@@ -1,7 +1,6 @@
 package ru.ldralighieri.corbind.view
 
 import android.view.DragEvent
-import android.view.MenuItem
 import android.view.View
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
