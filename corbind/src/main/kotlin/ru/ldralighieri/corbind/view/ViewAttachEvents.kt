@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 // -----------------------------------------------------------------------------------------------
 
+
 fun View.attachEvents(
         scope: CoroutineScope,
         action: suspend (ViewAttachEvent) -> Unit

@@ -12,6 +12,7 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 
 // -----------------------------------------------------------------------------------------------
 
+
 fun MenuItem.clicks(
         scope: CoroutineScope,
         handled: (MenuItem) -> Boolean = AlwaysTrue,

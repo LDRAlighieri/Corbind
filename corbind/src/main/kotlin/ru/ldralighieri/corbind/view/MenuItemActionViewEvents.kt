@@ -12,6 +12,7 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 
 // -----------------------------------------------------------------------------------------------
 
+
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
