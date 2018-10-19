@@ -8,6 +8,7 @@ import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
+import kotlinx.coroutines.experimental.coroutineScope
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 
 // -----------------------------------------------------------------------------------------------
@@ -33,6 +34,30 @@ fun MenuItem.actionViewEvents(
 
     setOnActionExpandListener(listener(handled = handled, emitter = ::offer))
     invokeOnClose { setOnActionExpandListener(null) }
+}
+
+// -----------------------------------------------------------------------------------------------
+
+suspend fun MenuItem.actionViewEvents(
+        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
+        action: suspend (MenuItemActionViewEvent) -> Unit
+) = coroutineScope {
+    val events = actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity = Channel.CONFLATED) {
+        for (event in channel) action(event)
+    }
+
+    setOnActionExpandListener(listener(handled = handled, emitter = events::offer))
+    events.invokeOnClose { setOnActionExpandListener(null) }
+}
+
+
+suspend fun MenuItem.actionViewEvents(
+        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
+): ReceiveChannel<MenuItemActionViewEvent> = coroutineScope {
+    produce<MenuItemActionViewEvent>(Dispatchers.Main, capacity = Channel.CONFLATED) {
+        setOnActionExpandListener(listener(handled = handled, emitter = ::offer))
+        invokeOnClose { setOnActionExpandListener(null) }
+    }
 }
 
 // -----------------------------------------------------------------------------------------------
