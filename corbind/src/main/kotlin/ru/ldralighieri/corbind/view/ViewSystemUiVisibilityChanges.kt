@@ -17,7 +17,7 @@ fun View.systemUiVisibilityChanges(
         for (visibility in channel) action(visibility)
     }
 
-    setOnSystemUiVisibilityChangeListener { events.offer(it) }
+    setOnSystemUiVisibilityChangeListener(listener(events::offer))
     events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -28,7 +28,7 @@ suspend fun View.systemUiVisibilityChanges(
         for (visibility in channel) action(visibility)
     }
 
-    setOnSystemUiVisibilityChangeListener { events.offer(it) }
+    setOnSystemUiVisibilityChangeListener(listener(events::offer))
     events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -40,14 +40,22 @@ fun View.systemUiVisibilityChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnSystemUiVisibilityChangeListener { offer(it) }
+    setOnSystemUiVisibilityChangeListener(listener(::offer))
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
 suspend fun View.systemUiVisibilityChanges(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnSystemUiVisibilityChangeListener { offer(it) }
+        setOnSystemUiVisibilityChangeListener(listener(::offer))
         invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
     }
 }
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+private fun listener(
+        emitter: (Int) -> Boolean
+) = View.OnSystemUiVisibilityChangeListener { emitter(it) }
