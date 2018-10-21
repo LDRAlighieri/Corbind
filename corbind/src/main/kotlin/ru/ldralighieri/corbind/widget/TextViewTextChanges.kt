@@ -19,7 +19,7 @@ fun TextView.textChanges(
         action: suspend (CharSequence) -> Unit
 ) {
     val events = scope.actor<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
-        for (event in channel) action(event)
+        for (chars in channel) action(chars)
     }
 
     events.offer(text)
@@ -32,7 +32,7 @@ suspend fun TextView.textChanges(
         action: suspend (CharSequence) -> Unit
 ) = coroutineScope {
     val events = actor<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
-        for (event in channel) action(event)
+        for (chars in channel) action(chars)
     }
 
     events.offer(text)
