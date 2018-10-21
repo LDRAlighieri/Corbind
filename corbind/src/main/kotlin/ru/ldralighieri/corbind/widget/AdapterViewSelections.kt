@@ -11,7 +11,6 @@ import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
 
-
 // -----------------------------------------------------------------------------------------------
 
 sealed class AdapterViewSelectionEvent {
@@ -83,6 +82,7 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents()
 
 // -----------------------------------------------------------------------------------------------
 
+
 private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterViewSelectionEvent {
     return if (adapterView.selectedItemPosition == AdapterView.INVALID_POSITION) {
         AdapterViewNothingSelectionEvent(adapterView)
@@ -92,7 +92,9 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
     }
 }
 
+
 // -----------------------------------------------------------------------------------------------
+
 
 private fun listener(
         emitter: (AdapterViewSelectionEvent) -> Boolean
