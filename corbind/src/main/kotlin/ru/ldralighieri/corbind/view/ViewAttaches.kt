@@ -37,7 +37,9 @@ suspend fun View.attaches(
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+
 // -----------------------------------------------------------------------------------------------
+
 
 fun View.attaches(
         scope: CoroutineScope
@@ -87,7 +89,9 @@ suspend fun View.detaches(
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+
 // -----------------------------------------------------------------------------------------------
+
 
 fun View.detaches(
         scope: CoroutineScope
