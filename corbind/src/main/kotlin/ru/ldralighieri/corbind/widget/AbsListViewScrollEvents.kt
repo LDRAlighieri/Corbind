@@ -30,7 +30,7 @@ fun AbsListView.scrollEvents(
         for (event in channel) action(event)
     }
 
-    setOnScrollListener(listener(this, events::offer))
+    setOnScrollListener(listener(events::offer))
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -41,7 +41,7 @@ suspend fun AbsListView.scrollEvents(
         for (event in channel) action(event)
     }
 
-    setOnScrollListener(listener(this@scrollEvents, events::offer))
+    setOnScrollListener(listener(events::offer))
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -53,14 +53,14 @@ fun AbsListView.scrollEvents(
         scope: CoroutineScope
 ): ReceiveChannel<AbsListViewScrollEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnScrollListener(listener(this@scrollEvents, ::offer))
+    setOnScrollListener(listener(::offer))
     invokeOnClose { setOnScrollListener(null) }
 }
 
 suspend fun AbsListView.scrollEvents(): ReceiveChannel<AbsListViewScrollEvent> = coroutineScope {
 
     produce<AbsListViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnScrollListener(listener(this@scrollEvents, ::offer))
+        setOnScrollListener(listener(::offer))
         invokeOnClose { setOnScrollListener(null) }
     }
 }
@@ -70,15 +70,14 @@ suspend fun AbsListView.scrollEvents(): ReceiveChannel<AbsListViewScrollEvent> =
 
 
 private fun listener(
-        view: AbsListView,
         emitter: (AbsListViewScrollEvent) -> Boolean
 ) = object : AbsListView.OnScrollListener {
     private var currentScrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 
     override fun onScrollStateChanged(absListView: AbsListView, scrollState: Int) {
         currentScrollState = scrollState
-        val event = AbsListViewScrollEvent(view, scrollState, view.firstVisiblePosition,
-                view.childCount, view.count)
+        val event = AbsListViewScrollEvent(absListView, scrollState,
+                absListView.firstVisiblePosition, absListView.childCount, absListView.count)
         emitter(event)
     }
 
@@ -86,7 +85,7 @@ private fun listener(
             absListView: AbsListView, firstVisibleItem: Int, visibleItemCount: Int,
             totalItemCount: Int
     ) {
-        val event = AbsListViewScrollEvent(view, currentScrollState, firstVisibleItem,
+        val event = AbsListViewScrollEvent(absListView, currentScrollState, firstVisibleItem,
                 visibleItemCount, totalItemCount)
         emitter(event)
     }
