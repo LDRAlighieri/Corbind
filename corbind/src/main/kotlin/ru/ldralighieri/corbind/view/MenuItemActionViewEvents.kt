@@ -12,6 +12,20 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 
 // -----------------------------------------------------------------------------------------------
 
+sealed class MenuItemActionViewEvent {
+    abstract val menuItem: MenuItem
+}
+
+data class MenuItemActionViewCollapseEvent(
+        override val menuItem: MenuItem
+) : MenuItemActionViewEvent()
+
+data class MenuItemActionViewExpandEvent(
+        override val menuItem: MenuItem
+) : MenuItemActionViewEvent()
+
+// -----------------------------------------------------------------------------------------------
+
 
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,

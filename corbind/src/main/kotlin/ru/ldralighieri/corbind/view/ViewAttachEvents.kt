@@ -11,6 +11,20 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 // -----------------------------------------------------------------------------------------------
 
+sealed class ViewAttachEvent {
+    abstract val view: View
+}
+
+data class ViewAttachAttachedEvent(
+        override val view: View
+) : ViewAttachEvent()
+
+data class ViewAttachDetachedEvent(
+        override val view: View
+) : ViewAttachEvent()
+
+// -----------------------------------------------------------------------------------------------
+
 
 fun View.attachEvents(
         scope: CoroutineScope,

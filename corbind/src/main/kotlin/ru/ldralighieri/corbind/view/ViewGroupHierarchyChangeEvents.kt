@@ -12,6 +12,24 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 // -----------------------------------------------------------------------------------------------
 
+sealed class ViewGroupHierarchyChangeEvent {
+    abstract val view: ViewGroup
+    abstract val child: View
+}
+
+data class ViewGroupHierarchyChildViewAddEvent(
+        override val view: ViewGroup,
+        override val child: View
+) : ViewGroupHierarchyChangeEvent()
+
+data class ViewGroupHierarchyChildViewRemoveEvent(
+        override val view: ViewGroup,
+        override val child: View
+) : ViewGroupHierarchyChangeEvent()
+
+// -----------------------------------------------------------------------------------------------
+
+
 fun ViewGroup.changeEvents(
         scope: CoroutineScope,
         action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
