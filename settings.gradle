@@ -1,1 +1,4 @@
+rootProject.name = 'Corbind'
+
 include ':corbind'
+include ':corbind-core'
