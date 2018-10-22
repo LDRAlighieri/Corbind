@@ -24,7 +24,7 @@ fun Toolbar.itemClicks(
         for (item in channel) action(item)
     }
 
-    setOnMenuItemClickListener { events.offer(it) }
+    setOnMenuItemClickListener(listener(events::offer))
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -36,7 +36,7 @@ suspend fun Toolbar.itemClicks(
         for (item in channel) action(item)
     }
 
-    setOnMenuItemClickListener { events.offer(it) }
+    setOnMenuItemClickListener(listener(events::offer))
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -49,7 +49,7 @@ fun Toolbar.itemClicks(
         scope: CoroutineScope
 ): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnMenuItemClickListener { offer(it) }
+    setOnMenuItemClickListener(listener(::offer))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -57,7 +57,7 @@ fun Toolbar.itemClicks(
 suspend fun Toolbar.itemClicks(): ReceiveChannel<MenuItem> = coroutineScope {
 
     produce<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnMenuItemClickListener { offer(it) }
+        setOnMenuItemClickListener(listener(::offer))
         invokeOnClose { setOnMenuItemClickListener(null) }
     }
 }
