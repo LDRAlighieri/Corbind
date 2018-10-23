@@ -35,7 +35,7 @@ suspend fun NestedScrollView.scrollChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(emitter = events::offer)
+    val listener = listener(events::offer)
     setOnScrollChangeListener(listener)
     events.invokeOnClose {
         setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
@@ -58,7 +58,7 @@ fun NestedScrollView.scrollChangeEvents(
 suspend fun NestedScrollView.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> = coroutineScope {
 
     produce<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(emitter = ::offer)
+        val listener = listener(::offer)
         setOnScrollChangeListener(listener)
         invokeOnClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
     }
