@@ -2,3 +2,4 @@ rootProject.name = 'Corbind'
 
 include ':corbind'
 include ':corbind-core'
+include ':corbind-appcompat'
