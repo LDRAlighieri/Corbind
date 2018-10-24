@@ -1,5 +1,5 @@
 rootProject.name = 'Corbind'
 
-include ':corbind'
+include ':corbind', ':corbind-viewpager'
 include ':corbind-core'
 include ':corbind-appcompat'
