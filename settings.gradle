@@ -1,9 +1,10 @@
 rootProject.name = 'Corbind'
 
 include ':corbind'
-include ':corbind-core'
 include ':corbind-appcompat'
-include ':corbind-viewpager'
-include ':corbind-swiperefreshlayout'
+include ':corbind-core'
 include ':corbind-drawerlayout'
 include ':corbind-leanback'
+include ':corbind-material'
+include ':corbind-swiperefreshlayout'
+include ':corbind-viewpager'
