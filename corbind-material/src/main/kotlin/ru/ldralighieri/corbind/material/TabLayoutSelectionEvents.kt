@@ -42,7 +42,7 @@ fun TabLayout.selectionEvents(
         for (event in channel) action(event)
     }
 
-    initialValue(this, events::offer)
+    setInitialValue(this, events::offer)
     val listener = listener(this, events::offer)
     addOnTabSelectedListener(listener)
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
@@ -55,7 +55,7 @@ suspend fun TabLayout.selectionEvents(
         for (event in channel) action(event)
     }
 
-    initialValue(this@selectionEvents, events::offer)
+    setInitialValue(this@selectionEvents, events::offer)
     val listener = listener(this@selectionEvents, events::offer)
     addOnTabSelectedListener(listener)
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
@@ -69,7 +69,7 @@ fun TabLayout.selectionEvents(
         scope: CoroutineScope
 ): ReceiveChannel<TabLayoutSelectionEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    initialValue(this@selectionEvents, ::offer)
+    setInitialValue(this@selectionEvents, ::offer)
     val listener = listener(this@selectionEvents, ::offer)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
@@ -78,7 +78,7 @@ fun TabLayout.selectionEvents(
 suspend fun TabLayout.selectionEvents(): ReceiveChannel<TabLayoutSelectionEvent> = coroutineScope {
 
     produce<TabLayoutSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        initialValue(this@selectionEvents, ::offer)
+        setInitialValue(this@selectionEvents, ::offer)
         val listener = listener(this@selectionEvents, ::offer)
         addOnTabSelectedListener(listener)
         invokeOnClose { removeOnTabSelectedListener(listener) }
@@ -89,7 +89,7 @@ suspend fun TabLayout.selectionEvents(): ReceiveChannel<TabLayoutSelectionEvent>
 // -----------------------------------------------------------------------------------------------
 
 
-private fun initialValue(
+private fun setInitialValue(
         tabLayout: TabLayout,
         emitter: (TabLayoutSelectionEvent) -> Boolean
 ) {
