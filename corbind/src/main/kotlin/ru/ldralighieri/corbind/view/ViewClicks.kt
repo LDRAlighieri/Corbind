@@ -20,7 +20,7 @@ fun View.clicks(
         for (view in channel) action(view)
     }
 
-    setOnClickListener { events.offer(it) }
+    setOnClickListener(listener(events::offer))
     events.invokeOnClose { setOnClickListener(null) }
 }
 
@@ -31,7 +31,7 @@ suspend fun View.clicks(
         for (view in channel) action(view)
     }
 
-    setOnClickListener { events.offer(it) }
+    setOnClickListener(listener(events::offer))
     events.invokeOnClose { setOnClickListener(null) }
 }
 
@@ -43,16 +43,22 @@ fun View.clicks(
         scope: CoroutineScope
 ): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnClickListener { offer(it) }
+    setOnClickListener(listener(::offer))
     invokeOnClose { setOnClickListener(null) }
 }
 
 suspend fun View.clicks(): ReceiveChannel<View> = coroutineScope {
 
     produce<View>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnClickListener { offer(it) }
+        setOnClickListener(listener(::offer))
         invokeOnClose { setOnClickListener(null) }
     }
 }
 
 
+// -----------------------------------------------------------------------------------------------
+
+
+private fun listener(
+        emitter: (View) -> Boolean
+) = View.OnClickListener { emitter(it) }
