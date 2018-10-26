@@ -1,6 +1,5 @@
 package ru.ldralighieri.corbind.leanback
 
-import android.view.View
 import androidx.leanback.widget.SearchEditText
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -15,10 +14,10 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 fun SearchEditText.keyboardDismisses(
         scope: CoroutineScope,
-        action: suspend (SearchEditText) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<SearchEditText>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setOnKeyboardDismissListener(listener(this, events::offer))
@@ -26,10 +25,10 @@ fun SearchEditText.keyboardDismisses(
 }
 
 suspend fun SearchEditText.keyboardDismisses(
-        action: suspend (SearchEditText) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<SearchEditText>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setOnKeyboardDismissListener(listener(this@keyboardDismisses, events::offer))
@@ -42,15 +41,15 @@ suspend fun SearchEditText.keyboardDismisses(
 
 fun SearchEditText.keyboardDismisses(
         scope: CoroutineScope
-): ReceiveChannel<SearchEditText> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     setOnKeyboardDismissListener(listener(this@keyboardDismisses, ::offer))
     invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
-suspend fun SearchEditText.keyboardDismisses(): ReceiveChannel<View> = coroutineScope {
+suspend fun SearchEditText.keyboardDismisses(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         setOnKeyboardDismissListener(listener(this@keyboardDismisses, ::offer))
         invokeOnClose { setOnKeyboardDismissListener(null) }
     }
@@ -62,5 +61,5 @@ suspend fun SearchEditText.keyboardDismisses(): ReceiveChannel<View> = coroutine
 
 private fun listener(
         searchEditText: SearchEditText,
-        emitter: (SearchEditText) -> Boolean
-) = SearchEditText.OnKeyboardDismissListener { emitter(searchEditText) }
+        emitter: (Unit) -> Boolean
+) = SearchEditText.OnKeyboardDismissListener { emitter(Unit) }
