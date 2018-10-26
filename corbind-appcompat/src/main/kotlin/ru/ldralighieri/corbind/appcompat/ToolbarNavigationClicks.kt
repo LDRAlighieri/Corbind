@@ -15,10 +15,10 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 fun Toolbar.navigationClicks(
         scope: CoroutineScope,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (item in channel) action(item)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setNavigationOnClickListener(listener(events::offer))
@@ -26,10 +26,10 @@ fun Toolbar.navigationClicks(
 }
 
 suspend fun Toolbar.navigationClicks(
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (item in channel) action(item)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setNavigationOnClickListener(listener(events::offer))
@@ -42,15 +42,15 @@ suspend fun Toolbar.navigationClicks(
 
 fun Toolbar.navigationClicks(
         scope: CoroutineScope
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     setNavigationOnClickListener(listener(::offer))
     invokeOnClose { setNavigationOnClickListener(null) }
 }
 
-suspend fun Toolbar.navigationClicks(): ReceiveChannel<View> = coroutineScope {
+suspend fun Toolbar.navigationClicks(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         setNavigationOnClickListener(listener(::offer))
         invokeOnClose { setNavigationOnClickListener(null) }
     }
@@ -61,5 +61,5 @@ suspend fun Toolbar.navigationClicks(): ReceiveChannel<View> = coroutineScope {
 
 
 private fun listener(
-        emitter: (View) -> Boolean
-) = View.OnClickListener { emitter(it) }
+        emitter: (Unit) -> Boolean
+) = View.OnClickListener { emitter(Unit) }
