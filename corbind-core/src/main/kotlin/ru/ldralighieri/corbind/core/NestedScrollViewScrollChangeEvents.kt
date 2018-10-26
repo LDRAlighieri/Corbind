@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.core
 
+import androidx.annotation.CheckResult
 import androidx.core.widget.NestedScrollView
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -46,6 +47,7 @@ suspend fun NestedScrollView.scrollChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun NestedScrollView.scrollChangeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<ViewScrollChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -55,6 +57,7 @@ fun NestedScrollView.scrollChangeEvents(
     invokeOnClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
 
+@CheckResult
 suspend fun NestedScrollView.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> = coroutineScope {
 
     produce<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
@@ -68,6 +71,7 @@ suspend fun NestedScrollView.scrollChangeEvents(): ReceiveChannel<ViewScrollChan
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (ViewScrollChangeEvent) -> Boolean
 ) = NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
