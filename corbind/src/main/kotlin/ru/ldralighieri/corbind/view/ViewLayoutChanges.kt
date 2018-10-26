@@ -14,10 +14,10 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 fun View.layoutChanges(
         scope: CoroutineScope,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     val listener = listener(events::offer)
@@ -26,10 +26,10 @@ fun View.layoutChanges(
 }
 
 suspend fun View.layoutChanges(
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     val listener = listener(events::offer)
@@ -43,16 +43,16 @@ suspend fun View.layoutChanges(
 
 fun View.layoutChanges(
         scope: CoroutineScope
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     val listener = listener(::offer)
     addOnLayoutChangeListener(listener)
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
-suspend fun View.layoutChanges(): ReceiveChannel<View> = coroutineScope {
+suspend fun View.layoutChanges(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         val listener = listener(::offer)
         addOnLayoutChangeListener(listener)
         invokeOnClose { removeOnLayoutChangeListener(listener) }
@@ -64,5 +64,5 @@ suspend fun View.layoutChanges(): ReceiveChannel<View> = coroutineScope {
 
 
 private fun listener(
-        emitter: (View) -> Boolean
-) = View.OnLayoutChangeListener { v, _, _, _, _, _, _, _, _ -> emitter(v) }
+        emitter: (Unit) -> Boolean
+) = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> emitter(Unit) }

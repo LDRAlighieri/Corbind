@@ -14,10 +14,10 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 fun View.clicks(
         scope: CoroutineScope,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setOnClickListener(listener(events::offer))
@@ -25,10 +25,10 @@ fun View.clicks(
 }
 
 suspend fun View.clicks(
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setOnClickListener(listener(events::offer))
@@ -41,15 +41,15 @@ suspend fun View.clicks(
 
 fun View.clicks(
         scope: CoroutineScope
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     setOnClickListener(listener(::offer))
     invokeOnClose { setOnClickListener(null) }
 }
 
-suspend fun View.clicks(): ReceiveChannel<View> = coroutineScope {
+suspend fun View.clicks(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         setOnClickListener(listener(::offer))
         invokeOnClose { setOnClickListener(null) }
     }
@@ -60,5 +60,5 @@ suspend fun View.clicks(): ReceiveChannel<View> = coroutineScope {
 
 
 private fun listener(
-        emitter: (View) -> Boolean
-) = View.OnClickListener { emitter(it) }
+        emitter: (Unit) -> Boolean
+) = View.OnClickListener { emitter(Unit) }

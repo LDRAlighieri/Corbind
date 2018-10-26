@@ -1,6 +1,5 @@
 package ru.ldralighieri.corbind.swiperefreshlayout
 
-import android.view.View
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -15,24 +14,24 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    setOnRefreshListener(listener(this, events::offer))
+    setOnRefreshListener(listener(events::offer))
     events.invokeOnClose { setOnRefreshListener(null) }
 }
 
 suspend fun SwipeRefreshLayout.refreshes(
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    setOnRefreshListener(listener(this@refreshes, events::offer))
+    setOnRefreshListener(listener(events::offer))
     events.invokeOnClose { setOnRefreshListener(null) }
 }
 
@@ -42,16 +41,16 @@ suspend fun SwipeRefreshLayout.refreshes(
 
 fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnRefreshListener(listener(this@refreshes, ::offer))
+    setOnRefreshListener(listener(::offer))
     invokeOnClose { setOnRefreshListener(null) }
 }
 
-suspend fun SwipeRefreshLayout.refreshes(): ReceiveChannel<View> = coroutineScope {
+suspend fun SwipeRefreshLayout.refreshes(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnRefreshListener(listener(this@refreshes, ::offer))
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        setOnRefreshListener(listener(::offer))
         invokeOnClose { setOnRefreshListener(null) }
     }
 }
@@ -60,6 +59,5 @@ suspend fun SwipeRefreshLayout.refreshes(): ReceiveChannel<View> = coroutineScop
 
 
 private fun listener(
-        swipeRefreshLayout: SwipeRefreshLayout,
-        emitter: (View) -> Boolean
-) = SwipeRefreshLayout.OnRefreshListener { emitter(swipeRefreshLayout) }
+        emitter: (Unit) -> Boolean
+) = SwipeRefreshLayout.OnRefreshListener { emitter(Unit) }

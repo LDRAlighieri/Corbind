@@ -14,25 +14,25 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 fun View.attaches(
         scope: CoroutineScope,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    val listener = listener(callOnAttach = true, emitter = events::offer)
+    val listener = listener(true, events::offer)
     addOnAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
 suspend fun View.attaches(
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    val listener = listener(callOnAttach = true, emitter = events::offer)
+    val listener = listener(true, events::offer)
     addOnAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -43,17 +43,17 @@ suspend fun View.attaches(
 
 fun View.attaches(
         scope: CoroutineScope
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val listener = listener(callOnAttach = true, emitter = ::offer)
+    val listener = listener(true, ::offer)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
-suspend fun View.attaches(): ReceiveChannel<View> = coroutineScope {
+suspend fun View.attaches(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(callOnAttach = true, emitter = ::offer)
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        val listener = listener(true, ::offer)
         addOnAttachStateChangeListener(listener)
         invokeOnClose { removeOnAttachStateChangeListener(listener) }
     }
@@ -65,26 +65,26 @@ suspend fun View.attaches(): ReceiveChannel<View> = coroutineScope {
 
 fun View.detaches(
         scope: CoroutineScope,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    val listener = listener(callOnAttach = false, emitter = events::offer)
+    val listener = listener(false, events::offer)
 
     addOnAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
 suspend fun View.detaches(
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    val listener = listener(callOnAttach = false, emitter = events::offer)
+    val listener = listener(false, events::offer)
     addOnAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -95,17 +95,17 @@ suspend fun View.detaches(
 
 fun View.detaches(
         scope: CoroutineScope
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val listener = listener(callOnAttach = false, emitter = ::offer)
+    val listener = listener(false, ::offer)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
-suspend fun View.detaches(): ReceiveChannel<View> = coroutineScope {
+suspend fun View.detaches(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(callOnAttach = false, emitter = ::offer)
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        val listener = listener(false, ::offer)
         addOnAttachStateChangeListener(listener)
         invokeOnClose { removeOnAttachStateChangeListener(listener) }
     }
@@ -117,13 +117,13 @@ suspend fun View.detaches(): ReceiveChannel<View> = coroutineScope {
 
 private fun listener(
         callOnAttach: Boolean,
-        emitter: (View) -> Boolean
+        emitter: (Unit) -> Boolean
 ) = object: View.OnAttachStateChangeListener {
     override fun onViewDetachedFromWindow(v: View) {
-        if (callOnAttach) { emitter(v) }
+        if (callOnAttach) { emitter(Unit) }
     }
 
     override fun onViewAttachedToWindow(v: View) {
-        if (!callOnAttach) { emitter(v) }
+        if (!callOnAttach) { emitter(Unit) }
     }
 }
