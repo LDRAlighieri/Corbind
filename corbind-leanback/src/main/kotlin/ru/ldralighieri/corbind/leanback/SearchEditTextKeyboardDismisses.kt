@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.leanback
 
+import androidx.annotation.CheckResult
 import androidx.leanback.widget.SearchEditText
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -39,6 +40,7 @@ suspend fun SearchEditText.keyboardDismisses(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun SearchEditText.keyboardDismisses(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -47,6 +49,7 @@ fun SearchEditText.keyboardDismisses(
     invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
+@CheckResult
 suspend fun SearchEditText.keyboardDismisses(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
@@ -59,6 +62,7 @@ suspend fun SearchEditText.keyboardDismisses(): ReceiveChannel<Unit> = coroutine
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         searchEditText: SearchEditText,
         emitter: (Unit) -> Boolean
