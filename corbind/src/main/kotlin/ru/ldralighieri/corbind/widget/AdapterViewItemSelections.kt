@@ -3,6 +3,7 @@ package ru.ldralighieri.corbind.widget
 import android.view.View
 import android.widget.Adapter
 import android.widget.AdapterView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -43,6 +44,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun <T : Adapter> AdapterView<T>.itemSelections(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -52,6 +54,7 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
     invokeOnClose { onItemSelectedListener = null }
 }
 
+@CheckResult
 suspend fun <T : Adapter> AdapterView<T>.itemSelections(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
@@ -65,6 +68,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(): ReceiveChannel<Int> =
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Int) -> Boolean
 ) = object : AdapterView.OnItemSelectedListener {

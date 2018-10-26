@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.view
 
 import android.os.Build
 import android.view.View
+import androidx.annotation.CheckResult
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -54,6 +55,7 @@ suspend fun View.scrollChangeEvents(
 
 
 @RequiresApi(Build.VERSION_CODES.M)
+@CheckResult
 fun View.scrollChangeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<ViewScrollChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +65,7 @@ fun View.scrollChangeEvents(
 }
 
 @RequiresApi(Build.VERSION_CODES.M)
+@CheckResult
 suspend fun View.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> = coroutineScope {
 
     produce<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
@@ -75,6 +78,7 @@ suspend fun View.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> = c
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (ViewScrollChangeEvent) -> Boolean
 ) = View.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->

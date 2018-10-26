@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.widget
 
 import android.widget.CompoundButton
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -41,6 +42,7 @@ suspend fun CompoundButton.checkedChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun CompoundButton.checkedChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -50,6 +52,7 @@ fun CompoundButton.checkedChanges(
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
+@CheckResult
 suspend fun CompoundButton.checkedChanges(): ReceiveChannel<Boolean> = coroutineScope {
 
     produce<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +66,7 @@ suspend fun CompoundButton.checkedChanges(): ReceiveChannel<Boolean> = coroutine
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Boolean) -> Boolean
 ) = CompoundButton.OnCheckedChangeListener { _, isChecked -> emitter(isChecked) }

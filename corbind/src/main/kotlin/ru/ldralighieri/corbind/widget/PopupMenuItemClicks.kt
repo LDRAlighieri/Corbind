@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.view.MenuItem
 import android.widget.PopupMenu
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -40,6 +41,7 @@ suspend fun PopupMenu.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun PopupMenu.itemClicks(
         scope: CoroutineScope
 ): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -48,6 +50,7 @@ fun PopupMenu.itemClicks(
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
+@CheckResult
 suspend fun PopupMenu.itemClicks(): ReceiveChannel<MenuItem> = coroutineScope {
 
     produce<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
@@ -60,6 +63,7 @@ suspend fun PopupMenu.itemClicks(): ReceiveChannel<MenuItem> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (MenuItem) -> Boolean
 ) = PopupMenu.OnMenuItemClickListener { emitter(it) }

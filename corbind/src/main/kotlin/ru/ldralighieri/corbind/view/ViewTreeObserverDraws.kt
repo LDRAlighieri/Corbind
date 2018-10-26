@@ -3,6 +3,7 @@ package ru.ldralighieri.corbind.view
 import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.annotation.CheckResult
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -47,6 +48,7 @@ suspend fun View.draws(
 
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+@CheckResult
 fun View.draws(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -57,6 +59,7 @@ fun View.draws(
 }
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+@CheckResult
 suspend fun View.draws(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
@@ -70,6 +73,7 @@ suspend fun View.draws(): ReceiveChannel<Unit> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Unit) -> Boolean
 ) = ViewTreeObserver.OnDrawListener { emitter(Unit) }

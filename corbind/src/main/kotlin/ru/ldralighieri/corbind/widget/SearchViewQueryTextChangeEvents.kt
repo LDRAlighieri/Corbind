@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.widget
 
 import android.widget.SearchView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -49,6 +50,7 @@ suspend fun SearchView.queryTextChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun SearchView.queryTextChangeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<SearchViewQueryTextEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -58,6 +60,7 @@ fun SearchView.queryTextChangeEvents(
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
+@CheckResult
 suspend fun SearchView.queryTextChangeEvents(): ReceiveChannel<SearchViewQueryTextEvent> = coroutineScope {
 
     produce<SearchViewQueryTextEvent>(Dispatchers.Main, Channel.CONFLATED) {
@@ -71,6 +74,7 @@ suspend fun SearchView.queryTextChangeEvents(): ReceiveChannel<SearchViewQueryTe
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun initialValue(searchView: SearchView): SearchViewQueryTextEvent =
         SearchViewQueryTextEvent(searchView, searchView.query, false)
 
@@ -78,6 +82,7 @@ private fun initialValue(searchView: SearchView): SearchViewQueryTextEvent =
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         searchView: SearchView,
         emitter: (SearchViewQueryTextEvent) -> Boolean

@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.Adapter
 import android.widget.AdapterView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -43,6 +44,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
         scope: CoroutineScope,
         handled: () -> Boolean = AlwaysTrue
@@ -52,6 +54,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
     invokeOnClose { onItemLongClickListener = null }
 }
 
+@CheckResult
 suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
         handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Int> = coroutineScope {
@@ -66,6 +69,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         handled: () -> Boolean,
         emitter: (Int) -> Boolean

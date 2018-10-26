@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.slidingpanelayout
 
 import android.view.View
+import androidx.annotation.CheckResult
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -42,6 +43,7 @@ suspend fun SlidingPaneLayout.panelOpens(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun SlidingPaneLayout.panelOpens(
         scope: CoroutineScope
 ): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -51,6 +53,7 @@ fun SlidingPaneLayout.panelOpens(
     invokeOnClose { setPanelSlideListener(null) }
 }
 
+@CheckResult
 suspend fun SlidingPaneLayout.panelOpens(): ReceiveChannel<Boolean> = coroutineScope {
 
     produce<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
@@ -64,6 +67,7 @@ suspend fun SlidingPaneLayout.panelOpens(): ReceiveChannel<Boolean> = coroutineS
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Boolean) -> Boolean
 ) = object : SlidingPaneLayout.PanelSlideListener {

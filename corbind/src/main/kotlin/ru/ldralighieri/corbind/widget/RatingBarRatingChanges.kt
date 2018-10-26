@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.widget
 
 import android.widget.RatingBar
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -41,6 +42,7 @@ suspend fun RatingBar.ratingChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun RatingBar.ratingChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Float> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -50,6 +52,7 @@ fun RatingBar.ratingChanges(
     invokeOnClose { onRatingBarChangeListener = null }
 }
 
+@CheckResult
 suspend fun RatingBar.ratingChanges(): ReceiveChannel<Float> = coroutineScope {
 
     produce<Float>(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +66,7 @@ suspend fun RatingBar.ratingChanges(): ReceiveChannel<Float> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Float) -> Boolean
 ) = RatingBar.OnRatingBarChangeListener { _, rating, _ -> emitter(rating) }

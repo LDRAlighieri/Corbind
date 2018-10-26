@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -57,6 +58,7 @@ suspend fun ViewGroup.changeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun ViewGroup.changeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<ViewGroupHierarchyChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -65,6 +67,7 @@ fun ViewGroup.changeEvents(
     invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
+@CheckResult
 suspend fun ViewGroup.changeEvents(): ReceiveChannel<ViewGroupHierarchyChangeEvent> = coroutineScope {
 
     produce<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
@@ -77,6 +80,7 @@ suspend fun ViewGroup.changeEvents(): ReceiveChannel<ViewGroupHierarchyChangeEve
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         viewGroup: ViewGroup,
         emitter: (ViewGroupHierarchyChangeEvent) -> Boolean

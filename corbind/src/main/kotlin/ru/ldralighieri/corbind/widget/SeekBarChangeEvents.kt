@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.widget
 
 import android.widget.SeekBar
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -61,6 +62,7 @@ private suspend fun SeekBar.changeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun SeekBar.changeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<SeekBarChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -70,6 +72,7 @@ private fun SeekBar.changeEvents(
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
+@CheckResult
 private suspend fun SeekBar.changeEvents(): ReceiveChannel<SeekBarChangeEvent> = coroutineScope {
 
     produce<SeekBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
@@ -83,6 +86,7 @@ private suspend fun SeekBar.changeEvents(): ReceiveChannel<SeekBarChangeEvent> =
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun initialValue(seekBar: SeekBar): SeekBarProgressChangeEvent =
         SeekBarProgressChangeEvent(seekBar, seekBar.progress, false)
 
@@ -90,6 +94,7 @@ private fun initialValue(seekBar: SeekBar): SeekBarProgressChangeEvent =
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (SeekBarChangeEvent) -> Boolean
 ) = object : SeekBar.OnSeekBarChangeListener {

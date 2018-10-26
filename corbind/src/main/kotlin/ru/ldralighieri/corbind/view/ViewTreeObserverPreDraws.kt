@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -44,6 +45,7 @@ suspend fun View.preDraws(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.preDraws(
         scope: CoroutineScope,
         proceedDrawingPass: () -> Boolean
@@ -54,6 +56,7 @@ fun View.preDraws(
     invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
+@CheckResult
 suspend fun View.preDraws(
         proceedDrawingPass: () -> Boolean
 ): ReceiveChannel<Unit> = coroutineScope {
@@ -69,6 +72,7 @@ suspend fun View.preDraws(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         proceedDrawingPass: () -> Boolean,
         emitter: (Unit) -> Boolean

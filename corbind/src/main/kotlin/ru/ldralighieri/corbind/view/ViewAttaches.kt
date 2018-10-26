@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.view
 
 import android.view.View
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -41,6 +42,7 @@ suspend fun View.attaches(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.attaches(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -50,6 +52,7 @@ fun View.attaches(
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+@CheckResult
 suspend fun View.attaches(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
@@ -93,6 +96,7 @@ suspend fun View.detaches(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.detaches(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -102,6 +106,7 @@ fun View.detaches(
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+@CheckResult
 suspend fun View.detaches(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
@@ -115,6 +120,7 @@ suspend fun View.detaches(): ReceiveChannel<Unit> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         callOnAttach: Boolean,
         emitter: (Unit) -> Boolean

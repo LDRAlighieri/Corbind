@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.recyclerview
 
 import android.view.View
+import androidx.annotation.CheckResult
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -59,6 +60,7 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun RecyclerView.childAttachStateChangeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -68,6 +70,7 @@ fun RecyclerView.childAttachStateChangeEvents(
     invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
 }
 
+@CheckResult
 suspend fun RecyclerView.childAttachStateChangeEvents():
         ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = coroutineScope {
 
@@ -83,6 +86,7 @@ suspend fun RecyclerView.childAttachStateChangeEvents():
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         recyclerView: RecyclerView,
         emitter: (RecyclerViewChildAttachStateChangeEvent) -> Boolean
