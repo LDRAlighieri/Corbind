@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.swiperefreshlayout
 
+import androidx.annotation.CheckResult
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -39,6 +40,7 @@ suspend fun SwipeRefreshLayout.refreshes(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -47,6 +49,7 @@ fun SwipeRefreshLayout.refreshes(
     invokeOnClose { setOnRefreshListener(null) }
 }
 
+@CheckResult
 suspend fun SwipeRefreshLayout.refreshes(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
@@ -58,6 +61,7 @@ suspend fun SwipeRefreshLayout.refreshes(): ReceiveChannel<Unit> = coroutineScop
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Unit) -> Boolean
 ) = SwipeRefreshLayout.OnRefreshListener { emitter(Unit) }
