@@ -18,26 +18,26 @@ import kotlinx.coroutines.experimental.coroutineScope
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 fun View.draws(
         scope: CoroutineScope,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    val listener = ViewTreeObserver.OnDrawListener { events.offer(this) }
+    val listener = listener(events::offer)
     viewTreeObserver.addOnDrawListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 suspend fun View.draws(
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    val listener = ViewTreeObserver.OnDrawListener { events.offer(this@draws) }
+    val listener = listener(events::offer)
     viewTreeObserver.addOnDrawListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -49,19 +49,27 @@ suspend fun View.draws(
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 fun View.draws(
         scope: CoroutineScope
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val listener = ViewTreeObserver.OnDrawListener { offer(this@draws) }
+    val listener = listener(::offer)
     viewTreeObserver.addOnDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-suspend fun View.draws(): ReceiveChannel<View> = coroutineScope {
+suspend fun View.draws(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = ViewTreeObserver.OnDrawListener { offer(this@draws) }
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        val listener = listener(::offer)
         viewTreeObserver.addOnDrawListener(listener)
         invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
     }
 }
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+private fun listener(
+        emitter: (Unit) -> Boolean
+) = ViewTreeObserver.OnDrawListener { emitter(Unit) }

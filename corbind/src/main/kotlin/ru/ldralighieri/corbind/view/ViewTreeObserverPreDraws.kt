@@ -16,26 +16,26 @@ import kotlinx.coroutines.experimental.coroutineScope
 fun View.preDraws(
         scope: CoroutineScope,
         proceedDrawingPass: () -> Boolean,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    val listener = listener(this, proceedDrawingPass, events::offer)
+    val listener = listener(proceedDrawingPass, events::offer)
     viewTreeObserver.addOnPreDrawListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
 suspend fun View.preDraws(
         proceedDrawingPass: () -> Boolean,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (view in channel) action(view)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
-    val listener = listener(this@preDraws, proceedDrawingPass, events::offer)
+    val listener = listener(proceedDrawingPass, events::offer)
     viewTreeObserver.addOnPreDrawListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
@@ -47,19 +47,19 @@ suspend fun View.preDraws(
 fun View.preDraws(
         scope: CoroutineScope,
         proceedDrawingPass: () -> Boolean
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val listener = listener(this@preDraws, proceedDrawingPass, ::offer)
+    val listener = listener(proceedDrawingPass, ::offer)
     viewTreeObserver.addOnPreDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
 suspend fun View.preDraws(
         proceedDrawingPass: () -> Boolean
-): ReceiveChannel<View> = coroutineScope {
+): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(this@preDraws, proceedDrawingPass, ::offer)
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        val listener = listener(proceedDrawingPass, ::offer)
         viewTreeObserver.addOnPreDrawListener(listener)
         invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
     }
@@ -70,10 +70,9 @@ suspend fun View.preDraws(
 
 
 private fun listener(
-        view: View,
         proceedDrawingPass: () -> Boolean,
-        emitter: (View) -> Boolean
+        emitter: (Unit) -> Boolean
 ) = ViewTreeObserver.OnPreDrawListener {
-    emitter(view)
+    emitter(Unit)
     proceedDrawingPass()
 }

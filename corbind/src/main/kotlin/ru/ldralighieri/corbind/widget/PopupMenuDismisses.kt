@@ -14,10 +14,10 @@ import kotlinx.coroutines.experimental.coroutineScope
 
 fun PopupMenu.dismisses(
         scope: CoroutineScope,
-        action: suspend (PopupMenu) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<PopupMenu>(Dispatchers.Main, Channel.CONFLATED) {
-        for (menu in channel) action(menu)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setOnDismissListener(listener(events::offer))
@@ -25,10 +25,10 @@ fun PopupMenu.dismisses(
 }
 
 suspend fun PopupMenu.dismisses(
-        action: suspend (PopupMenu) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<PopupMenu>(Dispatchers.Main, Channel.CONFLATED) {
-        for (menu in channel) action(menu)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setOnDismissListener(listener(events::offer))
@@ -41,15 +41,15 @@ suspend fun PopupMenu.dismisses(
 
 fun PopupMenu.dismisses(
         scope: CoroutineScope
-): ReceiveChannel<PopupMenu> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     setOnDismissListener(listener(::offer))
     invokeOnClose { setOnDismissListener(null) }
 }
 
-suspend fun PopupMenu.dismisses(): ReceiveChannel<PopupMenu> = coroutineScope {
+suspend fun PopupMenu.dismisses(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<PopupMenu>(Dispatchers.Main, Channel.CONFLATED) {
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         setOnDismissListener(listener(::offer))
         invokeOnClose { setOnDismissListener(null) }
     }
@@ -60,5 +60,5 @@ suspend fun PopupMenu.dismisses(): ReceiveChannel<PopupMenu> = coroutineScope {
 
 
 private fun listener(
-        emitter: (PopupMenu) -> Boolean
-) = PopupMenu.OnDismissListener { emitter(it) }
+        emitter: (Unit) -> Boolean
+) = PopupMenu.OnDismissListener { emitter(Unit) }

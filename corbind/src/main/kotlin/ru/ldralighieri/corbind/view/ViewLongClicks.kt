@@ -16,10 +16,10 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 fun View.longClicks(
         scope: CoroutineScope,
         handled: () -> Boolean = AlwaysTrue,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (click in channel) action(click)
+    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setOnLongClickListener(listener(handled, events::offer))
@@ -28,10 +28,10 @@ fun View.longClicks(
 
 suspend fun View.longClicks(
         handled: () -> Boolean = AlwaysTrue,
-        action: suspend (View) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
-        for (click in channel) action(click)
+    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+        for (unit in channel) action()
     }
 
     setOnLongClickListener(listener(handled, events::offer))
@@ -45,7 +45,7 @@ suspend fun View.longClicks(
 fun View.longClicks(
         scope: CoroutineScope,
         handled: () -> Boolean = AlwaysTrue
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     setOnLongClickListener(listener(handled, ::offer))
     invokeOnClose { setOnLongClickListener(null) }
@@ -53,9 +53,9 @@ fun View.longClicks(
 
 suspend fun View.longClicks(
         handled: () -> Boolean = AlwaysTrue
-): ReceiveChannel<View> = coroutineScope {
+): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
+    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         setOnLongClickListener(listener(handled, ::offer))
         invokeOnClose { setOnLongClickListener(null) }
     }
@@ -67,8 +67,8 @@ suspend fun View.longClicks(
 
 private fun listener(
         handled: () -> Boolean,
-        emitter: (View) -> Boolean
+        emitter: (Unit) -> Boolean
 ) = View.OnLongClickListener {
-    if (handled()) { emitter(it) }
+    if (handled()) { emitter(Unit) }
     else { false }
 }
