@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.drawerlayout
 
 import android.view.View
+import androidx.annotation.CheckResult
 import androidx.drawerlayout.widget.DrawerLayout
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -46,6 +47,7 @@ suspend fun DrawerLayout.drawerOpens(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun DrawerLayout.drawerOpens(
         scope: CoroutineScope,
         gravity: Int
@@ -57,6 +59,7 @@ fun DrawerLayout.drawerOpens(
     invokeOnClose { removeDrawerListener(listener) }
 }
 
+@CheckResult
 suspend fun DrawerLayout.drawerOpens(
         gravity: Int
 ): ReceiveChannel<Boolean> = coroutineScope {
@@ -73,6 +76,7 @@ suspend fun DrawerLayout.drawerOpens(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         gravity: Int,
         emitter: (Boolean) -> Boolean
