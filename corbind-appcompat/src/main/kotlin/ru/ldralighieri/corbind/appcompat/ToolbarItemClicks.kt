@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.appcompat
 
 import android.view.MenuItem
+import androidx.annotation.CheckResult
 import androidx.appcompat.widget.Toolbar
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -40,6 +41,7 @@ suspend fun Toolbar.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun Toolbar.itemClicks(
         scope: CoroutineScope
 ): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -48,6 +50,7 @@ fun Toolbar.itemClicks(
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
+@CheckResult
 suspend fun Toolbar.itemClicks(): ReceiveChannel<MenuItem> = coroutineScope {
 
     produce<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
@@ -60,6 +63,7 @@ suspend fun Toolbar.itemClicks(): ReceiveChannel<MenuItem> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (MenuItem) -> Boolean
 ) = Toolbar.OnMenuItemClickListener(emitter::invoke)

@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.KeyEvent
 import android.view.View
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -43,6 +44,7 @@ suspend fun View.keys(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.keys(
         scope: CoroutineScope,
         handled: (KeyEvent) -> Boolean = AlwaysTrue
@@ -52,6 +54,7 @@ fun View.keys(
     invokeOnClose { setOnKeyListener(null) }
 }
 
+@CheckResult
 suspend fun View.keys(
         handled: (KeyEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<KeyEvent> = coroutineScope {
@@ -66,6 +69,7 @@ suspend fun View.keys(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         handled: (KeyEvent) -> Boolean,
         emitter: (KeyEvent) -> Boolean

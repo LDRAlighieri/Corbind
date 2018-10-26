@@ -3,6 +3,7 @@ package ru.ldralighieri.corbind.widget
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.TextView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -52,6 +53,7 @@ suspend fun TextView.afterTextChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun TextView.afterTextChangeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<TextViewAfterTextChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -62,6 +64,7 @@ fun TextView.afterTextChangeEvents(
     invokeOnClose { removeTextChangedListener(listener) }
 }
 
+@CheckResult
 suspend fun TextView.afterTextChangeEvents(): ReceiveChannel<TextViewAfterTextChangeEvent> =
         coroutineScope {
 
@@ -77,6 +80,7 @@ suspend fun TextView.afterTextChangeEvents(): ReceiveChannel<TextViewAfterTextCh
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun initialValue(textView: TextView): TextViewAfterTextChangeEvent =
         TextViewAfterTextChangeEvent(textView, textView.editableText)
 
@@ -84,6 +88,7 @@ private fun initialValue(textView: TextView): TextViewAfterTextChangeEvent =
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         textView: TextView,
         emitter: (TextViewAfterTextChangeEvent) -> Boolean

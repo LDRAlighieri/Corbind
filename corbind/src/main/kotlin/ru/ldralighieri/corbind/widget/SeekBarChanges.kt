@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.widget
 
 import android.widget.SeekBar
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -75,10 +76,12 @@ fun SeekBar.changes(
 
 suspend fun SeekBar.changes(action: suspend (Int) -> Unit) = changes(null, action)
 
+@CheckResult
 fun SeekBar.changes(
         scope: CoroutineScope
 ) = changes(scope, null)
 
+@CheckResult
 suspend fun SeekBar.changes() = changes(null)
 
 
@@ -92,10 +95,12 @@ fun SeekBar.userChanges(
 
 suspend fun SeekBar.userChanges(action: suspend (Int) -> Unit) = changes(true, action)
 
+@CheckResult
 fun SeekBar.userChanges(
         scope: CoroutineScope
 ) = changes(scope, true)
 
+@CheckResult
 suspend fun SeekBar.userChanges() = changes(true)
 
 
@@ -109,16 +114,19 @@ fun SeekBar.systemChanges(
 
 suspend fun SeekBar.systemChanges(action: suspend (Int) -> Unit) = changes(false, action)
 
+@CheckResult
 fun SeekBar.systemChanges(
         scope: CoroutineScope
 ) = changes(scope, false)
 
+@CheckResult
 suspend fun SeekBar.systemChanges() = changes(false)
 
 
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         shouldBeFromUser: Boolean?,
         emitter: (Int) -> Boolean

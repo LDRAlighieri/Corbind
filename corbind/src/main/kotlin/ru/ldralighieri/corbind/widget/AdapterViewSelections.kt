@@ -3,6 +3,7 @@ package ru.ldralighieri.corbind.widget
 import android.view.View
 import android.widget.Adapter
 import android.widget.AdapterView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -60,6 +61,7 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(
         scope: CoroutineScope
 ): ReceiveChannel<AdapterViewSelectionEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -69,6 +71,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     invokeOnClose { onItemSelectedListener = null }
 }
 
+@CheckResult
 suspend fun <T : Adapter> AdapterView<T>.selectionEvents()
         : ReceiveChannel<AdapterViewSelectionEvent> = coroutineScope {
 
@@ -83,6 +86,7 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents()
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterViewSelectionEvent {
     return if (adapterView.selectedItemPosition == AdapterView.INVALID_POSITION) {
         AdapterViewNothingSelectionEvent(adapterView)
@@ -96,6 +100,7 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (AdapterViewSelectionEvent) -> Boolean
 ) = object : AdapterView.OnItemSelectedListener {

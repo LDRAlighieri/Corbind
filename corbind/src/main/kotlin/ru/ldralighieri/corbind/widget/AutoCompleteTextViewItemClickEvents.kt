@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -40,6 +41,7 @@ suspend fun AutoCompleteTextView.itemClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun AutoCompleteTextView.itemClickEvents(
         scope: CoroutineScope
 ): ReceiveChannel<AdapterViewItemClickEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -48,6 +50,7 @@ fun AutoCompleteTextView.itemClickEvents(
     invokeOnClose { onItemClickListener = null }
 }
 
+@CheckResult
 suspend fun AutoCompleteTextView.itemClickEvents()
         : ReceiveChannel<AdapterViewItemClickEvent> = coroutineScope {
 
@@ -61,6 +64,7 @@ suspend fun AutoCompleteTextView.itemClickEvents()
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (AdapterViewItemClickEvent) -> Boolean
 ) = AdapterView.OnItemClickListener { parent, view, position, id ->

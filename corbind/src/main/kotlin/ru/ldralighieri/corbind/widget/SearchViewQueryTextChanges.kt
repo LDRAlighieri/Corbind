@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.widget
 
 import android.widget.SearchView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -41,6 +42,7 @@ suspend fun SearchView.queryTextChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun SearchView.queryTextChanges(
         scope: CoroutineScope
 ): ReceiveChannel<CharSequence> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -50,6 +52,7 @@ fun SearchView.queryTextChanges(
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
+@CheckResult
 suspend fun SearchView.queryTextChanges(): ReceiveChannel<CharSequence> = coroutineScope {
 
     produce<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +66,7 @@ suspend fun SearchView.queryTextChanges(): ReceiveChannel<CharSequence> = corout
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (CharSequence) -> Boolean
 ) = object : SearchView.OnQueryTextListener {

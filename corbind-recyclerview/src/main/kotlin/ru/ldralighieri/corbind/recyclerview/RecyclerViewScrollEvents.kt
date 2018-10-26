@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.recyclerview
 
+import androidx.annotation.CheckResult
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -45,6 +46,7 @@ suspend fun RecyclerView.scrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun RecyclerView.scrollEvents(
         scope: CoroutineScope
 ): ReceiveChannel<RecyclerViewScrollEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -54,6 +56,7 @@ fun RecyclerView.scrollEvents(
     invokeOnClose { removeOnScrollListener(scrollListener) }
 }
 
+@CheckResult
 suspend fun RecyclerView.scrollEvents(): ReceiveChannel<RecyclerViewScrollEvent> = coroutineScope {
 
     produce<RecyclerViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
@@ -67,6 +70,7 @@ suspend fun RecyclerView.scrollEvents(): ReceiveChannel<RecyclerViewScrollEvent>
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         recyclerView: RecyclerView,
         emitter: (RecyclerViewScrollEvent) -> Boolean

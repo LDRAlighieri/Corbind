@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.widget
 
 import android.widget.RadioGroup
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -41,6 +42,7 @@ suspend fun RadioGroup.checkedChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun RadioGroup.checkedChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -50,6 +52,7 @@ fun RadioGroup.checkedChanges(
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
+@CheckResult
 suspend fun RadioGroup.checkedChanges(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +66,7 @@ suspend fun RadioGroup.checkedChanges(): ReceiveChannel<Int> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Int) -> Boolean
 ) = object : RadioGroup.OnCheckedChangeListener {

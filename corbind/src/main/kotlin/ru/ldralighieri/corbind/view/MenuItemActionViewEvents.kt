@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.view
 
 import android.view.MenuItem
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -56,6 +57,7 @@ suspend fun MenuItem.actionViewEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
@@ -65,6 +67,7 @@ fun MenuItem.actionViewEvents(
     invokeOnClose { setOnActionExpandListener(null) }
 }
 
+@CheckResult
 suspend fun MenuItem.actionViewEvents(
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItemActionViewEvent> = coroutineScope {
@@ -79,6 +82,7 @@ suspend fun MenuItem.actionViewEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         handled: (MenuItemActionViewEvent) -> Boolean,
         emitter: (MenuItemActionViewEvent) -> Boolean

@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.viewpager
 
+import androidx.annotation.CheckResult
 import androidx.viewpager.widget.ViewPager
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -41,6 +42,7 @@ suspend fun ViewPager.pageScrollStateChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun ViewPager.pageScrollStateChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -50,6 +52,7 @@ fun ViewPager.pageScrollStateChanges(
     invokeOnClose { removeOnPageChangeListener(listener) }
 }
 
+@CheckResult
 suspend fun ViewPager.pageScrollStateChanges(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +66,7 @@ suspend fun ViewPager.pageScrollStateChanges(): ReceiveChannel<Int> = coroutineS
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Int) -> Boolean
 ) = object : ViewPager.OnPageChangeListener {

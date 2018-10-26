@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.recyclerview
 
+import androidx.annotation.CheckResult
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -43,6 +44,7 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
         scope: CoroutineScope
 ): ReceiveChannel<T> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -53,6 +55,7 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
 
+@CheckResult
 suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
 ): ReceiveChannel<T> = coroutineScope {
 
@@ -68,6 +71,7 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> observer(
         adapter: T,
         emitter: (T) -> Boolean

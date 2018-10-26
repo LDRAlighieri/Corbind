@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.widget
 
 import android.widget.TextView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -42,6 +43,7 @@ suspend fun TextView.editorActions(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun TextView.editorActions(
         scope: CoroutineScope,
         handled: (Int) -> Boolean = AlwaysTrue
@@ -51,6 +53,7 @@ fun TextView.editorActions(
     invokeOnClose { setOnEditorActionListener(null) }
 }
 
+@CheckResult
 suspend fun TextView.editorActions(
         handled: (Int) -> Boolean = AlwaysTrue
 ): ReceiveChannel<Int> = coroutineScope {
@@ -65,6 +68,7 @@ suspend fun TextView.editorActions(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         handled: (Int) -> Boolean,
         emitter: (Int) -> Boolean

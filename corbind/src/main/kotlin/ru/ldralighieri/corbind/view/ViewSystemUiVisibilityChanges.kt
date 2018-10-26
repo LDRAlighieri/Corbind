@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.view
 
 import android.view.View
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -36,6 +37,7 @@ suspend fun View.systemUiVisibilityChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -44,6 +46,7 @@ fun View.systemUiVisibilityChanges(
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
+@CheckResult
 suspend fun View.systemUiVisibilityChanges(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
@@ -56,6 +59,7 @@ suspend fun View.systemUiVisibilityChanges(): ReceiveChannel<Int> = coroutineSco
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Int) -> Boolean
 ) = View.OnSystemUiVisibilityChangeListener { emitter(it) }

@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.view
 
 import android.view.MenuItem
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -42,6 +43,7 @@ suspend fun MenuItem.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun MenuItem.clicks(
         scope: CoroutineScope,
         handled: (MenuItem) -> Boolean = AlwaysTrue
@@ -51,6 +53,7 @@ fun MenuItem.clicks(
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
+@CheckResult
 suspend fun MenuItem.clicks(
         handled: (MenuItem) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItem> = coroutineScope {
@@ -65,6 +68,7 @@ suspend fun MenuItem.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         handled: (MenuItem) -> Boolean,
         emitter: (MenuItem) -> Boolean

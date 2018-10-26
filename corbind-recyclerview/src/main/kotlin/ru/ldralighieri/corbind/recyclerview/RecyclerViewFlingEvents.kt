@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.recyclerview
 
+import androidx.annotation.CheckResult
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -43,6 +44,7 @@ suspend fun RecyclerView.flingEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun RecyclerView.flingEvents(
         scope: CoroutineScope
 ): ReceiveChannel<RecyclerViewFlingEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -51,6 +53,7 @@ fun RecyclerView.flingEvents(
     invokeOnClose { onFlingListener = null }
 }
 
+@CheckResult
 suspend fun RecyclerView.flingEvents(): ReceiveChannel<RecyclerViewFlingEvent> = coroutineScope {
 
     produce<RecyclerViewFlingEvent>(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +66,7 @@ suspend fun RecyclerView.flingEvents(): ReceiveChannel<RecyclerViewFlingEvent> =
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         recyclerView: RecyclerView,
         emitter: (RecyclerViewFlingEvent) -> Boolean

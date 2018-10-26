@@ -3,6 +3,7 @@ package ru.ldralighieri.corbind.widget
 import android.view.View
 import android.widget.Adapter
 import android.widget.AdapterView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -50,6 +51,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
         scope: CoroutineScope
 ): ReceiveChannel<AdapterViewItemClickEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -58,6 +60,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
     invokeOnClose { onItemClickListener = null }
 }
 
+@CheckResult
 suspend fun <T : Adapter> AdapterView<T>.itemClickEvents()
         : ReceiveChannel<AdapterViewItemClickEvent> = coroutineScope {
 
@@ -71,6 +74,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents()
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (AdapterViewItemClickEvent) -> Boolean
 ) = AdapterView.OnItemClickListener { parent, view, position, id ->

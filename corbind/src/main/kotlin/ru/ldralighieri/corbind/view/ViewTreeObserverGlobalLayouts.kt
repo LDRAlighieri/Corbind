@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -42,6 +43,7 @@ suspend fun View.globalLayouts(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.globalLayouts(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -51,6 +53,7 @@ fun View.globalLayouts(
     invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
 }
 
+@CheckResult
 suspend fun View.globalLayouts(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
@@ -64,6 +67,7 @@ suspend fun View.globalLayouts(): ReceiveChannel<Unit> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Unit) -> Boolean
 ) = ViewTreeObserver.OnGlobalLayoutListener { emitter(Unit) }

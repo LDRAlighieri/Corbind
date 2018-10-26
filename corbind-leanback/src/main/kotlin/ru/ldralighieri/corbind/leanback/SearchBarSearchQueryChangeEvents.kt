@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.leanback
 
+import androidx.annotation.CheckResult
 import androidx.leanback.widget.SearchBar
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -61,6 +62,7 @@ suspend fun SearchBar.searchQueryChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun SearchBar.searchQueryChangeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<SearchBarSearchQueryEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -69,6 +71,7 @@ fun SearchBar.searchQueryChangeEvents(
     invokeOnClose { setSearchBarListener(null) }
 }
 
+@CheckResult
 suspend fun SearchBar.searchQueryChangeEvents(): ReceiveChannel<SearchBarSearchQueryEvent> = coroutineScope {
 
     produce<SearchBarSearchQueryEvent>(Dispatchers.Main, Channel.CONFLATED) {
@@ -81,6 +84,7 @@ suspend fun SearchBar.searchQueryChangeEvents(): ReceiveChannel<SearchBarSearchQ
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         searchBar: SearchBar,
         emitter: (SearchBarSearchQueryEvent) -> Boolean

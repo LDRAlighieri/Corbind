@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.database.DataSetObserver
 import android.widget.Adapter
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -44,6 +45,7 @@ suspend fun <T : Adapter> T.dataChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun <T : Adapter> T.dataChanges(
         scope: CoroutineScope
 ): ReceiveChannel<T> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -54,6 +56,7 @@ fun <T : Adapter> T.dataChanges(
     invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
 }
 
+@CheckResult
 suspend fun <T : Adapter> T.dataChanges(): ReceiveChannel<T> = coroutineScope {
 
     produce<T>(Dispatchers.Main, Channel.CONFLATED) {
@@ -68,6 +71,7 @@ suspend fun <T : Adapter> T.dataChanges(): ReceiveChannel<T> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun <T : Adapter> observer(
         adapter: T,
         emitter: (T) -> Boolean
