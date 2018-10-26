@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.material
 
+import androidx.annotation.CheckResult
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -41,6 +42,7 @@ suspend fun AppBarLayout.offsetChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun AppBarLayout.offsetChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -50,6 +52,7 @@ fun AppBarLayout.offsetChanges(
     invokeOnClose { removeOnOffsetChangedListener(listener) }
 }
 
+@CheckResult
 suspend fun AppBarLayout.offsetChanges(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +66,7 @@ suspend fun AppBarLayout.offsetChanges(): ReceiveChannel<Int> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Int) -> Boolean
 ) = AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> emitter(verticalOffset) }

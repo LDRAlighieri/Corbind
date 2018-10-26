@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.material
 
+import androidx.annotation.CheckResult
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -43,6 +44,7 @@ suspend fun TabLayout.selections(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun TabLayout.selections(
         scope: CoroutineScope
 ): ReceiveChannel<TabLayout.Tab> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -53,6 +55,7 @@ fun TabLayout.selections(
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
 
+@CheckResult
 suspend fun TabLayout.selections(): ReceiveChannel<TabLayout.Tab> = coroutineScope {
 
     produce<TabLayout.Tab>(Dispatchers.Main, Channel.CONFLATED) {
@@ -78,7 +81,7 @@ private fun setInitialValue(
 
 // -----------------------------------------------------------------------------------------------
 
-
+@CheckResult
 private fun listener(
         emitter: (TabLayout.Tab) -> Boolean
 ) = object : TabLayout.OnTabSelectedListener {

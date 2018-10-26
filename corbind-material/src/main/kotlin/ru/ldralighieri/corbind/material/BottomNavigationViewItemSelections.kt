@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.material
 
 import android.view.MenuItem
+import androidx.annotation.CheckResult
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -42,6 +43,7 @@ suspend fun BottomNavigationView.itemSelections(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun BottomNavigationView.itemSelections(
         scope: CoroutineScope
 ): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -51,6 +53,7 @@ fun BottomNavigationView.itemSelections(
     invokeOnClose { setOnNavigationItemSelectedListener(null) }
 }
 
+@CheckResult
 suspend fun BottomNavigationView.itemSelections(): ReceiveChannel<MenuItem> = coroutineScope {
 
     produce<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
@@ -82,6 +85,7 @@ private fun setInitialValue(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (MenuItem) -> Boolean
 ) = BottomNavigationView.OnNavigationItemSelectedListener(emitter::invoke)

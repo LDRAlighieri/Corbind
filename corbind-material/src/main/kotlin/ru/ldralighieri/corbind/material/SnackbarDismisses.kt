@@ -1,5 +1,6 @@
 package ru.ldralighieri.corbind.material
 
+import androidx.annotation.CheckResult
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -41,6 +42,7 @@ suspend fun Snackbar.dismisses(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun Snackbar.dismisses(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -50,6 +52,7 @@ fun Snackbar.dismisses(
     invokeOnClose { removeCallback(callback) }
 }
 
+@CheckResult
 suspend fun Snackbar.dismisses(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +66,7 @@ suspend fun Snackbar.dismisses(): ReceiveChannel<Int> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun callback(
         emitter: (Int) -> Boolean
 ) = object : Snackbar.Callback() {
