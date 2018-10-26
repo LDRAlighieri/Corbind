@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.appcompat
 
 import android.view.View
+import androidx.annotation.CheckResult
 import androidx.appcompat.widget.Toolbar
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
@@ -40,6 +41,7 @@ suspend fun Toolbar.navigationClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun Toolbar.navigationClicks(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -48,6 +50,7 @@ fun Toolbar.navigationClicks(
     invokeOnClose { setNavigationOnClickListener(null) }
 }
 
+@CheckResult
 suspend fun Toolbar.navigationClicks(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
@@ -60,6 +63,7 @@ suspend fun Toolbar.navigationClicks(): ReceiveChannel<Unit> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Unit) -> Boolean
 ) = View.OnClickListener { emitter(Unit) }
