@@ -13,7 +13,7 @@ import kotlinx.coroutines.experimental.coroutineScope
 // -----------------------------------------------------------------------------------------------
 
 
-fun DrawerLayout.drawerOpen(
+fun DrawerLayout.drawerOpens(
         scope: CoroutineScope,
         gravity: Int,
         action: suspend (Boolean) -> Unit
@@ -28,7 +28,7 @@ fun DrawerLayout.drawerOpen(
     events.invokeOnClose { removeDrawerListener(listener) }
 }
 
-suspend fun DrawerLayout.drawerOpen(
+suspend fun DrawerLayout.drawerOpens(
         gravity: Int,
         action: suspend (Boolean) -> Unit
 ) = coroutineScope {
@@ -46,7 +46,7 @@ suspend fun DrawerLayout.drawerOpen(
 // -----------------------------------------------------------------------------------------------
 
 
-fun DrawerLayout.drawerOpen(
+fun DrawerLayout.drawerOpens(
         scope: CoroutineScope,
         gravity: Int
 ): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -57,7 +57,7 @@ fun DrawerLayout.drawerOpen(
     invokeOnClose { removeDrawerListener(listener) }
 }
 
-suspend fun DrawerLayout.drawerOpen(
+suspend fun DrawerLayout.drawerOpens(
         gravity: Int
 ): ReceiveChannel<Boolean> = coroutineScope {
 
