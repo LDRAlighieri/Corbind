@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.widget
 
 import android.widget.AbsListView
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -49,6 +50,7 @@ suspend fun AbsListView.scrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun AbsListView.scrollEvents(
         scope: CoroutineScope
 ): ReceiveChannel<AbsListViewScrollEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -57,6 +59,7 @@ fun AbsListView.scrollEvents(
     invokeOnClose { setOnScrollListener(null) }
 }
 
+@CheckResult
 suspend fun AbsListView.scrollEvents(): ReceiveChannel<AbsListViewScrollEvent> = coroutineScope {
 
     produce<AbsListViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
@@ -69,9 +72,11 @@ suspend fun AbsListView.scrollEvents(): ReceiveChannel<AbsListViewScrollEvent> =
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (AbsListViewScrollEvent) -> Boolean
 ) = object : AbsListView.OnScrollListener {
+
     private var currentScrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 
     override fun onScrollStateChanged(absListView: AbsListView, scrollState: Int) {

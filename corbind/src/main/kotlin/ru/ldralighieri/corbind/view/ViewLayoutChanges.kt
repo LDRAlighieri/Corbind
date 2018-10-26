@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.view
 
 import android.view.View
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -41,6 +42,7 @@ suspend fun View.layoutChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.layoutChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
@@ -50,6 +52,7 @@ fun View.layoutChanges(
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
+@CheckResult
 suspend fun View.layoutChanges(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
@@ -63,6 +66,7 @@ suspend fun View.layoutChanges(): ReceiveChannel<Unit> = coroutineScope {
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         emitter: (Unit) -> Boolean
 ) = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> emitter(Unit) }

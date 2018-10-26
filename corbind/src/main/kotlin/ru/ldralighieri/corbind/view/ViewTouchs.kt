@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -43,6 +44,7 @@ suspend fun View.touches(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.touches(
         scope: CoroutineScope,
         handled: (MotionEvent) -> Boolean = AlwaysTrue
@@ -52,6 +54,7 @@ fun View.touches(
     invokeOnClose { setOnTouchListener(null) }
 }
 
+@CheckResult
 suspend fun View.touches(
         handled: (MotionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MotionEvent> = coroutineScope {
@@ -66,6 +69,7 @@ suspend fun View.touches(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         handled: (MotionEvent) -> Boolean,
         emitter: (MotionEvent) -> Boolean

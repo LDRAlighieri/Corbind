@@ -1,6 +1,7 @@
 package ru.ldralighieri.corbind.view
 
 import android.view.View
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -42,6 +43,7 @@ suspend fun View.longClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.longClicks(
         scope: CoroutineScope,
         handled: () -> Boolean = AlwaysTrue
@@ -51,6 +53,7 @@ fun View.longClicks(
     invokeOnClose { setOnLongClickListener(null) }
 }
 
+@CheckResult
 suspend fun View.longClicks(
         handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Unit> = coroutineScope {
@@ -65,6 +68,7 @@ suspend fun View.longClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         handled: () -> Boolean,
         emitter: (Unit) -> Boolean

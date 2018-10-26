@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.DragEvent
 import android.view.View
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -43,6 +44,7 @@ suspend fun View.drags(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.drags(
         scope: CoroutineScope,
         handled: (DragEvent) -> Boolean = AlwaysTrue
@@ -52,6 +54,7 @@ fun View.drags(
     invokeOnClose { setOnDragListener(null) }
 }
 
+@CheckResult
 suspend fun View.drags(
         handled: (DragEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<DragEvent> = coroutineScope {
@@ -66,6 +69,7 @@ suspend fun View.drags(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         handled: (DragEvent) -> Boolean,
         emitter: (DragEvent) -> Boolean

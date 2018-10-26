@@ -2,6 +2,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.CheckResult
 import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.channels.Channel
@@ -42,6 +43,7 @@ suspend fun View.hovers(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun View.hovers(
         scope: CoroutineScope,
         handled: (MotionEvent) -> Boolean = AlwaysTrue
@@ -51,6 +53,7 @@ fun View.hovers(
     invokeOnClose { setOnHoverListener(null) }
 }
 
+@CheckResult
 suspend fun View.hovers(
         handled: (MotionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MotionEvent> = coroutineScope {
@@ -65,6 +68,7 @@ suspend fun View.hovers(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun listener(
         handled: (MotionEvent) -> Boolean,
         emitter: (MotionEvent) -> Boolean
