@@ -12,6 +12,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -25,7 +26,7 @@ fun Toolbar.navigationClicks(
         for (unit in channel) action()
     }
 
-    setNavigationOnClickListener(listener(events::offer))
+    setNavigationOnClickListener(listener(scope, events::offer))
     events.invokeOnClose { setNavigationOnClickListener(null) }
 }
 
@@ -37,7 +38,7 @@ suspend fun Toolbar.navigationClicks(
         for (unit in channel) action()
     }
 
-    setNavigationOnClickListener(listener(events::offer))
+    setNavigationOnClickListener(listener(this, events::offer))
     events.invokeOnClose { setNavigationOnClickListener(null) }
 }
 
@@ -51,7 +52,7 @@ fun Toolbar.navigationClicks(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setNavigationOnClickListener(listener(::offer))
+    setNavigationOnClickListener(listener(this, ::offer))
     invokeOnClose { setNavigationOnClickListener(null) }
 }
 
@@ -60,7 +61,7 @@ fun Toolbar.navigationClicks(
 suspend fun Toolbar.navigationClicks(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        setNavigationOnClickListener(listener(::offer))
+        setNavigationOnClickListener(listener(this, ::offer))
         invokeOnClose { setNavigationOnClickListener(null) }
     }
 }
@@ -71,5 +72,9 @@ suspend fun Toolbar.navigationClicks(): ReceiveChannel<Unit> = coroutineScope {
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Unit) -> Boolean
-) = View.OnClickListener { emitter(Unit) }
+) = View.OnClickListener {
+
+    if (scope.isActive) { emitter(Unit) }
+}

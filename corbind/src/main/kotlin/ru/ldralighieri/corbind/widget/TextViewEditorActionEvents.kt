@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 
 // -----------------------------------------------------------------------------------------------
@@ -28,11 +29,12 @@ fun TextView.editorActionEvents(
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
         action: suspend (TextViewEditorActionEvent) -> Unit
 ) {
+
     val events = scope.actor<TextViewEditorActionEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnEditorActionListener(listener(handled, events::offer))
+    setOnEditorActionListener(listener(scope, handled, events::offer))
     events.invokeOnClose { setOnEditorActionListener(null) }
 }
 
@@ -40,11 +42,12 @@ suspend fun TextView.editorActionEvents(
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
         action: suspend (TextViewEditorActionEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<TextViewEditorActionEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnEditorActionListener(listener(handled, events::offer))
+    setOnEditorActionListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnEditorActionListener(null) }
 }
 
@@ -58,7 +61,7 @@ fun TextView.editorActionEvents(
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<TextViewEditorActionEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnEditorActionListener(listener(handled, ::offer))
+    setOnEditorActionListener(listener(this, handled, ::offer))
     invokeOnClose { setOnEditorActionListener(null) }
 }
 
@@ -68,7 +71,7 @@ suspend fun TextView.editorActionEvents(
 ): ReceiveChannel<TextViewEditorActionEvent> = coroutineScope {
 
     produce<TextViewEditorActionEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnEditorActionListener(listener(handled, ::offer))
+        setOnEditorActionListener(listener(this, handled, ::offer))
         invokeOnClose { setOnEditorActionListener(null) }
     }
 }
@@ -79,10 +82,17 @@ suspend fun TextView.editorActionEvents(
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         handled: (TextViewEditorActionEvent) -> Boolean,
         emitter: (TextViewEditorActionEvent) -> Boolean
-) = TextView.OnEditorActionListener { v, actionId, event ->
-    val actionEvent = TextViewEditorActionEvent(v, actionId, event)
-    if (handled(actionEvent)) { emitter(TextViewEditorActionEvent(v, actionId, event)) }
-    else { false }
+) = TextView.OnEditorActionListener { v, actionId, keyEvent ->
+
+    if (scope.isActive) {
+        val event = TextViewEditorActionEvent(v, actionId, keyEvent)
+        if (handled(event)) {
+            emitter(event)
+            return@OnEditorActionListener true
+        }
+    }
+    return@OnEditorActionListener false
 }

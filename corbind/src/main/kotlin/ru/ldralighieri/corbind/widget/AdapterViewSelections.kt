@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -36,24 +37,26 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
         scope: CoroutineScope,
         action: suspend (AdapterViewSelectionEvent) -> Unit
 ) {
+
     val events = scope.actor<AdapterViewSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
     events.offer(initialValue(this))
-    onItemSelectedListener = listener(events::offer)
+    onItemSelectedListener = listener(scope, events::offer)
     events.invokeOnClose { onItemSelectedListener = null }
 }
 
 suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
         action: suspend (AdapterViewSelectionEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<AdapterViewSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
     events.offer(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(events::offer)
+    onItemSelectedListener = listener(this, events::offer)
     events.invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -67,7 +70,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 ): ReceiveChannel<AdapterViewSelectionEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(::offer)
+    onItemSelectedListener = listener(this, ::offer)
     invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -77,7 +80,7 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents()
 
     produce<AdapterViewSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
         offer(initialValue(this@selectionEvents))
-        onItemSelectedListener = listener(::offer)
+        onItemSelectedListener = listener(this, ::offer)
         invokeOnClose { onItemSelectedListener = null }
     }
 }
@@ -102,14 +105,19 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (AdapterViewSelectionEvent) -> Boolean
 ) = object : AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-        emitter(AdapterViewItemSelectionEvent(parent, view, position, id))
+        onEvent(AdapterViewItemSelectionEvent(parent, view, position, id))
     }
 
     override fun onNothingSelected(parent: AdapterView<*>) {
-        emitter(AdapterViewNothingSelectionEvent(parent))
+        onEvent(AdapterViewNothingSelectionEvent(parent))
+    }
+
+    private fun onEvent(event: AdapterViewSelectionEvent) {
+        if (scope.isActive) { emitter(event) }
     }
 }

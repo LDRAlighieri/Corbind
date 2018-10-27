@@ -9,27 +9,30 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope,
         action: suspend (Int) -> Unit
 ) {
+
     val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (visibility in channel) action(visibility)
     }
 
-    setOnSystemUiVisibilityChangeListener(listener(events::offer))
+    setOnSystemUiVisibilityChangeListener(listener(scope, events::offer))
     events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
 suspend fun View.systemUiVisibilityChanges(
         action: suspend (Int) -> Unit
 ) = coroutineScope {
+
     val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (visibility in channel) action(visibility)
     }
 
-    setOnSystemUiVisibilityChangeListener(listener(events::offer))
+    setOnSystemUiVisibilityChangeListener(listener(this, events::offer))
     events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -42,7 +45,7 @@ fun View.systemUiVisibilityChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnSystemUiVisibilityChangeListener(listener(::offer))
+    setOnSystemUiVisibilityChangeListener(listener(this, ::offer))
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -50,7 +53,7 @@ fun View.systemUiVisibilityChanges(
 suspend fun View.systemUiVisibilityChanges(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnSystemUiVisibilityChangeListener(listener(::offer))
+        setOnSystemUiVisibilityChangeListener(listener(this, ::offer))
         invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
     }
 }
@@ -61,5 +64,9 @@ suspend fun View.systemUiVisibilityChanges(): ReceiveChannel<Int> = coroutineSco
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Int) -> Boolean
-) = View.OnSystemUiVisibilityChangeListener { emitter(it) }
+) = View.OnSystemUiVisibilityChangeListener {
+
+    if (scope.isActive) { emitter(it) }
+}

@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -30,11 +31,12 @@ fun View.scrollChangeEvents(
         scope: CoroutineScope,
         action: suspend (ViewScrollChangeEvent) -> Unit
 ) {
+
     val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnScrollChangeListener(listener(events::offer))
+    setOnScrollChangeListener(listener(scope, events::offer))
     events.invokeOnClose { setOnScrollChangeListener(null) }
 }
 
@@ -42,11 +44,12 @@ fun View.scrollChangeEvents(
 suspend fun View.scrollChangeEvents(
         action: suspend (ViewScrollChangeEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnScrollChangeListener(listener(events::offer))
+    setOnScrollChangeListener(listener(this, events::offer))
     events.invokeOnClose { setOnScrollChangeListener(null) }
 }
 
@@ -60,7 +63,7 @@ fun View.scrollChangeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<ViewScrollChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnScrollChangeListener(listener(::offer))
+    setOnScrollChangeListener(listener(this, ::offer))
     invokeOnClose { setOnScrollChangeListener(null) }
 }
 
@@ -69,7 +72,7 @@ fun View.scrollChangeEvents(
 suspend fun View.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> = coroutineScope {
 
     produce<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnScrollChangeListener(listener(::offer))
+        setOnScrollChangeListener(listener(this, ::offer))
         invokeOnClose { setOnScrollChangeListener(null) }
     }
 }
@@ -80,7 +83,11 @@ suspend fun View.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> = c
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (ViewScrollChangeEvent) -> Boolean
 ) = View.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-    emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))
+
+    if (scope.isActive) {
+        emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))
+    }
 }

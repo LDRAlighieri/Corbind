@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -25,24 +26,26 @@ fun RatingBar.ratingChangeEvents(
         scope: CoroutineScope,
         action: suspend (RatingBarChangeEvent) -> Unit
 ) {
+
     val events = scope.actor<RatingBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
     events.offer(initialValue(this))
-    onRatingBarChangeListener = listener(events::offer)
+    onRatingBarChangeListener = listener(scope, events::offer)
     events.invokeOnClose { onRatingBarChangeListener = null }
 }
 
 suspend fun RatingBar.ratingChangeEvents(
         action: suspend (RatingBarChangeEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<RatingBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
     events.offer(initialValue(this@ratingChangeEvents))
-    onRatingBarChangeListener = listener(events::offer)
+    onRatingBarChangeListener = listener(this, events::offer)
     events.invokeOnClose { onRatingBarChangeListener = null }
 }
 
@@ -56,7 +59,7 @@ fun RatingBar.ratingChangeEvents(
 ): ReceiveChannel<RatingBarChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(initialValue(this@ratingChangeEvents))
-    onRatingBarChangeListener = listener(::offer)
+    onRatingBarChangeListener = listener(this, ::offer)
     invokeOnClose { onRatingBarChangeListener = null }
 }
 
@@ -65,7 +68,7 @@ suspend fun RatingBar.ratingChangeEvents(): ReceiveChannel<RatingBarChangeEvent>
 
     produce<RatingBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         offer(initialValue(this@ratingChangeEvents))
-        onRatingBarChangeListener = listener(::offer)
+        onRatingBarChangeListener = listener(this, ::offer)
         invokeOnClose { onRatingBarChangeListener = null }
     }
 }
@@ -84,7 +87,9 @@ private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (RatingBarChangeEvent) -> Boolean
 ) = RatingBar.OnRatingBarChangeListener { ratingBar, rating, fromUser ->
-    emitter(RatingBarChangeEvent(ratingBar, rating, fromUser))
+
+    if (scope.isActive) { emitter(RatingBarChangeEvent(ratingBar, rating, fromUser)) }
 }
