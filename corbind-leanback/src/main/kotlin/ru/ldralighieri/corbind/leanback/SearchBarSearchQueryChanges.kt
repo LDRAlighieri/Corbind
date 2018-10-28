@@ -18,6 +18,7 @@ fun SearchBar.searchQueryChanges(
         scope: CoroutineScope,
         action: suspend (String) -> Unit
 ) {
+
     val events = scope.actor<String>(Dispatchers.Main, Channel.CONFLATED) {
         for (query in channel) action(query)
     }
@@ -29,6 +30,7 @@ fun SearchBar.searchQueryChanges(
 suspend fun SearchBar.searchQueryChanges(
         action: suspend (String) -> Unit
 ) = coroutineScope {
+
     val events = actor<String>(Dispatchers.Main, Channel.CONFLATED) {
         for (query in channel) action(query)
     }

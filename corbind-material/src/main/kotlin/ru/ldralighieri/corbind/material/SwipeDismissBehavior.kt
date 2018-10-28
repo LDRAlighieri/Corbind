@@ -20,6 +20,7 @@ fun View.dismisses(
         scope: CoroutineScope,
         action: suspend (View) -> Unit
 ) {
+
     val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
         for (view in channel) action(view)
     }
@@ -32,6 +33,7 @@ fun View.dismisses(
 suspend fun View.dismisses(
         action: suspend (View) -> Unit
 ) = coroutineScope {
+
     val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
         for (view in channel) action(view)
     }

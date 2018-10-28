@@ -18,6 +18,7 @@ fun TabLayout.selections(
         scope: CoroutineScope,
         action: suspend (TabLayout.Tab) -> Unit
 ) {
+
     val events = scope.actor<TabLayout.Tab>(Dispatchers.Main, Channel.CONFLATED) {
         for (tab in channel) action(tab)
     }
@@ -31,6 +32,7 @@ fun TabLayout.selections(
 suspend fun TabLayout.selections(
         action: suspend (TabLayout.Tab) -> Unit
 ) = coroutineScope {
+
     val events = actor<TabLayout.Tab>(Dispatchers.Main, Channel.CONFLATED) {
         for (tab in channel) action(tab)
     }
