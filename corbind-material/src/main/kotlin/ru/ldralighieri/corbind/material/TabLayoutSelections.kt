@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -22,7 +23,7 @@ fun TabLayout.selections(
     }
 
     setInitialValue(this, events::offer)
-    val listener = listener(events::offer)
+    val listener = listener(scope, events::offer)
     addOnTabSelectedListener(listener)
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -35,7 +36,7 @@ suspend fun TabLayout.selections(
     }
 
     setInitialValue(this@selections, events::offer)
-    val listener = listener(events::offer)
+    val listener = listener(this, events::offer)
     addOnTabSelectedListener(listener)
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -50,7 +51,7 @@ fun TabLayout.selections(
 ): ReceiveChannel<TabLayout.Tab> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     setInitialValue(this@selections, ::offer)
-    val listener = listener(::offer)
+    val listener = listener(this, ::offer)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -60,7 +61,7 @@ suspend fun TabLayout.selections(): ReceiveChannel<TabLayout.Tab> = coroutineSco
 
     produce<TabLayout.Tab>(Dispatchers.Main, Channel.CONFLATED) {
         setInitialValue(this@selections, ::offer)
-        val listener = listener(::offer)
+        val listener = listener(this, ::offer)
         addOnTabSelectedListener(listener)
         invokeOnClose { removeOnTabSelectedListener(listener) }
     }
@@ -83,10 +84,14 @@ private fun setInitialValue(
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (TabLayout.Tab) -> Boolean
 ) = object : TabLayout.OnTabSelectedListener {
 
-    override fun onTabSelected(tab: TabLayout.Tab) { emitter(tab) }
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        if (scope.isActive) { emitter(tab) }
+    }
+
     override fun onTabUnselected(tab: TabLayout.Tab) {  }
     override fun onTabReselected(tab: TabLayout.Tab) {  }
 

@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -19,24 +20,26 @@ fun NavigationView.itemSelections(
         scope: CoroutineScope,
         action: suspend (MenuItem) -> Unit
 ) {
+
     val events = scope.actor<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
         for (item in channel) action(item)
     }
 
     setInitialValue(this, events::offer)
-    setNavigationItemSelectedListener(listener(events::offer))
+    setNavigationItemSelectedListener(listener(scope, events::offer))
     events.invokeOnClose { setNavigationItemSelectedListener(null) }
 }
 
 suspend fun NavigationView.itemSelections(
         action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
+
     val events = actor<MenuItem>(UI, Channel.CONFLATED) {
         for (item in channel) action(item)
     }
 
     setInitialValue(this@itemSelections, events::offer)
-    setNavigationItemSelectedListener(listener(events::offer))
+    setNavigationItemSelectedListener(listener(this, events::offer))
     events.invokeOnClose { setNavigationItemSelectedListener(null) }
 }
 
@@ -50,7 +53,7 @@ fun NavigationView.itemSelections(
 ): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     setInitialValue(this@itemSelections, ::offer)
-    setNavigationItemSelectedListener(listener(::offer))
+    setNavigationItemSelectedListener(listener(this, ::offer))
     invokeOnClose { setNavigationItemSelectedListener(null) }
 }
 
@@ -59,7 +62,7 @@ suspend fun NavigationView.itemSelections(): ReceiveChannel<MenuItem> = coroutin
 
     produce<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
         setInitialValue(this@itemSelections, ::offer)
-        setNavigationItemSelectedListener(listener(::offer))
+        setNavigationItemSelectedListener(listener(this, ::offer))
         invokeOnClose { setNavigationItemSelectedListener(null) }
     }
 }
@@ -88,5 +91,10 @@ private fun setInitialValue(
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (MenuItem) -> Boolean
-) = NavigationView.OnNavigationItemSelectedListener(emitter::invoke)
+) = NavigationView.OnNavigationItemSelectedListener {
+
+    if (scope.isActive) { emitter(it) }
+    return@OnNavigationItemSelectedListener true
+}

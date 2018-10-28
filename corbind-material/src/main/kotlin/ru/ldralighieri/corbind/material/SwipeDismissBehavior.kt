@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -24,7 +25,7 @@ fun View.dismisses(
     }
 
     val behavior = getBehavior(this)
-    behavior.setListener(listener(events::offer))
+    behavior.setListener(listener(scope, events::offer))
     events.invokeOnClose { behavior.setListener(null) }
 }
 
@@ -36,7 +37,7 @@ suspend fun View.dismisses(
     }
 
     val behavior = getBehavior(this@dismisses)
-    behavior.setListener(listener(events::offer))
+    behavior.setListener(listener(this, events::offer))
     events.invokeOnClose { behavior.setListener(null) }
 }
 
@@ -50,7 +51,7 @@ fun View.dismisses(
 ): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     val behavior = getBehavior(this@dismisses)
-    behavior.setListener(listener(::offer))
+    behavior.setListener(listener(this, ::offer))
     invokeOnClose { behavior.setListener(null) }
 }
 
@@ -59,7 +60,7 @@ suspend fun View.dismisses(): ReceiveChannel<View> = coroutineScope {
 
     produce<View>(Dispatchers.Main, Channel.CONFLATED) {
         val behavior = getBehavior(this@dismisses)
-        behavior.setListener(listener(::offer))
+        behavior.setListener(listener(this, ::offer))
         invokeOnClose { behavior.setListener(null) }
     }
 }
@@ -82,10 +83,14 @@ private fun getBehavior(view: View): SwipeDismissBehavior<*> {
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (View) -> Boolean
 ) = object : SwipeDismissBehavior.OnDismissListener {
 
-    override fun onDismiss(view: View) { emitter(view) }
+    override fun onDismiss(view: View) {
+        if (scope.isActive) { emitter(view) }
+    }
+
     override fun onDragStateChanged(state: Int) {  }
 }
 

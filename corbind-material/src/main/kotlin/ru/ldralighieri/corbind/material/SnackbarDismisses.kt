@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -17,11 +18,12 @@ fun Snackbar.dismisses(
         scope: CoroutineScope,
         action: suspend (Int) -> Unit
 ) {
+
     val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    val callback = callback(events::offer)
+    val callback = callback(scope, events::offer)
     addCallback(callback)
     events.invokeOnClose { removeCallback(callback) }
 }
@@ -29,11 +31,12 @@ fun Snackbar.dismisses(
 suspend fun Snackbar.dismisses(
         action: suspend (Int) -> Unit
 ) = coroutineScope {
+
     val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    val callback = callback(events::offer)
+    val callback = callback(this, events::offer)
     addCallback(callback)
     events.invokeOnClose { removeCallback(callback) }
 }
@@ -47,7 +50,7 @@ fun Snackbar.dismisses(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val callback = callback(::offer)
+    val callback = callback(this, ::offer)
     addCallback(callback)
     invokeOnClose { removeCallback(callback) }
 }
@@ -56,7 +59,7 @@ fun Snackbar.dismisses(
 suspend fun Snackbar.dismisses(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        val callback = callback(::offer)
+        val callback = callback(this, ::offer)
         addCallback(callback)
         invokeOnClose { removeCallback(callback) }
     }
@@ -68,7 +71,11 @@ suspend fun Snackbar.dismisses(): ReceiveChannel<Int> = coroutineScope {
 
 @CheckResult
 private fun callback(
+        scope: CoroutineScope,
         emitter: (Int) -> Boolean
 ) = object : Snackbar.Callback() {
-    override fun onDismissed(transientBottomBar: Snackbar, event: Int) { emitter(event) }
+
+    override fun onDismissed(transientBottomBar: Snackbar, event: Int) {
+        if (scope.isActive) { emitter(event) }
+    }
 }
