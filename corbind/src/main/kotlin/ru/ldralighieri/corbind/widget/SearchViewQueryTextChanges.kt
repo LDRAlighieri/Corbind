@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -17,24 +18,26 @@ fun SearchView.queryTextChanges(
         scope: CoroutineScope,
         action: suspend (CharSequence) -> Unit
 ) {
+
     val events = scope.actor<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
         for (chars in channel) action(chars)
     }
 
     events.offer(query)
-    setOnQueryTextListener(listener(events::offer))
+    setOnQueryTextListener(listener(scope, events::offer))
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
 suspend fun SearchView.queryTextChanges(
         action: suspend (CharSequence) -> Unit
 ) = coroutineScope {
+
     val events = actor<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
         for (chars in channel) action(chars)
     }
 
     events.offer(query)
-    setOnQueryTextListener(listener(events::offer))
+    setOnQueryTextListener(listener(this, events::offer))
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
@@ -48,7 +51,7 @@ fun SearchView.queryTextChanges(
 ): ReceiveChannel<CharSequence> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(query)
-    setOnQueryTextListener(listener(::offer))
+    setOnQueryTextListener(listener(this, ::offer))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
@@ -57,7 +60,7 @@ suspend fun SearchView.queryTextChanges(): ReceiveChannel<CharSequence> = corout
 
     produce<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
         offer(query)
-        setOnQueryTextListener(listener(::offer))
+        setOnQueryTextListener(listener(this, ::offer))
         invokeOnClose { setOnQueryTextListener(null) }
     }
 }
@@ -68,8 +71,17 @@ suspend fun SearchView.queryTextChanges(): ReceiveChannel<CharSequence> = corout
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (CharSequence) -> Boolean
 ) = object : SearchView.OnQueryTextListener {
-    override fun onQueryTextChange(s: String) = emitter(s)
+
+    override fun onQueryTextChange(s: String): Boolean {
+        if (scope.isActive) {
+            emitter(s)
+            return true
+        }
+        return false
+    }
+
     override fun onQueryTextSubmit(query: String) = false
 }

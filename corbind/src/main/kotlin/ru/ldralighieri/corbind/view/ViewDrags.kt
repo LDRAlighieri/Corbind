@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 
 // -----------------------------------------------------------------------------------------------
@@ -20,11 +21,12 @@ fun View.drags(
         handled: (DragEvent) -> Boolean = AlwaysTrue,
         action: suspend (DragEvent) -> Unit
 ) {
+
     val events = scope.actor<DragEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (drag in channel) action(drag)
     }
 
-    setOnDragListener(listener( handled, events::offer))
+    setOnDragListener(listener(scope, handled, events::offer))
     events.invokeOnClose { setOnDragListener(null) }
 }
 
@@ -32,11 +34,12 @@ suspend fun View.drags(
         handled: (DragEvent) -> Boolean = AlwaysTrue,
         action: suspend (DragEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<DragEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (drag in channel) action(drag)
     }
 
-    setOnDragListener(listener( handled, events::offer))
+    setOnDragListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnDragListener(null) }
 }
 
@@ -50,7 +53,7 @@ fun View.drags(
         handled: (DragEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<DragEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnDragListener(listener(handled, ::offer))
+    setOnDragListener(listener(this, handled, ::offer))
     invokeOnClose { setOnDragListener(null) }
 }
 
@@ -60,7 +63,7 @@ suspend fun View.drags(
 ): ReceiveChannel<DragEvent> = coroutineScope {
 
     produce<DragEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnDragListener(listener(handled, ::offer))
+        setOnDragListener(listener(this, handled, ::offer))
         invokeOnClose { setOnDragListener(null) }
     }
 }
@@ -71,9 +74,16 @@ suspend fun View.drags(
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         handled: (DragEvent) -> Boolean,
         emitter: (DragEvent) -> Boolean
 ) = View.OnDragListener { _, dragEvent ->
-    if (handled(dragEvent)) { emitter(dragEvent) }
-    else { false }
+
+    if (scope.isActive) {
+        if (handled(dragEvent)) {
+            emitter(dragEvent)
+            return@OnDragListener true
+        }
+    }
+    return@OnDragListener false
 }

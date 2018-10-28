@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -18,12 +19,13 @@ private fun SeekBar.changes(
         shouldBeFromUser: Boolean?,
         action: suspend (Int) -> Unit
 ) {
+
     val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (progress in channel) action(progress)
     }
 
     events.offer(progress)
-    setOnSeekBarChangeListener(listener(shouldBeFromUser = shouldBeFromUser, emitter = events::offer))
+    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, events::offer))
     events.invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -31,12 +33,13 @@ private suspend fun SeekBar.changes(
         shouldBeFromUser: Boolean?,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
+
     val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (progress in channel) action(progress)
     }
 
     events.offer(progress)
-    setOnSeekBarChangeListener(listener(shouldBeFromUser = shouldBeFromUser, emitter = events::offer))
+    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, events::offer))
     events.invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -50,7 +53,7 @@ private fun SeekBar.changes(
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(progress)
-    setOnSeekBarChangeListener(listener(shouldBeFromUser = shouldBeFromUser, emitter = ::offer))
+    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -60,7 +63,7 @@ private suspend fun SeekBar.changes(
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
         offer(progress)
-        setOnSeekBarChangeListener(listener(shouldBeFromUser = shouldBeFromUser, emitter = ::offer))
+        setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offer))
         invokeOnClose { setOnSeekBarChangeListener(null) }
     }
 }
@@ -128,12 +131,15 @@ suspend fun SeekBar.systemChanges() = changes(false)
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         shouldBeFromUser: Boolean?,
         emitter: (Int) -> Boolean
 ) = object : SeekBar.OnSeekBarChangeListener {
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        if (shouldBeFromUser == null || shouldBeFromUser == fromUser) { emitter(progress) }
+        if (scope.isActive && (shouldBeFromUser == null || shouldBeFromUser == fromUser)) {
+            emitter(progress)
+        }
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {  }

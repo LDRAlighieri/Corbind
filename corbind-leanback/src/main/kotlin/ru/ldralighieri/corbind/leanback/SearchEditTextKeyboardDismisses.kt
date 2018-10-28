@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -17,22 +18,24 @@ fun SearchEditText.keyboardDismisses(
         scope: CoroutineScope,
         action: suspend () -> Unit
 ) {
+
     val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    setOnKeyboardDismissListener(listener(this, events::offer))
+    setOnKeyboardDismissListener(listener(scope, events::offer))
     events.invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
 suspend fun SearchEditText.keyboardDismisses(
         action: suspend () -> Unit
 ) = coroutineScope {
+
     val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    setOnKeyboardDismissListener(listener(this@keyboardDismisses, events::offer))
+    setOnKeyboardDismissListener(listener(this, events::offer))
     events.invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
@@ -45,7 +48,7 @@ fun SearchEditText.keyboardDismisses(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnKeyboardDismissListener(listener(this@keyboardDismisses, ::offer))
+    setOnKeyboardDismissListener(listener(this, ::offer))
     invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
@@ -53,7 +56,7 @@ fun SearchEditText.keyboardDismisses(
 suspend fun SearchEditText.keyboardDismisses(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnKeyboardDismissListener(listener(this@keyboardDismisses, ::offer))
+        setOnKeyboardDismissListener(listener(this, ::offer))
         invokeOnClose { setOnKeyboardDismissListener(null) }
     }
 }
@@ -64,6 +67,9 @@ suspend fun SearchEditText.keyboardDismisses(): ReceiveChannel<Unit> = coroutine
 
 @CheckResult
 private fun listener(
-        searchEditText: SearchEditText,
+        scope: CoroutineScope,
         emitter: (Unit) -> Boolean
-) = SearchEditText.OnKeyboardDismissListener { emitter(Unit) }
+) = SearchEditText.OnKeyboardDismissListener {
+
+    if (scope.isActive) { emitter(Unit) }
+}

@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -27,22 +28,24 @@ fun AbsListView.scrollEvents(
         scope: CoroutineScope,
         action: suspend (AbsListViewScrollEvent) -> Unit
 ) {
+
     val events = scope.actor<AbsListViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnScrollListener(listener(events::offer))
+    setOnScrollListener(listener(scope, events::offer))
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
 suspend fun AbsListView.scrollEvents(
         action: suspend (AbsListViewScrollEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<AbsListViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnScrollListener(listener(events::offer))
+    setOnScrollListener(listener(this, events::offer))
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -55,7 +58,7 @@ fun AbsListView.scrollEvents(
         scope: CoroutineScope
 ): ReceiveChannel<AbsListViewScrollEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnScrollListener(listener(::offer))
+    setOnScrollListener(listener(this, ::offer))
     invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -63,7 +66,7 @@ fun AbsListView.scrollEvents(
 suspend fun AbsListView.scrollEvents(): ReceiveChannel<AbsListViewScrollEvent> = coroutineScope {
 
     produce<AbsListViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnScrollListener(listener(::offer))
+        setOnScrollListener(listener(this, ::offer))
         invokeOnClose { setOnScrollListener(null) }
     }
 }
@@ -74,6 +77,7 @@ suspend fun AbsListView.scrollEvents(): ReceiveChannel<AbsListViewScrollEvent> =
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (AbsListViewScrollEvent) -> Boolean
 ) = object : AbsListView.OnScrollListener {
 
@@ -81,18 +85,23 @@ private fun listener(
 
     override fun onScrollStateChanged(absListView: AbsListView, scrollState: Int) {
         currentScrollState = scrollState
-        val event = AbsListViewScrollEvent(absListView, scrollState,
-                absListView.firstVisiblePosition, absListView.childCount, absListView.count)
-        emitter(event)
+        if (scope.isActive) {
+            val event = AbsListViewScrollEvent(absListView, scrollState,
+                    absListView.firstVisiblePosition, absListView.childCount, absListView.count)
+            emitter(event)
+        }
     }
 
     override fun onScroll(
             absListView: AbsListView, firstVisibleItem: Int, visibleItemCount: Int,
             totalItemCount: Int
     ) {
-        val event = AbsListViewScrollEvent(absListView, currentScrollState, firstVisibleItem,
-                visibleItemCount, totalItemCount)
-        emitter(event)
+        if (scope.isActive) {
+            val event = AbsListViewScrollEvent(absListView, currentScrollState, firstVisibleItem,
+                    visibleItemCount, totalItemCount)
+            emitter(event)
+        }
     }
+
 }
 

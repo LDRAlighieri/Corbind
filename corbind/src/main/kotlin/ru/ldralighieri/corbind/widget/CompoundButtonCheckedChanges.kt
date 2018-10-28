@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -17,24 +18,26 @@ fun CompoundButton.checkedChanges(
         scope: CoroutineScope,
         action: suspend (Boolean) -> Unit
 ) {
+
     val events = scope.actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (checked in channel) action(checked)
     }
 
     events.offer(isChecked)
-    setOnCheckedChangeListener(listener(events::offer))
+    setOnCheckedChangeListener(listener(scope, events::offer))
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
 suspend fun CompoundButton.checkedChanges(
         action: suspend (Boolean) -> Unit
 ) = coroutineScope {
+
     val events = actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (checked in channel) action(checked)
     }
 
     events.offer(isChecked)
-    setOnCheckedChangeListener(listener(events::offer))
+    setOnCheckedChangeListener(listener(this, events::offer))
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -48,7 +51,7 @@ fun CompoundButton.checkedChanges(
 ): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(isChecked)
-    setOnCheckedChangeListener(listener(::offer))
+    setOnCheckedChangeListener(listener(this, ::offer))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -57,7 +60,7 @@ suspend fun CompoundButton.checkedChanges(): ReceiveChannel<Boolean> = coroutine
 
     produce<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         offer(isChecked)
-        setOnCheckedChangeListener(listener(::offer))
+        setOnCheckedChangeListener(listener(this, ::offer))
         invokeOnClose { setOnCheckedChangeListener(null) }
     }
 }
@@ -68,5 +71,9 @@ suspend fun CompoundButton.checkedChanges(): ReceiveChannel<Boolean> = coroutine
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Boolean) -> Boolean
-) = CompoundButton.OnCheckedChangeListener { _, isChecked -> emitter(isChecked) }
+) = CompoundButton.OnCheckedChangeListener { _, isChecked ->
+
+    if (scope.isActive) { emitter(isChecked) }
+}

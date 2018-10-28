@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -18,24 +19,26 @@ fun SlidingPaneLayout.panelOpens(
         scope: CoroutineScope,
         action: suspend (Boolean) -> Unit
 ) {
+
     val events = scope.actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
     events.offer(isOpen)
-    setPanelSlideListener(listener(events::offer))
+    setPanelSlideListener(listener(scope, events::offer))
     events.invokeOnClose { setPanelSlideListener(null) }
 }
 
 suspend fun SlidingPaneLayout.panelOpens(
         action: suspend (Boolean) -> Unit
 ) = coroutineScope {
+
     val events = actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
     events.offer(isOpen)
-    setPanelSlideListener(listener(events::offer))
+    setPanelSlideListener(listener(this, events::offer))
     events.invokeOnClose { setPanelSlideListener(null) }
 }
 
@@ -49,7 +52,7 @@ fun SlidingPaneLayout.panelOpens(
 ): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(isOpen)
-    setPanelSlideListener(listener(::offer))
+    setPanelSlideListener(listener(this, ::offer))
     invokeOnClose { setPanelSlideListener(null) }
 }
 
@@ -58,7 +61,7 @@ suspend fun SlidingPaneLayout.panelOpens(): ReceiveChannel<Boolean> = coroutineS
 
     produce<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         offer(isOpen)
-        setPanelSlideListener(listener(::offer))
+        setPanelSlideListener(listener(this, ::offer))
         invokeOnClose { setPanelSlideListener(null) }
     }
 }
@@ -69,10 +72,15 @@ suspend fun SlidingPaneLayout.panelOpens(): ReceiveChannel<Boolean> = coroutineS
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Boolean) -> Boolean
 ) = object : SlidingPaneLayout.PanelSlideListener {
 
     override fun onPanelSlide(panel: View, slideOffset: Float) {  }
-    override fun onPanelOpened(panel: View) { emitter(true) }
-    override fun onPanelClosed(panel: View) { emitter(false) }
+    override fun onPanelOpened(panel: View) { onEvent(true) }
+    override fun onPanelClosed(panel: View) { onEvent(false) }
+
+    private fun onEvent(event: Boolean) {
+        if (scope.isActive) { emitter(event) }
+    }
 }

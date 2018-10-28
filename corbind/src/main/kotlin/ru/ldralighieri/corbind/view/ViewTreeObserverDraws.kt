@@ -12,6 +12,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -21,11 +22,12 @@ fun View.draws(
         scope: CoroutineScope,
         action: suspend () -> Unit
 ) {
+
     val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    val listener = listener(events::offer)
+    val listener = listener(scope, events::offer)
     viewTreeObserver.addOnDrawListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -34,11 +36,12 @@ fun View.draws(
 suspend fun View.draws(
         action: suspend () -> Unit
 ) = coroutineScope {
+
     val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    val listener = listener(events::offer)
+    val listener = listener(this, events::offer)
     viewTreeObserver.addOnDrawListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -53,7 +56,7 @@ fun View.draws(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val listener = listener(::offer)
+    val listener = listener(this, ::offer)
     viewTreeObserver.addOnDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -63,7 +66,7 @@ fun View.draws(
 suspend fun View.draws(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(::offer)
+        val listener = listener(this, ::offer)
         viewTreeObserver.addOnDrawListener(listener)
         invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
     }
@@ -75,5 +78,9 @@ suspend fun View.draws(): ReceiveChannel<Unit> = coroutineScope {
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Unit) -> Boolean
-) = ViewTreeObserver.OnDrawListener { emitter(Unit) }
+) = ViewTreeObserver.OnDrawListener {
+
+    if (scope.isActive) { emitter(Unit) }
+}

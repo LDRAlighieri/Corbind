@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -18,22 +19,24 @@ fun ActionMenuView.itemClicks(
         scope: CoroutineScope,
         action: suspend (MenuItem) -> Unit
 ) {
+
     val events = scope.actor<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
         for (item in channel) action(item)
     }
 
-    setOnMenuItemClickListener(listener(events::offer))
+    setOnMenuItemClickListener(listener(scope, events::offer))
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
 suspend fun ActionMenuView.itemClicks(
         action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
+
     val events = actor<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
         for (item in channel) action(item)
     }
 
-    setOnMenuItemClickListener(listener(events::offer))
+    setOnMenuItemClickListener(listener(this, events::offer))
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -46,7 +49,7 @@ fun ActionMenuView.itemClicks(
         scope: CoroutineScope
 ): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnMenuItemClickListener(listener(::offer))
+    setOnMenuItemClickListener(listener(this, ::offer))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -54,7 +57,7 @@ fun ActionMenuView.itemClicks(
 suspend fun ActionMenuView.itemClicks(): ReceiveChannel<MenuItem> = coroutineScope {
 
     produce<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnMenuItemClickListener(listener(::offer))
+        setOnMenuItemClickListener(listener(this, ::offer))
         invokeOnClose { setOnMenuItemClickListener(null) }
     }
 }
@@ -65,5 +68,10 @@ suspend fun ActionMenuView.itemClicks(): ReceiveChannel<MenuItem> = coroutineSco
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (MenuItem) -> Boolean
-) = ActionMenuView.OnMenuItemClickListener(emitter::invoke)
+) = ActionMenuView.OnMenuItemClickListener {
+
+    if (scope.isActive) { emitter(it) }
+    return@OnMenuItemClickListener true
+}

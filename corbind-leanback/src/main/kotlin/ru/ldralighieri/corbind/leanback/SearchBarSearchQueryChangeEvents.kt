@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -39,22 +40,25 @@ fun SearchBar.searchQueryChangeEvents(
         scope: CoroutineScope,
         action: suspend (SearchBarSearchQueryEvent) -> Unit
 ) {
+
     val events = scope.actor<SearchBarSearchQueryEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setSearchBarListener(listener(this, events::offer))
+    setSearchBarListener(listener(scope = scope, searchBar = this, emitter = events::offer))
     events.invokeOnClose { setSearchBarListener(null) }
 }
 
 suspend fun SearchBar.searchQueryChangeEvents(
         action: suspend (SearchBarSearchQueryEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<SearchBarSearchQueryEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setSearchBarListener(listener(this@searchQueryChangeEvents, events::offer))
+    setSearchBarListener(listener(scope = this, searchBar = this@searchQueryChangeEvents,
+            emitter = events::offer))
     events.invokeOnClose { setSearchBarListener(null) }
 }
 
@@ -67,7 +71,8 @@ fun SearchBar.searchQueryChangeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<SearchBarSearchQueryEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setSearchBarListener(listener(this@searchQueryChangeEvents, ::offer))
+    setSearchBarListener(listener(scope = this, searchBar = this@searchQueryChangeEvents,
+            emitter = ::offer))
     invokeOnClose { setSearchBarListener(null) }
 }
 
@@ -75,7 +80,8 @@ fun SearchBar.searchQueryChangeEvents(
 suspend fun SearchBar.searchQueryChangeEvents(): ReceiveChannel<SearchBarSearchQueryEvent> = coroutineScope {
 
     produce<SearchBarSearchQueryEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setSearchBarListener(listener(this@searchQueryChangeEvents, ::offer))
+        setSearchBarListener(listener(scope = this, searchBar = this@searchQueryChangeEvents,
+                emitter = ::offer))
         invokeOnClose { setSearchBarListener(null) }
     }
 }
@@ -86,19 +92,24 @@ suspend fun SearchBar.searchQueryChangeEvents(): ReceiveChannel<SearchBarSearchQ
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         searchBar: SearchBar,
         emitter: (SearchBarSearchQueryEvent) -> Boolean
 ) = object : SearchBar.SearchBarListener {
 
     override fun onSearchQueryChange(query: String) {
-        emitter(SearchBarSearchQueryChangedEvent(searchBar, query))
+        onEvent(SearchBarSearchQueryChangedEvent(searchBar, query))
     }
 
     override fun onSearchQuerySubmit(query: String) {
-        emitter(SearchBarSearchQuerySubmittedEvent(searchBar, query))
+        onEvent(SearchBarSearchQuerySubmittedEvent(searchBar, query))
     }
 
     override fun onKeyboardDismiss(query: String) {
-        emitter(SearchBarSearchQueryKeyboardDismissedEvent(searchBar, query))
+        onEvent(SearchBarSearchQueryKeyboardDismissedEvent(searchBar, query))
+    }
+
+    private fun onEvent(evennt: SearchBarSearchQueryEvent) {
+        if (scope.isActive) { emitter(evennt) }
     }
 }

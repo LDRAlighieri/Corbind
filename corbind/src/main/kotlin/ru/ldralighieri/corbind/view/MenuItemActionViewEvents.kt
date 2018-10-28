@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 
 // -----------------------------------------------------------------------------------------------
@@ -31,13 +32,14 @@ data class MenuItemActionViewExpandEvent(
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-        action: suspend (MenuItemActionViewEvent) -> Unit
+        action: suspend (MenuItemActionViewEvent) -> Boolean
 ) {
+
     val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnActionExpandListener(listener(handled, events::offer))
+    setOnActionExpandListener(listener(scope, handled, events::offer))
     events.invokeOnClose { setOnActionExpandListener(null) }
 }
 
@@ -45,11 +47,12 @@ suspend fun MenuItem.actionViewEvents(
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
         action: suspend (MenuItemActionViewEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<MenuItemActionViewEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnActionExpandListener(listener(handled, events::offer))
+    setOnActionExpandListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnActionExpandListener(null) }
 }
 
@@ -63,7 +66,7 @@ fun MenuItem.actionViewEvents(
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItemActionViewEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnActionExpandListener(listener(handled, ::offer))
+    setOnActionExpandListener(listener(this, handled, ::offer))
     invokeOnClose { setOnActionExpandListener(null) }
 }
 
@@ -73,7 +76,7 @@ suspend fun MenuItem.actionViewEvents(
 ): ReceiveChannel<MenuItemActionViewEvent> = coroutineScope {
 
     produce<MenuItemActionViewEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnActionExpandListener(listener(handled, ::offer))
+        setOnActionExpandListener(listener(this, handled, ::offer))
         invokeOnClose { setOnActionExpandListener(null) }
     }
 }
@@ -84,9 +87,11 @@ suspend fun MenuItem.actionViewEvents(
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         handled: (MenuItemActionViewEvent) -> Boolean,
         emitter: (MenuItemActionViewEvent) -> Boolean
 ) = object : MenuItem.OnActionExpandListener {
+
     override fun onMenuItemActionExpand(item: MenuItem): Boolean {
         return onEvent(MenuItemActionViewExpandEvent(item))
     }
@@ -95,8 +100,13 @@ private fun listener(
         return onEvent(MenuItemActionViewCollapseEvent(item))
     }
 
-    fun onEvent(event: MenuItemActionViewEvent): Boolean {
-        return if (handled.invoke(event)) { emitter(event) }
-        else { false }
+    private fun onEvent(event: MenuItemActionViewEvent): Boolean {
+        if (scope.isActive) {
+            if (handled(event)) {
+                emitter(event)
+                return true
+            }
+        }
+        return false
     }
 }

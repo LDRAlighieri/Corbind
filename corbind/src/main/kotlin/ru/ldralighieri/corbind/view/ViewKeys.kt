@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 
 // -----------------------------------------------------------------------------------------------
@@ -20,11 +21,12 @@ fun View.keys(
         handled: (KeyEvent) -> Boolean = AlwaysTrue,
         action: suspend (KeyEvent) -> Unit
 ) {
+
     val events = scope.actor<KeyEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (key in channel) action(key)
     }
 
-    setOnKeyListener(listener(handled, events::offer))
+    setOnKeyListener(listener(scope, handled, events::offer))
     events.invokeOnClose { setOnKeyListener(null) }
 }
 
@@ -32,11 +34,12 @@ suspend fun View.keys(
         handled: (KeyEvent) -> Boolean = AlwaysTrue,
         action: suspend (KeyEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<KeyEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (key in channel) action(key)
     }
 
-    setOnKeyListener(listener(handled, events::offer))
+    setOnKeyListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnKeyListener(null) }
 }
 
@@ -50,7 +53,7 @@ fun View.keys(
         handled: (KeyEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<KeyEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnKeyListener(listener(handled, ::offer))
+    setOnKeyListener(listener(this, handled, ::offer))
     invokeOnClose { setOnKeyListener(null) }
 }
 
@@ -60,7 +63,7 @@ suspend fun View.keys(
 ): ReceiveChannel<KeyEvent> = coroutineScope {
 
     produce<KeyEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnKeyListener(listener(handled, ::offer))
+        setOnKeyListener(listener(this, handled, ::offer))
         invokeOnClose { setOnKeyListener(null) }
     }
 }
@@ -71,9 +74,16 @@ suspend fun View.keys(
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         handled: (KeyEvent) -> Boolean,
         emitter: (KeyEvent) -> Boolean
 ) = View.OnKeyListener { _, _, keyEvent ->
-    if (handled(keyEvent)) { emitter(keyEvent) }
-    else { false }
+
+    if (scope.isActive) {
+        if (handled(keyEvent)) {
+            emitter(keyEvent)
+            return@OnKeyListener true
+        }
+    }
+    return@OnKeyListener false
 }

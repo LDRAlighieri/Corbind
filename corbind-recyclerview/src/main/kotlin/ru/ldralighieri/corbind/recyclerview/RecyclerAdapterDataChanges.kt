@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -17,12 +18,13 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
         scope: CoroutineScope,
         action: suspend (T) -> Unit
 ) {
+
     val events = scope.actor<T>(Dispatchers.Main, Channel.CONFLATED) {
         for (adapter in channel) action(adapter)
     }
 
     events.offer(this)
-    val dataObserver = observer(this, events::offer)
+    val dataObserver = observer(scope = scope, adapter = this, emitter = events::offer)
     registerAdapterDataObserver(dataObserver)
     events.invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
@@ -30,12 +32,13 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
 suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
         action: suspend (T) -> Unit
 ) = coroutineScope {
+
     val events = actor<T>(Dispatchers.Main, Channel.CONFLATED) {
         for (adapter in channel) action(adapter)
     }
 
     events.offer(this@dataChanges)
-    val dataObserver = observer(this@dataChanges, events::offer)
+    val dataObserver = observer(scope = this, adapter = this@dataChanges, emitter = events::offer)
     registerAdapterDataObserver(dataObserver)
     events.invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
@@ -50,7 +53,7 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
 ): ReceiveChannel<T> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(this@dataChanges)
-    val dataObserver = observer(this@dataChanges, ::offer)
+    val dataObserver = observer(scope = this, adapter = this@dataChanges, emitter = ::offer)
     registerAdapterDataObserver(dataObserver)
     invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
@@ -61,7 +64,7 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 
     produce<T>(Dispatchers.Main, Channel.CONFLATED) {
         offer(this@dataChanges)
-        val dataObserver = observer(this@dataChanges, ::offer)
+        val dataObserver = observer(scope = this, adapter = this@dataChanges, emitter = ::offer)
         registerAdapterDataObserver(dataObserver)
         invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
     }
@@ -73,9 +76,12 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 
 @CheckResult
 private fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> observer(
+        scope: CoroutineScope,
         adapter: T,
         emitter: (T) -> Boolean
 ) =  object : RecyclerView.AdapterDataObserver() {
 
-    override fun onChanged() { emitter(adapter) }
+    override fun onChanged() {
+        if (scope.isActive) { emitter(adapter) }
+    }
 }

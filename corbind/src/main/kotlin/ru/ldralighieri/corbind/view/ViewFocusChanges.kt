@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -17,24 +18,26 @@ fun View.focusChanges(
         scope: CoroutineScope,
         action: suspend (Boolean) -> Unit
 ) {
+
     val events = scope.actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (focus in channel) action(focus)
     }
 
     events.offer(hasFocus())
-    onFocusChangeListener = listener(events::offer)
+    onFocusChangeListener = listener(scope, events::offer)
     events.invokeOnClose { onFocusChangeListener = null }
 }
 
 suspend fun View.focusChanges(
         action: suspend (Boolean) -> Unit
 ) = coroutineScope {
+
     val events = actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (focus in channel) action(focus)
     }
 
     events.offer(hasFocus())
-    onFocusChangeListener = listener(events::offer)
+    onFocusChangeListener = listener(this, events::offer)
     events.invokeOnClose { onFocusChangeListener = null }
 }
 
@@ -48,7 +51,7 @@ fun View.focusChanges(
 ): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(hasFocus())
-    onFocusChangeListener = listener(::offer)
+    onFocusChangeListener = listener(this, ::offer)
     invokeOnClose { onFocusChangeListener = null }
 }
 
@@ -57,7 +60,7 @@ suspend fun View.focusChanges(): ReceiveChannel<Boolean> = coroutineScope {
 
     produce<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         offer(hasFocus())
-        onFocusChangeListener = listener(::offer)
+        onFocusChangeListener = listener(this, ::offer)
         invokeOnClose { onFocusChangeListener = null }
     }
 }
@@ -68,5 +71,9 @@ suspend fun View.focusChanges(): ReceiveChannel<Boolean> = coroutineScope {
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Boolean) -> Boolean
-) = View.OnFocusChangeListener { _, hasFocus -> emitter(hasFocus)}
+) = View.OnFocusChangeListener { _, hasFocus ->
+
+    if (scope.isActive) { emitter(hasFocus) }
+}

@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 
 // -----------------------------------------------------------------------------------------------
@@ -19,11 +20,12 @@ fun View.longClicks(
         handled: () -> Boolean = AlwaysTrue,
         action: suspend () -> Unit
 ) {
+
     val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    setOnLongClickListener(listener(handled, events::offer))
+    setOnLongClickListener(listener(scope, handled, events::offer))
     events.invokeOnClose { setOnLongClickListener(null) }
 }
 
@@ -31,11 +33,12 @@ suspend fun View.longClicks(
         handled: () -> Boolean = AlwaysTrue,
         action: suspend () -> Unit
 ) = coroutineScope {
+
     val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    setOnLongClickListener(listener(handled, events::offer))
+    setOnLongClickListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnLongClickListener(null) }
 }
 
@@ -49,7 +52,7 @@ fun View.longClicks(
         handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnLongClickListener(listener(handled, ::offer))
+    setOnLongClickListener(listener(this, handled, ::offer))
     invokeOnClose { setOnLongClickListener(null) }
 }
 
@@ -59,7 +62,7 @@ suspend fun View.longClicks(
 ): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnLongClickListener(listener(handled, ::offer))
+        setOnLongClickListener(listener(this, handled, ::offer))
         invokeOnClose { setOnLongClickListener(null) }
     }
 }
@@ -70,9 +73,16 @@ suspend fun View.longClicks(
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         handled: () -> Boolean,
         emitter: (Unit) -> Boolean
 ) = View.OnLongClickListener {
-    if (handled()) { emitter(Unit) }
-    else { false }
+
+    if (scope.isActive) {
+        if (handled()) {
+            emitter(Unit)
+            return@OnLongClickListener true
+        }
+    }
+    return@OnLongClickListener false
 }
