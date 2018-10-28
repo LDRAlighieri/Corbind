@@ -22,6 +22,7 @@ fun Toolbar.navigationClicks(
         scope: CoroutineScope,
         action: suspend () -> Unit
 ) {
+
     val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
@@ -34,6 +35,7 @@ fun Toolbar.navigationClicks(
 suspend fun Toolbar.navigationClicks(
         action: suspend () -> Unit
 ) = coroutineScope {
+
     val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
