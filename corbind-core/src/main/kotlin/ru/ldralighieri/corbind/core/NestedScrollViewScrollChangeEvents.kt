@@ -19,6 +19,7 @@ fun NestedScrollView.scrollChangeEvents(
         scope: CoroutineScope,
         action: suspend (ViewScrollChangeEvent) -> Unit
 ) {
+
     val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
@@ -33,6 +34,7 @@ fun NestedScrollView.scrollChangeEvents(
 suspend fun NestedScrollView.scrollChangeEvents(
         action: suspend (ViewScrollChangeEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
