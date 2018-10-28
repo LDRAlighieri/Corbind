@@ -19,6 +19,7 @@ fun SlidingPaneLayout.panelOpens(
         scope: CoroutineScope,
         action: suspend (Boolean) -> Unit
 ) {
+
     val events = scope.actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
@@ -31,6 +32,7 @@ fun SlidingPaneLayout.panelOpens(
 suspend fun SlidingPaneLayout.panelOpens(
         action: suspend (Boolean) -> Unit
 ) = coroutineScope {
+
     val events = actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }

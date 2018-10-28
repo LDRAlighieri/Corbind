@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -26,11 +27,12 @@ fun ViewPager.pageScrollEvents(
         scope: CoroutineScope,
         action: suspend (ViewPagerPageScrollEvent) -> Unit
 ) {
+
     val events = scope.actor<ViewPagerPageScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    val listener = listener(this, events::offer)
+    val listener = listener(scope = scope, viewPager = this, emitter = events::offer)
     addOnPageChangeListener(listener)
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -38,11 +40,13 @@ fun ViewPager.pageScrollEvents(
 suspend fun ViewPager.pageScrollEvents(
         action: suspend (ViewPagerPageScrollEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<ViewPagerPageScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    val listener = listener(this@pageScrollEvents, events::offer)
+    val listener = listener(scope = this, viewPager = this@pageScrollEvents,
+            emitter = events::offer)
     addOnPageChangeListener(listener)
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -56,7 +60,7 @@ fun ViewPager.pageScrollEvents(
         scope: CoroutineScope
 ): ReceiveChannel<ViewPagerPageScrollEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val listener = listener(this@pageScrollEvents, ::offer)
+    val listener = listener(scope = this, viewPager = this@pageScrollEvents, emitter = ::offer)
     addOnPageChangeListener(listener)
     invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -65,7 +69,7 @@ fun ViewPager.pageScrollEvents(
 suspend fun ViewPager.pageScrollEvents(): ReceiveChannel<ViewPagerPageScrollEvent> = coroutineScope {
 
     produce<ViewPagerPageScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(this@pageScrollEvents, ::offer)
+        val listener = listener(scope = this, viewPager = this@pageScrollEvents, emitter = ::offer)
         addOnPageChangeListener(listener)
         invokeOnClose { removeOnPageChangeListener(listener) }
     }
@@ -77,12 +81,17 @@ suspend fun ViewPager.pageScrollEvents(): ReceiveChannel<ViewPagerPageScrollEven
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         viewPager: ViewPager,
         emitter: (ViewPagerPageScrollEvent) -> Boolean
 ) = object : ViewPager.OnPageChangeListener {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-        emitter(ViewPagerPageScrollEvent(viewPager, position, positionOffset, positionOffsetPixels))
+        if (scope.isActive) {
+            val event = ViewPagerPageScrollEvent(viewPager, position, positionOffset,
+                    positionOffsetPixels)
+            emitter(event)
+        }
     }
 
     override fun onPageSelected(position: Int) {  }

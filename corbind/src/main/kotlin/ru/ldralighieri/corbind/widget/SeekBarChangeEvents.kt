@@ -38,6 +38,7 @@ private fun SeekBar.changeEvents(
         scope: CoroutineScope,
         action: suspend (SeekBarChangeEvent) -> Unit
 ) {
+
     val events = scope.actor<SeekBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
@@ -50,6 +51,7 @@ private fun SeekBar.changeEvents(
 private suspend fun SeekBar.changeEvents(
         action: suspend (SeekBarChangeEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<SeekBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }

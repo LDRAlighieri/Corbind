@@ -18,6 +18,7 @@ fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope,
         action: suspend () -> Unit
 ) {
+
     val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
@@ -29,6 +30,7 @@ fun SwipeRefreshLayout.refreshes(
 suspend fun SwipeRefreshLayout.refreshes(
         action: suspend () -> Unit
 ) = coroutineScope {
+
     val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
