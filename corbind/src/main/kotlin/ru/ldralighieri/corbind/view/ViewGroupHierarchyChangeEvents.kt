@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -35,22 +36,25 @@ fun ViewGroup.changeEvents(
         scope: CoroutineScope,
         action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
 ) {
+
     val events = scope.actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnHierarchyChangeListener(listener(this, events::offer))
+    setOnHierarchyChangeListener(listener(scope = scope, viewGroup = this, emitter = events::offer))
     events.invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
 suspend fun ViewGroup.changeEvents(
         action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    setOnHierarchyChangeListener(listener(this@changeEvents, events::offer))
+    setOnHierarchyChangeListener(listener(scope = this, viewGroup = this@changeEvents,
+            emitter = events::offer))
     events.invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
@@ -63,7 +67,8 @@ fun ViewGroup.changeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<ViewGroupHierarchyChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnHierarchyChangeListener(listener(this@changeEvents, ::offer))
+    setOnHierarchyChangeListener(listener(scope = this, viewGroup = this@changeEvents,
+            emitter = ::offer))
     invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
@@ -71,7 +76,8 @@ fun ViewGroup.changeEvents(
 suspend fun ViewGroup.changeEvents(): ReceiveChannel<ViewGroupHierarchyChangeEvent> = coroutineScope {
 
     produce<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnHierarchyChangeListener(listener(this@changeEvents, ::offer))
+        setOnHierarchyChangeListener(listener(scope = this, viewGroup = this@changeEvents,
+                emitter = ::offer))
         invokeOnClose { setOnHierarchyChangeListener(null) }
     }
 }
@@ -82,14 +88,20 @@ suspend fun ViewGroup.changeEvents(): ReceiveChannel<ViewGroupHierarchyChangeEve
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         viewGroup: ViewGroup,
         emitter: (ViewGroupHierarchyChangeEvent) -> Boolean
 ) = object : ViewGroup.OnHierarchyChangeListener {
+
     override fun onChildViewAdded(parent: View, child: View) {
-        emitter(ViewGroupHierarchyChildViewAddEvent(viewGroup, child))
+        onEvent(ViewGroupHierarchyChildViewAddEvent(viewGroup, child))
     }
 
-    override fun onChildViewRemoved(parent: View?, child: View) {
-        emitter(ViewGroupHierarchyChildViewRemoveEvent(viewGroup, child))
+    override fun onChildViewRemoved(parent: View, child: View) {
+        onEvent(ViewGroupHierarchyChildViewRemoveEvent(viewGroup, child))
+    }
+
+    private fun onEvent(event: ViewGroupHierarchyChangeEvent) {
+        if (scope.isActive) { emitter(event) }
     }
 }

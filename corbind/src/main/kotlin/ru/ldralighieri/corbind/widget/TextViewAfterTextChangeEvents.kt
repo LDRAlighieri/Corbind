@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -26,12 +27,13 @@ fun TextView.afterTextChangeEvents(
         scope: CoroutineScope,
         action: suspend (TextViewAfterTextChangeEvent) -> Unit
 ) {
+
     val events = scope.actor<TextViewAfterTextChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
     events.offer(initialValue(this))
-    val listener = listener(this, events::offer)
+    val listener = listener(scope = scope, textView = this, emitter = events::offer)
     addTextChangedListener(listener)
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -39,12 +41,14 @@ fun TextView.afterTextChangeEvents(
 suspend fun TextView.afterTextChangeEvents(
         action: suspend (TextViewAfterTextChangeEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<TextViewAfterTextChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
     events.offer(initialValue(this@afterTextChangeEvents))
-    val listener = listener(this@afterTextChangeEvents, events::offer)
+    val listener = listener(scope = this, textView = this@afterTextChangeEvents,
+            emitter = events::offer)
     addTextChangedListener(listener)
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -59,7 +63,7 @@ fun TextView.afterTextChangeEvents(
 ): ReceiveChannel<TextViewAfterTextChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(initialValue(this@afterTextChangeEvents))
-    val listener = listener(this@afterTextChangeEvents, ::offer)
+    val listener = listener(scope = this, textView = this@afterTextChangeEvents, emitter = ::offer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -70,7 +74,8 @@ suspend fun TextView.afterTextChangeEvents(): ReceiveChannel<TextViewAfterTextCh
 
             produce<TextViewAfterTextChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
                 offer(initialValue(this@afterTextChangeEvents))
-                val listener = listener(this@afterTextChangeEvents, ::offer)
+                val listener = listener(scope = this, textView = this@afterTextChangeEvents,
+                        emitter = ::offer)
                 addTextChangedListener(listener)
                 invokeOnClose { removeTextChangedListener(listener) }
             }
@@ -90,6 +95,7 @@ private fun initialValue(textView: TextView): TextViewAfterTextChangeEvent =
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         textView: TextView,
         emitter: (TextViewAfterTextChangeEvent) -> Boolean
 ) = object : TextWatcher {
@@ -98,6 +104,6 @@ private fun listener(
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {  }
 
     override fun afterTextChanged(s: Editable) {
-        emitter(TextViewAfterTextChangeEvent(textView, s))
+        if (scope.isActive) { emitter(TextViewAfterTextChangeEvent(textView, s)) }
     }
 }

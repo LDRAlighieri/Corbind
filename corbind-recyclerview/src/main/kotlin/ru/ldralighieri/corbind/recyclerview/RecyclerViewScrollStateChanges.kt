@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -17,11 +18,12 @@ fun RecyclerView.scrollStateChanges(
         scope: CoroutineScope,
         action: suspend (Int) -> Unit
 ) {
+
     val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (state in channel) action(state)
     }
 
-    val scrollListener = listener(events::offer)
+    val scrollListener = listener(scope, events::offer)
     addOnScrollListener(scrollListener)
     events.invokeOnClose { removeOnScrollListener(scrollListener) }
 }
@@ -29,11 +31,12 @@ fun RecyclerView.scrollStateChanges(
 suspend fun RecyclerView.scrollStateChanges(
         action: suspend (Int) -> Unit
 ) = coroutineScope {
+
     val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (state in channel) action(state)
     }
 
-    val scrollListener = listener(events::offer)
+    val scrollListener = listener(this, events::offer)
     addOnScrollListener(scrollListener)
     events.invokeOnClose { removeOnScrollListener(scrollListener) }
 }
@@ -47,7 +50,7 @@ fun RecyclerView.scrollStateChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val scrollListener = listener(::offer)
+    val scrollListener = listener(this, ::offer)
     addOnScrollListener(scrollListener)
     invokeOnClose { removeOnScrollListener(scrollListener) }
 }
@@ -56,7 +59,7 @@ fun RecyclerView.scrollStateChanges(
 suspend fun RecyclerView.scrollStateChanges(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        val scrollListener = listener(::offer)
+        val scrollListener = listener(this, ::offer)
         addOnScrollListener(scrollListener)
         invokeOnClose { removeOnScrollListener(scrollListener) }
     }
@@ -68,10 +71,11 @@ suspend fun RecyclerView.scrollStateChanges(): ReceiveChannel<Int> = coroutineSc
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Int) -> Boolean
 ) =  object : RecyclerView.OnScrollListener() {
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-        emitter(newState)
+        if (scope.isActive) { emitter(newState) }
     }
 }

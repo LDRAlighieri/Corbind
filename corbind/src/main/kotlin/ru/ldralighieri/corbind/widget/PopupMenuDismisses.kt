@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -17,22 +18,24 @@ fun PopupMenu.dismisses(
         scope: CoroutineScope,
         action: suspend () -> Unit
 ) {
+
     val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    setOnDismissListener(listener(events::offer))
+    setOnDismissListener(listener(scope, events::offer))
     events.invokeOnClose { setOnDismissListener(null) }
 }
 
 suspend fun PopupMenu.dismisses(
         action: suspend () -> Unit
 ) = coroutineScope {
+
     val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    setOnDismissListener(listener(events::offer))
+    setOnDismissListener(listener(this, events::offer))
     events.invokeOnClose { setOnDismissListener(null) }
 }
 
@@ -45,7 +48,7 @@ fun PopupMenu.dismisses(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnDismissListener(listener(::offer))
+    setOnDismissListener(listener(this, ::offer))
     invokeOnClose { setOnDismissListener(null) }
 }
 
@@ -53,7 +56,7 @@ fun PopupMenu.dismisses(
 suspend fun PopupMenu.dismisses(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnDismissListener(listener(::offer))
+        setOnDismissListener(listener(this, ::offer))
         invokeOnClose { setOnDismissListener(null) }
     }
 }
@@ -64,5 +67,9 @@ suspend fun PopupMenu.dismisses(): ReceiveChannel<Unit> = coroutineScope {
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Unit) -> Boolean
-) = PopupMenu.OnDismissListener { emitter(Unit) }
+) = PopupMenu.OnDismissListener {
+
+    if (scope.isActive) { emitter(Unit) }
+}

@@ -17,12 +17,13 @@ fun ViewPager.pageSelections(
         scope: CoroutineScope,
         action: suspend (Int) -> Unit
 ) {
+
     val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (position in channel) action(position)
     }
 
     events.offer(currentItem)
-    val listener = listener(events::offer)
+    val listener = listener(scope, events::offer)
     addOnPageChangeListener(listener)
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -30,12 +31,13 @@ fun ViewPager.pageSelections(
 suspend fun ViewPager.pageSelections(
         action: suspend (Int) -> Unit
 ) = coroutineScope {
+
     val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
         for (position in channel) action(position)
     }
 
     events.offer(currentItem)
-    val listener = listener(events::offer)
+    val listener = listener(this, events::offer)
     addOnPageChangeListener(listener)
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -50,7 +52,7 @@ fun ViewPager.pageSelections(
 ): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(currentItem)
-    val listener = listener(::offer)
+    val listener = listener(this, ::offer)
     addOnPageChangeListener(listener)
     invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -60,7 +62,7 @@ suspend fun ViewPager.pageSelections(): ReceiveChannel<Int> = coroutineScope {
 
     produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
         offer(currentItem)
-        val listener = listener(::offer)
+        val listener = listener(this, ::offer)
         addOnPageChangeListener(listener)
         invokeOnClose { removeOnPageChangeListener(listener) }
     }
@@ -72,6 +74,7 @@ suspend fun ViewPager.pageSelections(): ReceiveChannel<Int> = coroutineScope {
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Int) -> Boolean
 ) = object : ViewPager.OnPageChangeListener {
 

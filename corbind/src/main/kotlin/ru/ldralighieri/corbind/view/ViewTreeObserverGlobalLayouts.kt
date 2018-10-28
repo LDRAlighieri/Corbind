@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -18,11 +19,12 @@ fun View.globalLayouts(
         scope: CoroutineScope,
         action: suspend () -> Unit
 ) {
+
     val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    val listener = listener(events::offer)
+    val listener = listener(scope, events::offer)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
 }
@@ -30,11 +32,12 @@ fun View.globalLayouts(
 suspend fun View.globalLayouts(
         action: suspend () -> Unit
 ) = coroutineScope {
+
     val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    val listener = listener(events::offer)
+    val listener = listener(this, events::offer)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
 }
@@ -48,7 +51,7 @@ fun View.globalLayouts(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val listener = listener(::offer)
+    val listener = listener(this, ::offer)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
 }
@@ -57,7 +60,7 @@ fun View.globalLayouts(
 suspend fun View.globalLayouts(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(::offer)
+        val listener = listener(this, ::offer)
         viewTreeObserver.addOnGlobalLayoutListener(listener)
         invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
     }
@@ -69,5 +72,9 @@ suspend fun View.globalLayouts(): ReceiveChannel<Unit> = coroutineScope {
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Unit) -> Boolean
-) = ViewTreeObserver.OnGlobalLayoutListener { emitter(Unit) }
+) = ViewTreeObserver.OnGlobalLayoutListener {
+
+    if (scope.isActive) { emitter(Unit) }
+}

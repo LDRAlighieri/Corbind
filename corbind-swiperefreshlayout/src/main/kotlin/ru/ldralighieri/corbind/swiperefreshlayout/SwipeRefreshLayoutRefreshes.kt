@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -17,22 +18,24 @@ fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope,
         action: suspend () -> Unit
 ) {
+
     val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    setOnRefreshListener(listener(events::offer))
+    setOnRefreshListener(listener(scope, events::offer))
     events.invokeOnClose { setOnRefreshListener(null) }
 }
 
 suspend fun SwipeRefreshLayout.refreshes(
         action: suspend () -> Unit
 ) = coroutineScope {
+
     val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
         for (unit in channel) action()
     }
 
-    setOnRefreshListener(listener(events::offer))
+    setOnRefreshListener(listener(this, events::offer))
     events.invokeOnClose { setOnRefreshListener(null) }
 }
 
@@ -45,7 +48,7 @@ fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope
 ): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setOnRefreshListener(listener(::offer))
+    setOnRefreshListener(listener(this, ::offer))
     invokeOnClose { setOnRefreshListener(null) }
 }
 
@@ -53,7 +56,7 @@ fun SwipeRefreshLayout.refreshes(
 suspend fun SwipeRefreshLayout.refreshes(): ReceiveChannel<Unit> = coroutineScope {
 
     produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnRefreshListener(listener(::offer))
+        setOnRefreshListener(listener(this, ::offer))
         invokeOnClose { setOnRefreshListener(null) }
     }
 }
@@ -63,5 +66,9 @@ suspend fun SwipeRefreshLayout.refreshes(): ReceiveChannel<Unit> = coroutineScop
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (Unit) -> Boolean
-) = SwipeRefreshLayout.OnRefreshListener { emitter(Unit) }
+) = SwipeRefreshLayout.OnRefreshListener {
+
+    if (scope.isActive) { emitter(Unit) }
+}

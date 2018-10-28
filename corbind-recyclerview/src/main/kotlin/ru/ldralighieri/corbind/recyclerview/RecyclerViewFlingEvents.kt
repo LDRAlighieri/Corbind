@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -21,22 +22,25 @@ fun RecyclerView.flingEvents(
         scope: CoroutineScope,
         action: suspend (RecyclerViewFlingEvent) -> Unit
 ) {
+
     val events = scope.actor<RecyclerViewFlingEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    onFlingListener = listener(this, events::offer)
+    onFlingListener = listener(scope = scope, recyclerView = this, emitter = events::offer)
     events.invokeOnClose { onFlingListener = null }
 }
 
 suspend fun RecyclerView.flingEvents(
         action: suspend (RecyclerViewFlingEvent) -> Unit
 ) = coroutineScope {
+
     val events = actor<RecyclerViewFlingEvent>(Dispatchers.Main, Channel.CONFLATED) {
         for (event in channel) action(event)
     }
 
-    onFlingListener = listener(this@flingEvents, events::offer)
+    onFlingListener = listener(scope = this, recyclerView = this@flingEvents,
+            emitter = events::offer)
     events.invokeOnClose { onFlingListener = null }
 }
 
@@ -49,7 +53,7 @@ fun RecyclerView.flingEvents(
         scope: CoroutineScope
 ): ReceiveChannel<RecyclerViewFlingEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    onFlingListener = listener(this@flingEvents, ::offer)
+    onFlingListener = listener(scope = this, recyclerView = this@flingEvents, emitter = ::offer)
     invokeOnClose { onFlingListener = null }
 }
 
@@ -57,7 +61,7 @@ fun RecyclerView.flingEvents(
 suspend fun RecyclerView.flingEvents(): ReceiveChannel<RecyclerViewFlingEvent> = coroutineScope {
 
     produce<RecyclerViewFlingEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        onFlingListener = listener(this@flingEvents, ::offer)
+        onFlingListener = listener(scope = this, recyclerView = this@flingEvents, emitter = ::offer)
         invokeOnClose { onFlingListener = null }
     }
 }
@@ -68,12 +72,15 @@ suspend fun RecyclerView.flingEvents(): ReceiveChannel<RecyclerViewFlingEvent> =
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         recyclerView: RecyclerView,
         emitter: (RecyclerViewFlingEvent) -> Boolean
 ) = object : RecyclerView.OnFlingListener() {
 
     override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-        emitter(RecyclerViewFlingEvent(recyclerView, velocityX, velocityY))
+        if (scope.isActive) {
+            emitter(RecyclerViewFlingEvent(recyclerView, velocityX, velocityY))
+        }
         return false
     }
 }

@@ -10,6 +10,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -19,12 +20,13 @@ fun DrawerLayout.drawerOpens(
         gravity: Int,
         action: suspend (Boolean) -> Unit
 ) {
+
     val events = scope.actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (open in channel) action(open)
     }
 
     events.offer(isDrawerOpen(gravity))
-    val listener = listener(gravity, events::offer)
+    val listener = listener(scope, gravity, events::offer)
     addDrawerListener(listener)
     events.invokeOnClose { removeDrawerListener(listener) }
 }
@@ -33,12 +35,13 @@ suspend fun DrawerLayout.drawerOpens(
         gravity: Int,
         action: suspend (Boolean) -> Unit
 ) = coroutineScope {
+
     val events = actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         for (open in channel) action(open)
     }
 
     events.offer(isDrawerOpen(gravity))
-    val listener = listener(gravity, events::offer)
+    val listener = listener(this, gravity, events::offer)
     addDrawerListener(listener)
     events.invokeOnClose { removeDrawerListener(listener) }
 }
@@ -54,7 +57,7 @@ fun DrawerLayout.drawerOpens(
 ): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
     offer(isDrawerOpen(gravity))
-    val listener = listener(gravity, ::offer)
+    val listener = listener(this, gravity, ::offer)
     addDrawerListener(listener)
     invokeOnClose { removeDrawerListener(listener) }
 }
@@ -66,7 +69,7 @@ suspend fun DrawerLayout.drawerOpens(
 
     produce<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
         offer(isDrawerOpen(gravity))
-        val listener = listener(gravity, ::offer)
+        val listener = listener(this, gravity, ::offer)
         addDrawerListener(listener)
         invokeOnClose { removeDrawerListener(listener) }
     }
@@ -78,21 +81,20 @@ suspend fun DrawerLayout.drawerOpens(
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         gravity: Int,
         emitter: (Boolean) -> Boolean
 ) = object : DrawerLayout.DrawerListener {
 
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) {  }
-
-    override fun onDrawerOpened(drawerView: View) {
-        val drawerGravity = (drawerView.layoutParams as DrawerLayout.LayoutParams).gravity
-        if (drawerGravity == gravity) { emitter(true) }
-    }
-
-    override fun onDrawerClosed(drawerView: View) {
-        val drawerGravity = (drawerView.layoutParams as DrawerLayout.LayoutParams).gravity
-        if (drawerGravity == gravity) { emitter(false) }
-    }
-
+    override fun onDrawerOpened(drawerView: View) { onEvent(drawerView, true) }
+    override fun onDrawerClosed(drawerView: View) { onEvent(drawerView, false) }
     override fun onDrawerStateChanged(newState: Int) {  }
+
+    private fun onEvent(drawerView: View, opened: Boolean) {
+        if (scope.isActive) {
+            val drawerGravity = (drawerView.layoutParams as DrawerLayout.LayoutParams).gravity
+            if (drawerGravity == gravity) { emitter(opened) }
+        }
+    }
 }
