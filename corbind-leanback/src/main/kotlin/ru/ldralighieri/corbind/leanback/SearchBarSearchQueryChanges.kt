@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -21,7 +22,7 @@ fun SearchBar.searchQueryChanges(
         for (query in channel) action(query)
     }
 
-    setSearchBarListener(listener(events::offer))
+    setSearchBarListener(listener(scope, events::offer))
     events.invokeOnClose { setSearchBarListener(null) }
 }
 
@@ -32,7 +33,7 @@ suspend fun SearchBar.searchQueryChanges(
         for (query in channel) action(query)
     }
 
-    setSearchBarListener(listener(events::offer))
+    setSearchBarListener(listener(this, events::offer))
     events.invokeOnClose { setSearchBarListener(null) }
 }
 
@@ -45,7 +46,7 @@ fun SearchBar.searchQueryChanges(
         scope: CoroutineScope
 ): ReceiveChannel<String> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    setSearchBarListener(listener(::offer))
+    setSearchBarListener(listener(this, ::offer))
     invokeOnClose { setSearchBarListener(null) }
 }
 
@@ -53,7 +54,7 @@ fun SearchBar.searchQueryChanges(
 suspend fun SearchBar.searchQueryChanges(): ReceiveChannel<String> = coroutineScope {
 
     produce<String>(Dispatchers.Main, Channel.CONFLATED) {
-        setSearchBarListener(listener(::offer))
+        setSearchBarListener(listener(this, ::offer))
         invokeOnClose { setSearchBarListener(null) }
     }
 }
@@ -64,10 +65,14 @@ suspend fun SearchBar.searchQueryChanges(): ReceiveChannel<String> = coroutineSc
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (String) -> Boolean
 ) = object : SearchBar.SearchBarListener {
 
-    override fun onSearchQueryChange(query: String) { emitter(query) }
+    override fun onSearchQueryChange(query: String) {
+        if (scope.isActive) { emitter(query) }
+    }
+
     override fun onSearchQuerySubmit(query: String) {  }
     override fun onKeyboardDismiss(query: String) {  }
 }
