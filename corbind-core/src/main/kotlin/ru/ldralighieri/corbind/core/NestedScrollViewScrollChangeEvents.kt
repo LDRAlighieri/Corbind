@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.channels.ReceiveChannel
 import kotlinx.coroutines.experimental.channels.actor
 import kotlinx.coroutines.experimental.channels.produce
 import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.experimental.isActive
 import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
 
 // -----------------------------------------------------------------------------------------------
@@ -22,7 +23,7 @@ fun NestedScrollView.scrollChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(events::offer)
+    val listener = listener(scope, events::offer)
     setOnScrollChangeListener(listener)
     events.invokeOnClose {
         setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
@@ -36,7 +37,7 @@ suspend fun NestedScrollView.scrollChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(events::offer)
+    val listener = listener(this, events::offer)
     setOnScrollChangeListener(listener)
     events.invokeOnClose {
         setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
@@ -52,7 +53,7 @@ fun NestedScrollView.scrollChangeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<ViewScrollChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
 
-    val listener = listener(::offer)
+    val listener = listener(this, ::offer)
     setOnScrollChangeListener(listener)
     invokeOnClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
@@ -61,7 +62,7 @@ fun NestedScrollView.scrollChangeEvents(
 suspend fun NestedScrollView.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> = coroutineScope {
 
     produce<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(::offer)
+        val listener = listener(this, ::offer)
         setOnScrollChangeListener(listener)
         invokeOnClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
     }
@@ -73,7 +74,11 @@ suspend fun NestedScrollView.scrollChangeEvents(): ReceiveChannel<ViewScrollChan
 
 @CheckResult
 private fun listener(
+        scope: CoroutineScope,
         emitter: (ViewScrollChangeEvent) -> Boolean
 ) = NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-    emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))
+
+    if (scope.isActive) {
+        emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))
+    }
 }
