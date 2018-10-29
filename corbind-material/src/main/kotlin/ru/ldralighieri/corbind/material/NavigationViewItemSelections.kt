@@ -1,17 +1,18 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package ru.ldralighieri.corbind.material
 
 import android.view.MenuItem
 import androidx.annotation.CheckResult
 import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.actor
-import kotlinx.coroutines.experimental.channels.produce
-import kotlinx.coroutines.experimental.coroutineScope
-import kotlinx.coroutines.experimental.isActive
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -34,7 +35,7 @@ suspend fun NavigationView.itemSelections(
         action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
 
-    val events = actor<MenuItem>(UI, Channel.CONFLATED) {
+    val events = actor<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
         for (item in channel) action(item)
     }
 
