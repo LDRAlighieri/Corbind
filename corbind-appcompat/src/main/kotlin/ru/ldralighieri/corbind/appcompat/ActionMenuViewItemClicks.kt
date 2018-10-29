@@ -1,16 +1,18 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package ru.ldralighieri.corbind.appcompat
 
 import android.view.MenuItem
 import androidx.annotation.CheckResult
 import androidx.appcompat.widget.ActionMenuView
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.actor
-import kotlinx.coroutines.experimental.channels.produce
-import kotlinx.coroutines.experimental.coroutineScope
-import kotlinx.coroutines.experimental.isActive
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.isActive
 
 // -----------------------------------------------------------------------------------------------
 
