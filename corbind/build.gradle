@@ -1,12 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}
-
 android {
 
     compileSdkVersion buildConfig.compileSdk
@@ -38,6 +32,7 @@ android {
 dependencies {
     api deps.kotlinStdlib
     api deps.kotlinCoroutines
+    api deps.kotlinCoroutinesAndroid
 
     api deps.androidXAnnotations
 }

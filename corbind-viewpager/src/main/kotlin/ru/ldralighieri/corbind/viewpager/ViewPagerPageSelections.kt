@@ -1,14 +1,17 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package ru.ldralighieri.corbind.viewpager
 
 import androidx.annotation.CheckResult
 import androidx.viewpager.widget.ViewPager
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.actor
-import kotlinx.coroutines.experimental.channels.produce
-import kotlinx.coroutines.experimental.coroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.isActive
 
 // -----------------------------------------------------------------------------------------------
 
@@ -79,6 +82,10 @@ private fun listener(
 ) = object : ViewPager.OnPageChangeListener {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {  }
-    override fun onPageSelected(position: Int) { emitter(position) }
+
+    override fun onPageSelected(position: Int) {
+        if (scope.isActive) { emitter(position) }
+    }
+
     override fun onPageScrollStateChanged(state: Int) {  }
 }
