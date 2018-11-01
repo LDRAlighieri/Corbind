@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -51,19 +52,19 @@ suspend fun NavigationView.itemSelections(
 @CheckResult
 fun NavigationView.itemSelections(
         scope: CoroutineScope
-): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<MenuItem> = corbindReceiveChannel {
 
-    setInitialValue(this@itemSelections, ::offer)
-    setNavigationItemSelectedListener(listener(this, ::offer))
+    setInitialValue(this@itemSelections, ::safeOffer)
+    setNavigationItemSelectedListener(listener(scope, ::safeOffer))
     invokeOnClose { setNavigationItemSelectedListener(null) }
 }
 
 @CheckResult
 suspend fun NavigationView.itemSelections(): ReceiveChannel<MenuItem> = coroutineScope {
 
-    produce<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
-        setInitialValue(this@itemSelections, ::offer)
-        setNavigationItemSelectedListener(listener(this, ::offer))
+    corbindReceiveChannel<MenuItem> {
+        setInitialValue(this@itemSelections, ::safeOffer)
+        setNavigationItemSelectedListener(listener(this@coroutineScope, ::safeOffer))
         invokeOnClose { setNavigationItemSelectedListener(null) }
     }
 }

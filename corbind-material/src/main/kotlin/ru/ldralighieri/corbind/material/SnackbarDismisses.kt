@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -50,9 +51,9 @@ suspend fun Snackbar.dismisses(
 @CheckResult
 fun Snackbar.dismisses(
         scope: CoroutineScope
-): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Int> = corbindReceiveChannel {
 
-    val callback = callback(this, ::offer)
+    val callback = callback(scope, ::safeOffer)
     addCallback(callback)
     invokeOnClose { removeCallback(callback) }
 }
@@ -60,8 +61,8 @@ fun Snackbar.dismisses(
 @CheckResult
 suspend fun Snackbar.dismisses(): ReceiveChannel<Int> = coroutineScope {
 
-    produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        val callback = callback(this, ::offer)
+    corbindReceiveChannel<Int> {
+        val callback = callback(this@coroutineScope, ::safeOffer)
         addCallback(callback)
         invokeOnClose { removeCallback(callback) }
     }

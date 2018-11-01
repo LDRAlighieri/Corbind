@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -50,9 +51,9 @@ suspend fun AppBarLayout.offsetChanges(
 @CheckResult
 fun AppBarLayout.offsetChanges(
         scope: CoroutineScope
-): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Int> = corbindReceiveChannel {
 
-    val listener = listener(this, ::offer)
+    val listener = listener(scope, ::safeOffer)
     addOnOffsetChangedListener(listener)
     invokeOnClose { removeOnOffsetChangedListener(listener) }
 }
@@ -60,8 +61,8 @@ fun AppBarLayout.offsetChanges(
 @CheckResult
 suspend fun AppBarLayout.offsetChanges(): ReceiveChannel<Int> = coroutineScope {
 
-    produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(this, ::offer)
+    corbindReceiveChannel<Int> {
+        val listener = listener(this@coroutineScope, ::safeOffer)
         addOnOffsetChangedListener(listener)
         invokeOnClose { removeOnOffsetChangedListener(listener) }
     }

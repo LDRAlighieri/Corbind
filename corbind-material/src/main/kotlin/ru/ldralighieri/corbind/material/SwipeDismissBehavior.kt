@@ -11,9 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -52,19 +53,19 @@ suspend fun View.dismisses(
 @CheckResult
 fun View.dismisses(
         scope: CoroutineScope
-): ReceiveChannel<View> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<View> = corbindReceiveChannel {
 
     val behavior = getBehavior(this@dismisses)
-    behavior.setListener(listener(this, ::offer))
+    behavior.setListener(listener(scope, ::safeOffer))
     invokeOnClose { behavior.setListener(null) }
 }
 
 @CheckResult
 suspend fun View.dismisses(): ReceiveChannel<View> = coroutineScope {
 
-    produce<View>(Dispatchers.Main, Channel.CONFLATED) {
+    corbindReceiveChannel<View> {
         val behavior = getBehavior(this@dismisses)
-        behavior.setListener(listener(this, ::offer))
+        behavior.setListener(listener(this@coroutineScope, ::safeOffer))
         invokeOnClose { behavior.setListener(null) }
     }
 }

@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -52,10 +53,10 @@ suspend fun TabLayout.selections(
 @CheckResult
 fun TabLayout.selections(
         scope: CoroutineScope
-): ReceiveChannel<TabLayout.Tab> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel {
 
-    setInitialValue(this@selections, ::offer)
-    val listener = listener(this, ::offer)
+    setInitialValue(this@selections, ::safeOffer)
+    val listener = listener(scope, ::safeOffer)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -63,9 +64,9 @@ fun TabLayout.selections(
 @CheckResult
 suspend fun TabLayout.selections(): ReceiveChannel<TabLayout.Tab> = coroutineScope {
 
-    produce<TabLayout.Tab>(Dispatchers.Main, Channel.CONFLATED) {
-        setInitialValue(this@selections, ::offer)
-        val listener = listener(this, ::offer)
+    corbindReceiveChannel<TabLayout.Tab> {
+        setInitialValue(this@selections, ::safeOffer)
+        val listener = listener(this@coroutineScope, ::safeOffer)
         addOnTabSelectedListener(listener)
         invokeOnClose { removeOnTabSelectedListener(listener) }
     }

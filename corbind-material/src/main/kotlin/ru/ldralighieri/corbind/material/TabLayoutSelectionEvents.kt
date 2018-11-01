@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -74,10 +75,10 @@ suspend fun TabLayout.selectionEvents(
 @CheckResult
 fun TabLayout.selectionEvents(
         scope: CoroutineScope
-): ReceiveChannel<TabLayoutSelectionEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<TabLayoutSelectionEvent> = corbindReceiveChannel {
 
-    setInitialValue(this@selectionEvents, ::offer)
-    val listener = listener(scope = this, tabLayout = this@selectionEvents, emitter = ::offer)
+    setInitialValue(this@selectionEvents, ::safeOffer)
+    val listener = listener(scope, this@selectionEvents, ::safeOffer)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -85,9 +86,9 @@ fun TabLayout.selectionEvents(
 @CheckResult
 suspend fun TabLayout.selectionEvents(): ReceiveChannel<TabLayoutSelectionEvent> = coroutineScope {
 
-    produce<TabLayoutSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setInitialValue(this@selectionEvents, ::offer)
-        val listener = listener(scope = this, tabLayout = this@selectionEvents, emitter = ::offer)
+    corbindReceiveChannel<TabLayoutSelectionEvent> {
+        setInitialValue(this@selectionEvents, ::safeOffer)
+        val listener = listener(this@coroutineScope, this@selectionEvents, ::safeOffer)
         addOnTabSelectedListener(listener)
         invokeOnClose { removeOnTabSelectedListener(listener) }
     }
