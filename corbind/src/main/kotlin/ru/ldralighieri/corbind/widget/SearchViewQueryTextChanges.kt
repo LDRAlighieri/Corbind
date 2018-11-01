@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -50,19 +51,19 @@ suspend fun SearchView.queryTextChanges(
 @CheckResult
 fun SearchView.queryTextChanges(
         scope: CoroutineScope
-): ReceiveChannel<CharSequence> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<CharSequence> = corbindReceiveChannel {
 
-    offer(query)
-    setOnQueryTextListener(listener(this, ::offer))
+    safeOffer(query)
+    setOnQueryTextListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
 @CheckResult
 suspend fun SearchView.queryTextChanges(): ReceiveChannel<CharSequence> = coroutineScope {
 
-    produce<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(query)
-        setOnQueryTextListener(listener(this, ::offer))
+    corbindReceiveChannel<CharSequence> {
+        safeOffer(query)
+        setOnQueryTextListener(listener(this@coroutineScope, ::safeOffer))
         invokeOnClose { setOnQueryTextListener(null) }
     }
 }

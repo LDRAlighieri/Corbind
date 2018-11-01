@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -49,17 +50,17 @@ suspend fun <T : Adapter> AdapterView<T>.itemClicks(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClicks(
         scope: CoroutineScope
-): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Int> = corbindReceiveChannel {
 
-    onItemClickListener = listener(this, ::offer)
+    onItemClickListener = listener(scope, ::safeOffer)
     invokeOnClose { onItemClickListener = null }
 }
 
 @CheckResult
 suspend fun <T : Adapter> AdapterView<T>.itemClicks(): ReceiveChannel<Int> = coroutineScope {
 
-    produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        onItemClickListener = listener(this, ::offer)
+    corbindReceiveChannel<Int> {
+        onItemClickListener = listener(this@coroutineScope, ::safeOffer)
         invokeOnClose { onItemClickListener = null }
     }
 }

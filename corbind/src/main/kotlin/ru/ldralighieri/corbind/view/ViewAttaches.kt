@@ -12,6 +12,8 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -50,9 +52,9 @@ suspend fun View.attaches(
 @CheckResult
 fun View.attaches(
         scope: CoroutineScope
-): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = corbindReceiveChannel {
 
-    val listener = listener(this, true, ::offer)
+    val listener = listener(scope, true, ::safeOffer)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -60,8 +62,8 @@ fun View.attaches(
 @CheckResult
 suspend fun View.attaches(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(this, true, ::offer)
+    corbindReceiveChannel<Unit> {
+        val listener = listener(this@coroutineScope, true, ::safeOffer)
         addOnAttachStateChangeListener(listener)
         invokeOnClose { removeOnAttachStateChangeListener(listener) }
     }

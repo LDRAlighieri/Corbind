@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -52,9 +53,9 @@ suspend fun View.preDraws(
 fun View.preDraws(
         scope: CoroutineScope,
         proceedDrawingPass: () -> Boolean
-): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = corbindReceiveChannel {
 
-    val listener = listener(this, proceedDrawingPass, ::offer)
+    val listener = listener(scope, proceedDrawingPass, ::safeOffer)
     viewTreeObserver.addOnPreDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
@@ -64,8 +65,8 @@ suspend fun View.preDraws(
         proceedDrawingPass: () -> Boolean
 ): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(this, proceedDrawingPass, ::offer)
+    corbindReceiveChannel<Unit> {
+        val listener = listener(this@coroutineScope, proceedDrawingPass, ::safeOffer)
         viewTreeObserver.addOnPreDrawListener(listener)
         invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
     }

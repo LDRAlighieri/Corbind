@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -48,17 +49,17 @@ suspend fun PopupMenu.dismisses(
 @CheckResult
 fun PopupMenu.dismisses(
         scope: CoroutineScope
-): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = corbindReceiveChannel {
 
-    setOnDismissListener(listener(this, ::offer))
+    setOnDismissListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnDismissListener(null) }
 }
 
 @CheckResult
 suspend fun PopupMenu.dismisses(): ReceiveChannel<Unit> = coroutineScope {
 
-    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnDismissListener(listener(this, ::offer))
+    corbindReceiveChannel<Unit> {
+        setOnDismissListener(listener(this@coroutineScope, ::safeOffer))
         invokeOnClose { setOnDismissListener(null) }
     }
 }

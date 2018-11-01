@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -50,19 +51,19 @@ suspend fun CompoundButton.checkedChanges(
 @CheckResult
 fun CompoundButton.checkedChanges(
         scope: CoroutineScope
-): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Boolean> = corbindReceiveChannel {
 
     offer(isChecked)
-    setOnCheckedChangeListener(listener(this, ::offer))
+    setOnCheckedChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
 @CheckResult
 suspend fun CompoundButton.checkedChanges(): ReceiveChannel<Boolean> = coroutineScope {
 
-    produce<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
+    corbindReceiveChannel<Boolean> {
         offer(isChecked)
-        setOnCheckedChangeListener(listener(this, ::offer))
+        setOnCheckedChangeListener(listener(this@coroutineScope, ::safeOffer))
         invokeOnClose { setOnCheckedChangeListener(null) }
     }
 }

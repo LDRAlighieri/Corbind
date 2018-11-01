@@ -11,9 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -63,9 +64,9 @@ suspend fun View.scrollChangeEvents(
 @CheckResult
 fun View.scrollChangeEvents(
         scope: CoroutineScope
-): ReceiveChannel<ViewScrollChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel {
 
-    setOnScrollChangeListener(listener(this, ::offer))
+    setOnScrollChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnScrollChangeListener(null) }
 }
 
@@ -73,8 +74,8 @@ fun View.scrollChangeEvents(
 @CheckResult
 suspend fun View.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> = coroutineScope {
 
-    produce<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnScrollChangeListener(listener(this, ::offer))
+    corbindReceiveChannel<ViewScrollChangeEvent> {
+        setOnScrollChangeListener(listener(this@coroutineScope, ::safeOffer))
         invokeOnClose { setOnScrollChangeListener(null) }
     }
 }

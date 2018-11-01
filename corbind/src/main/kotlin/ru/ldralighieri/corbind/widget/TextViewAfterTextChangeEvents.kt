@@ -11,9 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -62,10 +63,10 @@ suspend fun TextView.afterTextChangeEvents(
 @CheckResult
 fun TextView.afterTextChangeEvents(
         scope: CoroutineScope
-): ReceiveChannel<TextViewAfterTextChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<TextViewAfterTextChangeEvent> = corbindReceiveChannel {
 
-    offer(initialValue(this@afterTextChangeEvents))
-    val listener = listener(scope = this, textView = this@afterTextChangeEvents, emitter = ::offer)
+    safeOffer(initialValue(this@afterTextChangeEvents))
+    val listener = listener(scope, this@afterTextChangeEvents, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -74,10 +75,9 @@ fun TextView.afterTextChangeEvents(
 suspend fun TextView.afterTextChangeEvents(): ReceiveChannel<TextViewAfterTextChangeEvent> =
         coroutineScope {
 
-            produce<TextViewAfterTextChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-                offer(initialValue(this@afterTextChangeEvents))
-                val listener = listener(scope = this, textView = this@afterTextChangeEvents,
-                        emitter = ::offer)
+            corbindReceiveChannel<TextViewAfterTextChangeEvent> {
+                safeOffer(initialValue(this@afterTextChangeEvents))
+                val listener = listener(this@coroutineScope, this@afterTextChangeEvents, ::safeOffer)
                 addTextChangedListener(listener)
                 invokeOnClose { removeTextChangedListener(listener) }
             }

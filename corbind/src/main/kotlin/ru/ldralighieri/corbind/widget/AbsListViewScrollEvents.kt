@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -58,17 +59,17 @@ suspend fun AbsListView.scrollEvents(
 @CheckResult
 fun AbsListView.scrollEvents(
         scope: CoroutineScope
-): ReceiveChannel<AbsListViewScrollEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<AbsListViewScrollEvent> = corbindReceiveChannel {
 
-    setOnScrollListener(listener(this, ::offer))
+    setOnScrollListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnScrollListener(null) }
 }
 
 @CheckResult
 suspend fun AbsListView.scrollEvents(): ReceiveChannel<AbsListViewScrollEvent> = coroutineScope {
 
-    produce<AbsListViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnScrollListener(listener(this, ::offer))
+    corbindReceiveChannel<AbsListViewScrollEvent> {
+        setOnScrollListener(listener(this@coroutineScope, ::safeOffer))
         invokeOnClose { setOnScrollListener(null) }
     }
 }

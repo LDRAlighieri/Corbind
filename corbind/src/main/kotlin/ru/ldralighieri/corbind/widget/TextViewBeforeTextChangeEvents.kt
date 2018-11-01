@@ -11,9 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -65,10 +66,10 @@ suspend fun TextView.beforeTextChangeEvents(
 @CheckResult
 fun TextView.beforeTextChangeEvents(
         scope: CoroutineScope
-): ReceiveChannel<TextViewBeforeTextChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<TextViewBeforeTextChangeEvent> = corbindReceiveChannel {
 
-    offer(initialValue(this@beforeTextChangeEvents))
-    val listener = listener(scope = this, textView = this@beforeTextChangeEvents, emitter = ::offer)
+    safeOffer(initialValue(this@beforeTextChangeEvents))
+    val listener = listener(scope, this@beforeTextChangeEvents, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -77,10 +78,9 @@ fun TextView.beforeTextChangeEvents(
 suspend fun TextView.beforeTextChangeEvents(): ReceiveChannel<TextViewBeforeTextChangeEvent> =
         coroutineScope {
 
-            produce<TextViewBeforeTextChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-                offer(initialValue(this@beforeTextChangeEvents))
-                val listener = listener(scope = this, textView = this@beforeTextChangeEvents,
-                        emitter = ::offer)
+            corbindReceiveChannel<TextViewBeforeTextChangeEvent> {
+                safeOffer(initialValue(this@beforeTextChangeEvents))
+                val listener = listener(this@coroutineScope, this@beforeTextChangeEvents, ::safeOffer)
                 addTextChangedListener(listener)
                 invokeOnClose { removeTextChangedListener(listener) }
             }

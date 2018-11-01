@@ -9,10 +9,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -40,7 +41,7 @@ suspend fun MenuItem.clicks(
         for (item in channel) action(item)
     }
 
-    setOnMenuItemClickListener(listener(this, handled = handled, emitter = events::offer))
+    setOnMenuItemClickListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -52,9 +53,9 @@ suspend fun MenuItem.clicks(
 fun MenuItem.clicks(
         scope: CoroutineScope,
         handled: (MenuItem) -> Boolean = AlwaysTrue
-): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<MenuItem> = corbindReceiveChannel {
 
-    setOnMenuItemClickListener(listener(scope, handled, ::offer))
+    setOnMenuItemClickListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -63,8 +64,8 @@ suspend fun MenuItem.clicks(
         handled: (MenuItem) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItem> = coroutineScope {
 
-    produce<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnMenuItemClickListener(listener(scope = this, handled = handled, emitter = ::offer))
+    corbindReceiveChannel<MenuItem> {
+        setOnMenuItemClickListener(listener(this@coroutineScope, handled, ::safeOffer))
         invokeOnClose { setOnMenuItemClickListener(null) }
     }
 }
