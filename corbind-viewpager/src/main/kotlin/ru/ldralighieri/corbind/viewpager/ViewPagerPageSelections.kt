@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -52,10 +53,10 @@ suspend fun ViewPager.pageSelections(
 @CheckResult
 fun ViewPager.pageSelections(
         scope: CoroutineScope
-): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Int> = corbindReceiveChannel {
 
     offer(currentItem)
-    val listener = listener(this, ::offer)
+    val listener = listener(scope, ::safeOffer)
     addOnPageChangeListener(listener)
     invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -63,9 +64,9 @@ fun ViewPager.pageSelections(
 @CheckResult
 suspend fun ViewPager.pageSelections(): ReceiveChannel<Int> = coroutineScope {
 
-    produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    corbindReceiveChannel<Int> {
         offer(currentItem)
-        val listener = listener(this, ::offer)
+        val listener = listener(this@coroutineScope, ::safeOffer)
         addOnPageChangeListener(listener)
         invokeOnClose { removeOnPageChangeListener(listener) }
     }
