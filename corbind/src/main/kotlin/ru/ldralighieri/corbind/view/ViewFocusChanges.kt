@@ -53,7 +53,7 @@ fun View.focusChanges(
         scope: CoroutineScope
 ): ReceiveChannel<Boolean> = corbindReceiveChannel {
 
-    offer(hasFocus())
+    safeOffer(hasFocus())
     onFocusChangeListener = listener(scope, ::safeOffer)
     invokeOnClose { onFocusChangeListener = null }
 }
@@ -62,7 +62,7 @@ fun View.focusChanges(
 suspend fun View.focusChanges(): ReceiveChannel<Boolean> = coroutineScope {
 
     corbindReceiveChannel<Boolean> {
-        offer(hasFocus())
+        safeOffer(hasFocus())
         onFocusChangeListener = listener(this@coroutineScope, ::safeOffer)
         invokeOnClose { onFocusChangeListener = null }
     }
