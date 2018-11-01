@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -59,21 +60,19 @@ suspend fun SearchView.queryTextChangeEvents(
 @CheckResult
 fun SearchView.queryTextChangeEvents(
         scope: CoroutineScope
-): ReceiveChannel<SearchViewQueryTextEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel {
 
-    offer(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))
-    setOnQueryTextListener(listener(scope = this, searchView = this@queryTextChangeEvents,
-            emitter = ::offer))
+    safeOffer(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))
+    setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::safeOffer))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
 @CheckResult
 suspend fun SearchView.queryTextChangeEvents(): ReceiveChannel<SearchViewQueryTextEvent> = coroutineScope {
 
-    produce<SearchViewQueryTextEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))
-        setOnQueryTextListener(listener(scope = this, searchView = this@queryTextChangeEvents,
-                emitter = ::offer))
+    corbindReceiveChannel<SearchViewQueryTextEvent> {
+        safeOffer(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))
+        setOnQueryTextListener(listener(this@coroutineScope, this@queryTextChangeEvents, ::safeOffer))
         invokeOnClose { setOnQueryTextListener(null) }
     }
 }
