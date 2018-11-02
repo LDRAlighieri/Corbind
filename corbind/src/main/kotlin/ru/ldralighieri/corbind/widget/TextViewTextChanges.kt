@@ -63,17 +63,6 @@ fun TextView.textChanges(
     invokeOnClose { removeTextChangedListener(listener) }
 }
 
-@CheckResult
-suspend fun TextView.textChanges(): ReceiveChannel<CharSequence> = coroutineScope {
-
-    corbindReceiveChannel<CharSequence> {
-        safeOffer(text)
-        val listener = listener(this@coroutineScope, ::safeOffer)
-        addTextChangedListener(listener)
-        invokeOnClose { removeTextChangedListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

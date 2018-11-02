@@ -58,16 +58,6 @@ fun View.attaches(
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
-@CheckResult
-suspend fun View.attaches(): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        val listener = listener(this@coroutineScope, true, ::safeOffer)
-        addOnAttachStateChangeListener(listener)
-        invokeOnClose { removeOnAttachStateChangeListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 
@@ -111,16 +101,6 @@ fun View.detaches(
     val listener = listener(scope, true, ::safeOffer)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
-}
-
-@CheckResult
-suspend fun View.detaches(): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        val listener = listener(this@coroutineScope, true, ::safeOffer)
-        addOnAttachStateChangeListener(listener)
-        invokeOnClose { removeOnAttachStateChangeListener(listener) }
-    }
 }
 
 

@@ -73,17 +73,6 @@ fun TextView.textChangeEvents(
     invokeOnClose { removeTextChangedListener(listener) }
 }
 
-@CheckResult
-suspend fun TextView.textChangeEvents(): ReceiveChannel<TextViewTextChangeEvent> = coroutineScope {
-
-    corbindReceiveChannel<TextViewTextChangeEvent> {
-        safeOffer(initialValue(this@textChangeEvents))
-        val listener = listener(this@coroutineScope, this@textChangeEvents, ::safeOffer)
-        addTextChangedListener(listener)
-        invokeOnClose { removeTextChangedListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

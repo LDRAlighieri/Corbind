@@ -50,6 +50,7 @@ private suspend fun SeekBar.changes(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun SeekBar.changes(
         scope: CoroutineScope,
         shouldBeFromUser: Boolean?
@@ -58,17 +59,6 @@ private fun SeekBar.changes(
     safeOffer(progress)
     setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::safeOffer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
-}
-
-private suspend fun SeekBar.changes(
-        shouldBeFromUser: Boolean?
-): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        safeOffer(progress)
-        setOnSeekBarChangeListener(listener(this@coroutineScope, shouldBeFromUser, ::safeOffer))
-        invokeOnClose { setOnSeekBarChangeListener(null) }
-    }
 }
 
 
@@ -87,9 +77,6 @@ fun SeekBar.changes(
         scope: CoroutineScope
 ) = changes(scope, null)
 
-@CheckResult
-suspend fun SeekBar.changes() = changes(null)
-
 
 // -----------------------------------------------------------------------------------------------
 
@@ -106,9 +93,6 @@ fun SeekBar.userChanges(
         scope: CoroutineScope
 ) = changes(scope, true)
 
-@CheckResult
-suspend fun SeekBar.userChanges() = changes(true)
-
 
 // -----------------------------------------------------------------------------------------------
 
@@ -124,9 +108,6 @@ suspend fun SeekBar.systemChanges(action: suspend (Int) -> Unit) = changes(false
 fun SeekBar.systemChanges(
         scope: CoroutineScope
 ) = changes(scope, false)
-
-@CheckResult
-suspend fun SeekBar.systemChanges() = changes(false)
 
 
 // -----------------------------------------------------------------------------------------------

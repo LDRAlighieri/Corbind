@@ -60,17 +60,6 @@ fun View.touches(
     invokeOnClose { setOnTouchListener(null) }
 }
 
-@CheckResult
-suspend fun View.touches(
-        handled: (MotionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MotionEvent> = coroutineScope {
-
-    corbindReceiveChannel<MotionEvent> {
-        setOnTouchListener(listener(this@coroutineScope, handled, ::safeOffer))
-        invokeOnClose { setOnTouchListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

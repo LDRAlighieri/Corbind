@@ -55,14 +55,6 @@ fun SwipeRefreshLayout.refreshes(
     invokeOnClose { setOnRefreshListener(null) }
 }
 
-@CheckResult
-suspend fun SwipeRefreshLayout.refreshes(): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        setOnRefreshListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnRefreshListener(null) }
-    }
-}
 
 // -----------------------------------------------------------------------------------------------
 

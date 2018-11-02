@@ -58,16 +58,6 @@ fun ViewPager.pageScrollStateChanges(
     invokeOnClose { removeOnPageChangeListener(listener) }
 }
 
-@CheckResult
-suspend fun ViewPager.pageScrollStateChanges(): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        val listener = listener(this@coroutineScope, ::safeOffer)
-        addOnPageChangeListener(listener)
-        invokeOnClose { removeOnPageChangeListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

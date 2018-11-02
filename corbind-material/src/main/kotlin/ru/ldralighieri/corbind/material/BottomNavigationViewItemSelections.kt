@@ -59,16 +59,6 @@ fun BottomNavigationView.itemSelections(
     invokeOnClose { setOnNavigationItemSelectedListener(null) }
 }
 
-@CheckResult
-suspend fun BottomNavigationView.itemSelections(): ReceiveChannel<MenuItem> = coroutineScope {
-
-    corbindReceiveChannel<MenuItem> {
-        setInitialValue(this@itemSelections, ::safeOffer)
-        setOnNavigationItemSelectedListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnNavigationItemSelectedListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

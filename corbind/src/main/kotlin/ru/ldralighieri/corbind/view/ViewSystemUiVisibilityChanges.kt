@@ -52,15 +52,6 @@ fun View.systemUiVisibilityChanges(
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
-@CheckResult
-suspend fun View.systemUiVisibilityChanges(): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        setOnSystemUiVisibilityChangeListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

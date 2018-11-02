@@ -63,19 +63,6 @@ fun NestedScrollView.scrollChangeEvents(
     invokeOnClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
 
-@CheckResult
-suspend fun NestedScrollView.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> =
-        coroutineScope {
-
-            corbindReceiveChannel<ViewScrollChangeEvent> {
-                val listener = listener(this@coroutineScope, ::safeOffer)
-                setOnScrollChangeListener(listener)
-                invokeOnClose {
-                    setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
-                }
-            }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

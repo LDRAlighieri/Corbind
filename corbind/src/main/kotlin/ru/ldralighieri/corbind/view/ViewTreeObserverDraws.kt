@@ -64,17 +64,6 @@ fun View.draws(
     invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
 
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-@CheckResult
-suspend fun View.draws(): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        val listener = listener(this@coroutineScope, ::safeOffer)
-        viewTreeObserver.addOnDrawListener(listener)
-        invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

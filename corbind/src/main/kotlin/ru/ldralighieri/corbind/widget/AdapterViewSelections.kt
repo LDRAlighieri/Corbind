@@ -77,17 +77,6 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     invokeOnClose { onItemSelectedListener = null }
 }
 
-@CheckResult
-suspend fun <T : Adapter> AdapterView<T>.selectionEvents()
-        : ReceiveChannel<AdapterViewSelectionEvent> = coroutineScope {
-
-    corbindReceiveChannel<AdapterViewSelectionEvent> {
-        offer(initialValue(this@selectionEvents))
-        onItemSelectedListener = listener(this@coroutineScope, ::safeOffer)
-        invokeOnClose { onItemSelectedListener = null }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

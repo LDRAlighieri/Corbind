@@ -58,16 +58,6 @@ fun AppBarLayout.offsetChanges(
     invokeOnClose { removeOnOffsetChangedListener(listener) }
 }
 
-@CheckResult
-suspend fun AppBarLayout.offsetChanges(): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        val listener = listener(this@coroutineScope, ::safeOffer)
-        addOnOffsetChangedListener(listener)
-        invokeOnClose { removeOnOffsetChangedListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

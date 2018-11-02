@@ -73,17 +73,6 @@ fun MenuItem.actionViewEvents(
     invokeOnClose { setOnActionExpandListener(null) }
 }
 
-@CheckResult
-suspend fun MenuItem.actionViewEvents(
-        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MenuItemActionViewEvent> = coroutineScope {
-
-    corbindReceiveChannel<MenuItemActionViewEvent> {
-        setOnActionExpandListener(listener(this@coroutineScope, handled, ::safeOffer))
-        invokeOnClose { setOnActionExpandListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

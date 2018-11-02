@@ -55,15 +55,6 @@ fun View.clicks(
     invokeOnClose { setOnClickListener(null) }
 }
 
-@CheckResult
-suspend fun View.clicks(): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        setOnClickListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnClickListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

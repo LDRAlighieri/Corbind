@@ -61,17 +61,6 @@ fun TabLayout.selections(
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
 
-@CheckResult
-suspend fun TabLayout.selections(): ReceiveChannel<TabLayout.Tab> = coroutineScope {
-
-    corbindReceiveChannel<TabLayout.Tab> {
-        setInitialValue(this@selections, ::safeOffer)
-        val listener = listener(this@coroutineScope, ::safeOffer)
-        addOnTabSelectedListener(listener)
-        invokeOnClose { removeOnTabSelectedListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

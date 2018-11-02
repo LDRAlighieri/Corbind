@@ -60,15 +60,6 @@ fun RecyclerView.flingEvents(
     invokeOnClose { onFlingListener = null }
 }
 
-@CheckResult
-suspend fun RecyclerView.flingEvents(): ReceiveChannel<RecyclerViewFlingEvent> = coroutineScope {
-
-    corbindReceiveChannel<RecyclerViewFlingEvent> {
-        onFlingListener = listener(this@coroutineScope, this@flingEvents, ::safeOffer)
-        invokeOnClose { onFlingListener = null }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

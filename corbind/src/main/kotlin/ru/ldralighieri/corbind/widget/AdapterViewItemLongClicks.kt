@@ -60,17 +60,6 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
     invokeOnClose { onItemLongClickListener = null }
 }
 
-@CheckResult
-suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
-        handled: () -> Boolean = AlwaysTrue
-): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        onItemLongClickListener = listener(this@coroutineScope, handled, ::safeOffer)
-        invokeOnClose { onItemLongClickListener = null }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

@@ -59,17 +59,6 @@ fun View.hovers(
     invokeOnClose { setOnHoverListener(null) }
 }
 
-@CheckResult
-suspend fun View.hovers(
-        handled: (MotionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MotionEvent> = coroutineScope {
-
-    corbindReceiveChannel<MotionEvent> {
-        setOnHoverListener(listener(this@coroutineScope, handled, ::safeOffer))
-        invokeOnClose { setOnHoverListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

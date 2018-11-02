@@ -66,16 +66,6 @@ fun RatingBar.ratingChangeEvents(
     invokeOnClose { onRatingBarChangeListener = null }
 }
 
-@CheckResult
-suspend fun RatingBar.ratingChangeEvents(): ReceiveChannel<RatingBarChangeEvent> = coroutineScope {
-
-    corbindReceiveChannel<RatingBarChangeEvent> {
-        offer(initialValue(this@ratingChangeEvents))
-        onRatingBarChangeListener = listener(this@coroutineScope, ::safeOffer)
-        invokeOnClose { onRatingBarChangeListener = null }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

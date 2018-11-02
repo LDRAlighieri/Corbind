@@ -55,15 +55,6 @@ fun SearchBar.searchQueryChanges(
     invokeOnClose { setSearchBarListener(null) }
 }
 
-@CheckResult
-suspend fun SearchBar.searchQueryChanges(): ReceiveChannel<String> = coroutineScope {
-
-    corbindReceiveChannel<String> {
-        setSearchBarListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setSearchBarListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

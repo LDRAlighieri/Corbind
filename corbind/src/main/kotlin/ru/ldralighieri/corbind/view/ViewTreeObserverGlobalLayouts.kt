@@ -59,16 +59,6 @@ fun View.globalLayouts(
     invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
 }
 
-@CheckResult
-suspend fun View.globalLayouts(): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        val listener = listener(this@coroutineScope, ::safeOffer)
-        viewTreeObserver.addOnGlobalLayoutListener(listener)
-        invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

@@ -70,16 +70,6 @@ fun View.scrollChangeEvents(
     invokeOnClose { setOnScrollChangeListener(null) }
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
-@CheckResult
-suspend fun View.scrollChangeEvents(): ReceiveChannel<ViewScrollChangeEvent> = coroutineScope {
-
-    corbindReceiveChannel<ViewScrollChangeEvent> {
-        setOnScrollChangeListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnScrollChangeListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

@@ -60,17 +60,6 @@ fun View.keys(
     invokeOnClose { setOnKeyListener(null) }
 }
 
-@CheckResult
-suspend fun View.keys(
-        handled: (KeyEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<KeyEvent> = coroutineScope {
-
-    corbindReceiveChannel<KeyEvent> {
-        setOnKeyListener(listener(this@coroutineScope, handled, ::safeOffer))
-        invokeOnClose { setOnKeyListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

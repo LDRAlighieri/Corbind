@@ -58,16 +58,6 @@ fun View.focusChanges(
     invokeOnClose { onFocusChangeListener = null }
 }
 
-@CheckResult
-suspend fun View.focusChanges(): ReceiveChannel<Boolean> = coroutineScope {
-
-    corbindReceiveChannel<Boolean> {
-        safeOffer(hasFocus())
-        onFocusChangeListener = listener(this@coroutineScope, ::safeOffer)
-        invokeOnClose { onFocusChangeListener = null }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

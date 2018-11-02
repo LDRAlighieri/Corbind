@@ -58,16 +58,6 @@ fun RecyclerView.scrollStateChanges(
     invokeOnClose { removeOnScrollListener(scrollListener) }
 }
 
-@CheckResult
-suspend fun RecyclerView.scrollStateChanges(): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        val scrollListener = listener(this@coroutineScope, ::safeOffer)
-        addOnScrollListener(scrollListener)
-        invokeOnClose { removeOnScrollListener(scrollListener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

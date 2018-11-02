@@ -74,17 +74,6 @@ fun ViewGroup.changeEvents(
     invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
-@CheckResult
-suspend fun ViewGroup.changeEvents(): ReceiveChannel<ViewGroupHierarchyChangeEvent> =
-        coroutineScope {
-
-            corbindReceiveChannel<ViewGroupHierarchyChangeEvent> {
-                setOnHierarchyChangeListener(listener(this@coroutineScope, this@changeEvents,
-                        ::safeOffer))
-                invokeOnClose { setOnHierarchyChangeListener(null) }
-            }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

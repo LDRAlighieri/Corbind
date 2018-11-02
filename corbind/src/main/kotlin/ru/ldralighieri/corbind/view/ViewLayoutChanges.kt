@@ -58,16 +58,6 @@ fun View.layoutChanges(
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
-@CheckResult
-suspend fun View.layoutChanges(): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        val listener = listener(this@coroutineScope, ::safeOffer)
-        addOnLayoutChangeListener(listener)
-        invokeOnClose { removeOnLayoutChangeListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

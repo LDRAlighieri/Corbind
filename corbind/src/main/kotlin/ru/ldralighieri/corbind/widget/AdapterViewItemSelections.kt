@@ -60,16 +60,6 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
     invokeOnClose { onItemSelectedListener = null }
 }
 
-@CheckResult
-suspend fun <T : Adapter> AdapterView<T>.itemSelections(): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        offer(selectedItemPosition)
-        onItemSelectedListener = listener(this@coroutineScope, ::safeOffer)
-        invokeOnClose { onItemSelectedListener = null }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

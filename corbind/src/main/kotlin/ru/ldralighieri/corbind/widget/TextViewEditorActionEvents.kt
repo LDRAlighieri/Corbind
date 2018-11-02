@@ -68,17 +68,6 @@ fun TextView.editorActionEvents(
     invokeOnClose { setOnEditorActionListener(null) }
 }
 
-@CheckResult
-suspend fun TextView.editorActionEvents(
-        handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<TextViewEditorActionEvent> = coroutineScope {
-
-    corbindReceiveChannel<TextViewEditorActionEvent> {
-        setOnEditorActionListener(listener(this@coroutineScope, handled, ::safeOffer))
-        invokeOnClose { setOnEditorActionListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

@@ -65,19 +65,6 @@ fun DrawerLayout.drawerOpens(
     invokeOnClose { removeDrawerListener(listener) }
 }
 
-@CheckResult
-suspend fun DrawerLayout.drawerOpens(
-        gravity: Int
-): ReceiveChannel<Boolean> = coroutineScope {
-
-    corbindReceiveChannel<Boolean> {
-        safeOffer(isDrawerOpen(gravity))
-        val listener = listener(this@coroutineScope, gravity, ::safeOffer)
-        addDrawerListener(listener)
-        invokeOnClose { removeDrawerListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

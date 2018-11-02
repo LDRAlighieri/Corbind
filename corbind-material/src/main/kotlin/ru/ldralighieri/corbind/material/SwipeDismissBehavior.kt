@@ -60,16 +60,6 @@ fun View.dismisses(
     invokeOnClose { behavior.setListener(null) }
 }
 
-@CheckResult
-suspend fun View.dismisses(): ReceiveChannel<View> = coroutineScope {
-
-    corbindReceiveChannel<View> {
-        val behavior = getBehavior(this@dismisses)
-        behavior.setListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { behavior.setListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

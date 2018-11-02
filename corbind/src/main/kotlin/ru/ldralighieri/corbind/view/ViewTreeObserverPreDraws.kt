@@ -60,18 +60,6 @@ fun View.preDraws(
     invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
-@CheckResult
-suspend fun View.preDraws(
-        proceedDrawingPass: () -> Boolean
-): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        val listener = listener(this@coroutineScope, proceedDrawingPass, ::safeOffer)
-        viewTreeObserver.addOnPreDrawListener(listener)
-        invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

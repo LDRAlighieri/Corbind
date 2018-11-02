@@ -59,17 +59,6 @@ fun View.longClicks(
     invokeOnClose { setOnLongClickListener(null) }
 }
 
-@CheckResult
-suspend fun View.longClicks(
-        handled: () -> Boolean = AlwaysTrue
-): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        setOnLongClickListener(listener(this@coroutineScope, handled, ::safeOffer))
-        invokeOnClose { setOnLongClickListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

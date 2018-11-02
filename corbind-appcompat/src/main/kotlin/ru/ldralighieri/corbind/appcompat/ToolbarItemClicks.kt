@@ -56,15 +56,6 @@ fun Toolbar.itemClicks(
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
-@CheckResult
-suspend fun Toolbar.itemClicks(): ReceiveChannel<MenuItem> = coroutineScope {
-
-    corbindReceiveChannel<MenuItem> {
-        setOnMenuItemClickListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnMenuItemClickListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

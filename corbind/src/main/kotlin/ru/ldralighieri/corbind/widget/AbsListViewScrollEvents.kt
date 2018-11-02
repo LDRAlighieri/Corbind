@@ -65,15 +65,6 @@ fun AbsListView.scrollEvents(
     invokeOnClose { setOnScrollListener(null) }
 }
 
-@CheckResult
-suspend fun AbsListView.scrollEvents(): ReceiveChannel<AbsListViewScrollEvent> = coroutineScope {
-
-    corbindReceiveChannel<AbsListViewScrollEvent> {
-        setOnScrollListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnScrollListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

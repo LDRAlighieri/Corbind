@@ -67,16 +67,6 @@ fun SearchView.queryTextChangeEvents(
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
-@CheckResult
-suspend fun SearchView.queryTextChangeEvents(): ReceiveChannel<SearchViewQueryTextEvent> = coroutineScope {
-
-    corbindReceiveChannel<SearchViewQueryTextEvent> {
-        safeOffer(initialValue(this@queryTextChangeEvents))
-        setOnQueryTextListener(listener(this@coroutineScope, this@queryTextChangeEvents, ::safeOffer))
-        invokeOnClose { setOnQueryTextListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

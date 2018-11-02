@@ -63,17 +63,6 @@ fun <T : Adapter> T.dataChanges(
     invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
 }
 
-@CheckResult
-suspend fun <T : Adapter> T.dataChanges(): ReceiveChannel<T> = coroutineScope {
-
-    corbindReceiveChannel<T> {
-        offer(this@dataChanges)
-        val dataSetObserver = observer(this@coroutineScope, this@dataChanges, ::safeOffer)
-        registerDataSetObserver(dataSetObserver)
-        invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

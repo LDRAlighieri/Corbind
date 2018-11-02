@@ -72,16 +72,6 @@ fun View.attachEvents(
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
-@CheckResult
-suspend fun View.attachEvents(): ReceiveChannel<ViewAttachEvent> = coroutineScope {
-
-    corbindReceiveChannel<ViewAttachEvent> {
-        val listener = listener(this@coroutineScope, ::safeOffer)
-        addOnAttachStateChangeListener(listener)
-        invokeOnClose { removeOnAttachStateChangeListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

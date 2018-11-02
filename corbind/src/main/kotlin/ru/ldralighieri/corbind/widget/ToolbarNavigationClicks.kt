@@ -61,16 +61,6 @@ fun Toolbar.navigationClicks(
     invokeOnClose { setNavigationOnClickListener(null) }
 }
 
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-@CheckResult
-suspend fun Toolbar.navigationClicks(): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        setNavigationOnClickListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setNavigationOnClickListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

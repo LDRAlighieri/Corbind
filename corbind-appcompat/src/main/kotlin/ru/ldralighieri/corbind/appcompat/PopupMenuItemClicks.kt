@@ -56,15 +56,6 @@ fun PopupMenu.itemClicks(
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
-@CheckResult
-suspend fun PopupMenu.itemClicks(): ReceiveChannel<MenuItem> = coroutineScope {
-
-    corbindReceiveChannel<MenuItem> {
-        setOnMenuItemClickListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnMenuItemClickListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

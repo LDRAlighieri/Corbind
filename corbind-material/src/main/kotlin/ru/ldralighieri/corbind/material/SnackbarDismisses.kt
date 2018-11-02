@@ -58,16 +58,6 @@ fun Snackbar.dismisses(
     invokeOnClose { removeCallback(callback) }
 }
 
-@CheckResult
-suspend fun Snackbar.dismisses(): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        val callback = callback(this@coroutineScope, ::safeOffer)
-        addCallback(callback)
-        invokeOnClose { removeCallback(callback) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

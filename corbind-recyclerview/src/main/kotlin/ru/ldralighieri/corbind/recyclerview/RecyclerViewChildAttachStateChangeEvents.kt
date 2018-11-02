@@ -77,18 +77,6 @@ fun RecyclerView.childAttachStateChangeEvents(
     invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
 }
 
-@CheckResult
-suspend fun RecyclerView.childAttachStateChangeEvents():
-        ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = coroutineScope {
-
-
-    corbindReceiveChannel<RecyclerViewChildAttachStateChangeEvent> {
-        val listener = listener(this@coroutineScope, this@childAttachStateChangeEvents, ::safeOffer)
-        addOnChildAttachStateChangeListener(listener)
-        invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

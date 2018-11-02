@@ -68,6 +68,7 @@ private suspend fun SeekBar.changeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun SeekBar.changeEvents(
         scope: CoroutineScope
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel {
@@ -75,15 +76,6 @@ private fun SeekBar.changeEvents(
     offer(initialValue(this@changeEvents))
     setOnSeekBarChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
-}
-
-private suspend fun SeekBar.changeEvents(): ReceiveChannel<SeekBarChangeEvent> = coroutineScope {
-
-    corbindReceiveChannel<SeekBarChangeEvent> {
-        offer(initialValue(this@changeEvents))
-        setOnSeekBarChangeListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnSeekBarChangeListener(null) }
-    }
 }
 
 

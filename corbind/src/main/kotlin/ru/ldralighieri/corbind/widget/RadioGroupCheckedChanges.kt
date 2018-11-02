@@ -58,16 +58,6 @@ fun RadioGroup.checkedChanges(
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
-@CheckResult
-suspend fun RadioGroup.checkedChanges(): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        offer(checkedRadioButtonId)
-        setOnCheckedChangeListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnCheckedChangeListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

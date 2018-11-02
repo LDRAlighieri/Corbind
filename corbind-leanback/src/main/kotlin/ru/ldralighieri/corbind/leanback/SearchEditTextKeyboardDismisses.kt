@@ -55,15 +55,6 @@ fun SearchEditText.keyboardDismisses(
     invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
-@CheckResult
-suspend fun SearchEditText.keyboardDismisses(): ReceiveChannel<Unit> = coroutineScope {
-
-    corbindReceiveChannel<Unit> {
-        setOnKeyboardDismissListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnKeyboardDismissListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

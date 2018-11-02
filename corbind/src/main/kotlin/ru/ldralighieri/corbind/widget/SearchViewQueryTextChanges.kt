@@ -58,16 +58,6 @@ fun SearchView.queryTextChanges(
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
-@CheckResult
-suspend fun SearchView.queryTextChanges(): ReceiveChannel<CharSequence> = coroutineScope {
-
-    corbindReceiveChannel<CharSequence> {
-        safeOffer(query)
-        setOnQueryTextListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnQueryTextListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

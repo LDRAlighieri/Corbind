@@ -59,17 +59,6 @@ fun MenuItem.clicks(
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
-@CheckResult
-suspend fun MenuItem.clicks(
-        handled: (MenuItem) -> Boolean = AlwaysTrue
-): ReceiveChannel<MenuItem> = coroutineScope {
-
-    corbindReceiveChannel<MenuItem> {
-        setOnMenuItemClickListener(listener(this@coroutineScope, handled, ::safeOffer))
-        invokeOnClose { setOnMenuItemClickListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

@@ -61,18 +61,6 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
 
-@CheckResult
-suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
-): ReceiveChannel<T> = coroutineScope {
-
-    corbindReceiveChannel<T> {
-        safeOffer(this@dataChanges)
-        val dataObserver = observer(this@coroutineScope, this@dataChanges, ::safeOffer)
-        registerAdapterDataObserver(dataObserver)
-        invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

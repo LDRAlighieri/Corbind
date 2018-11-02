@@ -59,16 +59,6 @@ fun SlidingPaneLayout.panelOpens(
     invokeOnClose { setPanelSlideListener(null) }
 }
 
-@CheckResult
-suspend fun SlidingPaneLayout.panelOpens(): ReceiveChannel<Boolean> = coroutineScope {
-
-    corbindReceiveChannel<Boolean> {
-        safeOffer(isOpen)
-        setPanelSlideListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setPanelSlideListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

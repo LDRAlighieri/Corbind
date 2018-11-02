@@ -58,16 +58,6 @@ fun CompoundButton.checkedChanges(
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
-@CheckResult
-suspend fun CompoundButton.checkedChanges(): ReceiveChannel<Boolean> = coroutineScope {
-
-    corbindReceiveChannel<Boolean> {
-        offer(isChecked)
-        setOnCheckedChangeListener(listener(this@coroutineScope, ::safeOffer))
-        invokeOnClose { setOnCheckedChangeListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

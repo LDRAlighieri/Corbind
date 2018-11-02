@@ -56,15 +56,6 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
     invokeOnClose { onItemClickListener = null }
 }
 
-@CheckResult
-suspend fun <T : Adapter> AdapterView<T>.itemClicks(): ReceiveChannel<Int> = coroutineScope {
-
-    corbindReceiveChannel<Int> {
-        onItemClickListener = listener(this@coroutineScope, ::safeOffer)
-        invokeOnClose { onItemClickListener = null }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 

@@ -60,17 +60,6 @@ fun View.drags(
     invokeOnClose { setOnDragListener(null) }
 }
 
-@CheckResult
-suspend fun View.drags(
-        handled: (DragEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<DragEvent> = coroutineScope {
-
-    corbindReceiveChannel<DragEvent> {
-        setOnDragListener(listener(this@coroutineScope, handled, ::safeOffer))
-        invokeOnClose { setOnDragListener(null) }
-    }
-}
-
 
 // -----------------------------------------------------------------------------------------------
 
