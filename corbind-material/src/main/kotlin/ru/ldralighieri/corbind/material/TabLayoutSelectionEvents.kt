@@ -41,10 +41,11 @@ data class TabLayoutSelectionUnselectedEvent(
 
 fun TabLayout.selectionEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TabLayoutSelectionEvent) -> Unit
 ) {
 
-    val events = scope.actor<TabLayoutSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<TabLayoutSelectionEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -55,10 +56,11 @@ fun TabLayout.selectionEvents(
 }
 
 suspend fun TabLayout.selectionEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TabLayoutSelectionEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<TabLayoutSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<TabLayoutSelectionEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -74,8 +76,9 @@ suspend fun TabLayout.selectionEvents(
 
 @CheckResult
 fun TabLayout.selectionEvents(
-        scope: CoroutineScope
-): ReceiveChannel<TabLayoutSelectionEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<TabLayoutSelectionEvent> = corbindReceiveChannel(capacity) {
 
     setInitialValue(this@selectionEvents, ::safeOffer)
     val listener = listener(scope, this@selectionEvents, ::safeOffer)

@@ -21,10 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun View.dismisses(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (View) -> Unit
 ) {
 
-    val events = scope.actor<View>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<View>(Dispatchers.Main, capacity) {
         for (view in channel) action(view)
     }
 
@@ -34,10 +35,11 @@ fun View.dismisses(
 }
 
 suspend fun View.dismisses(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (View) -> Unit
 ) = coroutineScope {
 
-    val events = actor<View>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<View>(Dispatchers.Main, capacity) {
         for (view in channel) action(view)
     }
 
@@ -52,8 +54,9 @@ suspend fun View.dismisses(
 
 @CheckResult
 fun View.dismisses(
-        scope: CoroutineScope
-): ReceiveChannel<View> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<View> = corbindReceiveChannel(capacity) {
 
     val behavior = getBehavior(this@dismisses)
     behavior.setListener(listener(scope, ::safeOffer))
