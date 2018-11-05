@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun RecyclerView.scrollStateChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (state in channel) action(state)
     }
 
@@ -32,10 +33,11 @@ fun RecyclerView.scrollStateChanges(
 }
 
 suspend fun RecyclerView.scrollStateChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (state in channel) action(state)
     }
 
@@ -50,8 +52,9 @@ suspend fun RecyclerView.scrollStateChanges(
 
 @CheckResult
 fun RecyclerView.scrollStateChanges(
-        scope: CoroutineScope
-): ReceiveChannel<Int> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     val scrollListener = listener(scope, ::safeOffer)
     addOnScrollListener(scrollListener)
