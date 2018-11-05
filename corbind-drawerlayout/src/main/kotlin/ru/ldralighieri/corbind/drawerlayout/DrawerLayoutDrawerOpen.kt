@@ -20,11 +20,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun DrawerLayout.drawerOpens(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         gravity: Int,
         action: suspend (Boolean) -> Unit
 ) {
 
-    val events = scope.actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
         for (open in channel) action(open)
     }
 
@@ -35,11 +36,12 @@ fun DrawerLayout.drawerOpens(
 }
 
 suspend fun DrawerLayout.drawerOpens(
+        capacity: Int = Channel.RENDEZVOUS,
         gravity: Int,
         action: suspend (Boolean) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Boolean>(Dispatchers.Main, capacity) {
         for (open in channel) action(open)
     }
 
@@ -56,8 +58,9 @@ suspend fun DrawerLayout.drawerOpens(
 @CheckResult
 fun DrawerLayout.drawerOpens(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         gravity: Int
-): ReceiveChannel<Boolean> = corbindReceiveChannel {
+): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
 
     safeOffer(isDrawerOpen(gravity))
     val listener = listener(scope, gravity, ::safeOffer)

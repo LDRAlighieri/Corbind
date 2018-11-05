@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun RadioGroup.checkedChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (checkedId in channel) action(checkedId)
     }
 
@@ -32,10 +33,11 @@ fun RadioGroup.checkedChanges(
 }
 
 suspend fun RadioGroup.checkedChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (checkedId in channel) action(checkedId)
     }
 
@@ -50,8 +52,9 @@ suspend fun RadioGroup.checkedChanges(
 
 @CheckResult
 fun RadioGroup.checkedChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         scope: CoroutineScope
-): ReceiveChannel<Int> = corbindReceiveChannel {
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     offer(checkedRadioButtonId)
     setOnCheckedChangeListener(listener(scope, ::safeOffer))

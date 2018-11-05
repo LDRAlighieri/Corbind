@@ -21,11 +21,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun View.drags(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (DragEvent) -> Boolean = AlwaysTrue,
         action: suspend (DragEvent) -> Unit
 ) {
 
-    val events = scope.actor<DragEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<DragEvent>(Dispatchers.Main, capacity) {
         for (drag in channel) action(drag)
     }
 
@@ -34,11 +35,12 @@ fun View.drags(
 }
 
 suspend fun View.drags(
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (DragEvent) -> Boolean = AlwaysTrue,
         action: suspend (DragEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<DragEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<DragEvent>(Dispatchers.Main, capacity) {
         for (drag in channel) action(drag)
     }
 
@@ -53,8 +55,9 @@ suspend fun View.drags(
 @CheckResult
 fun View.drags(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (DragEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<DragEvent> = corbindReceiveChannel {
+): ReceiveChannel<DragEvent> = corbindReceiveChannel(capacity) {
 
     setOnDragListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnDragListener(null) }

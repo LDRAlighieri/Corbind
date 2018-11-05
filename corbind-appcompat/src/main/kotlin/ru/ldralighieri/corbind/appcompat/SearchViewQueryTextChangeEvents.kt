@@ -27,10 +27,11 @@ data class SearchViewQueryTextEvent(
 
 fun SearchView.queryTextChangeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (SearchViewQueryTextEvent) -> Unit
 ) {
 
-    val events = scope.actor<SearchViewQueryTextEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<SearchViewQueryTextEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -40,10 +41,11 @@ fun SearchView.queryTextChangeEvents(
 }
 
 suspend fun SearchView.queryTextChangeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (SearchViewQueryTextEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<SearchViewQueryTextEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<SearchViewQueryTextEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -59,8 +61,9 @@ suspend fun SearchView.queryTextChangeEvents(
 
 @CheckResult
 fun SearchView.queryTextChangeEvents(
-        scope: CoroutineScope
-): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(capacity) {
 
     safeOffer(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))
     setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::safeOffer))

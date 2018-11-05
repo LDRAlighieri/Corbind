@@ -23,10 +23,11 @@ data class RecyclerViewFlingEvent(val view: RecyclerView, val velocityX: Int, va
 
 fun RecyclerView.flingEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RecyclerViewFlingEvent) -> Unit
 ) {
 
-    val events = scope.actor<RecyclerViewFlingEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<RecyclerViewFlingEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -35,10 +36,11 @@ fun RecyclerView.flingEvents(
 }
 
 suspend fun RecyclerView.flingEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RecyclerViewFlingEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<RecyclerViewFlingEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<RecyclerViewFlingEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -53,8 +55,9 @@ suspend fun RecyclerView.flingEvents(
 
 @CheckResult
 fun RecyclerView.flingEvents(
-        scope: CoroutineScope
-): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel(capacity) {
 
     onFlingListener = listener(scope, this@flingEvents, ::safeOffer)
     invokeOnClose { onFlingListener = null }

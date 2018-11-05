@@ -21,10 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun TextView.textChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (CharSequence) -> Unit
 ) {
 
-    val events = scope.actor<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<CharSequence>(Dispatchers.Main, capacity) {
         for (chars in channel) action(chars)
     }
 
@@ -35,10 +36,11 @@ fun TextView.textChanges(
 }
 
 suspend fun TextView.textChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (CharSequence) -> Unit
 ) = coroutineScope {
 
-    val events = actor<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<CharSequence>(Dispatchers.Main, capacity) {
         for (chars in channel) action(chars)
     }
 
@@ -54,8 +56,9 @@ suspend fun TextView.textChanges(
 
 @CheckResult
 fun TextView.textChanges(
-        scope: CoroutineScope
-): ReceiveChannel<CharSequence> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
 
     safeOffer(text)
     val listener = listener(scope, ::safeOffer)

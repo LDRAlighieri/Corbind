@@ -41,10 +41,11 @@ data class SearchBarSearchQuerySubmittedEvent(
 
 fun SearchBar.searchQueryChangeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (SearchBarSearchQueryEvent) -> Unit
 ) {
 
-    val events = scope.actor<SearchBarSearchQueryEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<SearchBarSearchQueryEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -53,10 +54,11 @@ fun SearchBar.searchQueryChangeEvents(
 }
 
 suspend fun SearchBar.searchQueryChangeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (SearchBarSearchQueryEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<SearchBarSearchQueryEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<SearchBarSearchQueryEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -71,8 +73,9 @@ suspend fun SearchBar.searchQueryChangeEvents(
 
 @CheckResult
 fun SearchBar.searchQueryChangeEvents(
-        scope: CoroutineScope
-): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel(capacity) {
 
     setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::safeOffer))
     invokeOnClose { setSearchBarListener(null) }

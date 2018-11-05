@@ -37,10 +37,11 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
 
 fun ViewGroup.changeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
 ) {
 
-    val events = scope.actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -49,10 +50,11 @@ fun ViewGroup.changeEvents(
 }
 
 suspend fun ViewGroup.changeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -67,8 +69,9 @@ suspend fun ViewGroup.changeEvents(
 
 @CheckResult
 fun ViewGroup.changeEvents(
-        scope: CoroutineScope
-): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel(capacity) {
 
     setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::safeOffer))
     invokeOnClose { setOnHierarchyChangeListener(null) }

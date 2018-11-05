@@ -16,10 +16,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (visibility in channel) action(visibility)
     }
 
@@ -28,10 +29,11 @@ fun View.systemUiVisibilityChanges(
 }
 
 suspend fun View.systemUiVisibilityChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (visibility in channel) action(visibility)
     }
 
@@ -45,8 +47,9 @@ suspend fun View.systemUiVisibilityChanges(
 
 @CheckResult
 fun View.systemUiVisibilityChanges(
-        scope: CoroutineScope
-): ReceiveChannel<Int> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     setOnSystemUiVisibilityChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }

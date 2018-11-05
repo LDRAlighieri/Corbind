@@ -39,10 +39,11 @@ data class SeekBarStopChangeEvent(
 
 private fun SeekBar.changeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (SeekBarChangeEvent) -> Unit
 ) {
 
-    val events = scope.actor<SeekBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<SeekBarChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -52,10 +53,11 @@ private fun SeekBar.changeEvents(
 }
 
 private suspend fun SeekBar.changeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (SeekBarChangeEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<SeekBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<SeekBarChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -70,8 +72,9 @@ private suspend fun SeekBar.changeEvents(
 
 @CheckResult
 private fun SeekBar.changeEvents(
-        scope: CoroutineScope
-): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
 
     offer(initialValue(this@changeEvents))
     setOnSeekBarChangeListener(listener(scope, ::safeOffer))

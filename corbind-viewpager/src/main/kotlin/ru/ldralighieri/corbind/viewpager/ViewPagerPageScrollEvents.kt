@@ -28,10 +28,11 @@ data class ViewPagerPageScrollEvent(
 
 fun ViewPager.pageScrollEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewPagerPageScrollEvent) -> Unit
 ) {
 
-    val events = scope.actor<ViewPagerPageScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<ViewPagerPageScrollEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -41,10 +42,11 @@ fun ViewPager.pageScrollEvents(
 }
 
 suspend fun ViewPager.pageScrollEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewPagerPageScrollEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<ViewPagerPageScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<ViewPagerPageScrollEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -60,8 +62,9 @@ suspend fun ViewPager.pageScrollEvents(
 
 @CheckResult
 fun ViewPager.pageScrollEvents(
-        scope: CoroutineScope
-): ReceiveChannel<ViewPagerPageScrollEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<ViewPagerPageScrollEvent> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, this@pageScrollEvents, ::safeOffer)
     addOnPageChangeListener(listener)

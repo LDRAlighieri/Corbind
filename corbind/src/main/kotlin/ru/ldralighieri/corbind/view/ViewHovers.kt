@@ -20,11 +20,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun View.hovers(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (MotionEvent) -> Boolean = AlwaysTrue,
         action: suspend (MotionEvent) -> Unit
 ) {
 
-    val events = scope.actor<MotionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<MotionEvent>(Dispatchers.Main, capacity) {
         for (motion in channel) action(motion)
     }
 
@@ -33,11 +34,12 @@ fun View.hovers(
 }
 
 suspend fun View.hovers(
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (MotionEvent) -> Boolean = AlwaysTrue,
         action: suspend (MotionEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<MotionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<MotionEvent>(Dispatchers.Main, capacity) {
         for (motion in channel) action(motion)
     }
 
@@ -52,8 +54,9 @@ suspend fun View.hovers(
 @CheckResult
 fun View.hovers(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (MotionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MotionEvent> = corbindReceiveChannel {
+): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
 
     setOnHoverListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnHoverListener(null) }

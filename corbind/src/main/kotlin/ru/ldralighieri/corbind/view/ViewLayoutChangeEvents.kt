@@ -33,10 +33,11 @@ data class ViewLayoutChangeEvent(
 
 fun View.layoutChangeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewLayoutChangeEvent) -> Unit
 ) {
 
-    val events = scope.actor<ViewLayoutChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<ViewLayoutChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -46,10 +47,11 @@ fun View.layoutChangeEvents(
 }
 
 suspend fun View.layoutChangeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewLayoutChangeEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<ViewLayoutChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<ViewLayoutChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -64,8 +66,9 @@ suspend fun View.layoutChangeEvents(
 
 @CheckResult
 fun View.layoutChangeEvents(
-        scope: CoroutineScope
-): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, ::safeOffer)
     addOnLayoutChangeListener(listener)

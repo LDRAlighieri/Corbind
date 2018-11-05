@@ -20,10 +20,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun <T : Adapter> T.dataChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (T) -> Unit
 ) {
 
-    val events = scope.actor<T>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<T>(Dispatchers.Main, capacity) {
         for (adapter in channel) action(adapter)
     }
 
@@ -34,10 +35,11 @@ fun <T : Adapter> T.dataChanges(
 }
 
 suspend fun <T : Adapter> T.dataChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (T) -> Unit
 ) = coroutineScope {
 
-    val events = actor<T>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<T>(Dispatchers.Main, capacity) {
         for (adapter in channel) action(adapter)
     }
 
@@ -54,8 +56,9 @@ suspend fun <T : Adapter> T.dataChanges(
 
 @CheckResult
 fun <T : Adapter> T.dataChanges(
-        scope: CoroutineScope
-): ReceiveChannel<T> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
 
     offer(this@dataChanges)
     val dataSetObserver = observer(scope, this@dataChanges, ::safeOffer)

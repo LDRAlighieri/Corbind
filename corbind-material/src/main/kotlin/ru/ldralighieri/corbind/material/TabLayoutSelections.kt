@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun TabLayout.selections(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TabLayout.Tab) -> Unit
 ) {
 
-    val events = scope.actor<TabLayout.Tab>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<TabLayout.Tab>(Dispatchers.Main, capacity) {
         for (tab in channel) action(tab)
     }
 
@@ -33,10 +34,11 @@ fun TabLayout.selections(
 }
 
 suspend fun TabLayout.selections(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TabLayout.Tab) -> Unit
 ) = coroutineScope {
 
-    val events = actor<TabLayout.Tab>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<TabLayout.Tab>(Dispatchers.Main, capacity) {
         for (tab in channel) action(tab)
     }
 
@@ -52,8 +54,9 @@ suspend fun TabLayout.selections(
 
 @CheckResult
 fun TabLayout.selections(
-        scope: CoroutineScope
-): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
 
     setInitialValue(this@selections, ::safeOffer)
     val listener = listener(scope, ::safeOffer)

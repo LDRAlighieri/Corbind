@@ -28,10 +28,11 @@ data class TextViewAfterTextChangeEvent(
 
 fun TextView.afterTextChangeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TextViewAfterTextChangeEvent) -> Unit
 ) {
 
-    val events = scope.actor<TextViewAfterTextChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<TextViewAfterTextChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -42,10 +43,11 @@ fun TextView.afterTextChangeEvents(
 }
 
 suspend fun TextView.afterTextChangeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TextViewAfterTextChangeEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<TextViewAfterTextChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<TextViewAfterTextChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -62,8 +64,9 @@ suspend fun TextView.afterTextChangeEvents(
 
 @CheckResult
 fun TextView.afterTextChangeEvents(
-        scope: CoroutineScope
-): ReceiveChannel<TextViewAfterTextChangeEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<TextViewAfterTextChangeEvent> = corbindReceiveChannel(capacity) {
 
     safeOffer(initialValue(this@afterTextChangeEvents))
     val listener = listener(scope, this@afterTextChangeEvents, ::safeOffer)

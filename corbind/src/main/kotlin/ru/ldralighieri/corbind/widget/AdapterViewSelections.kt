@@ -38,10 +38,11 @@ data class AdapterViewNothingSelectionEvent(
 
 fun <T : Adapter> AdapterView<T>.selectionEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewSelectionEvent) -> Unit
 ) {
 
-    val events = scope.actor<AdapterViewSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<AdapterViewSelectionEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -51,10 +52,11 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 }
 
 suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewSelectionEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<AdapterViewSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<AdapterViewSelectionEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -69,8 +71,9 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(
-        scope: CoroutineScope
-): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(capacity) {
 
     offer(initialValue(this@selectionEvents))
     onItemSelectedListener = listener(scope, ::safeOffer)

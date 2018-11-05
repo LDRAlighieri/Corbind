@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun AppBarLayout.offsetChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (offset in channel) action(offset)
     }
 
@@ -32,10 +33,11 @@ fun AppBarLayout.offsetChanges(
 }
 
 suspend fun AppBarLayout.offsetChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (offset in channel) action(offset)
     }
 
@@ -50,8 +52,9 @@ suspend fun AppBarLayout.offsetChanges(
 
 @CheckResult
 fun AppBarLayout.offsetChanges(
-        scope: CoroutineScope
-): ReceiveChannel<Int> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, ::safeOffer)
     addOnOffsetChangedListener(listener)

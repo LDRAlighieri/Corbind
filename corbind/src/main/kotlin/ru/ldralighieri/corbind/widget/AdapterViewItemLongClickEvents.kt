@@ -31,11 +31,12 @@ data class AdapterViewItemLongClickEvent(
 
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
         action: suspend (AdapterViewItemLongClickEvent) -> Unit
 ) {
 
-    val events = scope.actor<AdapterViewItemLongClickEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<AdapterViewItemLongClickEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -44,11 +45,12 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
         action: suspend (AdapterViewItemLongClickEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<AdapterViewItemLongClickEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<AdapterViewItemLongClickEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -63,8 +65,9 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel {
+): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel(capacity) {
 
     onItemLongClickListener = listener(scope, handled, ::safeOffer)
     invokeOnClose { onItemLongClickListener = null }
