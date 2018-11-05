@@ -9,10 +9,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -66,21 +67,10 @@ suspend fun MenuItem.actionViewEvents(
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MenuItemActionViewEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel {
 
-    setOnActionExpandListener(listener(this, handled, ::offer))
+    setOnActionExpandListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnActionExpandListener(null) }
-}
-
-@CheckResult
-suspend fun MenuItem.actionViewEvents(
-        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MenuItemActionViewEvent> = coroutineScope {
-
-    produce<MenuItemActionViewEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnActionExpandListener(listener(this, handled, ::offer))
-        invokeOnClose { setOnActionExpandListener(null) }
-    }
 }
 
 

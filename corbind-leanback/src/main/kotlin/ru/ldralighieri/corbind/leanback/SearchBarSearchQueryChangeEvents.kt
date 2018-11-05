@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -71,21 +72,10 @@ suspend fun SearchBar.searchQueryChangeEvents(
 @CheckResult
 fun SearchBar.searchQueryChangeEvents(
         scope: CoroutineScope
-): ReceiveChannel<SearchBarSearchQueryEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel {
 
-    setSearchBarListener(listener(scope = this, searchBar = this@searchQueryChangeEvents,
-            emitter = ::offer))
+    setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::safeOffer))
     invokeOnClose { setSearchBarListener(null) }
-}
-
-@CheckResult
-suspend fun SearchBar.searchQueryChangeEvents(): ReceiveChannel<SearchBarSearchQueryEvent> = coroutineScope {
-
-    produce<SearchBarSearchQueryEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setSearchBarListener(listener(scope = this, searchBar = this@searchQueryChangeEvents,
-                emitter = ::offer))
-        invokeOnClose { setSearchBarListener(null) }
-    }
 }
 
 

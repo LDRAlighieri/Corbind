@@ -10,10 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -61,21 +62,10 @@ suspend fun TextView.editorActionEvents(
 fun TextView.editorActionEvents(
         scope: CoroutineScope,
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<TextViewEditorActionEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel {
 
-    setOnEditorActionListener(listener(this, handled, ::offer))
+    setOnEditorActionListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnEditorActionListener(null) }
-}
-
-@CheckResult
-suspend fun TextView.editorActionEvents(
-        handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<TextViewEditorActionEvent> = coroutineScope {
-
-    produce<TextViewEditorActionEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnEditorActionListener(listener(this, handled, ::offer))
-        invokeOnClose { setOnEditorActionListener(null) }
-    }
 }
 
 

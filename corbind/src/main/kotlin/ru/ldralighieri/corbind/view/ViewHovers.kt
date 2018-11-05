@@ -10,10 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -52,21 +53,10 @@ suspend fun View.hovers(
 fun View.hovers(
         scope: CoroutineScope,
         handled: (MotionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MotionEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<MotionEvent> = corbindReceiveChannel {
 
-    setOnHoverListener(listener(this, handled, ::offer))
+    setOnHoverListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnHoverListener(null) }
-}
-
-@CheckResult
-suspend fun View.hovers(
-        handled: (MotionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MotionEvent> = coroutineScope {
-
-    produce<MotionEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnHoverListener(listener(this, handled, ::offer))
-        invokeOnClose { setOnHoverListener(null) }
-    }
 }
 
 

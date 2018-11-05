@@ -4,11 +4,15 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.SeekBar
 import androidx.annotation.CheckResult
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -64,22 +68,14 @@ private suspend fun SeekBar.changeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun SeekBar.changeEvents(
         scope: CoroutineScope
-): ReceiveChannel<SeekBarChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel {
 
     offer(initialValue(this@changeEvents))
-    setOnSeekBarChangeListener(listener(this, ::offer))
+    setOnSeekBarChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
-}
-
-private suspend fun SeekBar.changeEvents(): ReceiveChannel<SeekBarChangeEvent> = coroutineScope {
-
-    produce<SeekBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(initialValue(this@changeEvents))
-        setOnSeekBarChangeListener(listener(this, ::offer))
-        invokeOnClose { setOnSeekBarChangeListener(null) }
-    }
 }
 
 

@@ -10,10 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -53,21 +54,10 @@ suspend fun View.drags(
 fun View.drags(
         scope: CoroutineScope,
         handled: (DragEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<DragEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<DragEvent> = corbindReceiveChannel {
 
-    setOnDragListener(listener(this, handled, ::offer))
+    setOnDragListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnDragListener(null) }
-}
-
-@CheckResult
-suspend fun View.drags(
-        handled: (DragEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<DragEvent> = coroutineScope {
-
-    produce<DragEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnDragListener(listener(this, handled, ::offer))
-        invokeOnClose { setOnDragListener(null) }
-    }
 }
 
 

@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -50,21 +51,11 @@ suspend fun View.focusChanges(
 @CheckResult
 fun View.focusChanges(
         scope: CoroutineScope
-): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Boolean> = corbindReceiveChannel {
 
-    offer(hasFocus())
-    onFocusChangeListener = listener(this, ::offer)
+    safeOffer(hasFocus())
+    onFocusChangeListener = listener(scope, ::safeOffer)
     invokeOnClose { onFocusChangeListener = null }
-}
-
-@CheckResult
-suspend fun View.focusChanges(): ReceiveChannel<Boolean> = coroutineScope {
-
-    produce<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(hasFocus())
-        onFocusChangeListener = listener(this, ::offer)
-        invokeOnClose { onFocusChangeListener = null }
-    }
 }
 
 

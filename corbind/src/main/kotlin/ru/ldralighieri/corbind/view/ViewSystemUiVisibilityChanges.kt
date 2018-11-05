@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope,
@@ -45,19 +46,10 @@ suspend fun View.systemUiVisibilityChanges(
 @CheckResult
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope
-): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Int> = corbindReceiveChannel {
 
-    setOnSystemUiVisibilityChangeListener(listener(this, ::offer))
+    setOnSystemUiVisibilityChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
-}
-
-@CheckResult
-suspend fun View.systemUiVisibilityChanges(): ReceiveChannel<Int> = coroutineScope {
-
-    produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnSystemUiVisibilityChangeListener(listener(this, ::offer))
-        invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
-    }
 }
 
 

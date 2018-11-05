@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -58,21 +59,11 @@ suspend fun RatingBar.ratingChangeEvents(
 @CheckResult
 fun RatingBar.ratingChangeEvents(
         scope: CoroutineScope
-): ReceiveChannel<RatingBarChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel {
 
-    offer(initialValue(this@ratingChangeEvents))
-    onRatingBarChangeListener = listener(this, ::offer)
+    safeOffer(initialValue(this@ratingChangeEvents))
+    onRatingBarChangeListener = listener(scope, ::offer)
     invokeOnClose { onRatingBarChangeListener = null }
-}
-
-@CheckResult
-suspend fun RatingBar.ratingChangeEvents(): ReceiveChannel<RatingBarChangeEvent> = coroutineScope {
-
-    produce<RatingBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(initialValue(this@ratingChangeEvents))
-        onRatingBarChangeListener = listener(this, ::offer)
-        invokeOnClose { onRatingBarChangeListener = null }
-    }
 }
 
 

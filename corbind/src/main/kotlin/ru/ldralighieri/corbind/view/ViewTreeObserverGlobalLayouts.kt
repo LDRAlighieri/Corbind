@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -51,21 +52,11 @@ suspend fun View.globalLayouts(
 @CheckResult
 fun View.globalLayouts(
         scope: CoroutineScope
-): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = corbindReceiveChannel {
 
-    val listener = listener(this, ::offer)
+    val listener = listener(scope, ::safeOffer)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
-}
-
-@CheckResult
-suspend fun View.globalLayouts(): ReceiveChannel<Unit> = coroutineScope {
-
-    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(this, ::offer)
-        viewTreeObserver.addOnGlobalLayoutListener(listener)
-        invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
-    }
 }
 
 

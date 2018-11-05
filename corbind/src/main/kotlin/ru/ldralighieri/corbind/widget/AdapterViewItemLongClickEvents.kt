@@ -11,10 +11,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -63,21 +64,10 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         scope: CoroutineScope,
         handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<AdapterViewItemLongClickEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel {
 
-    onItemLongClickListener = listener(this, handled, ::offer)
+    onItemLongClickListener = listener(scope, handled, ::safeOffer)
     invokeOnClose { onItemLongClickListener = null }
-}
-
-@CheckResult
-suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
-        handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<AdapterViewItemLongClickEvent> = coroutineScope {
-
-    produce<AdapterViewItemLongClickEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        onItemLongClickListener = listener(this, handled, ::offer)
-        invokeOnClose { onItemLongClickListener = null }
-    }
 }
 
 

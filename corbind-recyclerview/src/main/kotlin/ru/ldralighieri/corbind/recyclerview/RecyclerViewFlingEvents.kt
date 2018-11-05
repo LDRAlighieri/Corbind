@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -53,19 +54,10 @@ suspend fun RecyclerView.flingEvents(
 @CheckResult
 fun RecyclerView.flingEvents(
         scope: CoroutineScope
-): ReceiveChannel<RecyclerViewFlingEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel {
 
-    onFlingListener = listener(scope = this, recyclerView = this@flingEvents, emitter = ::offer)
+    onFlingListener = listener(scope, this@flingEvents, ::safeOffer)
     invokeOnClose { onFlingListener = null }
-}
-
-@CheckResult
-suspend fun RecyclerView.flingEvents(): ReceiveChannel<RecyclerViewFlingEvent> = coroutineScope {
-
-    produce<RecyclerViewFlingEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        onFlingListener = listener(scope = this, recyclerView = this@flingEvents, emitter = ::offer)
-        invokeOnClose { onFlingListener = null }
-    }
 }
 
 

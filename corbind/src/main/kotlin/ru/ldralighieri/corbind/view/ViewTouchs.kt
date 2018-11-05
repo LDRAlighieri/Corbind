@@ -10,10 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -53,21 +54,10 @@ suspend fun View.touches(
 fun View.touches(
         scope: CoroutineScope,
         handled: (MotionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MotionEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<MotionEvent> = corbindReceiveChannel {
 
-    setOnTouchListener(listener(this, handled, ::offer))
+    setOnTouchListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnTouchListener(null) }
-}
-
-@CheckResult
-suspend fun View.touches(
-        handled: (MotionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MotionEvent> = coroutineScope {
-
-    produce<MotionEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnTouchListener(listener(this, handled, ::offer))
-        invokeOnClose { setOnTouchListener(null) }
-    }
 }
 
 

@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -69,25 +70,11 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(
         scope: CoroutineScope
-): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = corbindReceiveChannel {
 
-    val listener = listener(scope = this, recyclerView = this@childAttachStateChangeEvents,
-            emitter = ::offer)
+    val listener = listener(scope, this@childAttachStateChangeEvents, ::safeOffer)
     addOnChildAttachStateChangeListener(listener)
     invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
-}
-
-@CheckResult
-suspend fun RecyclerView.childAttachStateChangeEvents():
-        ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = coroutineScope {
-
-
-    produce<RecyclerViewChildAttachStateChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(scope = this, recyclerView = this@childAttachStateChangeEvents,
-                emitter = ::offer)
-        addOnChildAttachStateChangeListener(listener)
-        invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
-    }
 }
 
 

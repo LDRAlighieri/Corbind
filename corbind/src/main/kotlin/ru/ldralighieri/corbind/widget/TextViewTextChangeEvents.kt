@@ -11,9 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -64,23 +65,12 @@ suspend fun TextView.textChangeEvents(
 @CheckResult
 fun TextView.textChangeEvents(
         scope: CoroutineScope
-): ReceiveChannel<TextViewTextChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<TextViewTextChangeEvent> = corbindReceiveChannel {
 
-    offer(initialValue(this@textChangeEvents))
-    val listener = listener(scope = this, textView = this@textChangeEvents, emitter = ::offer)
+    safeOffer(initialValue(this@textChangeEvents))
+    val listener = listener(scope, this@textChangeEvents, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
-}
-
-@CheckResult
-suspend fun TextView.textChangeEvents(): ReceiveChannel<TextViewTextChangeEvent> = coroutineScope {
-
-    produce<TextViewTextChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(initialValue(this@textChangeEvents))
-        val listener = listener(scope = this, textView = this@textChangeEvents, emitter = ::offer)
-        addTextChangedListener(listener)
-        invokeOnClose { removeTextChangedListener(listener) }
-    }
 }
 
 

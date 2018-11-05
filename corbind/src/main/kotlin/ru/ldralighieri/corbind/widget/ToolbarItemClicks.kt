@@ -12,9 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -54,20 +55,10 @@ suspend fun Toolbar.itemClicks(
 @CheckResult
 fun Toolbar.itemClicks(
         scope: CoroutineScope
-): ReceiveChannel<MenuItem> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<MenuItem> = corbindReceiveChannel {
 
-    setOnMenuItemClickListener(listener(this, ::offer))
+    setOnMenuItemClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnMenuItemClickListener(null) }
-}
-
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-@CheckResult
-suspend fun Toolbar.itemClicks(): ReceiveChannel<MenuItem> = coroutineScope {
-
-    produce<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnMenuItemClickListener(listener(this, ::offer))
-        invokeOnClose { setOnMenuItemClickListener(null) }
-    }
 }
 
 

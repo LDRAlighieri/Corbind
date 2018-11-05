@@ -10,10 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -53,21 +54,10 @@ suspend fun View.keys(
 fun View.keys(
         scope: CoroutineScope,
         handled: (KeyEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<KeyEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<KeyEvent> = corbindReceiveChannel {
 
-    setOnKeyListener(listener(this, handled, ::offer))
+    setOnKeyListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnKeyListener(null) }
-}
-
-@CheckResult
-suspend fun View.keys(
-        handled: (KeyEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<KeyEvent> = coroutineScope {
-
-    produce<KeyEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnKeyListener(listener(this, handled, ::offer))
-        invokeOnClose { setOnKeyListener(null) }
-    }
 }
 
 

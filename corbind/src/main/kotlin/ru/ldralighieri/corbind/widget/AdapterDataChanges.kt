@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -54,23 +55,12 @@ suspend fun <T : Adapter> T.dataChanges(
 @CheckResult
 fun <T : Adapter> T.dataChanges(
         scope: CoroutineScope
-): ReceiveChannel<T> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<T> = corbindReceiveChannel {
 
     offer(this@dataChanges)
-    val dataSetObserver = observer(scope = this, adapter = this@dataChanges, emitter = ::offer)
+    val dataSetObserver = observer(scope, this@dataChanges, ::safeOffer)
     registerDataSetObserver(dataSetObserver)
     invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
-}
-
-@CheckResult
-suspend fun <T : Adapter> T.dataChanges(): ReceiveChannel<T> = coroutineScope {
-
-    produce<T>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(this@dataChanges)
-        val dataSetObserver = observer(scope = this, adapter = this@dataChanges, emitter = ::offer)
-        registerDataSetObserver(dataSetObserver)
-        invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
-    }
 }
 
 

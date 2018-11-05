@@ -10,10 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -53,21 +54,10 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
         scope: CoroutineScope,
         handled: () -> Boolean = AlwaysTrue
-): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Int> = corbindReceiveChannel {
 
-    onItemLongClickListener = listener(this, handled, ::offer)
+    onItemLongClickListener = listener(scope, handled, ::safeOffer)
     invokeOnClose { onItemLongClickListener = null }
-}
-
-@CheckResult
-suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
-        handled: () -> Boolean = AlwaysTrue
-): ReceiveChannel<Int> = coroutineScope {
-
-    produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        onItemLongClickListener = listener(this, handled, ::offer)
-        invokeOnClose { onItemLongClickListener = null }
-    }
 }
 
 

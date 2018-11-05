@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -67,21 +68,10 @@ suspend fun ViewGroup.changeEvents(
 @CheckResult
 fun ViewGroup.changeEvents(
         scope: CoroutineScope
-): ReceiveChannel<ViewGroupHierarchyChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel {
 
-    setOnHierarchyChangeListener(listener(scope = this, viewGroup = this@changeEvents,
-            emitter = ::offer))
+    setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::safeOffer))
     invokeOnClose { setOnHierarchyChangeListener(null) }
-}
-
-@CheckResult
-suspend fun ViewGroup.changeEvents(): ReceiveChannel<ViewGroupHierarchyChangeEvent> = coroutineScope {
-
-    produce<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnHierarchyChangeListener(listener(scope = this, viewGroup = this@changeEvents,
-                emitter = ::offer))
-        invokeOnClose { setOnHierarchyChangeListener(null) }
-    }
 }
 
 

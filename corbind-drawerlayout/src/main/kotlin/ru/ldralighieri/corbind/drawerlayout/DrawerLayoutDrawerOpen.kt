@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -56,25 +57,12 @@ suspend fun DrawerLayout.drawerOpens(
 fun DrawerLayout.drawerOpens(
         scope: CoroutineScope,
         gravity: Int
-): ReceiveChannel<Boolean> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Boolean> = corbindReceiveChannel {
 
-    offer(isDrawerOpen(gravity))
-    val listener = listener(this, gravity, ::offer)
+    safeOffer(isDrawerOpen(gravity))
+    val listener = listener(scope, gravity, ::safeOffer)
     addDrawerListener(listener)
     invokeOnClose { removeDrawerListener(listener) }
-}
-
-@CheckResult
-suspend fun DrawerLayout.drawerOpens(
-        gravity: Int
-): ReceiveChannel<Boolean> = coroutineScope {
-
-    produce<Boolean>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(isDrawerOpen(gravity))
-        val listener = listener(this, gravity, ::offer)
-        addDrawerListener(listener)
-        invokeOnClose { removeDrawerListener(listener) }
-    }
 }
 
 
