@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun View.attaches(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) {
 
-    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -32,10 +33,11 @@ fun View.attaches(
 }
 
 suspend fun View.attaches(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) = coroutineScope {
 
-    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -50,8 +52,9 @@ suspend fun View.attaches(
 
 @CheckResult
 fun View.attaches(
-        scope: CoroutineScope
-): ReceiveChannel<Unit> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, true, ::safeOffer)
     addOnAttachStateChangeListener(listener)

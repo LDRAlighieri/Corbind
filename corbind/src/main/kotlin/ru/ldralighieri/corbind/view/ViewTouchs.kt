@@ -21,11 +21,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun View.touches(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (MotionEvent) -> Boolean = AlwaysTrue,
         action: suspend (MotionEvent) -> Unit
 ) {
 
-    val events = scope.actor<MotionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<MotionEvent>(Dispatchers.Main, capacity) {
         for (motion in channel) action(motion)
     }
 
@@ -34,11 +35,12 @@ fun View.touches(
 }
 
 suspend fun View.touches(
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (MotionEvent) -> Boolean = AlwaysTrue,
         action: suspend (MotionEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<MotionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<MotionEvent>(Dispatchers.Main, capacity) {
         for (motion in channel) action(motion)
     }
 
@@ -53,8 +55,9 @@ suspend fun View.touches(
 @CheckResult
 fun View.touches(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (MotionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MotionEvent> = corbindReceiveChannel {
+): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
 
     setOnTouchListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnTouchListener(null) }

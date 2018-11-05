@@ -19,11 +19,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 private fun SeekBar.changes(
         scope: CoroutineScope,
+        capacity: Int,
         shouldBeFromUser: Boolean?,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (progress in channel) action(progress)
     }
 
@@ -33,11 +34,12 @@ private fun SeekBar.changes(
 }
 
 private suspend fun SeekBar.changes(
+        capacity: Int,
         shouldBeFromUser: Boolean?,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (progress in channel) action(progress)
     }
 
@@ -53,8 +55,9 @@ private suspend fun SeekBar.changes(
 @CheckResult
 private fun SeekBar.changes(
         scope: CoroutineScope,
+        capacity: Int,
         shouldBeFromUser: Boolean?
-): ReceiveChannel<Int> = corbindReceiveChannel {
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     safeOffer(progress)
     setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::safeOffer))
@@ -67,15 +70,20 @@ private fun SeekBar.changes(
 
 fun SeekBar.changes(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
-) = changes(scope, null, action)
+) = changes(scope, capacity, null, action)
 
-suspend fun SeekBar.changes(action: suspend (Int) -> Unit) = changes(null, action)
+suspend fun SeekBar.changes(
+        capacity: Int = Channel.RENDEZVOUS,
+        action: suspend (Int) -> Unit
+) = changes(capacity, null, action)
 
 @CheckResult
 fun SeekBar.changes(
-        scope: CoroutineScope
-) = changes(scope, null)
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+) = changes(scope, capacity, null)
 
 
 // -----------------------------------------------------------------------------------------------
@@ -83,15 +91,20 @@ fun SeekBar.changes(
 
 fun SeekBar.userChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
-) = changes(scope, true, action)
+) = changes(scope, capacity, true, action)
 
-suspend fun SeekBar.userChanges(action: suspend (Int) -> Unit) = changes(true, action)
+suspend fun SeekBar.userChanges(
+        capacity: Int = Channel.RENDEZVOUS,
+        action: suspend (Int) -> Unit
+) = changes(capacity, true, action)
 
 @CheckResult
 fun SeekBar.userChanges(
-        scope: CoroutineScope
-) = changes(scope, true)
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+) = changes(scope, capacity, true)
 
 
 // -----------------------------------------------------------------------------------------------
@@ -99,15 +112,20 @@ fun SeekBar.userChanges(
 
 fun SeekBar.systemChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
-) = changes(scope, false, action)
+) = changes(scope, capacity, false, action)
 
-suspend fun SeekBar.systemChanges(action: suspend (Int) -> Unit) = changes(false, action)
+suspend fun SeekBar.systemChanges(
+        capacity: Int = Channel.RENDEZVOUS,
+        action: suspend (Int) -> Unit
+) = changes(capacity, false, action)
 
 @CheckResult
 fun SeekBar.systemChanges(
-        scope: CoroutineScope
-) = changes(scope, false)
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+) = changes(scope, capacity, false)
 
 
 // -----------------------------------------------------------------------------------------------

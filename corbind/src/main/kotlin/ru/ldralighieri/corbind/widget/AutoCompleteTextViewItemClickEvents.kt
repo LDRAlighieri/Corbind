@@ -20,10 +20,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun AutoCompleteTextView.itemClickEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewItemClickEvent) -> Unit
 ) {
 
-    val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -32,10 +33,11 @@ fun AutoCompleteTextView.itemClickEvents(
 }
 
 suspend fun AutoCompleteTextView.itemClickEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewItemClickEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<AdapterViewItemClickEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<AdapterViewItemClickEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -49,8 +51,9 @@ suspend fun AutoCompleteTextView.itemClickEvents(
 
 @CheckResult
 fun AutoCompleteTextView.itemClickEvents(
-        scope: CoroutineScope
-): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(capacity) {
 
     onItemClickListener = listener(scope, ::safeOffer)
     invokeOnClose { onItemClickListener = null }

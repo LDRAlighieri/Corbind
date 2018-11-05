@@ -29,11 +29,12 @@ data class TextViewEditorActionEvent(
 
 fun TextView.editorActionEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
         action: suspend (TextViewEditorActionEvent) -> Unit
 ) {
 
-    val events = scope.actor<TextViewEditorActionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<TextViewEditorActionEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -42,11 +43,12 @@ fun TextView.editorActionEvents(
 }
 
 suspend fun TextView.editorActionEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
         action: suspend (TextViewEditorActionEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<TextViewEditorActionEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<TextViewEditorActionEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -61,8 +63,9 @@ suspend fun TextView.editorActionEvents(
 @CheckResult
 fun TextView.editorActionEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel {
+): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel(capacity) {
 
     setOnEditorActionListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnEditorActionListener(null) }

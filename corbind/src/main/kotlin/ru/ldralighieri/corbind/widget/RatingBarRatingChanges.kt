@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun RatingBar.ratingChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Float) -> Unit
 ) {
 
-    val events = scope.actor<Float>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Float>(Dispatchers.Main, capacity) {
         for (rating in channel) action(rating)
     }
 
@@ -32,10 +33,11 @@ fun RatingBar.ratingChanges(
 }
 
 suspend fun RatingBar.ratingChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Float) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Float>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Float>(Dispatchers.Main, capacity) {
         for (rating in channel) action(rating)
     }
 
@@ -50,8 +52,9 @@ suspend fun RatingBar.ratingChanges(
 
 @CheckResult
 fun RatingBar.ratingChanges(
-        scope: CoroutineScope
-): ReceiveChannel<Float> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
 
     safeOffer(rating)
     onRatingBarChangeListener = listener(scope, ::safeOffer)

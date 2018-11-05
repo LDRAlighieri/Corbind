@@ -34,11 +34,12 @@ data class MenuItemActionViewExpandEvent(
 
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
         action: suspend (MenuItemActionViewEvent) -> Boolean
 ) {
 
-    val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -47,11 +48,12 @@ fun MenuItem.actionViewEvents(
 }
 
 suspend fun MenuItem.actionViewEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
         action: suspend (MenuItemActionViewEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<MenuItemActionViewEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -66,8 +68,9 @@ suspend fun MenuItem.actionViewEvents(
 @CheckResult
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel {
+): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel(capacity) {
 
     setOnActionExpandListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnActionExpandListener(null) }

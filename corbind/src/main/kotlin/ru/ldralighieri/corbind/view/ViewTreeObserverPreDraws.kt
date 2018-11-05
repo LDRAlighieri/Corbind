@@ -20,10 +20,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun View.preDraws(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         proceedDrawingPass: () -> Boolean,
         action: suspend () -> Unit
 ) {
-    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -33,10 +34,11 @@ fun View.preDraws(
 }
 
 suspend fun View.preDraws(
+        capacity: Int = Channel.RENDEZVOUS,
         proceedDrawingPass: () -> Boolean,
         action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -52,8 +54,9 @@ suspend fun View.preDraws(
 @CheckResult
 fun View.preDraws(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         proceedDrawingPass: () -> Boolean
-): ReceiveChannel<Unit> = corbindReceiveChannel {
+): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, proceedDrawingPass, ::safeOffer)
     viewTreeObserver.addOnPreDrawListener(listener)

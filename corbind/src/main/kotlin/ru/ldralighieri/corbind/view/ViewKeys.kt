@@ -21,11 +21,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun View.keys(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (KeyEvent) -> Boolean = AlwaysTrue,
         action: suspend (KeyEvent) -> Unit
 ) {
 
-    val events = scope.actor<KeyEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<KeyEvent>(Dispatchers.Main, capacity) {
         for (key in channel) action(key)
     }
 
@@ -34,11 +35,12 @@ fun View.keys(
 }
 
 suspend fun View.keys(
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (KeyEvent) -> Boolean = AlwaysTrue,
         action: suspend (KeyEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<KeyEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<KeyEvent>(Dispatchers.Main, capacity) {
         for (key in channel) action(key)
     }
 
@@ -53,8 +55,9 @@ suspend fun View.keys(
 @CheckResult
 fun View.keys(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (KeyEvent) -> Boolean = AlwaysTrue
-): ReceiveChannel<KeyEvent> = corbindReceiveChannel {
+): ReceiveChannel<KeyEvent> = corbindReceiveChannel(capacity) {
 
     setOnKeyListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnKeyListener(null) }

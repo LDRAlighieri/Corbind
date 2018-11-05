@@ -8,9 +8,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 // -----------------------------------------------------------------------------------------------
 
 inline fun <T> corbindReceiveChannel(
+        capacity: Int = Channel.RENDEZVOUS,
         block: Channel<T>.() -> Unit
 ): ReceiveChannel<T> {
-    val channel = Channel<T>(Channel.CONFLATED)
+    val channel = Channel<T>(capacity)
     channel.block()
     return channel
 }
