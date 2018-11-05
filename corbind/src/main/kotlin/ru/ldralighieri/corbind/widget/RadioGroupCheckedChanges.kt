@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -50,21 +51,11 @@ suspend fun RadioGroup.checkedChanges(
 @CheckResult
 fun RadioGroup.checkedChanges(
         scope: CoroutineScope
-): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Int> = corbindReceiveChannel {
 
     offer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(this, ::offer))
+    setOnCheckedChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnCheckedChangeListener(null) }
-}
-
-@CheckResult
-suspend fun RadioGroup.checkedChanges(): ReceiveChannel<Int> = coroutineScope {
-
-    produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(checkedRadioButtonId)
-        setOnCheckedChangeListener(listener(this, ::offer))
-        invokeOnClose { setOnCheckedChangeListener(null) }
-    }
 }
 
 

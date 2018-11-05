@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -48,20 +49,12 @@ suspend fun SwipeRefreshLayout.refreshes(
 @CheckResult
 fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope
-): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = corbindReceiveChannel {
 
-    setOnRefreshListener(listener(this, ::offer))
+    setOnRefreshListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnRefreshListener(null) }
 }
 
-@CheckResult
-suspend fun SwipeRefreshLayout.refreshes(): ReceiveChannel<Unit> = coroutineScope {
-
-    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnRefreshListener(listener(this, ::offer))
-        invokeOnClose { setOnRefreshListener(null) }
-    }
-}
 
 // -----------------------------------------------------------------------------------------------
 

@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -49,25 +50,15 @@ private suspend fun SeekBar.changes(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 private fun SeekBar.changes(
         scope: CoroutineScope,
         shouldBeFromUser: Boolean?
-): ReceiveChannel<Int> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Int> = corbindReceiveChannel {
 
-    offer(progress)
-    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offer))
+    safeOffer(progress)
+    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::safeOffer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
-}
-
-private suspend fun SeekBar.changes(
-        shouldBeFromUser: Boolean?
-): ReceiveChannel<Int> = coroutineScope {
-
-    produce<Int>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(progress)
-        setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offer))
-        invokeOnClose { setOnSeekBarChangeListener(null) }
-    }
 }
 
 
@@ -86,9 +77,6 @@ fun SeekBar.changes(
         scope: CoroutineScope
 ) = changes(scope, null)
 
-@CheckResult
-suspend fun SeekBar.changes() = changes(null)
-
 
 // -----------------------------------------------------------------------------------------------
 
@@ -105,9 +93,6 @@ fun SeekBar.userChanges(
         scope: CoroutineScope
 ) = changes(scope, true)
 
-@CheckResult
-suspend fun SeekBar.userChanges() = changes(true)
-
 
 // -----------------------------------------------------------------------------------------------
 
@@ -123,9 +108,6 @@ suspend fun SeekBar.systemChanges(action: suspend (Int) -> Unit) = changes(false
 fun SeekBar.systemChanges(
         scope: CoroutineScope
 ) = changes(scope, false)
-
-@CheckResult
-suspend fun SeekBar.systemChanges() = changes(false)
 
 
 // -----------------------------------------------------------------------------------------------

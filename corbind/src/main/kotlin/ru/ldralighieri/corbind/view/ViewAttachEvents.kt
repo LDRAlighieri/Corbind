@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -64,21 +65,11 @@ suspend fun View.attachEvents(
 @CheckResult
 fun View.attachEvents(
         scope: CoroutineScope
-): ReceiveChannel<ViewAttachEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<ViewAttachEvent> = corbindReceiveChannel {
 
-    val listener = listener(this, ::offer)
+    val listener = listener(scope, ::safeOffer)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
-}
-
-@CheckResult
-suspend fun View.attachEvents(): ReceiveChannel<ViewAttachEvent> = coroutineScope {
-
-    produce<ViewAttachEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(this, ::offer)
-        addOnAttachStateChangeListener(listener)
-        invokeOnClose { removeOnAttachStateChangeListener(listener) }
-    }
 }
 
 

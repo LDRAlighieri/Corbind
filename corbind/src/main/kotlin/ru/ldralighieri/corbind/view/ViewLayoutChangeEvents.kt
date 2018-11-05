@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -64,21 +65,11 @@ suspend fun View.layoutChangeEvents(
 @CheckResult
 fun View.layoutChangeEvents(
         scope: CoroutineScope
-): ReceiveChannel<ViewLayoutChangeEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel {
 
-    val listener = listener(this, ::offer)
+    val listener = listener(scope, ::safeOffer)
     addOnLayoutChangeListener(listener)
     invokeOnClose { removeOnLayoutChangeListener(listener) }
-}
-
-@CheckResult
-suspend fun View.layoutChangeEvents(): ReceiveChannel<ViewLayoutChangeEvent> = coroutineScope {
-
-    produce<ViewLayoutChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(this, ::offer)
-        addOnLayoutChangeListener(listener)
-        invokeOnClose { removeOnLayoutChangeListener(listener) }
-    }
 }
 
 

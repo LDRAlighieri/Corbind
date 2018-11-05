@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -48,19 +49,10 @@ suspend fun SearchEditText.keyboardDismisses(
 @CheckResult
 fun SearchEditText.keyboardDismisses(
         scope: CoroutineScope
-): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = corbindReceiveChannel {
 
-    setOnKeyboardDismissListener(listener(this, ::offer))
+    setOnKeyboardDismissListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnKeyboardDismissListener(null) }
-}
-
-@CheckResult
-suspend fun SearchEditText.keyboardDismisses(): ReceiveChannel<Unit> = coroutineScope {
-
-    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        setOnKeyboardDismissListener(listener(this, ::offer))
-        invokeOnClose { setOnKeyboardDismissListener(null) }
-    }
 }
 
 

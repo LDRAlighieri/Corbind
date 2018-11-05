@@ -10,9 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -49,19 +50,10 @@ suspend fun SlidingPaneLayout.panelSlides(
 @CheckResult
 fun SlidingPaneLayout.panelSlides(
         scope: CoroutineScope
-): ReceiveChannel<Float> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Float> = corbindReceiveChannel {
 
-    setPanelSlideListener(listener(this, ::offer))
+    setPanelSlideListener(listener(scope, ::safeOffer))
     invokeOnClose { setPanelSlideListener(null) }
-}
-
-@CheckResult
-suspend fun SlidingPaneLayout.panelSlides(): ReceiveChannel<Float> = coroutineScope {
-
-    produce<Float>(Dispatchers.Main, Channel.CONFLATED) {
-        setPanelSlideListener(listener(this, ::offer))
-        invokeOnClose { setPanelSlideListener(null) }
-    }
 }
 
 

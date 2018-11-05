@@ -9,9 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -54,21 +55,11 @@ suspend fun RecyclerView.scrollEvents(
 @CheckResult
 fun RecyclerView.scrollEvents(
         scope: CoroutineScope
-): ReceiveChannel<RecyclerViewScrollEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<RecyclerViewScrollEvent> = corbindReceiveChannel {
 
-    val scrollListener = listener(this, ::offer)
+    val scrollListener = listener(scope, ::safeOffer)
     addOnScrollListener(scrollListener)
     invokeOnClose { removeOnScrollListener(scrollListener) }
-}
-
-@CheckResult
-suspend fun RecyclerView.scrollEvents(): ReceiveChannel<RecyclerViewScrollEvent> = coroutineScope {
-
-    produce<RecyclerViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        val scrollListener = listener(this, ::offer)
-        addOnScrollListener(scrollListener)
-        invokeOnClose { removeOnScrollListener(scrollListener) }
-    }
 }
 
 

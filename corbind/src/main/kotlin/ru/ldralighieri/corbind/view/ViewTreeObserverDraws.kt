@@ -12,9 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -56,22 +57,11 @@ suspend fun View.draws(
 @CheckResult
 fun View.draws(
         scope: CoroutineScope
-): ReceiveChannel<Unit> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<Unit> = corbindReceiveChannel {
 
-    val listener = listener(this, ::offer)
+    val listener = listener(scope, ::safeOffer)
     viewTreeObserver.addOnDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
-}
-
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-@CheckResult
-suspend fun View.draws(): ReceiveChannel<Unit> = coroutineScope {
-
-    produce<Unit>(Dispatchers.Main, Channel.CONFLATED) {
-        val listener = listener(this, ::offer)
-        viewTreeObserver.addOnDrawListener(listener)
-        invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
-    }
 }
 
 

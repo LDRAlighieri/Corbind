@@ -11,9 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
@@ -69,22 +70,11 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(
         scope: CoroutineScope
-): ReceiveChannel<AdapterViewSelectionEvent> = scope.produce(Dispatchers.Main, Channel.CONFLATED) {
+): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel {
 
     offer(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(this, ::offer)
+    onItemSelectedListener = listener(scope, ::safeOffer)
     invokeOnClose { onItemSelectedListener = null }
-}
-
-@CheckResult
-suspend fun <T : Adapter> AdapterView<T>.selectionEvents()
-        : ReceiveChannel<AdapterViewSelectionEvent> = coroutineScope {
-
-    produce<AdapterViewSelectionEvent>(Dispatchers.Main, Channel.CONFLATED) {
-        offer(initialValue(this@selectionEvents))
-        onItemSelectedListener = listener(this, ::offer)
-        invokeOnClose { onItemSelectedListener = null }
-    }
 }
 
 
