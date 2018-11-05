@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun SearchBar.searchQueryChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (String) -> Unit
 ) {
 
-    val events = scope.actor<String>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<String>(Dispatchers.Main, capacity) {
         for (query in channel) action(query)
     }
 
@@ -31,10 +32,11 @@ fun SearchBar.searchQueryChanges(
 }
 
 suspend fun SearchBar.searchQueryChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (String) -> Unit
 ) = coroutineScope {
 
-    val events = actor<String>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<String>(Dispatchers.Main, capacity) {
         for (query in channel) action(query)
     }
 
@@ -48,8 +50,9 @@ suspend fun SearchBar.searchQueryChanges(
 
 @CheckResult
 fun SearchBar.searchQueryChanges(
-        scope: CoroutineScope
-): ReceiveChannel<String> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<String> = corbindReceiveChannel(capacity) {
 
     setSearchBarListener(listener(scope, ::safeOffer))
     invokeOnClose { setSearchBarListener(null) }

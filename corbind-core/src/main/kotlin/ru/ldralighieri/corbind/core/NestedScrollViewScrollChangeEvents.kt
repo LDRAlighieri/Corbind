@@ -20,10 +20,11 @@ import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
 
 fun NestedScrollView.scrollChangeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewScrollChangeEvent) -> Unit
 ) {
 
-    val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -35,10 +36,11 @@ fun NestedScrollView.scrollChangeEvents(
 }
 
 suspend fun NestedScrollView.scrollChangeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewScrollChangeEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<ViewScrollChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -55,8 +57,9 @@ suspend fun NestedScrollView.scrollChangeEvents(
 
 @CheckResult
 fun NestedScrollView.scrollChangeEvents(
-        scope: CoroutineScope
-): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, ::safeOffer)
     setOnScrollChangeListener(listener)
