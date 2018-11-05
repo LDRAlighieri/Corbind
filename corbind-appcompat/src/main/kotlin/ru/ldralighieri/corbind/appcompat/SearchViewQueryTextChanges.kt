@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun SearchView.queryTextChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (CharSequence) -> Unit
 ) {
 
-    val events = scope.actor<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<CharSequence>(Dispatchers.Main, capacity) {
         for (chars in channel) action(chars)
     }
 
@@ -32,10 +33,11 @@ fun SearchView.queryTextChanges(
 }
 
 suspend fun SearchView.queryTextChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (CharSequence) -> Unit
 ) = coroutineScope {
 
-    val events = actor<CharSequence>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<CharSequence>(Dispatchers.Main, capacity) {
         for (chars in channel) action(chars)
     }
 
@@ -50,8 +52,9 @@ suspend fun SearchView.queryTextChanges(
 
 @CheckResult
 fun SearchView.queryTextChanges(
-        scope: CoroutineScope
-): ReceiveChannel<CharSequence> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
 
     safeOffer(query)
     setOnQueryTextListener(listener(scope, ::safeOffer))

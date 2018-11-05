@@ -20,10 +20,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun Toolbar.navigationClicks(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) {
 
-    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -32,10 +33,11 @@ fun Toolbar.navigationClicks(
 }
 
 suspend fun Toolbar.navigationClicks(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) = coroutineScope {
 
-    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -49,8 +51,9 @@ suspend fun Toolbar.navigationClicks(
 
 @CheckResult
 fun Toolbar.navigationClicks(
-        scope: CoroutineScope
-): ReceiveChannel<Unit> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
 
     setNavigationOnClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setNavigationOnClickListener(null) }
