@@ -32,10 +32,11 @@ data class ViewScrollChangeEvent(
 @RequiresApi(Build.VERSION_CODES.M)
 fun View.scrollChangeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewScrollChangeEvent) -> Unit
 ) {
 
-    val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -45,10 +46,11 @@ fun View.scrollChangeEvents(
 
 @RequiresApi(Build.VERSION_CODES.M)
 suspend fun View.scrollChangeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewScrollChangeEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<ViewScrollChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<ViewScrollChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -63,8 +65,9 @@ suspend fun View.scrollChangeEvents(
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun View.scrollChangeEvents(
-        scope: CoroutineScope
-): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
 
     setOnScrollChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnScrollChangeListener(null) }

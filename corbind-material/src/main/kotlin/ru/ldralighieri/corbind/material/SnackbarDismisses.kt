@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun Snackbar.dismisses(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -32,10 +33,11 @@ fun Snackbar.dismisses(
 }
 
 suspend fun Snackbar.dismisses(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -50,8 +52,9 @@ suspend fun Snackbar.dismisses(
 
 @CheckResult
 fun Snackbar.dismisses(
-        scope: CoroutineScope
-): ReceiveChannel<Int> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     val callback = callback(scope, ::safeOffer)
     addCallback(callback)

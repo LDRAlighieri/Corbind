@@ -29,10 +29,11 @@ data class AbsListViewScrollEvent(
 
 fun AbsListView.scrollEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AbsListViewScrollEvent) -> Unit
 ) {
 
-    val events = scope.actor<AbsListViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<AbsListViewScrollEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -41,10 +42,11 @@ fun AbsListView.scrollEvents(
 }
 
 suspend fun AbsListView.scrollEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AbsListViewScrollEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<AbsListViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<AbsListViewScrollEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -58,8 +60,9 @@ suspend fun AbsListView.scrollEvents(
 
 @CheckResult
 fun AbsListView.scrollEvents(
-        scope: CoroutineScope
-): ReceiveChannel<AbsListViewScrollEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<AbsListViewScrollEvent> = corbindReceiveChannel(capacity) {
 
     setOnScrollListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnScrollListener(null) }

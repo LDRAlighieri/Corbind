@@ -30,10 +30,11 @@ data class AdapterViewItemClickEvent(
 
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewItemClickEvent) -> Unit
 ) {
 
-    val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -42,10 +43,11 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 }
 
 suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewItemClickEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<AdapterViewItemClickEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<AdapterViewItemClickEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -59,8 +61,9 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
 
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
-        scope: CoroutineScope
-): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(capacity) {
 
     onItemClickListener = listener(scope, ::safeOffer)
     invokeOnClose { onItemClickListener = null }

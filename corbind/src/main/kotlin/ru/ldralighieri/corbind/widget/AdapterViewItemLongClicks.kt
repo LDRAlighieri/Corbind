@@ -21,11 +21,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: () -> Boolean = AlwaysTrue,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main,Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (position in channel) action(position)
     }
 
@@ -34,11 +35,12 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
+        capacity: Int = Channel.RENDEZVOUS,
         handled: () -> Boolean = AlwaysTrue,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main,Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (position in channel) action(position)
     }
 
@@ -53,8 +55,9 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: () -> Boolean = AlwaysTrue
-): ReceiveChannel<Int> = corbindReceiveChannel {
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     onItemLongClickListener = listener(scope, handled, ::safeOffer)
     invokeOnClose { onItemLongClickListener = null }

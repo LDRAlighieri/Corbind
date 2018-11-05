@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (T) -> Unit
 ) {
 
-    val events = scope.actor<T>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<T>(Dispatchers.Main, capacity) {
         for (adapter in channel) action(adapter)
     }
 
@@ -33,10 +34,11 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
 }
 
 suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (T) -> Unit
 ) = coroutineScope {
 
-    val events = actor<T>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<T>(Dispatchers.Main, capacity) {
         for (adapter in channel) action(adapter)
     }
 
@@ -52,8 +54,9 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
-        scope: CoroutineScope
-): ReceiveChannel<T> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
 
     safeOffer(this@dataChanges)
     val dataObserver = observer(scope, this@dataChanges, ::safeOffer)

@@ -33,10 +33,11 @@ data class ViewAttachDetachedEvent(
 
 fun View.attachEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewAttachEvent) -> Unit
 ) {
 
-    val events = scope.actor<ViewAttachEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<ViewAttachEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -46,10 +47,11 @@ fun View.attachEvents(
 }
 
 suspend fun View.attachEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewAttachEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<ViewAttachEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<ViewAttachEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -64,8 +66,9 @@ suspend fun View.attachEvents(
 
 @CheckResult
 fun View.attachEvents(
-        scope: CoroutineScope
-): ReceiveChannel<ViewAttachEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<ViewAttachEvent> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, ::safeOffer)
     addOnAttachStateChangeListener(listener)

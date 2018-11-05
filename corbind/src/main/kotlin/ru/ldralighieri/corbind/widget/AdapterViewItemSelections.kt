@@ -21,10 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun <T : Adapter> AdapterView<T>.itemSelections(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (position in channel) action(position)
     }
 
@@ -34,10 +35,11 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
 }
 
 suspend fun <T : Adapter> AdapterView<T>.itemSelections(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (position in channel) action(position)
     }
 
@@ -52,8 +54,9 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
 
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemSelections(
-        scope: CoroutineScope
-): ReceiveChannel<Int> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     offer(selectedItemPosition)
     onItemSelectedListener = listener(scope, ::safeOffer)

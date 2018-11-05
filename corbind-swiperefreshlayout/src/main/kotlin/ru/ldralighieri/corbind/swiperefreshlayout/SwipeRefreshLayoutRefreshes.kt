@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) {
 
-    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -31,10 +32,11 @@ fun SwipeRefreshLayout.refreshes(
 }
 
 suspend fun SwipeRefreshLayout.refreshes(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) = coroutineScope {
 
-    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -48,8 +50,9 @@ suspend fun SwipeRefreshLayout.refreshes(
 
 @CheckResult
 fun SwipeRefreshLayout.refreshes(
-        scope: CoroutineScope
-): ReceiveChannel<Unit> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
 
     setOnRefreshListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnRefreshListener(null) }

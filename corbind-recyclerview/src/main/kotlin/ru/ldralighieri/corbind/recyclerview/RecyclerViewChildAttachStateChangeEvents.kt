@@ -37,10 +37,11 @@ data class RecyclerViewChildDetachEvent(
 
 fun RecyclerView.childAttachStateChangeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit
 ) {
 
-    val events = scope.actor<RecyclerViewChildAttachStateChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<RecyclerViewChildAttachStateChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -50,10 +51,11 @@ fun RecyclerView.childAttachStateChangeEvents(
 }
 
 suspend fun RecyclerView.childAttachStateChangeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<RecyclerViewChildAttachStateChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<RecyclerViewChildAttachStateChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -69,8 +71,9 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
 
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(
-        scope: CoroutineScope
-): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, this@childAttachStateChangeEvents, ::safeOffer)
     addOnChildAttachStateChangeListener(listener)

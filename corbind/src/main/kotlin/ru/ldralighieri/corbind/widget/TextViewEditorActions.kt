@@ -20,11 +20,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun TextView.editorActions(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (Int) -> Boolean = AlwaysTrue,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (actionId in channel) action(actionId)
     }
 
@@ -33,11 +34,12 @@ fun TextView.editorActions(
 }
 
 suspend fun TextView.editorActions(
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (Int) -> Boolean = AlwaysTrue,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (actionId in channel) action(actionId)
     }
 
@@ -52,8 +54,9 @@ suspend fun TextView.editorActions(
 @CheckResult
 fun TextView.editorActions(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         handled: (Int) -> Boolean = AlwaysTrue
-): ReceiveChannel<Int> = corbindReceiveChannel {
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     setOnEditorActionListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnEditorActionListener(null) }

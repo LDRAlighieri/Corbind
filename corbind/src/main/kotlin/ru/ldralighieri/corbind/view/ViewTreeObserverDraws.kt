@@ -23,10 +23,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 fun View.draws(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) {
 
-    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -37,10 +38,11 @@ fun View.draws(
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 suspend fun View.draws(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) = coroutineScope {
 
-    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -56,8 +58,9 @@ suspend fun View.draws(
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
 fun View.draws(
-        scope: CoroutineScope
-): ReceiveChannel<Unit> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, ::safeOffer)
     viewTreeObserver.addOnDrawListener(listener)

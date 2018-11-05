@@ -20,10 +20,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun Toolbar.itemClicks(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (MenuItem) -> Unit
 ) {
 
-    val events = scope.actor<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<MenuItem>(Dispatchers.Main, capacity) {
         for (item in channel) action(item)
     }
 
@@ -32,10 +33,11 @@ fun Toolbar.itemClicks(
 }
 
 suspend fun Toolbar.itemClicks(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
 
-    val events = actor<MenuItem>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<MenuItem>(Dispatchers.Main, capacity) {
         for (item in channel) action(item)
     }
 
@@ -49,8 +51,9 @@ suspend fun Toolbar.itemClicks(
 
 @CheckResult
 fun Toolbar.itemClicks(
-        scope: CoroutineScope
-): ReceiveChannel<MenuItem> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
 
     setOnMenuItemClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnMenuItemClickListener(null) }

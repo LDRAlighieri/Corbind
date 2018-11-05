@@ -27,10 +27,11 @@ data class RatingBarChangeEvent(
 
 fun RatingBar.ratingChangeEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RatingBarChangeEvent) -> Unit
 ) {
 
-    val events = scope.actor<RatingBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<RatingBarChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -40,10 +41,11 @@ fun RatingBar.ratingChangeEvents(
 }
 
 suspend fun RatingBar.ratingChangeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RatingBarChangeEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<RatingBarChangeEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<RatingBarChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -58,8 +60,9 @@ suspend fun RatingBar.ratingChangeEvents(
 
 @CheckResult
 fun RatingBar.ratingChangeEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         scope: CoroutineScope
-): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel {
+): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel(capacity) {
 
     safeOffer(initialValue(this@ratingChangeEvents))
     onRatingBarChangeListener = listener(scope, ::offer)

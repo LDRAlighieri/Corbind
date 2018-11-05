@@ -23,10 +23,11 @@ data class RecyclerViewScrollEvent(val view: RecyclerView, val dx: Int, val dy: 
 
 fun RecyclerView.scrollEvents(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RecyclerViewScrollEvent) -> Unit
 ) {
 
-    val events = scope.actor<RecyclerViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<RecyclerViewScrollEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -36,10 +37,11 @@ fun RecyclerView.scrollEvents(
 }
 
 suspend fun RecyclerView.scrollEvents(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RecyclerViewScrollEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<RecyclerViewScrollEvent>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<RecyclerViewScrollEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
@@ -54,8 +56,9 @@ suspend fun RecyclerView.scrollEvents(
 
 @CheckResult
 fun RecyclerView.scrollEvents(
-        scope: CoroutineScope
-): ReceiveChannel<RecyclerViewScrollEvent> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<RecyclerViewScrollEvent> = corbindReceiveChannel(capacity) {
 
     val scrollListener = listener(scope, ::safeOffer)
     addOnScrollListener(scrollListener)
