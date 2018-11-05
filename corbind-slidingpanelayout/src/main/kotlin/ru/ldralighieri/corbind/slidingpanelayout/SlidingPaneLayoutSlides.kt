@@ -20,10 +20,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun SlidingPaneLayout.panelSlides(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Float) -> Unit
 ) {
 
-    val events = scope.actor<Float>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Float>(Dispatchers.Main, capacity) {
         for (slide in channel) action(slide)
     }
 
@@ -32,10 +33,11 @@ fun SlidingPaneLayout.panelSlides(
 }
 
 suspend fun SlidingPaneLayout.panelSlides(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Float) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Float>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Float>(Dispatchers.Main, capacity) {
         for (slide in channel) action(slide)
     }
 
@@ -49,8 +51,9 @@ suspend fun SlidingPaneLayout.panelSlides(
 
 @CheckResult
 fun SlidingPaneLayout.panelSlides(
-        scope: CoroutineScope
-): ReceiveChannel<Float> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
 
     setPanelSlideListener(listener(scope, ::safeOffer))
     invokeOnClose { setPanelSlideListener(null) }

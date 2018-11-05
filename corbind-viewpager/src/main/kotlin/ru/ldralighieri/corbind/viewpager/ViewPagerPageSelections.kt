@@ -19,10 +19,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 fun ViewPager.pageSelections(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (position in channel) action(position)
     }
 
@@ -33,10 +34,11 @@ fun ViewPager.pageSelections(
 }
 
 suspend fun ViewPager.pageSelections(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Int>(Dispatchers.Main, capacity) {
         for (position in channel) action(position)
     }
 
@@ -52,8 +54,9 @@ suspend fun ViewPager.pageSelections(
 
 @CheckResult
 fun ViewPager.pageSelections(
-        scope: CoroutineScope
-): ReceiveChannel<Int> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
 
     safeOffer(currentItem)
     val listener = listener(scope, ::safeOffer)
