@@ -21,7 +21,7 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 data class AdapterViewItemLongClickEvent(
         val view: AdapterView<*>,
-        val clickedView: View,
+        val clickedView: View?,
         val position: Int,
         val id: Long
 )
@@ -82,7 +82,7 @@ private fun listener(
         scope: CoroutineScope,
         handled: (AdapterViewItemLongClickEvent) -> Boolean,
         emitter: (AdapterViewItemLongClickEvent) -> Boolean
-) = AdapterView.OnItemLongClickListener { parent, view, position, id ->
+) = AdapterView.OnItemLongClickListener { parent, view: View?, position, id ->
 
     if (scope.isActive) {
         val event = AdapterViewItemLongClickEvent(parent, view, position, id)

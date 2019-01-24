@@ -2,6 +2,7 @@
 
 package ru.ldralighieri.corbind.widget
 
+import android.view.View
 import android.widget.Adapter
 import android.widget.AdapterView
 import androidx.annotation.CheckResult
@@ -67,7 +68,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
 private fun listener(
         scope: CoroutineScope,
         emitter: (Int) -> Boolean
-) = AdapterView.OnItemClickListener { _, _, position, _ ->
+) = AdapterView.OnItemClickListener { _, _: View?, position, _ ->
 
     if (scope.isActive) { emitter(position) }
 }
