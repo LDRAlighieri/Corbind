@@ -20,7 +20,7 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 data class AdapterViewItemClickEvent(
         val view: AdapterView<*>,
-        val clickedView: View,
+        val clickedView: View?,
         val position: Int,
         val id: Long
 )
@@ -77,7 +77,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 private fun listener(
         scope: CoroutineScope,
         emitter: (AdapterViewItemClickEvent) -> Boolean
-) = AdapterView.OnItemClickListener { parent, view, position, id ->
+) = AdapterView.OnItemClickListener { parent, view: View?, position, id ->
 
     if (scope.isActive) {
         emitter(AdapterViewItemClickEvent(parent, view, position, id))

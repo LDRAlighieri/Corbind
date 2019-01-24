@@ -1,11 +1,10 @@
 @file:Suppress("EXPERIMENTAL_API_USAGE")
 
-package ru.ldralighieri.corbind.widget
+package ru.ldralighieri.corbind.material
 
 import android.view.View
-import android.widget.Adapter
-import android.widget.AdapterView
 import androidx.annotation.CheckResult
+import com.google.android.material.chip.Chip
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -19,45 +18,44 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
-fun <T : Adapter> AdapterView<T>.itemClicks(
+fun Chip.closeIconClicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+        action: suspend () -> Unit
 ) {
 
-    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
-        for (position in channel) action(position)
+    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
+        for (unit in channel) action()
     }
 
-    onItemClickListener = listener(scope, events::offer)
-    events.invokeOnClose { onItemClickListener = null }
+    setOnCloseIconClickListener(listener(scope, events::offer))
+    events.invokeOnClose { setOnCloseIconClickListener(null) }
 }
 
-suspend fun <T : Adapter> AdapterView<T>.itemClicks(
+suspend fun Chip.closeIconClicks(
         capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+        action: suspend () -> Unit
 ) = coroutineScope {
 
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (position in channel) action(position)
+    val events = actor<Unit>(Dispatchers.Main, capacity) {
+        for (unit in channel) action()
     }
 
-    onItemClickListener = listener(this, events::offer)
-    events.invokeOnClose { onItemClickListener = null }
+    setOnCloseIconClickListener(listener(this, events::offer))
+    events.invokeOnClose { setOnCloseIconClickListener(null) }
 }
-
 
 // -----------------------------------------------------------------------------------------------
 
 
 @CheckResult
-fun <T : Adapter> AdapterView<T>.itemClicks(
+fun Chip.clicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
 
-    onItemClickListener = listener(scope, ::safeOffer)
-    invokeOnClose { onItemClickListener = null }
+    setOnCloseIconClickListener(listener(scope, ::safeOffer))
+    invokeOnClose { setOnClickListener(null) }
 }
 
 
@@ -67,8 +65,8 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
 @CheckResult
 private fun listener(
         scope: CoroutineScope,
-        emitter: (Int) -> Boolean
-) = AdapterView.OnItemClickListener { _, _: View?, position, _ ->
+        emitter: (Unit) -> Boolean
+) = View.OnClickListener {
 
-    if (scope.isActive) { emitter(position) }
+    if (scope.isActive) { emitter(Unit) }
 }
