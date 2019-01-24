@@ -2,6 +2,7 @@
 
 package ru.ldralighieri.corbind.widget
 
+import android.view.View
 import android.widget.Adapter
 import android.widget.AdapterView
 import androidx.annotation.CheckResult
@@ -72,7 +73,7 @@ private fun listener(
         scope: CoroutineScope,
         handled: () -> Boolean,
         emitter: (Int) -> Boolean
-) = AdapterView.OnItemLongClickListener { _, _, position, _ ->
+) = AdapterView.OnItemLongClickListener { _, _: View?, position, _ ->
 
     if (scope.isActive) {
         if (handled()) {

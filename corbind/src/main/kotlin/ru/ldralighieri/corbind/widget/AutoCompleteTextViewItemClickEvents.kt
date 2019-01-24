@@ -2,6 +2,7 @@
 
 package ru.ldralighieri.corbind.widget
 
+import android.view.View
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import androidx.annotation.CheckResult
@@ -67,7 +68,7 @@ fun AutoCompleteTextView.itemClickEvents(
 private fun listener(
         scope: CoroutineScope,
         emitter: (AdapterViewItemClickEvent) -> Boolean
-) = AdapterView.OnItemClickListener { parent, view, position, id ->
+) = AdapterView.OnItemClickListener { parent, view: View?, position, id ->
 
     if (scope.isActive) {
         emitter(AdapterViewItemClickEvent(parent, view, position, id))

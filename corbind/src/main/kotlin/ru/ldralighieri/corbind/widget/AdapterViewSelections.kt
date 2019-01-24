@@ -24,7 +24,7 @@ sealed class AdapterViewSelectionEvent {
 
 data class AdapterViewItemSelectionEvent(
         override val view: AdapterView<*>,
-        val selectedView: View,
+        val selectedView: View?,
         val position: Int,
         val id: Long
 ) : AdapterViewSelectionEvent()
@@ -104,7 +104,7 @@ private fun listener(
         emitter: (AdapterViewSelectionEvent) -> Boolean
 ) = object : AdapterView.OnItemSelectedListener {
 
-    override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         onEvent(AdapterViewItemSelectionEvent(parent, view, position, id))
     }
 
