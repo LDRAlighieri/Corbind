@@ -30,5 +30,5 @@ android {
 dependencies {
     api project(':corbind')
 
-    api deps.googleMaterial
+    api deps.material
 }

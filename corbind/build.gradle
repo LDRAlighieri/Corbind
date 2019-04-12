@@ -30,9 +30,9 @@ android {
 // -----------------------------------------------------------------------------------------------
 
 dependencies {
-    api deps.kotlinStdlib
-    api deps.kotlinCoroutines
-    api deps.kotlinCoroutinesAndroid
+    api deps.kotlin.stdlib.jdk
+    api deps.kotlin.coroutines.jdk8
+    api deps.kotlin.coroutines.android
 
-    api deps.androidXAnnotations
+    api deps.androidx.annotation
 }

@@ -2,41 +2,45 @@ buildscript {
 
     ext {
         versions = [
-                'android_gradle'            : '3.3.0',
-                'kotlin'                    : '1.3.20',
-                'kotlin_coroutines'         : '1.1.0',
-                'androidx'                  : [
-
-                    'core'                  : '1.0.1',
-                    'annotation'            : '1.0.1',
-                    'appcompat'             : '1.0.2',
-                    'drawerlayout'          : '1.0.0',
-                    'leanback'              : '1.0.0',
-                    'recyclerview'          : '1.0.0',
-                    'slidingpanelayout'     : '1.0.0',
-                    'swiperefreshlayout'    : '1.0.0',
-                    'viewpager'             : '1.0.0',
-                    'material'              : '1.0.0'
-
+                'kotlin' : '1.3.30',
+                'kotlin_coroutines' : '1.1.1',
+                'android_gradle' : '3.3.2',
+                'androidx' : [
+                        'core' : '1.0.1',
+                        'annotation' : '1.0.2',
+                        'appcompat' : '1.0.2',
+                        'drawerlayout' : '1.0.0',
+                        'leanback' : '1.0.0',
+                        'recycler_view' : '1.0.0',
+                        'slidingpane_layout' : '1.0.0',
+                        'swiperefresh_layout' : '1.0.0',
+                        'viewpager' : '1.0.0',
+                        'material' : '1.0.0'
                 ]
         ]
 
         deps = [
-                'kotlinStdlib'                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin",
-                'kotlinCoroutines'              : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlin_coroutines",
-                'kotlinCoroutinesAndroid'       : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlin_coroutines",
-
-                'androidXCore'                  : "androidx.core:core:$versions.androidx.core",
-                'androidXAnnotations'           : "androidx.annotation:annotation:$versions.androidx.annotation",
-                'androidXAppCompat'             : "androidx.appcompat:appcompat:$versions.androidx.appcompat",
-                'androidXDrawerLayout'          : "androidx.drawerlayout:drawerlayout:$versions.androidx.drawerlayout",
-                'androidXLeanback'              : "androidx.leanback:leanback:$versions.androidx.leanback",
-                'androidXRecyclerView'          : "androidx.recyclerview:recyclerview:$versions.androidx.recyclerview",
-                'androidXSlidingPaneLayout'     : "androidx.slidingpanelayout:slidingpanelayout:$versions.androidx.slidingpanelayout",
-                'androidXSwipeRefreshLayout'    : "androidx.swiperefreshlayout:swiperefreshlayout:$versions.androidx.swiperefreshlayout",
-                'androidXViewPager'             : "androidx.viewpager:viewpager:$versions.androidx.viewpager",
-
-                'googleMaterial'                : "com.google.android.material:material:$versions.androidx.material",
+                'kotlin': [
+                        'stdlib': [
+                                'jdk': "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
+                        ],
+                        'coroutines': [
+                                'jdk8': "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${versions.kotlin_coroutines}",
+                                'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlin_coroutines}"
+                        ]
+                ],
+                'androidx': [
+                        'core': "androidx.core:core:${versions.androidx.core}",
+                        'annotation': "androidx.annotation:annotation:${versions.androidx.annotation}",
+                        'appCompat': "androidx.appcompat:appcompat:${versions.androidx.appcompat}",
+                        'drawerLayout': "androidx.drawerlayout:drawerlayout:${versions.androidx.drawerlayout}",
+                        'leanback': "androidx.leanback:leanback:${versions.androidx.leanback}",
+                        'recyclerView': "androidx.recyclerview:recyclerview:${versions.androidx.recycler_view}",
+                        'slidingPaneLayout': "androidx.slidingpanelayout:slidingpanelayout:${versions.androidx.slidingpane_layout}",
+                        'swipeRefreshLayout': "androidx.swiperefreshlayout:swiperefreshlayout:${versions.androidx.swiperefresh_layout}",
+                        'viewPager': "androidx.viewpager:viewpager:${versions.androidx.viewpager}"
+                ],
+                'material': "com.google.android.material:material:${versions.androidx.material}"
         ]
 
         buildConfig = [
