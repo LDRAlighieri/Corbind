@@ -4,9 +4,16 @@ package ru.ldralighieri.corbind.core
 
 import androidx.annotation.CheckResult
 import androidx.core.widget.NestedScrollView
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
@@ -66,18 +73,10 @@ fun NestedScrollView.scrollChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
-suspend fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> {
-    var listener: NestedScrollView.OnScrollChangeListener?
-    return flow {
-        coroutineScope {
-            val events = actor<ViewScrollChangeEvent>(Dispatchers.Main) {
-                for (event in channel) emit(event)
-            }
-
-            listener = listener(this, events::offer)
-            setOnScrollChangeListener(listener)
-        }
-    }.onCompletion { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
+fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
+    val listener = listener(this, this::offer)
+    setOnScrollChangeListener(listener)
+    awaitClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
 
 
