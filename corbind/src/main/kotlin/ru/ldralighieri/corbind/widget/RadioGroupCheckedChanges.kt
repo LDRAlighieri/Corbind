@@ -9,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -55,10 +58,20 @@ fun RadioGroup.checkedChanges(
         capacity: Int = Channel.RENDEZVOUS,
         scope: CoroutineScope
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-
     offer(checkedRadioButtonId)
     setOnCheckedChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnCheckedChangeListener(null) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
+    offer(checkedRadioButtonId)
+    setOnCheckedChangeListener(listener(this, ::offer))
+    awaitClose { setOnCheckedChangeListener(null) }
 }
 
 
@@ -78,4 +91,5 @@ private fun listener(
             emitter(checkedId)
         }
     }
+
 }

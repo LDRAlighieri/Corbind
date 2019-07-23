@@ -9,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -58,7 +61,6 @@ private fun SeekBar.changes(
         capacity: Int,
         shouldBeFromUser: Boolean?
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-
     safeOffer(progress)
     setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::safeOffer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
@@ -66,6 +68,19 @@ private fun SeekBar.changes(
 
 
 // -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+private fun SeekBar.changes(
+    shouldBeFromUser: Boolean?
+): Flow<Int> = channelFlow {
+    offer(progress)
+    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offer))
+    awaitClose { setOnSeekBarChangeListener(null) }
+}
+
+
+// ===============================================================================================
 
 
 fun SeekBar.changes(
@@ -84,6 +99,9 @@ fun SeekBar.changes(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ) = changes(scope, capacity, null)
+
+@CheckResult
+fun SeekBar.changes() = changes(null)
 
 
 // -----------------------------------------------------------------------------------------------
@@ -106,6 +124,9 @@ fun SeekBar.userChanges(
         capacity: Int = Channel.RENDEZVOUS
 ) = changes(scope, capacity, true)
 
+@CheckResult
+fun SeekBar.userChanges() = changes(true)
+
 
 // -----------------------------------------------------------------------------------------------
 
@@ -127,6 +148,9 @@ fun SeekBar.systemChanges(
         capacity: Int = Channel.RENDEZVOUS
 ) = changes(scope, capacity, false)
 
+@CheckResult
+fun SeekBar.systemChanges() = changes(false)
+
 
 // -----------------------------------------------------------------------------------------------
 
@@ -146,4 +170,5 @@ private fun listener(
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {  }
     override fun onStopTrackingTouch(seekBar: SeekBar) {  }
+
 }

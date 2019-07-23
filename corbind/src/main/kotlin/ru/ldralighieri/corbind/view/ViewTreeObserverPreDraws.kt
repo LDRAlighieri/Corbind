@@ -94,5 +94,5 @@ private fun listener(
         return@OnPreDrawListener proceedDrawingPass()
     }
     return@OnPreDrawListener true
-    
+
 }

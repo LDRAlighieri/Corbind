@@ -9,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -64,10 +67,20 @@ fun SearchView.queryTextChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(capacity) {
-
     safeOffer(initialValue(this@queryTextChangeEvents))
     setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::safeOffer))
     invokeOnClose { setOnQueryTextListener(null) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun SearchView.queryTextChangeEvents(): Flow<SearchViewQueryTextEvent> = channelFlow {
+    offer(initialValue(this@queryTextChangeEvents))
+    setOnQueryTextListener(listener(this, this@queryTextChangeEvents, ::offer))
+    awaitClose { setOnQueryTextListener(null) }
 }
 
 
@@ -104,4 +117,5 @@ private fun listener(
         }
         return false
     }
+
 }
