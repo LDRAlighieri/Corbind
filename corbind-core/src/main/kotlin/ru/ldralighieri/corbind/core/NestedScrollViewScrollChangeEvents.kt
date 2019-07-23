@@ -31,8 +31,7 @@ fun NestedScrollView.scrollChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, events::offer)
-    setOnScrollChangeListener(listener)
+    setOnScrollChangeListener(listener(scope, events::offer))
     events.invokeOnClose {
         setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
     }
@@ -47,8 +46,7 @@ suspend fun NestedScrollView.scrollChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(this, events::offer)
-    setOnScrollChangeListener(listener)
+    setOnScrollChangeListener(listener(this, events::offer))
     events.invokeOnClose {
         setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
     }
@@ -63,9 +61,7 @@ fun NestedScrollView.scrollChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
-
-    val listener = listener(scope, ::safeOffer)
-    setOnScrollChangeListener(listener)
+    setOnScrollChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
 
@@ -73,9 +69,9 @@ fun NestedScrollView.scrollChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
-    val listener = listener(this, this::offer)
-    setOnScrollChangeListener(listener)
+    setOnScrollChangeListener(listener(this, ::offer))
     awaitClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
 
@@ -88,7 +84,6 @@ private fun listener(
         scope: CoroutineScope,
         emitter: (ViewScrollChangeEvent) -> Boolean
 ) = NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-
     if (scope.isActive) {
         emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))
     }

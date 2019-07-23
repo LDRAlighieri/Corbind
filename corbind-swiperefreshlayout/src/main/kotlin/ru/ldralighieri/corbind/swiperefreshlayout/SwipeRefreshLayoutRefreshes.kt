@@ -56,7 +56,6 @@ fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     setOnRefreshListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnRefreshListener(null) }
 }
@@ -65,9 +64,9 @@ fun SwipeRefreshLayout.refreshes(
 // -----------------------------------------------------------------------------------------------
 
 
+@CheckResult
 fun SwipeRefreshLayout.refreshes(): Flow<Unit> = channelFlow {
-    val listener = listener(this, this::offer)
-    setOnRefreshListener(listener)
+    setOnRefreshListener(listener(this, ::offer))
     awaitClose { setOnRefreshListener(null) }
 }
 
@@ -80,6 +79,5 @@ private fun listener(
         scope: CoroutineScope,
         emitter: (Unit) -> Boolean
 ) = SwipeRefreshLayout.OnRefreshListener {
-
     if (scope.isActive) { emitter(Unit) }
 }
