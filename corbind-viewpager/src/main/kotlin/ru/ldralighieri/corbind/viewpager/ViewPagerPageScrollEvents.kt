@@ -9,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -65,10 +68,20 @@ fun ViewPager.pageScrollEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewPagerPageScrollEvent> = corbindReceiveChannel(capacity) {
-
     val listener = listener(scope, this@pageScrollEvents, ::safeOffer)
     addOnPageChangeListener(listener)
     invokeOnClose { removeOnPageChangeListener(listener) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun ViewPager.pageScrollEvents(): Flow<ViewPagerPageScrollEvent> = channelFlow {
+    val listener = listener(this, this@pageScrollEvents, ::offer)
+    addOnPageChangeListener(listener)
+    awaitClose { removeOnPageChangeListener(listener) }
 }
 
 
@@ -92,4 +105,5 @@ private fun listener(
 
     override fun onPageSelected(position: Int) {  }
     override fun onPageScrollStateChanged(state: Int) {  }
+
 }

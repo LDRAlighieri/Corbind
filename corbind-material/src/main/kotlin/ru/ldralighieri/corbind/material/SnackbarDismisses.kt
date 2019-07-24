@@ -9,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -55,10 +58,20 @@ fun Snackbar.dismisses(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-
     val callback = callback(scope, ::safeOffer)
     addCallback(callback)
     invokeOnClose { removeCallback(callback) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun Snackbar.dismisses(): Flow<Int> = channelFlow {
+    val callback = callback(this, ::offer)
+    addCallback(callback)
+    awaitClose { removeCallback(callback) }
 }
 
 
@@ -70,7 +83,6 @@ private fun callback(
         scope: CoroutineScope,
         emitter: (Int) -> Boolean
 ) = object : Snackbar.Callback() {
-
     override fun onDismissed(transientBottomBar: Snackbar, event: Int) {
         if (scope.isActive) { emitter(event) }
     }

@@ -24,13 +24,14 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+    buildToolsVersion = '28.0.3'
 
 }
 
 // -----------------------------------------------------------------------------------------------
 
 dependencies {
-    api deps.kotlin.stdlib.jdk
+    api deps.kotlin.stdlib.jdk8
     api deps.kotlin.coroutines.jdk8
     api deps.kotlin.coroutines.android
 

@@ -10,7 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -72,9 +75,18 @@ fun ViewGroup.changeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel(capacity) {
-
     setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::safeOffer))
     invokeOnClose { setOnHierarchyChangeListener(null) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = channelFlow {
+    setOnHierarchyChangeListener(listener(this, this@changeEvents, ::offer))
+    awaitClose { setOnHierarchyChangeListener(null) }
 }
 
 
@@ -99,4 +111,5 @@ private fun listener(
     private fun onEvent(event: ViewGroupHierarchyChangeEvent) {
         if (scope.isActive) { emitter(event) }
     }
+
 }

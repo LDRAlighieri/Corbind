@@ -9,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -75,10 +78,19 @@ private fun SeekBar.changeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
-
     offer(initialValue(this@changeEvents))
     setOnSeekBarChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun SeekBar.changeEvents(): Flow<SeekBarChangeEvent> = channelFlow {
+    setOnSeekBarChangeListener(listener(this, ::offer))
+    awaitClose { setOnSeekBarChangeListener(null) }
 }
 
 
@@ -114,4 +126,5 @@ private fun listener(
     private fun onEvent(event: SeekBarChangeEvent)  {
         if (scope.isActive) { emitter(event) }
     }
+
 }

@@ -11,7 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -57,10 +60,20 @@ fun View.dismisses(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<View> = corbindReceiveChannel(capacity) {
-
     val behavior = getBehavior(this@dismisses)
     behavior.setListener(listener(scope, ::safeOffer))
     invokeOnClose { behavior.setListener(null) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun View.dismisses(): Flow<View> = channelFlow {
+    val behavior = getBehavior(this@dismisses)
+    behavior.setListener(listener(this, ::offer))
+    awaitClose { behavior.setListener(null) }
 }
 
 
@@ -90,5 +103,7 @@ private fun listener(
     }
 
     override fun onDragStateChanged(state: Int) {  }
+
 }
+
 

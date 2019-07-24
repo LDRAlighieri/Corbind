@@ -9,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -57,11 +60,22 @@ fun TabLayout.selections(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
-
     setInitialValue(this@selections, ::safeOffer)
     val listener = listener(scope, ::safeOffer)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
+    setInitialValue(this@selections, ::offer)
+    val listener = listener(this, ::offer)
+    addOnTabSelectedListener(listener)
+    awaitClose { removeOnTabSelectedListener(listener) }
 }
 
 
@@ -83,13 +97,13 @@ private fun setInitialValue(
 private fun listener(
         scope: CoroutineScope,
         emitter: (TabLayout.Tab) -> Boolean
-) = object : TabLayout.OnTabSelectedListener {
+) = object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
 
     override fun onTabSelected(tab: TabLayout.Tab) {
         if (scope.isActive) { emitter(tab) }
     }
 
-    override fun onTabUnselected(tab: TabLayout.Tab) {  }
     override fun onTabReselected(tab: TabLayout.Tab) {  }
+    override fun onTabUnselected(tab: TabLayout.Tab) {  }
 
 }
