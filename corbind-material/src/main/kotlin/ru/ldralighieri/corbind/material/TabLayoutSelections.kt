@@ -97,13 +97,13 @@ private fun setInitialValue(
 private fun listener(
         scope: CoroutineScope,
         emitter: (TabLayout.Tab) -> Boolean
-) = object : TabLayout.OnTabSelectedListener {
+) = object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
 
     override fun onTabSelected(tab: TabLayout.Tab) {
         if (scope.isActive) { emitter(tab) }
     }
 
-    override fun onTabUnselected(tab: TabLayout.Tab) {  }
     override fun onTabReselected(tab: TabLayout.Tab) {  }
+    override fun onTabUnselected(tab: TabLayout.Tab) {  }
 
 }
