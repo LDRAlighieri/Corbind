@@ -47,6 +47,8 @@ buildscript {
         buildConfig = [
                 'compileSdk': 28,
                 'minSdk': 16,
+                'versionCode': 1,
+                'versionName': "0.13.0"
         ]
     }
 
