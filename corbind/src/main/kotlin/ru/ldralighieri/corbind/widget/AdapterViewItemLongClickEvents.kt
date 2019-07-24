@@ -11,7 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
@@ -68,9 +71,20 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel(capacity) {
-
     onItemLongClickListener = listener(scope, handled, ::safeOffer)
     invokeOnClose { onItemLongClickListener = null }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
+    handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
+): Flow<AdapterViewItemLongClickEvent> = channelFlow {
+    onItemLongClickListener = listener(this, handled, ::offer)
+    awaitClose { onItemLongClickListener = null }
 }
 
 
@@ -92,4 +106,5 @@ private fun listener(
         }
     }
     return@OnItemLongClickListener false
+
 }

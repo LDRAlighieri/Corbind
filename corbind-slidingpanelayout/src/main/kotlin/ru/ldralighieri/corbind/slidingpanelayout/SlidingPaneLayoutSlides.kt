@@ -10,7 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -54,9 +57,18 @@ fun SlidingPaneLayout.panelSlides(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
-
     setPanelSlideListener(listener(scope, ::safeOffer))
     invokeOnClose { setPanelSlideListener(null) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun SlidingPaneLayout.panelSlides(): Flow<Float> = channelFlow {
+    setPanelSlideListener(listener(this, ::offer))
+    awaitClose { setPanelSlideListener(null) }
 }
 
 
@@ -75,4 +87,5 @@ private fun listener(
 
     override fun onPanelOpened(panel: View) {  }
     override fun onPanelClosed(panel: View) {  }
+
 }

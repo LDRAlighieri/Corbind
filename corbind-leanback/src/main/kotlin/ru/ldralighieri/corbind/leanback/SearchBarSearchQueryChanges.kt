@@ -9,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -53,9 +56,18 @@ fun SearchBar.searchQueryChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<String> = corbindReceiveChannel(capacity) {
-
     setSearchBarListener(listener(scope, ::safeOffer))
     invokeOnClose { setSearchBarListener(null) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun SearchBar.searchQueryChanges(): Flow<String> = channelFlow {
+    setSearchBarListener(listener(this, ::offer))
+    awaitClose { setSearchBarListener(null) }
 }
 
 
@@ -74,4 +86,5 @@ private fun listener(
 
     override fun onSearchQuerySubmit(query: String) {  }
     override fun onKeyboardDismiss(query: String) {  }
+
 }

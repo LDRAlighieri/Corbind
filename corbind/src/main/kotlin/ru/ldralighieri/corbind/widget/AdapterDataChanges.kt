@@ -10,7 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -59,11 +62,22 @@ fun <T : Adapter> T.dataChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
-
     offer(this@dataChanges)
     val dataSetObserver = observer(scope, this@dataChanges, ::safeOffer)
     registerDataSetObserver(dataSetObserver)
     invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun <T : Adapter> T.dataChanges(): Flow<T> = channelFlow {
+    offer(this@dataChanges)
+    val dataSetObserver = observer(this, this@dataChanges, ::offer)
+    registerDataSetObserver(dataSetObserver)
+    awaitClose { unregisterDataSetObserver(dataSetObserver) }
 }
 
 
@@ -80,4 +94,5 @@ private fun <T : Adapter> observer(
     override fun onChanged() {
         if (scope.isActive) { emitter(adapter) }
     }
+
 }

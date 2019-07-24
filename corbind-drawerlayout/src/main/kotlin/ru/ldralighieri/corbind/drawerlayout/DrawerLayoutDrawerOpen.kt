@@ -10,7 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -61,11 +64,24 @@ fun DrawerLayout.drawerOpens(
         capacity: Int = Channel.RENDEZVOUS,
         gravity: Int
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-
     safeOffer(isDrawerOpen(gravity))
     val listener = listener(scope, gravity, ::safeOffer)
     addDrawerListener(listener)
     invokeOnClose { removeDrawerListener(listener) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun DrawerLayout.drawerOpens(
+        gravity: Int
+): Flow<Boolean> = channelFlow {
+    offer(isDrawerOpen(gravity))
+    val listener = listener(this, gravity, ::offer)
+    addDrawerListener(listener)
+    awaitClose { removeDrawerListener(listener) }
 }
 
 
@@ -90,4 +106,5 @@ private fun listener(
             if (drawerGravity == gravity) { emitter(opened) }
         }
     }
+
 }

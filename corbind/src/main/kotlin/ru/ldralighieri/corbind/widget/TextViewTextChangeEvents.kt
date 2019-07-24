@@ -11,7 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
@@ -69,11 +72,22 @@ fun TextView.textChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewTextChangeEvent> = corbindReceiveChannel(capacity) {
-
     safeOffer(initialValue(this@textChangeEvents))
     val listener = listener(scope, this@textChangeEvents, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun TextView.textChangeEvents(): Flow<TextViewTextChangeEvent> = channelFlow {
+    offer(initialValue(this@textChangeEvents))
+    val listener = listener(this, this@textChangeEvents, ::offer)
+    addTextChangedListener(listener)
+    awaitClose { removeTextChangedListener(listener) }
 }
 
 
@@ -104,4 +118,5 @@ private fun listener(
     }
 
     override fun afterTextChanged(s: Editable) {  }
+
 }

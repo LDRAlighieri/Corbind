@@ -10,7 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
@@ -66,9 +69,20 @@ fun TextView.editorActionEvents(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel(capacity) {
-
     setOnEditorActionListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnEditorActionListener(null) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun TextView.editorActionEvents(
+        handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
+): Flow<TextViewEditorActionEvent> = channelFlow {
+    setOnEditorActionListener(listener(this, handled, ::offer))
+    awaitClose { setOnEditorActionListener(null) }
 }
 
 
@@ -90,4 +104,5 @@ private fun listener(
         }
     }
     return@OnEditorActionListener false
+
 }

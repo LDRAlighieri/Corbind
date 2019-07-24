@@ -10,7 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
@@ -58,9 +61,20 @@ fun View.keys(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (KeyEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<KeyEvent> = corbindReceiveChannel(capacity) {
-
     setOnKeyListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnKeyListener(null) }
+}
+
+
+// -----------------------------------------------------------------------------------------------
+
+
+@CheckResult
+fun View.keys(
+    handled: (KeyEvent) -> Boolean = AlwaysTrue
+): Flow<KeyEvent> = channelFlow {
+    setOnKeyListener(listener(this, handled, ::offer))
+    awaitClose { setOnKeyListener(null) }
 }
 
 
@@ -81,4 +95,5 @@ private fun listener(
         }
     }
     return@OnKeyListener false
+
 }
