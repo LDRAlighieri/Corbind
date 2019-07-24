@@ -22,7 +22,8 @@ buildscript {
         deps = [
                 'kotlin': [
                         'stdlib': [
-                                'jdk': "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
+                                'jdk6': "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
+                                'jdk8': "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
                         ],
                         'coroutines': [
                                 'jdk8': "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${versions.kotlin_coroutines}",
