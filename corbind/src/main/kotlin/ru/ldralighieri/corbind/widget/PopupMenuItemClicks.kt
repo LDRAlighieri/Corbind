@@ -21,6 +21,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on clicked item in `view`'s menu.
+ */
 fun PopupMenu.itemClicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +38,9 @@ fun PopupMenu.itemClicks(
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
+/**
+ * Perform an action on clicked item in `view`'s menu inside new CoroutineScope.
+ */
 suspend fun PopupMenu.itemClicks(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (MenuItem) -> Unit
@@ -52,6 +58,9 @@ suspend fun PopupMenu.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits the clicked item in `view`'s menu.
+ */
 @CheckResult
 fun PopupMenu.itemClicks(
         scope: CoroutineScope,
@@ -65,6 +74,9 @@ fun PopupMenu.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits the clicked item in `view`'s menu.
+ */
 @CheckResult
 fun PopupMenu.itemClicks(): Flow<MenuItem> = channelFlow {
     setOnMenuItemClickListener(listener(this, ::offer))
@@ -75,6 +87,9 @@ fun PopupMenu.itemClicks(): Flow<MenuItem> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view`'s menu item clicks
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

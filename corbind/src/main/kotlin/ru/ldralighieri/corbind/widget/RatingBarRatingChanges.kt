@@ -20,6 +20,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on rating changes on `view`.
+ */
 fun RatingBar.ratingChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +38,9 @@ fun RatingBar.ratingChanges(
     events.invokeOnClose { onRatingBarChangeListener = null }
 }
 
+/**
+ * Perform an action on rating changes on `view` inside new CoroutineScope.
+ */
 suspend fun RatingBar.ratingChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Float) -> Unit
@@ -53,6 +59,9 @@ suspend fun RatingBar.ratingChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a change of the rating changes on `view`.
+ */
 @CheckResult
 fun RatingBar.ratingChanges(
         scope: CoroutineScope,
@@ -67,6 +76,9 @@ fun RatingBar.ratingChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the rating changes on `view`.
+ */
 @CheckResult
 fun RatingBar.ratingChanges(): Flow<Float> = channelFlow {
     offer(rating)
@@ -78,6 +90,9 @@ fun RatingBar.ratingChanges(): Flow<Float> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` rating changes
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

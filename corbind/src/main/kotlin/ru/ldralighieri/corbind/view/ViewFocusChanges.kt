@@ -20,6 +20,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on `view` focus change.
+ */
 fun View.focusChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +38,9 @@ fun View.focusChanges(
     events.invokeOnClose { onFocusChangeListener = null }
 }
 
+/**
+ * Perform an action on `view` focus change inside new CoroutineScope.
+ */
 suspend fun View.focusChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Boolean) -> Unit
@@ -53,6 +59,9 @@ suspend fun View.focusChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of booleans representing the focus of `view`.
+ */
 @CheckResult
 fun View.focusChanges(
         scope: CoroutineScope,
@@ -66,7 +75,9 @@ fun View.focusChanges(
 
 // -----------------------------------------------------------------------------------------------
 
-
+/**
+ * Create a flow of booleans representing the focus of `view`.
+ */
 @CheckResult
 fun View.focusChanges(): Flow<Boolean> = channelFlow {
     offer(hasFocus())
@@ -78,6 +89,9 @@ fun View.focusChanges(): Flow<Boolean> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` focus change
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

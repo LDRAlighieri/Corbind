@@ -22,6 +22,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on [DragEvent] for `view`.
+ */
 fun View.drags(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -37,6 +40,9 @@ fun View.drags(
     events.invokeOnClose { setOnDragListener(null) }
 }
 
+/**
+ * Perform an action on [DragEvent] for `view` inside new CoroutineScope.
+ */
 suspend fun View.drags(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (DragEvent) -> Boolean = AlwaysTrue,
@@ -55,6 +61,9 @@ suspend fun View.drags(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of [DragEvent] for `view`.
+ */
 @CheckResult
 fun View.drags(
         scope: CoroutineScope,
@@ -70,6 +79,9 @@ fun View.drags(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of [DragEvent] for `view`.
+ */
 @CheckResult
 fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue
@@ -82,6 +94,9 @@ fun View.drags(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of [DragEvent] for `view`.
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -20,6 +20,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on checked view ID changes in `view`.
+ */
 fun RadioGroup.checkedChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +38,9 @@ fun RadioGroup.checkedChanges(
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
+/**
+ * Perform an action on checked view ID changes in `view` inside new CoroutineScope.
+ */
 suspend fun RadioGroup.checkedChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -53,6 +59,9 @@ suspend fun RadioGroup.checkedChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the checked view ID changes in `view`.
+ */
 @CheckResult
 fun RadioGroup.checkedChanges(
         capacity: Int = Channel.RENDEZVOUS,
@@ -67,6 +76,9 @@ fun RadioGroup.checkedChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the checked view ID changes in `view`.
+ */
 @CheckResult
 fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
     offer(checkedRadioButtonId)
@@ -78,6 +90,9 @@ fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of view ID changes in `view`
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

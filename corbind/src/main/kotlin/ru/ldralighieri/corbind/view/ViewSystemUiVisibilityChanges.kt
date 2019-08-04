@@ -17,6 +17,12 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
+// -----------------------------------------------------------------------------------------------
+
+
+/**
+ * Perform an action on a new system UI visibility for `view`.
+ */
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -31,6 +37,9 @@ fun View.systemUiVisibilityChanges(
     events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
+/**
+ * Perform an action on a new system UI visibility for `view` inside new CoroutineScope.
+ */
 suspend fun View.systemUiVisibilityChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -48,6 +57,9 @@ suspend fun View.systemUiVisibilityChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of integers representing a new system UI visibility for `view`.
+ */
 @CheckResult
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope,
@@ -61,6 +73,9 @@ fun View.systemUiVisibilityChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of integers representing a new system UI visibility for `view`.
+ */
 @CheckResult
 fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
     setOnSystemUiVisibilityChangeListener(listener(this, ::offer))
@@ -71,6 +86,9 @@ fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of a new system UI visibility for `view`
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

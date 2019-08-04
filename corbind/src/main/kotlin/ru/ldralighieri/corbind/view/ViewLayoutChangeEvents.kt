@@ -19,6 +19,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * A scroll-change event on a view.
+ */
 data class ViewLayoutChangeEvent(
         val view: View,
         val left: Int,
@@ -34,6 +37,9 @@ data class ViewLayoutChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on layout-change events for `view`.
+ */
 fun View.layoutChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -49,6 +55,9 @@ fun View.layoutChangeEvents(
     events.invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
+/**
+ * Perform an action on layout-change events for `view` inside new CoroutineScope.
+ */
 suspend fun View.layoutChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewLayoutChangeEvent) -> Unit
@@ -66,7 +75,9 @@ suspend fun View.layoutChangeEvents(
 
 // -----------------------------------------------------------------------------------------------
 
-
+/**
+ * Create a channel of layout-change events for `view`.
+ */
 @CheckResult
 fun View.layoutChangeEvents(
         scope: CoroutineScope,
@@ -80,6 +91,9 @@ fun View.layoutChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of layout-change events for `view`.
+ */
 @CheckResult
 fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
     val listener = listener(this, ::offer)
@@ -91,6 +105,9 @@ fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` layout-change
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

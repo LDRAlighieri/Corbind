@@ -39,6 +39,9 @@ data class AdapterViewNothingSelectionEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on selection events for `view`.
+ */
 fun <T : Adapter> AdapterView<T>.selectionEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -54,6 +57,9 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     events.invokeOnClose { onItemSelectedListener = null }
 }
 
+/**
+ * Perform an action on selection events for `view` inside new CoroutineScope.
+ */
 suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewSelectionEvent) -> Unit
@@ -72,6 +78,9 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of selection events for `view`.
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(
         scope: CoroutineScope,
@@ -86,6 +95,9 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of selection events for `view`.
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(): Flow<AdapterViewSelectionEvent> = channelFlow {
     offer(initialValue(this@selectionEvents))
@@ -97,6 +109,9 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(): Flow<AdapterViewSelectionEve
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Initial event value
+ */
 @CheckResult
 private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterViewSelectionEvent {
     return if (adapterView.selectedItemPosition == AdapterView.INVALID_POSITION) {
@@ -111,6 +126,9 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` item selected
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -20,6 +20,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * An action view event on a menu item.
+ */
 sealed class MenuItemActionViewEvent {
     abstract val menuItem: MenuItem
 }
@@ -35,6 +38,9 @@ data class MenuItemActionViewExpandEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on action view events for `menuItem`.
+ */
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -50,6 +56,9 @@ fun MenuItem.actionViewEvents(
     events.invokeOnClose { setOnActionExpandListener(null) }
 }
 
+/**
+ * Perform an action on action view events for `menuItem` inside new CoroutineScope.
+ */
 suspend fun MenuItem.actionViewEvents(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
@@ -68,6 +77,9 @@ suspend fun MenuItem.actionViewEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of action view events for `menuItem`.
+ */
 @CheckResult
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,
@@ -82,6 +94,9 @@ fun MenuItem.actionViewEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of action view events for `menuItem`.
+ */
 @CheckResult
 fun MenuItem.actionViewEvents(
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
@@ -94,6 +109,9 @@ fun MenuItem.actionViewEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * listener of action view events for `menuItem`.
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

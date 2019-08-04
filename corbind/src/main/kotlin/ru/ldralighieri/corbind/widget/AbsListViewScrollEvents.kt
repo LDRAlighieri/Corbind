@@ -19,6 +19,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * A list view on scroll event
+ */
 data class AbsListViewScrollEvent(
         val view: AbsListView,
         val scrollState: Int,
@@ -30,6 +33,9 @@ data class AbsListViewScrollEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on scroll events on `absListView`.
+ */
 fun AbsListView.scrollEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -44,6 +50,9 @@ fun AbsListView.scrollEvents(
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
+/**
+ * Perform an action on scroll events on `absListView` inside new CoroutineScope.
+ */
 suspend fun AbsListView.scrollEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AbsListViewScrollEvent) -> Unit
@@ -61,6 +70,9 @@ suspend fun AbsListView.scrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of scroll events on `absListView`.
+ */
 @CheckResult
 fun AbsListView.scrollEvents(
         scope: CoroutineScope,
@@ -74,6 +86,9 @@ fun AbsListView.scrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of scroll events on `absListView`.
+ */
 @CheckResult
 fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {
     setOnScrollListener(listener(this, ::offer))
@@ -84,6 +99,9 @@ fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `absListView` scroll events.
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

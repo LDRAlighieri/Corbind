@@ -22,6 +22,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the selected position of `view`.
+ */
 fun <T : Adapter> AdapterView<T>.itemSelections(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -37,6 +40,9 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
     events.invokeOnClose { onItemSelectedListener = null }
 }
 
+/**
+ * Perform an action on the selected position of `view` inside new CoroutineScope.
+ */
 suspend fun <T : Adapter> AdapterView<T>.itemSelections(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -55,6 +61,10 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the selected position of `view`. If nothing is selected,
+ * [AdapterView.INVALID_POSITION] will be emitted
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemSelections(
         scope: CoroutineScope,
@@ -69,6 +79,10 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the selected position of `view`. If nothing is selected,
+ * [AdapterView.INVALID_POSITION] will be emitted
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemSelections(): Flow<Int> = channelFlow {
     offer(selectedItemPosition)
@@ -80,6 +94,9 @@ fun <T : Adapter> AdapterView<T>.itemSelections(): Flow<Int> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` item selected position
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

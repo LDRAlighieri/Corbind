@@ -21,6 +21,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on `view` long-click events.
+ */
 fun View.longClicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +39,9 @@ fun View.longClicks(
     events.invokeOnClose { setOnLongClickListener(null) }
 }
 
+/**
+ * Perform an action on `view` long-click events inside new CoroutineScope.
+ */
 suspend fun View.longClicks(
         capacity: Int = Channel.RENDEZVOUS,
         handled: () -> Boolean = AlwaysTrue,
@@ -54,6 +60,9 @@ suspend fun View.longClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on `view` long-click events.
+ */
 @CheckResult
 fun View.longClicks(
         scope: CoroutineScope,
@@ -69,6 +78,9 @@ fun View.longClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on `view` long-click events.
+ */
 @CheckResult
 fun View.longClicks(
     handled: () -> Boolean = AlwaysTrue
@@ -81,6 +93,9 @@ fun View.longClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` long-click events.
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -19,6 +19,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * Change event on a rating bar
+ */
 data class RatingBarChangeEvent(
         val view: RatingBar,
         val rating: Float,
@@ -28,6 +31,9 @@ data class RatingBarChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on rating change events on `view`.
+ */
 fun RatingBar.ratingChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -43,6 +49,9 @@ fun RatingBar.ratingChangeEvents(
     events.invokeOnClose { onRatingBarChangeListener = null }
 }
 
+/**
+ * Perform an action on rating change events on `view` inside new CoroutineScope.
+ */
 suspend fun RatingBar.ratingChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RatingBarChangeEvent) -> Unit
@@ -61,6 +70,9 @@ suspend fun RatingBar.ratingChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the rating change events on `view`.
+ */
 @CheckResult
 fun RatingBar.ratingChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -75,6 +87,9 @@ fun RatingBar.ratingChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the rating change events on `view`.
+ */
 @CheckResult
 fun RatingBar.ratingChangeEvents(): Flow<RatingBarChangeEvent> = channelFlow {
     offer(initialValue(this@ratingChangeEvents))
@@ -86,6 +101,9 @@ fun RatingBar.ratingChangeEvents(): Flow<RatingBarChangeEvent> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Initial value
+ */
 @CheckResult
 private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =
         RatingBarChangeEvent(ratingBar, ratingBar.rating, false)
@@ -94,6 +112,9 @@ private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` rating change
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

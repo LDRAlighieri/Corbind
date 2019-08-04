@@ -22,6 +22,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the position of item clicks for `view`.
+ */
 fun <T : Adapter> AdapterView<T>.itemClicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +39,9 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
     events.invokeOnClose { onItemClickListener = null }
 }
 
+/**
+ * Perform an action on the position of item clicks for `view` inside new CoroutineScope.
+ */
 suspend fun <T : Adapter> AdapterView<T>.itemClicks(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -53,6 +59,9 @@ suspend fun <T : Adapter> AdapterView<T>.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the position of item clicks for `view`.
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClicks(
         scope: CoroutineScope,
@@ -66,6 +75,9 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the position of item clicks for `view`.
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow {
     onItemClickListener = listener(this, ::offer)
@@ -76,6 +88,9 @@ fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` position of item clicks
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -21,6 +21,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on `view` globalLayout events.
+ */
 fun View.globalLayouts(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +39,9 @@ fun View.globalLayouts(
     events.invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
 }
 
+/**
+ * Perform an action on `view` globalLayout events. inside new CoroutineScope.
+ */
 suspend fun View.globalLayouts(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
@@ -54,6 +60,9 @@ suspend fun View.globalLayouts(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on `view` globalLayout events.
+ */
 @CheckResult
 fun View.globalLayouts(
         scope: CoroutineScope,
@@ -69,6 +78,9 @@ fun View.globalLayouts(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on `view` globalLayout events.
+ */
 @CheckResult
 fun View.globalLayouts(): Flow<Unit> = channelFlow {
     val listener = listener(this, ::offer)
@@ -80,6 +92,9 @@ fun View.globalLayouts(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` globalLayout events
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

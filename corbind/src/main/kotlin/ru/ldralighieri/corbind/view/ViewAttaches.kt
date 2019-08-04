@@ -20,6 +20,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on `view` attach events.
+ */
 fun View.attaches(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +38,9 @@ fun View.attaches(
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+/**
+ * Perform an action on `view` attach events inside new CoroutineScope.
+ */
 suspend fun View.attaches(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
@@ -53,6 +59,9 @@ suspend fun View.attaches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on `view` attach events.
+ */
 @CheckResult
 fun View.attaches(
         scope: CoroutineScope,
@@ -68,6 +77,9 @@ fun View.attaches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on `view` attach events.
+ */
 @CheckResult
 fun View.attaches(): Flow<Unit> = channelFlow {
     val listener = listener(this, true, ::offer)
@@ -79,6 +91,9 @@ fun View.attaches(): Flow<Unit> = channelFlow {
 // ===============================================================================================
 
 
+/**
+ * Perform an action on `view` detach events.
+ */
 fun View.detaches(
         scope: CoroutineScope,
         action: suspend () -> Unit
@@ -93,6 +108,9 @@ fun View.detaches(
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+/**
+ * Perform an action on `view` detach events inside new CoroutineScope.
+ */
 suspend fun View.detaches(
         action: suspend () -> Unit
 ) = coroutineScope {
@@ -110,6 +128,9 @@ suspend fun View.detaches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on `view` detach events.
+ */
 @CheckResult
 fun View.detaches(
         scope: CoroutineScope
@@ -124,6 +145,9 @@ fun View.detaches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on `view` detach events.
+ */
 @CheckResult
 fun View.detaches(): Flow<Unit> = channelFlow {
     val listener = listener(this, false, ::offer)
@@ -136,6 +160,9 @@ fun View.detaches(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` attach / detach events
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -21,6 +21,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on `menuItem` click events.
+ */
 fun MenuItem.clicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +39,9 @@ fun MenuItem.clicks(
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
+/**
+ * Perform an action on `menuItem` click events inside new CoroutineScope.
+ */
 suspend fun MenuItem.clicks(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (MenuItem) -> Boolean = AlwaysTrue,
@@ -54,6 +60,9 @@ suspend fun MenuItem.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on `menuItem` click events.
+ */
 @CheckResult
 fun MenuItem.clicks(
         scope: CoroutineScope,
@@ -68,6 +77,9 @@ fun MenuItem.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on `menuItem` click events.
+ */
 @CheckResult
 fun MenuItem.clicks(
     handled: (MenuItem) -> Boolean = AlwaysTrue
@@ -80,6 +92,9 @@ fun MenuItem.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `menuItem` click events.
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

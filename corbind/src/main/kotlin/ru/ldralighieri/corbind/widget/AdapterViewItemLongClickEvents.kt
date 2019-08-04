@@ -22,6 +22,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * Item long-click event on a adapter view
+ */
 data class AdapterViewItemLongClickEvent(
         val view: AdapterView<*>,
         val clickedView: View?,
@@ -32,6 +35,9 @@ data class AdapterViewItemLongClickEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on item long-click events for `view`.
+ */
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -47,6 +53,9 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     events.invokeOnClose { onItemLongClickListener = null }
 }
 
+/**
+ * Perform an action on item long-click events for `view` inside new CoroutineScope.
+ */
 suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
@@ -65,6 +74,9 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the item long-click events for `view`.
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         scope: CoroutineScope,
@@ -79,6 +91,9 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the item long-click events for `view`.
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
@@ -91,6 +106,9 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` item long-click events
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

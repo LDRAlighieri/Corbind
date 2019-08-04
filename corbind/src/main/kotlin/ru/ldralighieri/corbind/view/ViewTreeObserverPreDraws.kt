@@ -21,6 +21,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on pre-draws on `view`.
+ */
 fun View.preDraws(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +39,9 @@ fun View.preDraws(
     events.invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
+/**
+ * Perform an action on pre-draws on `view` inside new CoroutineScope.
+ */
 suspend fun View.preDraws(
         capacity: Int = Channel.RENDEZVOUS,
         proceedDrawingPass: () -> Boolean,
@@ -54,6 +60,9 @@ suspend fun View.preDraws(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel for pre-draws on `view`.
+ */
 @CheckResult
 fun View.preDraws(
         scope: CoroutineScope,
@@ -69,6 +78,9 @@ fun View.preDraws(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow for pre-draws on `view`.
+ */
 @CheckResult
 fun View.preDraws(
     proceedDrawingPass: () -> Boolean
@@ -82,6 +94,9 @@ fun View.preDraws(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of pre-draws on `view`.
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

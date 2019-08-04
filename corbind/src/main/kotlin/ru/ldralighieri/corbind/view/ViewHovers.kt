@@ -21,6 +21,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * Perform an action on hover events for `view`.
+ */
 fun View.hovers(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +39,9 @@ fun View.hovers(
     events.invokeOnClose { setOnHoverListener(null) }
 }
 
+/**
+ * Perform an action on hover events for `view` inside new CoroutineScope.
+ */
 suspend fun View.hovers(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (MotionEvent) -> Boolean = AlwaysTrue,
@@ -53,7 +59,9 @@ suspend fun View.hovers(
 
 // -----------------------------------------------------------------------------------------------
 
-
+/**
+ * Create a channel of hover events for `view`.
+ */
 @CheckResult
 fun View.hovers(
         scope: CoroutineScope,
@@ -68,6 +76,9 @@ fun View.hovers(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of hover events for `view`.
+ */
 @CheckResult
 fun View.hovers(
     handled: (MotionEvent) -> Boolean = AlwaysTrue
@@ -80,6 +91,9 @@ fun View.hovers(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` hover
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

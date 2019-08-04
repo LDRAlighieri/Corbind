@@ -21,6 +21,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * A scroll-change event on a view.
+ */
 data class ViewScrollChangeEvent(
         val view: View,
         val scrollX: Int,
@@ -32,6 +35,9 @@ data class ViewScrollChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on scroll-change events for `view`.
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 fun View.scrollChangeEvents(
         scope: CoroutineScope,
@@ -47,6 +53,9 @@ fun View.scrollChangeEvents(
     events.invokeOnClose { setOnScrollChangeListener(null) }
 }
 
+/**
+ * Perform an action on scroll-change events for `view` inside new CoroutineScope.
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 suspend fun View.scrollChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -65,6 +74,9 @@ suspend fun View.scrollChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of scroll-change events for `view`.
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun View.scrollChangeEvents(
@@ -79,6 +91,9 @@ fun View.scrollChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of scroll-change events for `view`.
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
@@ -90,6 +105,9 @@ fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` scroll-change events
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

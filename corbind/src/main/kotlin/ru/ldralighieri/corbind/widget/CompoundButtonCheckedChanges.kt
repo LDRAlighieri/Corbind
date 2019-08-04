@@ -20,6 +20,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on checked state of `view`.
+ */
 fun CompoundButton.checkedChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +38,9 @@ fun CompoundButton.checkedChanges(
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
+/**
+ * Perform an action on checked state of `view` inside new CoroutineScope.
+ */
 suspend fun CompoundButton.checkedChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Boolean) -> Unit
@@ -53,6 +59,9 @@ suspend fun CompoundButton.checkedChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of booleans representing the checked state of `view`.
+ */
 @CheckResult
 fun CompoundButton.checkedChanges(
         scope: CoroutineScope,
@@ -67,6 +76,9 @@ fun CompoundButton.checkedChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of booleans representing the checked state of `view`.
+ */
 @CheckResult
 fun CompoundButton.checkedChanges(): Flow<Boolean> = channelFlow {
     offer(isChecked)
@@ -78,6 +90,9 @@ fun CompoundButton.checkedChanges(): Flow<Boolean> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` checked state change
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

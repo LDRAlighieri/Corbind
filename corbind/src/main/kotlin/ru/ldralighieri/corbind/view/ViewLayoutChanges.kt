@@ -20,6 +20,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on `view` layout changes.
+ */
 fun View.layoutChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +38,9 @@ fun View.layoutChanges(
     events.invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
+/**
+ * Perform an action on `view` layout changes inside new CoroutineScope.
+ */
 suspend fun View.layoutChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
@@ -53,6 +59,9 @@ suspend fun View.layoutChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on `view` layout changes.
+ */
 @CheckResult
 fun View.layoutChanges(
         scope: CoroutineScope,
@@ -67,6 +76,9 @@ fun View.layoutChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on `view` layout changes.
+ */
 @CheckResult
 fun View.layoutChanges(): Flow<Unit> = channelFlow {
     val listener = listener(this, ::offer)
@@ -78,6 +90,9 @@ fun View.layoutChanges(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` layout changes.
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

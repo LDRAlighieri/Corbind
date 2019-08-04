@@ -22,6 +22,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on item click events on `view`.
+ */
 fun AutoCompleteTextView.itemClickEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +39,9 @@ fun AutoCompleteTextView.itemClickEvents(
     events.invokeOnClose { onItemClickListener = null }
 }
 
+/**
+ * Perform an action on item click events on `view` inside new CoroutineScope.
+ */
 suspend fun AutoCompleteTextView.itemClickEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewItemClickEvent) -> Unit
@@ -53,6 +59,9 @@ suspend fun AutoCompleteTextView.itemClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of item click events on `view`.
+ */
 @CheckResult
 fun AutoCompleteTextView.itemClickEvents(
         scope: CoroutineScope,
@@ -66,6 +75,9 @@ fun AutoCompleteTextView.itemClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of item click events on `view`.
+ */
 @CheckResult
 fun AutoCompleteTextView.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {
     onItemClickListener = listener(this, ::offer)
@@ -76,6 +88,9 @@ fun AutoCompleteTextView.itemClickEvents(): Flow<AdapterViewItemClickEvent> = ch
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` item click
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -19,14 +19,23 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * A view attach event on a view.
+ */
 sealed class ViewAttachEvent {
     abstract val view: View
 }
 
+/**
+ * A view attached event on a view.
+ */
 data class ViewAttachAttachedEvent(
         override val view: View
 ) : ViewAttachEvent()
 
+/**
+ * A view detached event on a view.
+ */
 data class ViewAttachDetachedEvent(
         override val view: View
 ) : ViewAttachEvent()
@@ -34,6 +43,9 @@ data class ViewAttachDetachedEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on attach and detach events on `view`.
+ */
 fun View.attachEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -49,6 +61,9 @@ fun View.attachEvents(
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+/**
+ * Perform an action on attach and detach events on `view` inside new CoroutineScope.
+ */
 suspend fun View.attachEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewAttachEvent) -> Unit
@@ -67,6 +82,9 @@ suspend fun View.attachEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of attach and detach events on `view`.
+ */
 @CheckResult
 fun View.attachEvents(
         scope: CoroutineScope,
@@ -81,6 +99,9 @@ fun View.attachEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of attach and detach events on `view`.
+ */
 @CheckResult
 fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
     val listener = listener(this, ::offer)
@@ -92,6 +113,9 @@ fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of attach and detach events on `view`.
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

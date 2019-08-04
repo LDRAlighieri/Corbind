@@ -21,6 +21,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * An adapter view item click event
+ */
 data class AdapterViewItemClickEvent(
         val view: AdapterView<*>,
         val clickedView: View?,
@@ -31,6 +34,9 @@ data class AdapterViewItemClickEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the item click events for `view`.
+ */
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -45,6 +51,9 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
     events.invokeOnClose { onItemClickListener = null }
 }
 
+/**
+ * Perform an action on the item click events for `view` inside new CoroutineScope.
+ */
 suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewItemClickEvent) -> Unit
@@ -62,6 +71,9 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the item click events for `view`.
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
         scope: CoroutineScope,
@@ -76,6 +88,9 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the item click events for `view`.
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {
     onItemClickListener = listener(this, ::offer)
@@ -86,6 +101,9 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEve
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` item click events
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

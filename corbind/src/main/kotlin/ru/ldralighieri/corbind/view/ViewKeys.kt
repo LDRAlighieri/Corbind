@@ -22,6 +22,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on key events for `view`.
+ */
 fun View.keys(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -37,6 +40,9 @@ fun View.keys(
     events.invokeOnClose { setOnKeyListener(null) }
 }
 
+/**
+ * Perform an action on key events for `view` inside new CoroutineScope.
+ */
 suspend fun View.keys(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (KeyEvent) -> Boolean = AlwaysTrue,
@@ -55,6 +61,9 @@ suspend fun View.keys(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of key events for `view`.
+ */
 @CheckResult
 fun View.keys(
         scope: CoroutineScope,
@@ -69,6 +78,9 @@ fun View.keys(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of key events for `view`.
+ */
 @CheckResult
 fun View.keys(
     handled: (KeyEvent) -> Boolean = AlwaysTrue
@@ -81,6 +93,9 @@ fun View.keys(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` key events
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

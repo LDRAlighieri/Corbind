@@ -22,6 +22,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on touch events for `view`.
+ */
 fun View.touches(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -37,6 +40,9 @@ fun View.touches(
     events.invokeOnClose { setOnTouchListener(null) }
 }
 
+/**
+ * Perform an action on touch events for `view` inside new CoroutineScope.
+ */
 suspend fun View.touches(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (MotionEvent) -> Boolean = AlwaysTrue,
@@ -55,6 +61,9 @@ suspend fun View.touches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of touch events for `view`.
+ */
 @CheckResult
 fun View.touches(
         scope: CoroutineScope,
@@ -69,6 +78,9 @@ fun View.touches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of touch events for `view`.
+ */
 @CheckResult
 fun View.touches(
     handled: (MotionEvent) -> Boolean = AlwaysTrue
@@ -81,6 +93,9 @@ fun View.touches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of touch events for `view`
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

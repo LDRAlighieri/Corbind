@@ -23,6 +23,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on draws on `view`.
+ */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 fun View.draws(
         scope: CoroutineScope,
@@ -39,6 +42,9 @@ fun View.draws(
     events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
 
+/**
+ * Perform an action on draws on `view` inside new CoroutineScope.
+ */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 suspend fun View.draws(
         capacity: Int = Channel.RENDEZVOUS,
@@ -58,6 +64,9 @@ suspend fun View.draws(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel for draws on `view`.
+ */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
 fun View.draws(
@@ -74,6 +83,9 @@ fun View.draws(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow for draws on `view`.
+ */
 @CheckResult
 fun View.draws(): Flow<Unit> = channelFlow {
     val listener = listener(this, ::offer)
@@ -85,6 +97,9 @@ fun View.draws(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of draws on `view`.
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

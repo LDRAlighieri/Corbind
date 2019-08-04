@@ -20,6 +20,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on `view` click events.
+ */
 fun View.clicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -34,6 +37,9 @@ fun View.clicks(
     events.invokeOnClose { setOnClickListener(null) }
 }
 
+/**
+ * Perform an action on `view` click events inside new CoroutineScope.
+ */
 suspend fun View.clicks(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
@@ -51,6 +57,9 @@ suspend fun View.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on `view` click events
+ */
 @CheckResult
 fun View.clicks(
         scope: CoroutineScope,
@@ -66,6 +75,9 @@ fun View.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on `view` click events
+ */
 @CheckResult
 fun View.clicks(): Flow<Unit> = channelFlow {
     setOnClickListener(listener(this, ::offer))
@@ -76,6 +88,9 @@ fun View.clicks(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Listener of `view` click events
+ */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,
