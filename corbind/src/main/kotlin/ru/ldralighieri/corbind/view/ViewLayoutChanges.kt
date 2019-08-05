@@ -43,7 +43,7 @@ fun View.layoutChanges(
 }
 
 /**
- * Perform an action on [View] layout changes inside new CoroutineScope.
+ * Perform an action on [View] layout changes inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -100,9 +100,6 @@ fun View.layoutChanges(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [View] layout changes.
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

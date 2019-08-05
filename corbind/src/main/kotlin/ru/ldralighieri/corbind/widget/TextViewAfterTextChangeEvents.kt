@@ -29,6 +29,13 @@ data class TextViewAfterTextChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action after text change events for [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun TextView.afterTextChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -45,6 +52,12 @@ fun TextView.afterTextChangeEvents(
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
 
+/**
+ * Perform an action after text change events for [TextView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun TextView.afterTextChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TextViewAfterTextChangeEvent) -> Unit
@@ -64,7 +77,12 @@ suspend fun TextView.afterTextChangeEvents(
 
 // -----------------------------------------------------------------------------------------------
 
-
+/**
+ * Create a channel of after text change events for [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun TextView.afterTextChangeEvents(
         scope: CoroutineScope,
@@ -80,6 +98,11 @@ fun TextView.afterTextChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of after text change events for [TextView].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 private fun TextView.afterTextChangeEvents(): Flow<TextViewAfterTextChangeEvent> = channelFlow {
     offer(initialValue(this@afterTextChangeEvents))

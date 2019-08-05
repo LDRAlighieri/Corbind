@@ -22,9 +22,6 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
-/**
- * Item long-click event on a adapter view
- */
 data class AdapterViewItemLongClickEvent(
         val view: AdapterView<*>,
         val clickedView: View?,
@@ -36,7 +33,13 @@ data class AdapterViewItemLongClickEvent(
 
 
 /**
- * Perform an action on item long-click events for `view`.
+ * Perform an action on item long-click events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [AdapterView.OnItemLongClickListener]
+ * @param action An action to perform
  */
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         scope: CoroutineScope,
@@ -54,7 +57,12 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 /**
- * Perform an action on item long-click events for `view` inside new CoroutineScope.
+ * Perform an action on item long-click events for [AdapterView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [AdapterView.OnItemLongClickListener]
+ * @param action An action to perform
  */
 suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -75,7 +83,12 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 
 
 /**
- * Create a channel of the item long-click events for `view`.
+ * Create a channel of the item long-click events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [AdapterView.OnItemLongClickListener]
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
@@ -92,7 +105,10 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 
 
 /**
- * Create a flow of the item long-click events for `view`.
+ * Create a flow of the item long-click events for [AdapterView].
+ *
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [AdapterView.OnItemLongClickListener]
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
@@ -106,9 +122,6 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `view` item long-click events
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

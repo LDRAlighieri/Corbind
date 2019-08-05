@@ -21,7 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on `view` dismiss events.
+ * Perform an action on [PopupMenu] dismiss events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun PopupMenu.dismisses(
         scope: CoroutineScope,
@@ -38,7 +42,10 @@ fun PopupMenu.dismisses(
 }
 
 /**
- * Perform an action on `view` dismiss events inside new CoroutineScope.
+ * Perform an action on [PopupMenu] dismiss events inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun PopupMenu.dismisses(
         capacity: Int = Channel.RENDEZVOUS,
@@ -58,7 +65,10 @@ suspend fun PopupMenu.dismisses(
 
 
 /**
- * Create a channel which emits on `view` dismiss events
+ * Create a channel which emits on [PopupMenu] dismiss events
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun PopupMenu.dismisses(
@@ -74,7 +84,7 @@ fun PopupMenu.dismisses(
 
 
 /**
- * Create a flow which emits on `view` dismiss events
+ * Create a flow which emits on [PopupMenu] dismiss events
  */
 @CheckResult
 fun PopupMenu.dismisses(): Flow<Unit> = channelFlow {
@@ -86,9 +96,6 @@ fun PopupMenu.dismisses(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `view` dismiss
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

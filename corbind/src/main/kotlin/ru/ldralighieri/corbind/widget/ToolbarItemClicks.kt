@@ -23,6 +23,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the clicked item in [Toolbar] menu.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 fun Toolbar.itemClicks(
         scope: CoroutineScope,
@@ -38,6 +45,12 @@ fun Toolbar.itemClicks(
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
+/**
+ * Perform an action on the clicked item in [Toolbar] menu inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 suspend fun Toolbar.itemClicks(
         capacity: Int = Channel.RENDEZVOUS,
@@ -56,6 +69,12 @@ suspend fun Toolbar.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits the clicked item in [Toolbar] menu.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
 fun Toolbar.itemClicks(
@@ -70,6 +89,9 @@ fun Toolbar.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits the clicked item in [Toolbar] menu.
+ */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
 fun Toolbar.itemClicks(): Flow<MenuItem> = channelFlow {

@@ -23,7 +23,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on the position of item clicks for `view`.
+ * Perform an action on the position of item clicks for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun <T : Adapter> AdapterView<T>.itemClicks(
         scope: CoroutineScope,
@@ -40,7 +44,10 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
 }
 
 /**
- * Perform an action on the position of item clicks for `view` inside new CoroutineScope.
+ * Perform an action on the position of item clicks for [AdapterView] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun <T : Adapter> AdapterView<T>.itemClicks(
         capacity: Int = Channel.RENDEZVOUS,
@@ -60,7 +67,10 @@ suspend fun <T : Adapter> AdapterView<T>.itemClicks(
 
 
 /**
- * Create a channel of the position of item clicks for `view`.
+ * Create a channel of the position of item clicks for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClicks(
@@ -76,7 +86,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
 
 
 /**
- * Create a flow of the position of item clicks for `view`.
+ * Create a flow of the position of item clicks for [AdapterView].
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow {
@@ -88,9 +98,6 @@ fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `view` position of item clicks
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

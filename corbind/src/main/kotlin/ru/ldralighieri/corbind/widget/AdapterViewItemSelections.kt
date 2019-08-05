@@ -23,7 +23,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on the selected position of `view`.
+ * Perform an action on the selected position of [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun <T : Adapter> AdapterView<T>.itemSelections(
         scope: CoroutineScope,
@@ -41,7 +45,10 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
 }
 
 /**
- * Perform an action on the selected position of `view` inside new CoroutineScope.
+ * Perform an action on the selected position of [AdapterView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun <T : Adapter> AdapterView<T>.itemSelections(
         capacity: Int = Channel.RENDEZVOUS,
@@ -62,8 +69,11 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
 
 
 /**
- * Create a channel of the selected position of `view`. If nothing is selected,
+ * Create a channel of the selected position of [AdapterView]. If nothing is selected,
  * [AdapterView.INVALID_POSITION] will be emitted
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemSelections(
@@ -80,8 +90,10 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
 
 
 /**
- * Create a flow of the selected position of `view`. If nothing is selected,
+ * Create a flow of the selected position of [AdapterView]. If nothing is selected,
  * [AdapterView.INVALID_POSITION] will be emitted
+ *
+ * *Note:* A value will be emitted immediately on collect.
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemSelections(): Flow<Int> = channelFlow {
@@ -94,9 +106,6 @@ fun <T : Adapter> AdapterView<T>.itemSelections(): Flow<Int> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `view` item selected position
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

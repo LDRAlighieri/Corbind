@@ -112,9 +112,6 @@ fun View.touches(
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of touch events for [View]
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

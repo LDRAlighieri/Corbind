@@ -20,9 +20,6 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
-/**
- * An action view event on a menu item.
- */
 sealed class MenuItemActionViewEvent {
     abstract val menuItem: MenuItem
 }
@@ -63,7 +60,7 @@ fun MenuItem.actionViewEvents(
 }
 
 /**
- * Perform an action on action view events for [MenuItem] inside new CoroutineScope.
+ * Perform an action on action view events for [MenuItem] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -128,9 +125,6 @@ fun MenuItem.actionViewEvents(
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * listener of action view events for [MenuItem].
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -85,7 +85,6 @@ fun View.longClicks(
         capacity: Int = Channel.RENDEZVOUS,
         handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     setOnLongClickListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnLongClickListener(null) }
 }
@@ -112,9 +111,6 @@ fun View.longClicks(
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `view` long-click events.
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

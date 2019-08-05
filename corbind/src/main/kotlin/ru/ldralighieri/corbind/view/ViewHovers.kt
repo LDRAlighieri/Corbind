@@ -110,9 +110,6 @@ fun View.hovers(
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [View] hover
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

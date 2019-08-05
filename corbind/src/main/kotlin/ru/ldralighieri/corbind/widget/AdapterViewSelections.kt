@@ -40,7 +40,11 @@ data class AdapterViewNothingSelectionEvent(
 
 
 /**
- * Perform an action on selection events for `view`.
+ * Perform an action on selection events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun <T : Adapter> AdapterView<T>.selectionEvents(
         scope: CoroutineScope,
@@ -58,7 +62,10 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 }
 
 /**
- * Perform an action on selection events for `view` inside new CoroutineScope.
+ * Perform an action on selection events for [AdapterView] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -79,7 +86,10 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 
 
 /**
- * Create a channel of selection events for `view`.
+ * Create a channel of selection events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(
@@ -96,7 +106,9 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 
 
 /**
- * Create a flow of selection events for `view`.
+ * Create a flow of selection events for [AdapterView].
+ *
+ * *Note:* A value will be emitted immediately on collect.
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(): Flow<AdapterViewSelectionEvent> = channelFlow {
@@ -109,9 +121,6 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(): Flow<AdapterViewSelectionEve
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Initial event value
- */
 @CheckResult
 private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterViewSelectionEvent {
     return if (adapterView.selectedItemPosition == AdapterView.INVALID_POSITION) {
@@ -126,9 +135,6 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `view` item selected
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -23,6 +23,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on [Toolbar] navigation click events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 fun Toolbar.navigationClicks(
         scope: CoroutineScope,
@@ -38,6 +45,12 @@ fun Toolbar.navigationClicks(
     events.invokeOnClose { setNavigationOnClickListener(null) }
 }
 
+/**
+ * Perform an action on [Toolbar] navigation click events inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 suspend fun Toolbar.navigationClicks(
         capacity: Int = Channel.RENDEZVOUS,
@@ -56,6 +69,12 @@ suspend fun Toolbar.navigationClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on [Toolbar] navigation click events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
 fun Toolbar.navigationClicks(
@@ -70,6 +89,9 @@ fun Toolbar.navigationClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on [Toolbar] navigation click events.
+ */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
 fun Toolbar.navigationClicks(): Flow<Unit> = channelFlow {

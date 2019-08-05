@@ -21,7 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on checked view ID changes in `view`.
+ * Perform an action on checked view ID changes in [RadioGroup].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun RadioGroup.checkedChanges(
         scope: CoroutineScope,
@@ -39,7 +43,10 @@ fun RadioGroup.checkedChanges(
 }
 
 /**
- * Perform an action on checked view ID changes in `view` inside new CoroutineScope.
+ * Perform an action on checked view ID changes in [RadioGroup] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun RadioGroup.checkedChanges(
         capacity: Int = Channel.RENDEZVOUS,
@@ -60,7 +67,10 @@ suspend fun RadioGroup.checkedChanges(
 
 
 /**
- * Create a channel of the checked view ID changes in `view`.
+ * Create a channel of the checked view ID changes in [RadioGroup].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun RadioGroup.checkedChanges(
@@ -77,7 +87,9 @@ fun RadioGroup.checkedChanges(
 
 
 /**
- * Create a flow of the checked view ID changes in `view`.
+ * Create a flow of the checked view ID changes in [RadioGroup].
+ *
+ * *Note:* A value will be emitted immediately on collect.
  */
 @CheckResult
 fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
@@ -90,9 +102,6 @@ fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of view ID changes in `view`
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

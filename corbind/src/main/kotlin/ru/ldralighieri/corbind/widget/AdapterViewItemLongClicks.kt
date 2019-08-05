@@ -24,7 +24,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on position of item long-clicks for `view`.
+ * Perform an action on position of item long-clicks for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked each occurrence to determine the return value of the underlying
+ * [AdapterView.OnItemLongClickListener]
+ * @param action An action to perform
  */
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
         scope: CoroutineScope,
@@ -42,7 +48,12 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 /**
- * Perform an action on position of item long-clicks for `view` inside new CoroutineScope.
+ * Perform an action on position of item long-clicks for [AdapterView] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked each occurrence to determine the return value of the underlying
+ * [AdapterView.OnItemLongClickListener]
+ * @param action An action to perform
  */
 suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
         capacity: Int = Channel.RENDEZVOUS,
@@ -63,7 +74,12 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
 
 
 /**
- * Create a channel of the position of item long-clicks for `view`.
+ * Create a channel of the position of item long-clicks for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked each occurrence to determine the return value of the underlying
+ * [AdapterView.OnItemLongClickListener]
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
@@ -80,7 +96,10 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 
 
 /**
- * Create a flow of the position of item long-clicks for `view`.
+ * Create a flow of the position of item long-clicks for [AdapterView].
+ *
+ * @param handled Function invoked each occurrence to determine the return value of the underlying
+ * [AdapterView.OnItemLongClickListener]
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
@@ -94,9 +113,6 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `view` position of item long-clicks
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

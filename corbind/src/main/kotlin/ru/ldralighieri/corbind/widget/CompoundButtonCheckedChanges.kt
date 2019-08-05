@@ -21,7 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on checked state of `view`.
+ * Perform an action on checked state of [CompoundButton].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun CompoundButton.checkedChanges(
         scope: CoroutineScope,
@@ -39,7 +43,10 @@ fun CompoundButton.checkedChanges(
 }
 
 /**
- * Perform an action on checked state of `view` inside new CoroutineScope.
+ * Perform an action on checked state of [CompoundButton] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun CompoundButton.checkedChanges(
         capacity: Int = Channel.RENDEZVOUS,
@@ -60,7 +67,10 @@ suspend fun CompoundButton.checkedChanges(
 
 
 /**
- * Create a channel of booleans representing the checked state of `view`.
+ * Create a channel of booleans representing the checked state of [CompoundButton].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun CompoundButton.checkedChanges(
@@ -77,7 +87,9 @@ fun CompoundButton.checkedChanges(
 
 
 /**
- * Create a flow of booleans representing the checked state of `view`.
+ * Create a flow of booleans representing the checked state of [CompoundButton].
+ *
+ * *Note:* A value will be emitted immediately on collect.
  */
 @CheckResult
 fun CompoundButton.checkedChanges(): Flow<Boolean> = channelFlow {
@@ -90,9 +102,6 @@ fun CompoundButton.checkedChanges(): Flow<Boolean> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `view` checked state change
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

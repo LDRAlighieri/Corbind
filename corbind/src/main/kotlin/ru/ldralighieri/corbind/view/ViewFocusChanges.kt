@@ -87,6 +87,8 @@ fun View.focusChanges(
 
 /**
  * Create a flow of booleans representing the focus of [View].
+ *
+ * *Note:* A value will be emitted immediately on collect.
  */
 @CheckResult
 fun View.focusChanges(): Flow<Boolean> = channelFlow {
@@ -99,9 +101,6 @@ fun View.focusChanges(): Flow<Boolean> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [View] focus change
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -75,7 +75,6 @@ fun View.clicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     setOnClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnClickListener(null) }
 }
@@ -97,9 +96,6 @@ fun View.clicks(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [View] click events
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -111,9 +111,6 @@ fun MenuItem.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [MenuItem] click events.
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

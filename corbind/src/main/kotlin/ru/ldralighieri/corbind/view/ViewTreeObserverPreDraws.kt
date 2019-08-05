@@ -109,9 +109,6 @@ fun View.preDraws(
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of pre-draws on [View].
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

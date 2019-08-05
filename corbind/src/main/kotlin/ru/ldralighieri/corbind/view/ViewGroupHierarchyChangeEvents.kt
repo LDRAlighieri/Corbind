@@ -124,9 +124,6 @@ fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = channelFlow 
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [ViewGroup] hierarchy change
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

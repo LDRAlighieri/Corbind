@@ -78,7 +78,6 @@ fun View.globalLayouts(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     val listener = listener(scope, ::safeOffer)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
@@ -102,9 +101,6 @@ fun View.globalLayouts(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [View] globalLayout events
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

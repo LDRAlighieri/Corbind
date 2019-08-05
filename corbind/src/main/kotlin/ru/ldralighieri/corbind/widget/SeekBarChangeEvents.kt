@@ -40,6 +40,13 @@ data class SeekBarStopChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on progress change events for [SeekBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 private fun SeekBar.changeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -55,6 +62,12 @@ private fun SeekBar.changeEvents(
     events.invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
+/**
+ * Perform an action on progress change events for [SeekBar] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 private suspend fun SeekBar.changeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (SeekBarChangeEvent) -> Unit
@@ -73,6 +86,12 @@ private suspend fun SeekBar.changeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of progress change events for [SeekBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 private fun SeekBar.changeEvents(
         scope: CoroutineScope,
@@ -87,8 +106,14 @@ private fun SeekBar.changeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of progress change events for [SeekBar].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun SeekBar.changeEvents(): Flow<SeekBarChangeEvent> = channelFlow {
+    offer(initialValue(this@changeEvents))
     setOnSeekBarChangeListener(listener(this, ::offer))
     awaitClose { setOnSeekBarChangeListener(null) }
 }

@@ -83,7 +83,6 @@ fun View.draws(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     val listener = listener(scope, ::safeOffer)
     viewTreeObserver.addOnDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
@@ -107,9 +106,6 @@ fun View.draws(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of draws on [View].
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

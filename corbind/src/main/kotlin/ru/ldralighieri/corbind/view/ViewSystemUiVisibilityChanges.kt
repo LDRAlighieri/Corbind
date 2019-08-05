@@ -96,9 +96,6 @@ fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of a new system UI visibility for [View]
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

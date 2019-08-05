@@ -19,23 +19,14 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
-/**
- * A view attach event on a view.
- */
 sealed class ViewAttachEvent {
     abstract val view: View
 }
 
-/**
- * A view attached event on a view.
- */
 data class ViewAttachAttachedEvent(
         override val view: View
 ) : ViewAttachEvent()
 
-/**
- * A view detached event on a view.
- */
 data class ViewAttachDetachedEvent(
         override val view: View
 ) : ViewAttachEvent()
@@ -123,9 +114,6 @@ fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of attach and detach events on [View].
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -19,9 +19,6 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
-/**
- * A list view on scroll event
- */
 data class AbsListViewScrollEvent(
         val view: AbsListView,
         val scrollState: Int,
@@ -34,7 +31,11 @@ data class AbsListViewScrollEvent(
 
 
 /**
- * Perform an action on scroll events on `absListView`.
+ * Perform an action on scroll events on [AbsListView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun AbsListView.scrollEvents(
         scope: CoroutineScope,
@@ -51,7 +52,10 @@ fun AbsListView.scrollEvents(
 }
 
 /**
- * Perform an action on scroll events on `absListView` inside new CoroutineScope.
+ * Perform an action on scroll events on [AbsListView] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun AbsListView.scrollEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -71,7 +75,10 @@ suspend fun AbsListView.scrollEvents(
 
 
 /**
- * Create a channel of scroll events on `absListView`.
+ * Create a channel of scroll events on [AbsListView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun AbsListView.scrollEvents(
@@ -87,7 +94,7 @@ fun AbsListView.scrollEvents(
 
 
 /**
- * Create a flow of scroll events on `absListView`.
+ * Create a flow of scroll events on [AbsListView].
  */
 @CheckResult
 fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {
@@ -99,9 +106,6 @@ fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `absListView` scroll events.
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

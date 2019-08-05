@@ -47,7 +47,7 @@ fun View.keys(
 }
 
 /**
- * Perform an action on key events for [View] inside new CoroutineScope.
+ * Perform an action on key events for [View] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -112,9 +112,6 @@ fun View.keys(
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [View] key events
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

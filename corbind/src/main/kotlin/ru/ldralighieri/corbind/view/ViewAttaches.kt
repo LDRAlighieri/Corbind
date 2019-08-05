@@ -183,9 +183,6 @@ fun View.detaches(): Flow<Unit> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [View] attach / detach events
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

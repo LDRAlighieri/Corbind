@@ -21,9 +21,6 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
-/**
- * An adapter view item click event
- */
 data class AdapterViewItemClickEvent(
         val view: AdapterView<*>,
         val clickedView: View?,
@@ -35,7 +32,11 @@ data class AdapterViewItemClickEvent(
 
 
 /**
- * Perform an action on the item click events for `view`.
+ * Perform an action on the item click events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
         scope: CoroutineScope,
@@ -52,7 +53,10 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 }
 
 /**
- * Perform an action on the item click events for `view` inside new CoroutineScope.
+ * Perform an action on the item click events for [AdapterView] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -72,14 +76,16 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
 
 
 /**
- * Create a channel of the item click events for `view`.
+ * Create a channel of the item click events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(capacity) {
-
     onItemClickListener = listener(scope, ::safeOffer)
     invokeOnClose { onItemClickListener = null }
 }
@@ -89,7 +95,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 
 
 /**
- * Create a flow of the item click events for `view`.
+ * Create a flow of the item click events for [AdapterView].
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {
@@ -101,9 +107,6 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEve
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of `view` item click events
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

@@ -21,9 +21,6 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
-/**
- * A scroll-change event on a view.
- */
 data class ViewScrollChangeEvent(
         val view: View,
         val scrollX: Int,
@@ -115,9 +112,6 @@ fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
 // -----------------------------------------------------------------------------------------------
 
 
-/**
- * Listener of [View] scroll-change events
- */
 @CheckResult
 private fun listener(
         scope: CoroutineScope,

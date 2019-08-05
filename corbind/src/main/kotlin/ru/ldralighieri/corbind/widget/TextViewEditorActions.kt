@@ -21,6 +21,15 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on editor actions on [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [TextView.OnEditorActionListener].
+ * @param action An action to perform
+ */
 fun TextView.editorActions(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +45,14 @@ fun TextView.editorActions(
     events.invokeOnClose { setOnEditorActionListener(null) }
 }
 
+/**
+ * Perform an action on editor actions on [TextView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [TextView.OnEditorActionListener].
+ * @param action An action to perform
+ */
 suspend fun TextView.editorActions(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (Int) -> Boolean = AlwaysTrue,
@@ -54,6 +71,14 @@ suspend fun TextView.editorActions(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of editor actions on [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [TextView.OnEditorActionListener].
+ */
 @CheckResult
 fun TextView.editorActions(
         scope: CoroutineScope,
@@ -68,6 +93,12 @@ fun TextView.editorActions(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of editor actions on [TextView].
+ *
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [TextView.OnEditorActionListener].
+ */
 @CheckResult
 fun TextView.editorActions(
         handled: (Int) -> Boolean = AlwaysTrue

@@ -22,6 +22,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on character sequences for text changes on [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun TextView.textChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -38,6 +45,13 @@ fun TextView.textChanges(
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
 
+/**
+ * Perform an action on character sequences for text changes on [TextView] inside new
+ * [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun TextView.textChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (CharSequence) -> Unit
@@ -57,6 +71,12 @@ suspend fun TextView.textChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of character sequences for text changes on [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun TextView.textChanges(
         scope: CoroutineScope,
@@ -72,6 +92,11 @@ fun TextView.textChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of character sequences for text changes on [TextView].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun TextView.textChanges(): Flow<CharSequence> = channelFlow {
     offer(text)
