@@ -23,7 +23,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on key events for `view`.
+ * Perform an action on key events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnKeyListener]
+ * @param action An action to perform
  */
 fun View.keys(
         scope: CoroutineScope,
@@ -41,7 +47,12 @@ fun View.keys(
 }
 
 /**
- * Perform an action on key events for `view` inside new CoroutineScope.
+ * Perform an action on key events for [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnKeyListener]
+ * @param action An action to perform
  */
 suspend fun View.keys(
         capacity: Int = Channel.RENDEZVOUS,
@@ -62,7 +73,12 @@ suspend fun View.keys(
 
 
 /**
- * Create a channel of key events for `view`.
+ * Create a channel of key events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnKeyListener]
  */
 @CheckResult
 fun View.keys(
@@ -79,7 +95,10 @@ fun View.keys(
 
 
 /**
- * Create a flow of key events for `view`.
+ * Create a flow of key events for [View].
+ *
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnKeyListener]
  */
 @CheckResult
 fun View.keys(
@@ -94,7 +113,7 @@ fun View.keys(
 
 
 /**
- * Listener of `view` key events
+ * Listener of [View] key events
  */
 @CheckResult
 private fun listener(

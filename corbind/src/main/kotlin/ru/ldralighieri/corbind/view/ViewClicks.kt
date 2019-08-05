@@ -21,7 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on `view` click events.
+ * Perform an action on [View] click events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun View.clicks(
         scope: CoroutineScope,
@@ -38,7 +42,10 @@ fun View.clicks(
 }
 
 /**
- * Perform an action on `view` click events inside new CoroutineScope.
+ * Perform an action on [View] click events inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun View.clicks(
         capacity: Int = Channel.RENDEZVOUS,
@@ -58,7 +65,10 @@ suspend fun View.clicks(
 
 
 /**
- * Create a channel which emits on `view` click events
+ * Create a channel which emits on [View] click events
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun View.clicks(
@@ -71,12 +81,11 @@ fun View.clicks(
 }
 
 
-
 // -----------------------------------------------------------------------------------------------
 
 
 /**
- * Create a flow which emits on `view` click events
+ * Create a flow which emits on [View] click events
  */
 @CheckResult
 fun View.clicks(): Flow<Unit> = channelFlow {
@@ -89,7 +98,7 @@ fun View.clicks(): Flow<Unit> = channelFlow {
 
 
 /**
- * Listener of `view` click events
+ * Listener of [View] click events
  */
 @CheckResult
 private fun listener(

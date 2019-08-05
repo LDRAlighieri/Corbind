@@ -44,7 +44,11 @@ data class ViewAttachDetachedEvent(
 
 
 /**
- * Perform an action on attach and detach events on `view`.
+ * Perform an action on attach and detach events on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun View.attachEvents(
         scope: CoroutineScope,
@@ -62,7 +66,10 @@ fun View.attachEvents(
 }
 
 /**
- * Perform an action on attach and detach events on `view` inside new CoroutineScope.
+ * Perform an action on attach and detach events on [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun View.attachEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -83,7 +90,10 @@ suspend fun View.attachEvents(
 
 
 /**
- * Create a channel of attach and detach events on `view`.
+ * Create a channel of attach and detach events on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun View.attachEvents(
@@ -100,7 +110,7 @@ fun View.attachEvents(
 
 
 /**
- * Create a flow of attach and detach events on `view`.
+ * Create a flow of attach and detach events on [View].
  */
 @CheckResult
 fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
@@ -114,7 +124,7 @@ fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
 
 
 /**
- * Listener of attach and detach events on `view`.
+ * Listener of attach and detach events on [View].
  */
 @CheckResult
 private fun listener(

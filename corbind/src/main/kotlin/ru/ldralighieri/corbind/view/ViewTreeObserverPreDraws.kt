@@ -22,7 +22,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on pre-draws on `view`.
+ * Perform an action on pre-draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param proceedDrawingPass Let drawing process proceed
+ * @param action An action to perform
  */
 fun View.preDraws(
         scope: CoroutineScope,
@@ -40,7 +45,11 @@ fun View.preDraws(
 }
 
 /**
- * Perform an action on pre-draws on `view` inside new CoroutineScope.
+ * Perform an action on pre-draws on [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param proceedDrawingPass Let drawing process proceed
+ * @param action An action to perform
  */
 suspend fun View.preDraws(
         capacity: Int = Channel.RENDEZVOUS,
@@ -61,7 +70,11 @@ suspend fun View.preDraws(
 
 
 /**
- * Create a channel for pre-draws on `view`.
+ * Create a channel for pre-draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param proceedDrawingPass Let drawing process proceed
  */
 @CheckResult
 fun View.preDraws(
@@ -79,7 +92,9 @@ fun View.preDraws(
 
 
 /**
- * Create a flow for pre-draws on `view`.
+ * Create a flow for pre-draws on [View].
+ *
+ * @param proceedDrawingPass Let drawing process proceed
  */
 @CheckResult
 fun View.preDraws(
@@ -95,7 +110,7 @@ fun View.preDraws(
 
 
 /**
- * Listener of pre-draws on `view`.
+ * Listener of pre-draws on [View].
  */
 @CheckResult
 private fun listener(

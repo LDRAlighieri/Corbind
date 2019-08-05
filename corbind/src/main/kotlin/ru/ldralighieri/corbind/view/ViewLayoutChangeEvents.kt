@@ -38,7 +38,11 @@ data class ViewLayoutChangeEvent(
 
 
 /**
- * Perform an action on layout-change events for `view`.
+ * Perform an action on layout-change events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun View.layoutChangeEvents(
         scope: CoroutineScope,
@@ -56,7 +60,10 @@ fun View.layoutChangeEvents(
 }
 
 /**
- * Perform an action on layout-change events for `view` inside new CoroutineScope.
+ * Perform an action on layout-change events for [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun View.layoutChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -76,7 +83,10 @@ suspend fun View.layoutChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 /**
- * Create a channel of layout-change events for `view`.
+ * Create a channel of layout-change events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun View.layoutChangeEvents(
@@ -92,7 +102,7 @@ fun View.layoutChangeEvents(
 
 
 /**
- * Create a flow of layout-change events for `view`.
+ * Create a flow of layout-change events for [View].
  */
 @CheckResult
 fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
@@ -106,7 +116,7 @@ fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
 
 
 /**
- * Listener of `view` layout-change
+ * Listener of [View] layout-change
  */
 @CheckResult
 private fun listener(

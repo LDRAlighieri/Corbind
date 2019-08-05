@@ -21,7 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on a new system UI visibility for `view`.
+ * Perform an action on a new system UI visibility for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope,
@@ -38,7 +42,10 @@ fun View.systemUiVisibilityChanges(
 }
 
 /**
- * Perform an action on a new system UI visibility for `view` inside new CoroutineScope.
+ * Perform an action on a new system UI visibility for [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun View.systemUiVisibilityChanges(
         capacity: Int = Channel.RENDEZVOUS,
@@ -58,7 +65,10 @@ suspend fun View.systemUiVisibilityChanges(
 
 
 /**
- * Create a channel of integers representing a new system UI visibility for `view`.
+ * Create a channel of integers representing a new system UI visibility for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun View.systemUiVisibilityChanges(
@@ -74,7 +84,7 @@ fun View.systemUiVisibilityChanges(
 
 
 /**
- * Create a flow of integers representing a new system UI visibility for `view`.
+ * Create a flow of integers representing a new system UI visibility for [View].
  */
 @CheckResult
 fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
@@ -87,7 +97,7 @@ fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
 
 
 /**
- * Listener of a new system UI visibility for `view`
+ * Listener of a new system UI visibility for [View]
  */
 @CheckResult
 private fun listener(

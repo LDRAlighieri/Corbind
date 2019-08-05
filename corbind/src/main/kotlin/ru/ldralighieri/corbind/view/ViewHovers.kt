@@ -22,7 +22,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 /**
- * Perform an action on hover events for `view`.
+ * Perform an action on hover events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnHoverListener]
+ * @param action An action to perform
  */
 fun View.hovers(
         scope: CoroutineScope,
@@ -40,7 +46,12 @@ fun View.hovers(
 }
 
 /**
- * Perform an action on hover events for `view` inside new CoroutineScope.
+ * Perform an action on hover events for [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnHoverListener]
+ * @param action An action to perform
  */
 suspend fun View.hovers(
         capacity: Int = Channel.RENDEZVOUS,
@@ -60,7 +71,12 @@ suspend fun View.hovers(
 // -----------------------------------------------------------------------------------------------
 
 /**
- * Create a channel of hover events for `view`.
+ * Create a channel of hover events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnHoverListener]
  */
 @CheckResult
 fun View.hovers(
@@ -77,7 +93,10 @@ fun View.hovers(
 
 
 /**
- * Create a flow of hover events for `view`.
+ * Create a flow of hover events for [View].
+ *
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnHoverListener]
  */
 @CheckResult
 fun View.hovers(
@@ -92,7 +111,7 @@ fun View.hovers(
 
 
 /**
- * Listener of `view` hover
+ * Listener of [View] hover
  */
 @CheckResult
 private fun listener(

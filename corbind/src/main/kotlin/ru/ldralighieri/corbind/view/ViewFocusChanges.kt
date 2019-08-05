@@ -21,7 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on `view` focus change.
+ * Perform an action on [View] focus change.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun View.focusChanges(
         scope: CoroutineScope,
@@ -39,7 +43,10 @@ fun View.focusChanges(
 }
 
 /**
- * Perform an action on `view` focus change inside new CoroutineScope.
+ * Perform an action on [View] focus change inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun View.focusChanges(
         capacity: Int = Channel.RENDEZVOUS,
@@ -60,7 +67,10 @@ suspend fun View.focusChanges(
 
 
 /**
- * Create a channel of booleans representing the focus of `view`.
+ * Create a channel of booleans representing the focus of [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun View.focusChanges(
@@ -76,7 +86,7 @@ fun View.focusChanges(
 // -----------------------------------------------------------------------------------------------
 
 /**
- * Create a flow of booleans representing the focus of `view`.
+ * Create a flow of booleans representing the focus of [View].
  */
 @CheckResult
 fun View.focusChanges(): Flow<Boolean> = channelFlow {
@@ -90,7 +100,7 @@ fun View.focusChanges(): Flow<Boolean> = channelFlow {
 
 
 /**
- * Listener of `view` focus change
+ * Listener of [View] focus change
  */
 @CheckResult
 private fun listener(

@@ -21,7 +21,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on `view` layout changes.
+ * Perform an action on [View] layout changes.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun View.layoutChanges(
         scope: CoroutineScope,
@@ -39,7 +43,10 @@ fun View.layoutChanges(
 }
 
 /**
- * Perform an action on `view` layout changes inside new CoroutineScope.
+ * Perform an action on [View] layout changes inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun View.layoutChanges(
         capacity: Int = Channel.RENDEZVOUS,
@@ -60,7 +67,10 @@ suspend fun View.layoutChanges(
 
 
 /**
- * Create a channel which emits on `view` layout changes.
+ * Create a channel which emits on [View] layout changes.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun View.layoutChanges(
@@ -77,7 +87,7 @@ fun View.layoutChanges(
 
 
 /**
- * Create a flow which emits on `view` layout changes.
+ * Create a flow which emits on [View] layout changes.
  */
 @CheckResult
 fun View.layoutChanges(): Flow<Unit> = channelFlow {
@@ -91,7 +101,7 @@ fun View.layoutChanges(): Flow<Unit> = channelFlow {
 
 
 /**
- * Listener of `view` layout changes.
+ * Listener of [View] layout changes.
  */
 @CheckResult
 private fun listener(

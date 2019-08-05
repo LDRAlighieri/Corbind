@@ -23,6 +23,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 /**
  * Perform an action on `view` long-click events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnLongClickListener]
+ * @param action An action to perform
  */
 fun View.longClicks(
         scope: CoroutineScope,
@@ -41,6 +47,11 @@ fun View.longClicks(
 
 /**
  * Perform an action on `view` long-click events inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnLongClickListener]
+ * @param action An action to perform
  */
 suspend fun View.longClicks(
         capacity: Int = Channel.RENDEZVOUS,
@@ -62,6 +73,11 @@ suspend fun View.longClicks(
 
 /**
  * Create a channel which emits on `view` long-click events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnLongClickListener]
  */
 @CheckResult
 fun View.longClicks(
@@ -80,6 +96,9 @@ fun View.longClicks(
 
 /**
  * Create a flow which emits on `view` long-click events.
+ *
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnLongClickListener]
  */
 @CheckResult
 fun View.longClicks(

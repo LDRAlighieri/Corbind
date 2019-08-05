@@ -22,7 +22,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on `view` globalLayout events.
+ * Perform an action on [View] globalLayout events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun View.globalLayouts(
         scope: CoroutineScope,
@@ -40,7 +44,10 @@ fun View.globalLayouts(
 }
 
 /**
- * Perform an action on `view` globalLayout events. inside new CoroutineScope.
+ * Perform an action on [View] globalLayout events. inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun View.globalLayouts(
         capacity: Int = Channel.RENDEZVOUS,
@@ -61,7 +68,10 @@ suspend fun View.globalLayouts(
 
 
 /**
- * Create a channel which emits on `view` globalLayout events.
+ * Create a channel which emits on [View] globalLayout events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun View.globalLayouts(
@@ -79,7 +89,7 @@ fun View.globalLayouts(
 
 
 /**
- * Create a flow which emits on `view` globalLayout events.
+ * Create a flow which emits on [View] globalLayout events.
  */
 @CheckResult
 fun View.globalLayouts(): Flow<Unit> = channelFlow {
@@ -93,7 +103,7 @@ fun View.globalLayouts(): Flow<Unit> = channelFlow {
 
 
 /**
- * Listener of `view` globalLayout events
+ * Listener of [View] globalLayout events
  */
 @CheckResult
 private fun listener(

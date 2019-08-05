@@ -23,7 +23,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on [DragEvent] for `view`.
+ * Perform an action on [DragEvent] for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnDragListener]
+ * @param action An action to perform
  */
 fun View.drags(
         scope: CoroutineScope,
@@ -41,7 +47,12 @@ fun View.drags(
 }
 
 /**
- * Perform an action on [DragEvent] for `view` inside new CoroutineScope.
+ * Perform an action on [DragEvent] for [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnDragListener]
+ * @param action An action to perform
  */
 suspend fun View.drags(
         capacity: Int = Channel.RENDEZVOUS,
@@ -62,7 +73,12 @@ suspend fun View.drags(
 
 
 /**
- * Create a channel of [DragEvent] for `view`.
+ * Create a channel of [DragEvent] for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnDragListener]
  */
 @CheckResult
 fun View.drags(
@@ -80,7 +96,10 @@ fun View.drags(
 
 
 /**
- * Create a flow of [DragEvent] for `view`.
+ * Create a flow of [DragEvent] for [View].
+ *
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnDragListener]
  */
 @CheckResult
 fun View.drags(
@@ -95,7 +114,7 @@ fun View.drags(
 
 
 /**
- * Listener of [DragEvent] for `view`.
+ * Listener of [DragEvent] for [View].
  */
 @CheckResult
 private fun listener(

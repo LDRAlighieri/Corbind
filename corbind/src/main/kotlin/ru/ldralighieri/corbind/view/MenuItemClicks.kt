@@ -22,7 +22,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on `menuItem` click events.
+ * Perform an action on [MenuItem] click events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnMenuItemClickListener]
+ * @param action An action to perform
  */
 fun MenuItem.clicks(
         scope: CoroutineScope,
@@ -40,7 +46,12 @@ fun MenuItem.clicks(
 }
 
 /**
- * Perform an action on `menuItem` click events inside new CoroutineScope.
+ * Perform an action on [MenuItem] click events inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnMenuItemClickListener]
+ * @param action An action to perform
  */
 suspend fun MenuItem.clicks(
         capacity: Int = Channel.RENDEZVOUS,
@@ -61,7 +72,12 @@ suspend fun MenuItem.clicks(
 
 
 /**
- * Create a channel which emits on `menuItem` click events.
+ * Create a channel which emits on [MenuItem] click events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnMenuItemClickListener]
  */
 @CheckResult
 fun MenuItem.clicks(
@@ -78,7 +94,10 @@ fun MenuItem.clicks(
 
 
 /**
- * Create a flow which emits on `menuItem` click events.
+ * Create a flow which emits on [MenuItem] click events.
+ *
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnMenuItemClickListener]
  */
 @CheckResult
 fun MenuItem.clicks(
@@ -93,7 +112,7 @@ fun MenuItem.clicks(
 
 
 /**
- * Listener of `menuItem` click events.
+ * Listener of [MenuItem] click events.
  */
 @CheckResult
 private fun listener(

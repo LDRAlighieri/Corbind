@@ -24,7 +24,11 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on draws on `view`.
+ * Perform an action on draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 fun View.draws(
@@ -43,7 +47,10 @@ fun View.draws(
 }
 
 /**
- * Perform an action on draws on `view` inside new CoroutineScope.
+ * Perform an action on draws on [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 suspend fun View.draws(
@@ -65,7 +72,10 @@ suspend fun View.draws(
 
 
 /**
- * Create a channel for draws on `view`.
+ * Create a channel for draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
@@ -84,7 +94,7 @@ fun View.draws(
 
 
 /**
- * Create a flow for draws on `view`.
+ * Create a flow for draws on [View].
  */
 @CheckResult
 fun View.draws(): Flow<Unit> = channelFlow {
@@ -98,7 +108,7 @@ fun View.draws(): Flow<Unit> = channelFlow {
 
 
 /**
- * Listener of draws on `view`.
+ * Listener of draws on [View].
  */
 @CheckResult
 private fun listener(

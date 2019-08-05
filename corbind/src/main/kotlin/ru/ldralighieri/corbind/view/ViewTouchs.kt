@@ -23,7 +23,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 
 /**
- * Perform an action on touch events for `view`.
+ * Perform an action on touch events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnTouchListener]
+ * @param action An action to perform
  */
 fun View.touches(
         scope: CoroutineScope,
@@ -41,7 +47,12 @@ fun View.touches(
 }
 
 /**
- * Perform an action on touch events for `view` inside new CoroutineScope.
+ * Perform an action on touch events for [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnTouchListener]
+ * @param action An action to perform
  */
 suspend fun View.touches(
         capacity: Int = Channel.RENDEZVOUS,
@@ -62,7 +73,12 @@ suspend fun View.touches(
 
 
 /**
- * Create a channel of touch events for `view`.
+ * Create a channel of touch events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnTouchListener]
  */
 @CheckResult
 fun View.touches(
@@ -79,7 +95,10 @@ fun View.touches(
 
 
 /**
- * Create a flow of touch events for `view`.
+ * Create a flow of touch events for [View].
+ *
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnTouchListener]
  */
 @CheckResult
 fun View.touches(
@@ -94,7 +113,7 @@ fun View.touches(
 
 
 /**
- * Listener of touch events for `view`
+ * Listener of touch events for [View]
  */
 @CheckResult
 private fun listener(

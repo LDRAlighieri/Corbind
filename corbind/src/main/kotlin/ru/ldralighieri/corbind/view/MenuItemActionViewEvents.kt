@@ -39,7 +39,13 @@ data class MenuItemActionViewExpandEvent(
 
 
 /**
- * Perform an action on action view events for `menuItem`.
+ * Perform an action on action view events for [MenuItem].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnActionExpandListener]
+ * @param action An action to perform
  */
 fun MenuItem.actionViewEvents(
         scope: CoroutineScope,
@@ -57,7 +63,12 @@ fun MenuItem.actionViewEvents(
 }
 
 /**
- * Perform an action on action view events for `menuItem` inside new CoroutineScope.
+ * Perform an action on action view events for [MenuItem] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnActionExpandListener]
+ * @param action An action to perform
  */
 suspend fun MenuItem.actionViewEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -78,7 +89,12 @@ suspend fun MenuItem.actionViewEvents(
 
 
 /**
- * Create a channel of action view events for `menuItem`.
+ * Create a channel of action view events for [MenuItem].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnActionExpandListener]
  */
 @CheckResult
 fun MenuItem.actionViewEvents(
@@ -95,7 +111,10 @@ fun MenuItem.actionViewEvents(
 
 
 /**
- * Create a flow of action view events for `menuItem`.
+ * Create a flow of action view events for [MenuItem].
+ *
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnActionExpandListener]
  */
 @CheckResult
 fun MenuItem.actionViewEvents(
@@ -110,7 +129,7 @@ fun MenuItem.actionViewEvents(
 
 
 /**
- * listener of action view events for `menuItem`.
+ * listener of action view events for [MenuItem].
  */
 @CheckResult
 private fun listener(
