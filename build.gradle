@@ -58,6 +58,7 @@ buildscript {
         mavenCentral()
         google()
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 
     // -------------------------------------------------------------------------------------------
@@ -81,7 +82,7 @@ plugins {
 
 // ------------------------------------------------------------------------------------------------
 
-subprojects {
+allprojects {
 
     repositories {
         mavenCentral()
@@ -94,6 +95,13 @@ subprojects {
             jvmTarget = "1.8"
         }
     }
+
+}
+
+
+// ------------------------------------------------------------------------------------------------
+
+subprojects {
 
     afterEvaluate {
         // Disable BuildConfig generation.
@@ -118,7 +126,7 @@ task clean(type: Delete) {
 detekt {
     toolVersion = "1.0.0-RC16"
 
-    failFast = true
+    failFast = false
     buildUponDefaultConfig = true
 
     config = files("default-detekt-config.yml")
@@ -132,13 +140,14 @@ detekt {
             "corbind-recyclerview/src/main/kotlin",
             "corbind-slidingpanelayout/src/main/kotlin",
             "corbind-swiperefreshlayout/src/main/kotlin",
-            "corbind-viewpager/src/main/kotlin",
+            "corbind-viewpager/src/main/kotlin"
     )
     filters = ".*/resources/.*,.*/build/.*"
     parallel = true
 
     reports {
         html.enabled = true
+        xml.enabled = false
     }
 }
 
