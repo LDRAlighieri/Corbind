@@ -76,6 +76,7 @@ buildscript {
 
 plugins {
     id 'com.github.ben-manes.versions' version '0.21.0'
+    id "io.gitlab.arturbosch.detekt" version "1.0.0-RC16"
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -110,6 +111,35 @@ subprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// ------------------------------------------------------------------------------------------------
+
+detekt {
+    toolVersion = "1.0.0-RC16"
+
+    failFast = true
+    buildUponDefaultConfig = true
+
+    config = files("default-detekt-config.yml")
+    input = files(
+            "corbind/src/main/kotlin",
+            "corbind-appcompat/src/main/kotlin",
+            "corbind-core/src/main/kotlin",
+            "corbind-drawerlayout/src/main/kotlin",
+            "corbind-leanback/src/main/kotlin",
+            "corbind-material/src/main/kotlin",
+            "corbind-recyclerview/src/main/kotlin",
+            "corbind-slidingpanelayout/src/main/kotlin",
+            "corbind-swiperefreshlayout/src/main/kotlin",
+            "corbind-viewpager/src/main/kotlin",
+    )
+    filters = ".*/resources/.*,.*/build/.*"
+    parallel = true
+
+    reports {
+        html.enabled = true
+    }
 }
 
 // ------------------------------------------------------------------------------------------------
