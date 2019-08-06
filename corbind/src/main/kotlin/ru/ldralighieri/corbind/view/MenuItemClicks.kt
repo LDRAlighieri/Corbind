@@ -24,6 +24,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 /**
  * Perform an action on [MenuItem] click events.
  *
+ * *Warning:* The created actor uses [MenuItem.setOnMenuItemClickListener] to emmit clicks. Only
+ * one actor can be used for a menu item at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -46,7 +49,10 @@ fun MenuItem.clicks(
 }
 
 /**
- * Perform an action on [MenuItem] click events inside new CoroutineScope.
+ * Perform an action on [MenuItem] click events inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [MenuItem.setOnMenuItemClickListener] to emmit clicks. Only
+ * one actor can be used for a menu item at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -74,6 +80,9 @@ suspend fun MenuItem.clicks(
 /**
  * Create a channel which emits on [MenuItem] click events.
  *
+ * *Warning:* The created channel uses [MenuItem.setOnMenuItemClickListener] to emmit clicks.
+ * Only one channel can be used for a menu item at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -95,6 +104,9 @@ fun MenuItem.clicks(
 
 /**
  * Create a flow which emits on [MenuItem] click events.
+ *
+ * *Warning:* The created flow uses [MenuItem.setOnMenuItemClickListener] to emmit clicks. Only
+ * one flow can be used for a menu item at a time.
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
  * [MenuItem.OnMenuItemClickListener]

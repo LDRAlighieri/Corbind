@@ -57,7 +57,7 @@ fun View.layoutChangeEvents(
 }
 
 /**
- * Perform an action on layout-change events for [View] inside new CoroutineScope.
+ * Perform an action on layout-change events for [View] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform

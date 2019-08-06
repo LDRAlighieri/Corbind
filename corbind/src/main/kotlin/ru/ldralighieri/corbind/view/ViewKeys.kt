@@ -25,6 +25,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 /**
  * Perform an action on key events for [View].
  *
+ * *Warning:* The created actor uses [View.setOnKeyListener] to emmit key events. Only one actor
+ * can be used for a view at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -48,6 +51,9 @@ fun View.keys(
 
 /**
  * Perform an action on key events for [View] inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [View.setOnKeyListener] to emmit key events. Only one actor
+ * can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -75,6 +81,9 @@ suspend fun View.keys(
 /**
  * Create a channel of key events for [View].
  *
+ * *Warning:* The created channel uses [View.setOnKeyListener] to emmit key events. Only one
+ * channel can be used for a view at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -96,6 +105,9 @@ fun View.keys(
 
 /**
  * Create a flow of key events for [View].
+ *
+ * *Warning:* The created flow uses [View.setOnKeyListener] to emmit key events. Only one flow
+ * can be used for a view at a time.
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
  * [View.OnKeyListener]

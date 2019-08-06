@@ -22,6 +22,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun View.dismisses(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -37,6 +44,13 @@ fun View.dismisses(
     events.invokeOnClose { behavior.setListener(null) }
 }
 
+/**
+ * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior] inside new 
+ * [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun View.dismisses(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (View) -> Unit
@@ -55,6 +69,12 @@ suspend fun View.dismisses(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits the dismiss events from [View] on [SwipeDismissBehavior].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun View.dismisses(
         scope: CoroutineScope,
@@ -69,6 +89,9 @@ fun View.dismisses(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits the dismiss events from [View] on [SwipeDismissBehavior].
+ */
 @CheckResult
 fun View.dismisses(): Flow<View> = channelFlow {
     val behavior = getBehavior(this@dismisses)

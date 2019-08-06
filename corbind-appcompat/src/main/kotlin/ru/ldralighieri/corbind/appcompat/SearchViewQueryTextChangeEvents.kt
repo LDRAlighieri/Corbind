@@ -28,6 +28,13 @@ data class SearchViewQueryTextEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on [query text events][SearchViewQueryTextEvent] on [SearchView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SearchView.queryTextChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -43,6 +50,13 @@ fun SearchView.queryTextChangeEvents(
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
+/**
+ * Perform an action on [query text events][SearchViewQueryTextEvent] on [SearchView] inside new
+ * [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SearchView.queryTextChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (SearchViewQueryTextEvent) -> Unit
@@ -62,6 +76,12 @@ suspend fun SearchView.queryTextChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of [query text events][SearchViewQueryTextEvent] on [SearchView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SearchView.queryTextChangeEvents(
         scope: CoroutineScope,
@@ -76,6 +96,11 @@ fun SearchView.queryTextChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of [query text events][SearchViewQueryTextEvent] on [SearchView].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun SearchView.queryTextChangeEvents(): Flow<SearchViewQueryTextEvent> = channelFlow {
     offer(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))

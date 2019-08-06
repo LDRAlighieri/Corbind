@@ -44,7 +44,7 @@ fun View.globalLayouts(
 }
 
 /**
- * Perform an action on [View] globalLayout events. inside new CoroutineScope.
+ * Perform an action on [View] globalLayout events. inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform

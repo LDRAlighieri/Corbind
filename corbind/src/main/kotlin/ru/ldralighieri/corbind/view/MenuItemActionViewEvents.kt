@@ -38,6 +38,9 @@ data class MenuItemActionViewExpandEvent(
 /**
  * Perform an action on action view events for [MenuItem].
  *
+ * *Warning:* The created actor uses [MenuItem.setOnActionExpandListener] to emmit action view
+ * events. Only one actor can be used for a menu item at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -61,6 +64,9 @@ fun MenuItem.actionViewEvents(
 
 /**
  * Perform an action on action view events for [MenuItem] inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [MenuItem.setOnActionExpandListener] to emmit action view
+ * events. Only one actor can be used for a menu item at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -88,6 +94,9 @@ suspend fun MenuItem.actionViewEvents(
 /**
  * Create a channel of action view events for [MenuItem].
  *
+ * *Warning:* The created channel uses [MenuItem.setOnActionExpandListener] to emmit action view
+ * events. Only one channel can be used for a menu item at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -109,6 +118,9 @@ fun MenuItem.actionViewEvents(
 
 /**
  * Create a flow of action view events for [MenuItem].
+ *
+ * *Warning:* The created flow uses [MenuItem.setOnActionExpandListener] to emmit action view
+ * events. Only one flow can be used for a menu item at a time.
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
  * [MenuItem.OnActionExpandListener]

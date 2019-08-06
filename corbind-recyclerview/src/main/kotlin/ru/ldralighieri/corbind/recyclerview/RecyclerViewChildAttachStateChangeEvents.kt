@@ -38,6 +38,13 @@ data class RecyclerViewChildDetachEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on  child attach state change events on [RecyclerView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun RecyclerView.childAttachStateChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -53,6 +60,13 @@ fun RecyclerView.childAttachStateChangeEvents(
     events.invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
 }
 
+/**
+ * Perform an action on  child attach state change events on [RecyclerView] inside new 
+ * [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun RecyclerView.childAttachStateChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit
@@ -72,6 +86,12 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of child attach state change events on [RecyclerView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(
         scope: CoroutineScope,
@@ -86,6 +106,9 @@ fun RecyclerView.childAttachStateChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of child attach state change events on [RecyclerView].
+ */
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachStateChangeEvent> =
         channelFlow {

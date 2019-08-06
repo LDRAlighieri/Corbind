@@ -63,7 +63,7 @@ private fun SeekBar.changeEvents(
 }
 
 /**
- * Perform an action on progress change events for [SeekBar] inside new CoroutineScope.
+ * Perform an action on progress change events for [SeekBar] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform

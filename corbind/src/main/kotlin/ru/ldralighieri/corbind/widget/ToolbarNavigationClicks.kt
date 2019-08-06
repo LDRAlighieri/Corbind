@@ -26,6 +26,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
 /**
  * Perform an action on [Toolbar] navigation click events.
  *
+ * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener] to emmit clicks.
+ * Only one actor can be used for a view at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -47,6 +50,9 @@ fun Toolbar.navigationClicks(
 
 /**
  * Perform an action on [Toolbar] navigation click events inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener] to emmit clicks.
+ * Only one actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -72,6 +78,9 @@ suspend fun Toolbar.navigationClicks(
 /**
  * Create a channel which emits on [Toolbar] navigation click events.
  *
+ * *Warning:* The created channel uses [Toolbar.setNavigationOnClickListener] to emmit clicks.
+ * Only one channel can be used for a view at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -91,6 +100,9 @@ fun Toolbar.navigationClicks(
 
 /**
  * Create a flow which emits on [Toolbar] navigation click events.
+ *
+ * *Warning:* The created flow uses [Toolbar.setNavigationOnClickListener] to emmit clicks.
+ * Only one flow can be used for a view at a time.
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult

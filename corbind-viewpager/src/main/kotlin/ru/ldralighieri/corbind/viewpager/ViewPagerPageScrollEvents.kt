@@ -29,6 +29,13 @@ data class ViewPagerPageScrollEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on page scroll events on [ViewPager].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun ViewPager.pageScrollEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -44,6 +51,12 @@ fun ViewPager.pageScrollEvents(
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
 
+/**
+ * Perform an action on page scroll events on [ViewPager] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun ViewPager.pageScrollEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewPagerPageScrollEvent) -> Unit
@@ -63,6 +76,12 @@ suspend fun ViewPager.pageScrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of page scroll events on [ViewPager].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun ViewPager.pageScrollEvents(
         scope: CoroutineScope,
@@ -77,6 +96,9 @@ fun ViewPager.pageScrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of page scroll events on [ViewPager].
+ */
 @CheckResult
 fun ViewPager.pageScrollEvents(): Flow<ViewPagerPageScrollEvent> = channelFlow {
     val listener = listener(this, this@pageScrollEvents, ::offer)

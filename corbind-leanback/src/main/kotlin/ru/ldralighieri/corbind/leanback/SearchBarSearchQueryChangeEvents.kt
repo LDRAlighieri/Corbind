@@ -42,6 +42,13 @@ data class SearchBarSearchQuerySubmittedEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on [search query events][SearchBarSearchQueryEvent] on [SearchBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SearchBar.searchQueryChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -56,6 +63,13 @@ fun SearchBar.searchQueryChangeEvents(
     events.invokeOnClose { setSearchBarListener(null) }
 }
 
+/**
+ * Perform an action on [search query events][SearchBarSearchQueryEvent] on [SearchBar] inside new
+ * [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SearchBar.searchQueryChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (SearchBarSearchQueryEvent) -> Unit
@@ -74,6 +88,12 @@ suspend fun SearchBar.searchQueryChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of [search query events][SearchBarSearchQueryEvent] on [SearchBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SearchBar.searchQueryChangeEvents(
         scope: CoroutineScope,
@@ -87,6 +107,9 @@ fun SearchBar.searchQueryChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of [search query events][SearchBarSearchQueryEvent] on [SearchBar].
+ */
 @CheckResult
 fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> = channelFlow {
     setSearchBarListener(listener(this, this@searchQueryChangeEvents, ::offer))

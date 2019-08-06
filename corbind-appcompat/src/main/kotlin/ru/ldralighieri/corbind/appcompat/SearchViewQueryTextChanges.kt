@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on character sequences for query text changes on [SearchView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SearchView.queryTextChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +42,13 @@ fun SearchView.queryTextChanges(
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
+/**
+ * Perform an action on character sequences for query text changes on [SearchView] inside new
+ * [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SearchView.queryTextChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (CharSequence) -> Unit
@@ -53,6 +67,12 @@ suspend fun SearchView.queryTextChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of character sequences for query text changes on [SearchView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SearchView.queryTextChanges(
         scope: CoroutineScope,
@@ -67,6 +87,11 @@ fun SearchView.queryTextChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of character sequences for query text changes on [SearchView].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun SearchView.queryTextChanges(): Flow<CharSequence> = channelFlow {
     offer(query)

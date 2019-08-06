@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the selected tab in [TabLayout].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun TabLayout.selections(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +43,12 @@ fun TabLayout.selections(
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
 }
 
+/**
+ * Perform an action on the selected tab in [TabLayout] inside new [CoroutineScope].
+ * 
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun TabLayout.selections(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TabLayout.Tab) -> Unit
@@ -55,6 +68,12 @@ suspend fun TabLayout.selections(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits the selected tab in [TabLayout].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun TabLayout.selections(
         scope: CoroutineScope,
@@ -70,6 +89,11 @@ fun TabLayout.selections(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits the selected tab in [TabLayout].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
     setInitialValue(this@selections, ::offer)

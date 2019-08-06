@@ -24,6 +24,13 @@ data class RecyclerViewFlingEvent(val view: RecyclerView, val velocityX: Int, va
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on fling events on [RecyclerView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun RecyclerView.flingEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -38,6 +45,12 @@ fun RecyclerView.flingEvents(
     events.invokeOnClose { onFlingListener = null }
 }
 
+/**
+ * Perform an action on fling events on [RecyclerView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun RecyclerView.flingEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RecyclerViewFlingEvent) -> Unit
@@ -56,6 +69,12 @@ suspend fun RecyclerView.flingEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of fling events on [RecyclerView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun RecyclerView.flingEvents(
         scope: CoroutineScope,
@@ -69,6 +88,9 @@ fun RecyclerView.flingEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of fling events on [RecyclerView].
+ */
 @CheckResult
 fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow {
     onFlingListener = listener(this, this@flingEvents, ::offer)

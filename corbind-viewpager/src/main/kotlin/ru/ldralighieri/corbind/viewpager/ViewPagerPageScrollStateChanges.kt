@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on scroll state change events on [ViewPager].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun ViewPager.pageScrollStateChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +42,12 @@ fun ViewPager.pageScrollStateChanges(
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
 
+/**
+ * Perform an action on scroll state change events on [ViewPager] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun ViewPager.pageScrollStateChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -53,6 +66,12 @@ suspend fun ViewPager.pageScrollStateChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of scroll state change events on [ViewPager].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun ViewPager.pageScrollStateChanges(
         scope: CoroutineScope,
@@ -67,6 +86,9 @@ fun ViewPager.pageScrollStateChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of scroll state change events on [ViewPager].
+ */
 @CheckResult
 fun ViewPager.pageScrollStateChanges(): Flow<Int> = channelFlow {
     val listener = listener(this, ::offer)

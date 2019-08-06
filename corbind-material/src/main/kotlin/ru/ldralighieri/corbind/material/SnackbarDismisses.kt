@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the dismiss events from [Snackbar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun Snackbar.dismisses(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +42,12 @@ fun Snackbar.dismisses(
     events.invokeOnClose { removeCallback(callback) }
 }
 
+/**
+ * Perform an action on the dismiss events from [Snackbar] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun Snackbar.dismisses(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -53,6 +66,12 @@ suspend fun Snackbar.dismisses(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits the dismiss events from [Snackbar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun Snackbar.dismisses(
         scope: CoroutineScope,
@@ -67,6 +86,9 @@ fun Snackbar.dismisses(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits the dismiss events from [Snackbar].
+ */
 @CheckResult
 fun Snackbar.dismisses(): Flow<Int> = channelFlow {
     val callback = callback(this, ::offer)

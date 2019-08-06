@@ -21,6 +21,16 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on [Chip] close icon click events.
+ *
+ * *Warning:* The created actor uses [Chip.setOnCloseIconClickListener] to emmit clicks. Only one
+ * actor can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun Chip.closeIconClicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +45,15 @@ fun Chip.closeIconClicks(
     events.invokeOnClose { setOnCloseIconClickListener(null) }
 }
 
+/**
+ * Perform an action on [Chip] close icon click events inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [Chip.setOnCloseIconClickListener] to emmit clicks. Only one
+ * actor can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun Chip.closeIconClicks(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
@@ -51,6 +70,15 @@ suspend fun Chip.closeIconClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on [Chip] close icon click events.
+ *
+ * *Warning:* The created channel uses [Chip.setOnCloseIconClickListener] to emmit clicks. Only
+ * one channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun Chip.clicks(
         scope: CoroutineScope,
@@ -64,6 +92,12 @@ fun Chip.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on [Chip] close icon click events.
+ *
+ * *Warning:* The created flow uses [Chip.setOnCloseIconClickListener] to emmit clicks. Only one
+ * flow can be used for a view at a time.
+ */
 @CheckResult
 fun Chip.clicks(): Flow<Unit> = channelFlow {
     setOnCloseIconClickListener(listener(this, ::offer))

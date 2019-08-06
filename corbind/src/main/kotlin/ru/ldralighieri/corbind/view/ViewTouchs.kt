@@ -47,7 +47,7 @@ fun View.touches(
 }
 
 /**
- * Perform an action on touch events for [View] inside new CoroutineScope.
+ * Perform an action on touch events for [View] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked with each value to determine the return value of the underlying

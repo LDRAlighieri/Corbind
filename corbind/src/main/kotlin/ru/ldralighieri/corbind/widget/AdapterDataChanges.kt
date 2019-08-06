@@ -45,7 +45,7 @@ fun <T : Adapter> T.dataChanges(
 }
 
 /**
- * Perform an action on data change events for [Adapter] inside new CoroutineScope.
+ * Perform an action on data change events for [Adapter] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform

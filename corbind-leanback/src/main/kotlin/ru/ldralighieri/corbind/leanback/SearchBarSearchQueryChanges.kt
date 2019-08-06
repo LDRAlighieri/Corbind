@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on String values for search query changes on [SearchBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SearchBar.searchQueryChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -34,6 +41,13 @@ fun SearchBar.searchQueryChanges(
     events.invokeOnClose { setSearchBarListener(null) }
 }
 
+/**
+ * Perform an action on String values for search query changes on [SearchBar] inside new 
+ * [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SearchBar.searchQueryChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (String) -> Unit
@@ -51,6 +65,12 @@ suspend fun SearchBar.searchQueryChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of String values for search query changes on [SearchBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SearchBar.searchQueryChanges(
         scope: CoroutineScope,
@@ -64,6 +84,9 @@ fun SearchBar.searchQueryChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of String values for search query changes on [SearchBar].
+ */
 @CheckResult
 fun SearchBar.searchQueryChanges(): Flow<String> = channelFlow {
     setSearchBarListener(listener(this, ::offer))

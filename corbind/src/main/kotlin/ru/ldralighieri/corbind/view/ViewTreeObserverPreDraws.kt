@@ -45,7 +45,7 @@ fun View.preDraws(
 }
 
 /**
- * Perform an action on pre-draws on [View] inside new CoroutineScope.
+ * Perform an action on pre-draws on [View] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param proceedDrawingPass Let drawing process proceed

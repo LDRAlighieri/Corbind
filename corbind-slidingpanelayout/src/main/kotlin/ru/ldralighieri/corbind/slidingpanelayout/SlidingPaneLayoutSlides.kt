@@ -21,6 +21,12 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the slide offset of the pane of [SlidingPaneLayout].
+ *
+ * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * change. Only one actor can be used for a view at a time.
+ */
 fun SlidingPaneLayout.panelSlides(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +41,12 @@ fun SlidingPaneLayout.panelSlides(
     events.invokeOnClose { setPanelSlideListener(null) }
 }
 
+/**
+ * Perform an action on the slide offset of the pane of [SlidingPaneLayout] inside new [CoroutineScope].
+ *
+ * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * change. Only one actor can be used for a view at a time.
+ */
 suspend fun SlidingPaneLayout.panelSlides(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Float) -> Unit
@@ -52,6 +64,12 @@ suspend fun SlidingPaneLayout.panelSlides(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the slide offset of the pane of [SlidingPaneLayout].
+ *
+ * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * change. Only one channel can be used for a view at a time.
+ */
 @CheckResult
 fun SlidingPaneLayout.panelSlides(
         scope: CoroutineScope,
@@ -65,6 +83,12 @@ fun SlidingPaneLayout.panelSlides(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the slide offset of the pane of [SlidingPaneLayout].
+ *
+ * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * change. Only one flow can be used for a view at a time.
+ */
 @CheckResult
 fun SlidingPaneLayout.panelSlides(): Flow<Float> = channelFlow {
     setPanelSlideListener(listener(this, ::offer))

@@ -24,6 +24,13 @@ data class RecyclerViewScrollEvent(val view: RecyclerView, val dx: Int, val dy: 
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on scroll events on [RecyclerView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun RecyclerView.scrollEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -39,6 +46,12 @@ fun RecyclerView.scrollEvents(
     events.invokeOnClose { removeOnScrollListener(scrollListener) }
 }
 
+/**
+ * Perform an action on scroll events on [RecyclerView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun RecyclerView.scrollEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RecyclerViewScrollEvent) -> Unit
@@ -57,6 +70,12 @@ suspend fun RecyclerView.scrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of scroll events on [RecyclerView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun RecyclerView.scrollEvents(
         scope: CoroutineScope,
@@ -71,6 +90,9 @@ fun RecyclerView.scrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of scroll events on [RecyclerView].
+ */
 @CheckResult
 fun RecyclerView.scrollEvents(): Flow<RecyclerViewScrollEvent> = channelFlow {
     val scrollListener = listener(this, ::offer)

@@ -55,7 +55,7 @@ fun View.scrollChangeEvents(
 }
 
 /**
- * Perform an action on scroll-change events for [View] inside new CoroutineScope.
+ * Perform an action on scroll-change events for [View] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
