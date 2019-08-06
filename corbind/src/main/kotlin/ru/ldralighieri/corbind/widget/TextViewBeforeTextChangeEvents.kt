@@ -32,6 +32,13 @@ data class TextViewBeforeTextChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action before text change events for [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun TextView.beforeTextChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -48,6 +55,12 @@ fun TextView.beforeTextChangeEvents(
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
 
+/**
+ * Perform an action before text change events for [TextView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun TextView.beforeTextChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TextViewBeforeTextChangeEvent) -> Unit
@@ -68,6 +81,12 @@ suspend fun TextView.beforeTextChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of before text change events for [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun TextView.beforeTextChangeEvents(
         scope: CoroutineScope,
@@ -83,6 +102,11 @@ fun TextView.beforeTextChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of before text change events for [TextView].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun TextView.beforeTextChangeEvents(): Flow<TextViewBeforeTextChangeEvent> = channelFlow {
     offer(initialValue(this@beforeTextChangeEvents))

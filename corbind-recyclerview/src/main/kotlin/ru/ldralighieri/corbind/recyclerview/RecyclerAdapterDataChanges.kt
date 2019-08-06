@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on data change events for [RecyclerView.Adapter].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +43,12 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     events.invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
 
+/**
+ * Perform an action on data change events for [RecyclerView.Adapter] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (T) -> Unit
@@ -55,6 +68,12 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of data change events for [RecyclerView.Adapter].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
         scope: CoroutineScope,
@@ -70,6 +89,11 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of data change events for [RecyclerView.Adapter].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): Flow<T> = channelFlow {
     offer(this@dataChanges)

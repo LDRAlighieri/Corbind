@@ -28,6 +28,13 @@ data class RatingBarChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on rating change events on [RatingBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun RatingBar.ratingChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -43,6 +50,12 @@ fun RatingBar.ratingChangeEvents(
     events.invokeOnClose { onRatingBarChangeListener = null }
 }
 
+/**
+ * Perform an action on rating change events on [RatingBar] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun RatingBar.ratingChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (RatingBarChangeEvent) -> Unit
@@ -61,6 +74,12 @@ suspend fun RatingBar.ratingChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the rating change events on [RatingBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun RatingBar.ratingChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -75,6 +94,11 @@ fun RatingBar.ratingChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the rating change events on [RatingBar].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun RatingBar.ratingChangeEvents(): Flow<RatingBarChangeEvent> = channelFlow {
     offer(initialValue(this@ratingChangeEvents))

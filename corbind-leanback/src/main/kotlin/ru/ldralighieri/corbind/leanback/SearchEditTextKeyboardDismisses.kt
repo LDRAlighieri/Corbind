@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the keyboard dismiss events from [SearchEditText].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SearchEditText.keyboardDismisses(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -34,6 +41,13 @@ fun SearchEditText.keyboardDismisses(
     events.invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
+/**
+ * Perform an action on the keyboard dismiss events from [SearchEditText] inside new
+ * [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SearchEditText.keyboardDismisses(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
@@ -51,6 +65,12 @@ suspend fun SearchEditText.keyboardDismisses(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits the keyboard dismiss events from [SearchEditText].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SearchEditText.keyboardDismisses(
         scope: CoroutineScope,
@@ -64,6 +84,9 @@ fun SearchEditText.keyboardDismisses(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits the keyboard dismiss events from [SearchEditText].
+ */
 @CheckResult
 fun SearchEditText.keyboardDismisses(): Flow<Unit> = channelFlow {
     setOnKeyboardDismissListener(listener(this, ::offer))

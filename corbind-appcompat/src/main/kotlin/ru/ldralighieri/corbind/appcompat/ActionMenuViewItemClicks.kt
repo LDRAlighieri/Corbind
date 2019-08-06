@@ -21,6 +21,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on clicked menu item in [ActionMenuView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun ActionMenuView.itemClicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +42,13 @@ fun ActionMenuView.itemClicks(
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
+
+/**
+ * Perform an action on clicked menu item in [ActionMenuView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun ActionMenuView.itemClicks(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (MenuItem) -> Unit
@@ -52,6 +66,12 @@ suspend fun ActionMenuView.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits the clicked menu item in [ActionMenuView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun ActionMenuView.itemClicks(
         scope: CoroutineScope,
@@ -65,6 +85,9 @@ fun ActionMenuView.itemClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits the clicked menu item in [ActionMenuView].
+ */
 @CheckResult
 fun ActionMenuView.itemClicks(): Flow<MenuItem> = channelFlow {
     setOnMenuItemClickListener(listener(this, ::offer))

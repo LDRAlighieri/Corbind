@@ -39,6 +39,13 @@ data class AdapterViewNothingSelectionEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on selection events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun <T : Adapter> AdapterView<T>.selectionEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -54,6 +61,12 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     events.invokeOnClose { onItemSelectedListener = null }
 }
 
+/**
+ * Perform an action on selection events for [AdapterView] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewSelectionEvent) -> Unit
@@ -72,6 +85,12 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of selection events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(
         scope: CoroutineScope,
@@ -86,6 +105,11 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of selection events for [AdapterView].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(): Flow<AdapterViewSelectionEvent> = channelFlow {
     offer(initialValue(this@selectionEvents))

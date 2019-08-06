@@ -20,6 +20,16 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on [View] focus change.
+ *
+ * *Warning:* The created actor uses [View.setOnFocusChangeListener] to emmit focus change. Only
+ * one actor can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun View.focusChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +45,15 @@ fun View.focusChanges(
     events.invokeOnClose { onFocusChangeListener = null }
 }
 
+/**
+ * Perform an action on [View] focus change inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [View.setOnFocusChangeListener] to emmit focus change. Only
+ * one actor can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun View.focusChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Boolean) -> Unit
@@ -53,6 +72,15 @@ suspend fun View.focusChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of booleans representing the focus of [View].
+ *
+ * *Warning:* The created channel uses [View.setOnFocusChangeListener] to emmit focus change.
+ * Only one channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun View.focusChanges(
         scope: CoroutineScope,
@@ -66,7 +94,14 @@ fun View.focusChanges(
 
 // -----------------------------------------------------------------------------------------------
 
-
+/**
+ * Create a flow of booleans representing the focus of [View].
+ *
+ * *Warning:* The created flow uses [View.setOnFocusChangeListener] to emmit focus change. Only
+ * one flow can be used for a view at a time.
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun View.focusChanges(): Flow<Boolean> = channelFlow {
     offer(hasFocus())

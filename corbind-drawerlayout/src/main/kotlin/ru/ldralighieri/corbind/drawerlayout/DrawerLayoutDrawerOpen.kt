@@ -21,6 +21,14 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the open state of the drawer of [DrawerLayout].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param gravity Gravity of the drawer to check
+ * @param action An action to perform
+ */
 fun DrawerLayout.drawerOpens(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -38,6 +46,13 @@ fun DrawerLayout.drawerOpens(
     events.invokeOnClose { removeDrawerListener(listener) }
 }
 
+/**
+ * Perform an action on the open state of the drawer of [DrawerLayout] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param gravity Gravity of the drawer to check
+ * @param action An action to perform
+ */
 suspend fun DrawerLayout.drawerOpens(
         capacity: Int = Channel.RENDEZVOUS,
         gravity: Int,
@@ -58,6 +73,13 @@ suspend fun DrawerLayout.drawerOpens(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the open state of the drawer of [DrawerLayout].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param gravity Gravity of the drawer to check
+ */
 @CheckResult
 fun DrawerLayout.drawerOpens(
         scope: CoroutineScope,
@@ -74,6 +96,11 @@ fun DrawerLayout.drawerOpens(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the open state of the drawer of [DrawerLayout].
+ *
+ * @param gravity Gravity of the drawer to check
+ */
 @CheckResult
 fun DrawerLayout.drawerOpens(
         gravity: Int

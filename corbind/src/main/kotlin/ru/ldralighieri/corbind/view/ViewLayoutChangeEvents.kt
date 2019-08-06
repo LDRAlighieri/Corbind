@@ -34,6 +34,13 @@ data class ViewLayoutChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on layout-change events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun View.layoutChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -49,6 +56,12 @@ fun View.layoutChangeEvents(
     events.invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
+/**
+ * Perform an action on layout-change events for [View] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun View.layoutChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewLayoutChangeEvent) -> Unit
@@ -66,7 +79,12 @@ suspend fun View.layoutChangeEvents(
 
 // -----------------------------------------------------------------------------------------------
 
-
+/**
+ * Create a channel of layout-change events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun View.layoutChangeEvents(
         scope: CoroutineScope,
@@ -80,6 +98,9 @@ fun View.layoutChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of layout-change events for [View].
+ */
 @CheckResult
 fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
     val listener = listener(this, ::offer)

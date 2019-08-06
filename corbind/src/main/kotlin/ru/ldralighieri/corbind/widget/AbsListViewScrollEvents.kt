@@ -30,6 +30,16 @@ data class AbsListViewScrollEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on scroll events on [AbsListView].
+ *
+ * *Warning:* The created actor uses [AbsListView.setOnScrollListener] to emmit scroll changes.
+ * Only one actor can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun AbsListView.scrollEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -44,6 +54,15 @@ fun AbsListView.scrollEvents(
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
+/**
+ * Perform an action on scroll events on [AbsListView] inside new CoroutineScope.
+ *
+ * *Warning:* The created actor uses [AbsListView.setOnScrollListener] to emmit scroll changes.
+ * Only one actor can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun AbsListView.scrollEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AbsListViewScrollEvent) -> Unit
@@ -61,6 +80,15 @@ suspend fun AbsListView.scrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of scroll events on [AbsListView].
+ *
+ * *Warning:* The created channel uses [AbsListView.setOnScrollListener] to emmit scroll changes.
+ * Only one channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun AbsListView.scrollEvents(
         scope: CoroutineScope,
@@ -74,6 +102,12 @@ fun AbsListView.scrollEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of scroll events on [AbsListView].
+ *
+ * *Warning:* The created flow uses [AbsListView.setOnScrollListener] to emmit scroll changes.
+ * Only one flow can be used for a view at a time.
+ */
 @CheckResult
 fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {
     setOnScrollListener(listener(this, ::offer))

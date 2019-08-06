@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on refresh events on [SwipeRefreshLayout].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -34,6 +41,12 @@ fun SwipeRefreshLayout.refreshes(
     events.invokeOnClose { setOnRefreshListener(null) }
 }
 
+/**
+ * Perform an action on refresh events on [SwipeRefreshLayout] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SwipeRefreshLayout.refreshes(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
@@ -51,6 +64,12 @@ suspend fun SwipeRefreshLayout.refreshes(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of refresh events on [SwipeRefreshLayout].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SwipeRefreshLayout.refreshes(
         scope: CoroutineScope,
@@ -64,6 +83,9 @@ fun SwipeRefreshLayout.refreshes(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of refresh events on [SwipeRefreshLayout].
+ */
 @CheckResult
 fun SwipeRefreshLayout.refreshes(): Flow<Unit> = channelFlow {
     setOnRefreshListener(listener(this, ::offer))

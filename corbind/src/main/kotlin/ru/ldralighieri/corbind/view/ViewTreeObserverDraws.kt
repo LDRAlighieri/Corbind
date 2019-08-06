@@ -23,6 +23,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 fun View.draws(
         scope: CoroutineScope,
@@ -39,6 +46,12 @@ fun View.draws(
     events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
 
+/**
+ * Perform an action on draws on [View] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 suspend fun View.draws(
         capacity: Int = Channel.RENDEZVOUS,
@@ -58,13 +71,18 @@ suspend fun View.draws(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel for draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
 fun View.draws(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     val listener = listener(scope, ::safeOffer)
     viewTreeObserver.addOnDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
@@ -74,6 +92,9 @@ fun View.draws(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow for draws on [View].
+ */
 @CheckResult
 fun View.draws(): Flow<Unit> = channelFlow {
     val listener = listener(this, ::offer)

@@ -20,6 +20,16 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on [View] click events.
+ *
+ * *Warning:* The created actor uses [View.setOnClickListener] to emmit clicks. Only one actor
+ * can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun View.clicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -34,6 +44,15 @@ fun View.clicks(
     events.invokeOnClose { setOnClickListener(null) }
 }
 
+/**
+ * Perform an action on [View] click events inside new CoroutineScope.
+ *
+ * *Warning:* The created actor uses [View.setOnClickListener] to emmit clicks. Only one actor
+ * can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun View.clicks(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
@@ -51,21 +70,34 @@ suspend fun View.clicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on [View] click events
+ *
+ * *Warning:* The created channel uses [View.setOnClickListener] to emmit clicks. Only one
+ * channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun View.clicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     setOnClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnClickListener(null) }
 }
 
 
-
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on [View] click events
+ *
+ * *Warning:* The created flow uses [View.setOnClickListener] to emmit clicks. Only one flow can
+ * be used for a view at a time.
+ */
 @CheckResult
 fun View.clicks(): Flow<Unit> = channelFlow {
     setOnClickListener(listener(this, ::offer))

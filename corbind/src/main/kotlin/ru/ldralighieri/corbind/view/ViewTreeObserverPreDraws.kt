@@ -21,6 +21,14 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on pre-draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param proceedDrawingPass Let drawing process proceed
+ * @param action An action to perform
+ */
 fun View.preDraws(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +44,13 @@ fun View.preDraws(
     events.invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
+/**
+ * Perform an action on pre-draws on [View] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param proceedDrawingPass Let drawing process proceed
+ * @param action An action to perform
+ */
 suspend fun View.preDraws(
         capacity: Int = Channel.RENDEZVOUS,
         proceedDrawingPass: () -> Boolean,
@@ -54,6 +69,13 @@ suspend fun View.preDraws(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel for pre-draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param proceedDrawingPass Let drawing process proceed
+ */
 @CheckResult
 fun View.preDraws(
         scope: CoroutineScope,
@@ -69,6 +91,11 @@ fun View.preDraws(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow for pre-draws on [View].
+ *
+ * @param proceedDrawingPass Let drawing process proceed
+ */
 @CheckResult
 fun View.preDraws(
     proceedDrawingPass: () -> Boolean

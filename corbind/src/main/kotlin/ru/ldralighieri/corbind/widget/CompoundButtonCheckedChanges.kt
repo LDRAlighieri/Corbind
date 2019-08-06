@@ -20,6 +20,16 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on checked state of [CompoundButton].
+ *
+ * *Warning:* The created actor uses [CompoundButton.setOnCheckedChangeListener] to emmit checked
+ * changes. Only one actor can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun CompoundButton.checkedChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +45,15 @@ fun CompoundButton.checkedChanges(
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
+/**
+ * Perform an action on checked state of [CompoundButton] inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [CompoundButton.setOnCheckedChangeListener] to emmit checked
+ * changes. Only one actor can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun CompoundButton.checkedChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Boolean) -> Unit
@@ -53,6 +72,15 @@ suspend fun CompoundButton.checkedChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of booleans representing the checked state of [CompoundButton].
+ *
+ * *Warning:* The created channel uses [CompoundButton.setOnCheckedChangeListener] to emmit
+ * checked changes. Only one channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun CompoundButton.checkedChanges(
         scope: CoroutineScope,
@@ -67,6 +95,14 @@ fun CompoundButton.checkedChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of booleans representing the checked state of [CompoundButton].
+ *
+ * *Warning:* The created flow uses [CompoundButton.setOnCheckedChangeListener] to emmit checked
+ * changes. Only one flow can be used for a view at a time.
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun CompoundButton.checkedChanges(): Flow<Boolean> = channelFlow {
     offer(isChecked)

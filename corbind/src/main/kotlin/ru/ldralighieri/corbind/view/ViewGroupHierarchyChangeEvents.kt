@@ -20,16 +20,25 @@ import ru.ldralighieri.corbind.internal.safeOffer
 
 // -----------------------------------------------------------------------------------------------
 
+/**
+ * [ViewGroup] hierarchy change event
+ */
 sealed class ViewGroupHierarchyChangeEvent {
     abstract val view: ViewGroup
     abstract val child: View
 }
 
+/**
+ * A child view add event on a [ViewGroup].
+ */
 data class ViewGroupHierarchyChildViewAddEvent(
         override val view: ViewGroup,
         override val child: View
 ) : ViewGroupHierarchyChangeEvent()
 
+/**
+ * A child view remove event on a [ViewGroup].
+ */
 data class ViewGroupHierarchyChildViewRemoveEvent(
         override val view: ViewGroup,
         override val child: View
@@ -38,6 +47,13 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on hierarchy change events for [ViewGroup].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun ViewGroup.changeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -52,6 +68,12 @@ fun ViewGroup.changeEvents(
     events.invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
+/**
+ * Perform an action on hierarchy change events for [ViewGroup] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun ViewGroup.changeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
@@ -70,6 +92,12 @@ suspend fun ViewGroup.changeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of hierarchy change events for [ViewGroup].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun ViewGroup.changeEvents(
         scope: CoroutineScope,
@@ -83,6 +111,9 @@ fun ViewGroup.changeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of hierarchy change events for [ViewGroup].
+ */
 @CheckResult
 fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = channelFlow {
     setOnHierarchyChangeListener(listener(this, this@changeEvents, ::offer))

@@ -17,6 +17,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
+// TODO Вернуться и отрефакторить
 // -----------------------------------------------------------------------------------------------
 
 
@@ -83,23 +84,47 @@ private fun SeekBar.changes(
 // ===============================================================================================
 
 
+/**
+ * Perform an action on progress value changes on [SeekBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SeekBar.changes(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = changes(scope, capacity, null, action)
 
+/**
+ * Perform an action on progress value changes on [SeekBar] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SeekBar.changes(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = changes(capacity, null, action)
 
+/**
+ * Create a channel of progress value changes on [SeekBar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SeekBar.changes(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ) = changes(scope, capacity, null)
 
+/**
+ * Create a flow of progress value changes on [SeekBar].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun SeekBar.changes() = changes(null)
 
@@ -107,23 +132,48 @@ fun SeekBar.changes() = changes(null)
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on progress value changes on [SeekBar] that were made only from the user.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SeekBar.userChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = changes(scope, capacity, true, action)
 
+/**
+ * Perform an action on progress value changes on [SeekBar] that were made only from the user inside
+ * new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SeekBar.userChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = changes(capacity, true, action)
 
+/**
+ * Create a channel of progress value changes on [SeekBar] that were made only from the user.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SeekBar.userChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ) = changes(scope, capacity, true)
 
+/**
+ * Create a flow of progress value changes on [SeekBar] that were made only from the user.
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun SeekBar.userChanges() = changes(true)
 
@@ -131,23 +181,48 @@ fun SeekBar.userChanges() = changes(true)
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on progress value changes on [SeekBar] that were made only from the system.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SeekBar.systemChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = changes(scope, capacity, false, action)
 
+/**
+ * Perform an action on progress value changes on [SeekBar] that were made only from the system inside
+ * new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SeekBar.systemChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
 ) = changes(capacity, false, action)
 
+/**
+ * Create a channel of progress value changes on [SeekBar] that were made only from the system.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SeekBar.systemChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ) = changes(scope, capacity, false)
 
+/**
+ * Create a flow of progress value changes on [SeekBar] that were made only from the system.
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun SeekBar.systemChanges() = changes(false)
 

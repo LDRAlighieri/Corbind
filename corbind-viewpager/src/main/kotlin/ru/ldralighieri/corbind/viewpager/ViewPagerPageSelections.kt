@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on page selected events on [ViewPager].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun ViewPager.pageSelections(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +43,12 @@ fun ViewPager.pageSelections(
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
 
+/**
+ * Perform an action on page selected events on [ViewPager] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun ViewPager.pageSelections(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -55,6 +68,13 @@ suspend fun ViewPager.pageSelections(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of page selected events on [ViewPager].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+==
+ */
 @CheckResult
 fun ViewPager.pageSelections(
         scope: CoroutineScope,
@@ -70,6 +90,11 @@ fun ViewPager.pageSelections(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of page selected events on [ViewPager].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun ViewPager.pageSelections(): Flow<Int> = channelFlow {
     offer(currentItem)

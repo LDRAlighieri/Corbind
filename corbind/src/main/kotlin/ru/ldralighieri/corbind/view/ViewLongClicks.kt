@@ -21,6 +21,18 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on `view` long-click events.
+ *
+ * *Warning:* The created actor uses [View.setOnLongClickListener] to emmit long clicks. Only one
+ * actor can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnLongClickListener]
+ * @param action An action to perform
+ */
 fun View.longClicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +48,17 @@ fun View.longClicks(
     events.invokeOnClose { setOnLongClickListener(null) }
 }
 
+/**
+ * Perform an action on `view` long-click events inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [View.setOnLongClickListener] to emmit long clicks. Only one
+ * actor can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnLongClickListener]
+ * @param action An action to perform
+ */
 suspend fun View.longClicks(
         capacity: Int = Channel.RENDEZVOUS,
         handled: () -> Boolean = AlwaysTrue,
@@ -54,13 +77,23 @@ suspend fun View.longClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on `view` long-click events.
+ *
+ * *Warning:* The created channel uses [View.setOnLongClickListener] to emmit long clicks. Only
+ * one channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnLongClickListener]
+ */
 @CheckResult
 fun View.longClicks(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
         handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     setOnLongClickListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnLongClickListener(null) }
 }
@@ -69,6 +102,15 @@ fun View.longClicks(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on `view` long-click events.
+ *
+ * *Warning:* The created flow uses [View.setOnLongClickListener] to emmit
+ * long clicks. Only one flow can be used for a view at a time.
+ *
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [View.OnLongClickListener]
+ */
 @CheckResult
 fun View.longClicks(
     handled: () -> Boolean = AlwaysTrue

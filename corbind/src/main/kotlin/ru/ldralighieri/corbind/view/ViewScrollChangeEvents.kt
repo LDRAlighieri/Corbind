@@ -32,6 +32,13 @@ data class ViewScrollChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on scroll-change events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 fun View.scrollChangeEvents(
         scope: CoroutineScope,
@@ -47,6 +54,12 @@ fun View.scrollChangeEvents(
     events.invokeOnClose { setOnScrollChangeListener(null) }
 }
 
+/**
+ * Perform an action on scroll-change events for [View] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 suspend fun View.scrollChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
@@ -65,6 +78,12 @@ suspend fun View.scrollChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of scroll-change events for [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun View.scrollChangeEvents(
@@ -79,6 +98,9 @@ fun View.scrollChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of scroll-change events for [View].
+ */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {

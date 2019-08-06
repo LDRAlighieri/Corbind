@@ -17,6 +17,19 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
+// -----------------------------------------------------------------------------------------------
+
+
+/**
+ * Perform an action on a new system UI visibility for [View].
+ *
+ * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emmit
+ * system UI visibility changes. Only one actor can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -31,6 +44,15 @@ fun View.systemUiVisibilityChanges(
     events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
+/**
+ * Perform an action on a new system UI visibility for [View] inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emmit
+ * system UI visibility changes. Only one actor can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun View.systemUiVisibilityChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -48,6 +70,15 @@ suspend fun View.systemUiVisibilityChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of integers representing a new system UI visibility for [View].
+ *
+ * *Warning:* The created channel uses [View.setOnSystemUiVisibilityChangeListener] to emmit
+ * system UI visibility changes. Only one channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun View.systemUiVisibilityChanges(
         scope: CoroutineScope,
@@ -61,6 +92,12 @@ fun View.systemUiVisibilityChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of integers representing a new system UI visibility for [View].
+ *
+ * *Warning:* The created flow uses [View.setOnSystemUiVisibilityChangeListener] to emmit
+ * system UI visibility changes. Only one flow can be used for a view at a time.
+ */
 @CheckResult
 fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
     setOnSystemUiVisibilityChangeListener(listener(this, ::offer))

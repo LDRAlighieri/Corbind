@@ -32,6 +32,13 @@ data class TextViewTextChangeEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on text change events for [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun TextView.textChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -48,6 +55,12 @@ fun TextView.textChangeEvents(
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
 
+/**
+ * Perform an action on text change events for [TextView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun TextView.textChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (TextViewTextChangeEvent) -> Unit
@@ -67,6 +80,12 @@ suspend fun TextView.textChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of text change events for [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun TextView.textChangeEvents(
         scope: CoroutineScope,
@@ -82,6 +101,11 @@ fun TextView.textChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of text change events for [TextView].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun TextView.textChangeEvents(): Flow<TextViewTextChangeEvent> = channelFlow {
     offer(initialValue(this@textChangeEvents))

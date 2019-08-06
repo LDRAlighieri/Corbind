@@ -34,6 +34,13 @@ data class ViewAttachDetachedEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on attach and detach events on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun View.attachEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -49,6 +56,12 @@ fun View.attachEvents(
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+/**
+ * Perform an action on attach and detach events on [View] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun View.attachEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewAttachEvent) -> Unit
@@ -67,6 +80,12 @@ suspend fun View.attachEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of attach and detach events on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun View.attachEvents(
         scope: CoroutineScope,
@@ -81,6 +100,9 @@ fun View.attachEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of attach and detach events on [View].
+ */
 @CheckResult
 fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
     val listener = listener(this, ::offer)

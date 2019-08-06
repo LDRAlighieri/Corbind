@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on scroll state changes on [RecyclerView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun RecyclerView.scrollStateChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +42,12 @@ fun RecyclerView.scrollStateChanges(
     events.invokeOnClose { removeOnScrollListener(scrollListener) }
 }
 
+/**
+ * Perform an action on scroll state changes on [RecyclerView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun RecyclerView.scrollStateChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -53,6 +66,12 @@ suspend fun RecyclerView.scrollStateChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of scroll state changes on [RecyclerView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun RecyclerView.scrollStateChanges(
         scope: CoroutineScope,
@@ -67,6 +86,9 @@ fun RecyclerView.scrollStateChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of scroll state changes on [RecyclerView].
+ */
 @CheckResult
 fun RecyclerView.scrollStateChanges(): Flow<Int> = channelFlow {
     val scrollListener = listener(this, ::offer)

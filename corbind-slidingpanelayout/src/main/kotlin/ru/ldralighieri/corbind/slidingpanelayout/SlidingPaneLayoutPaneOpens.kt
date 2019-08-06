@@ -21,6 +21,16 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the open state of the pane of [SlidingPaneLayout].
+ *
+ * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * change. Only one actor can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun SlidingPaneLayout.panelOpens(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +46,16 @@ fun SlidingPaneLayout.panelOpens(
     events.invokeOnClose { setPanelSlideListener(null) }
 }
 
+/**
+ * Perform an action on the open state of the pane of [SlidingPaneLayout] inside new
+ * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * change. Only one actor can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun SlidingPaneLayout.panelOpens(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Boolean) -> Unit
@@ -54,6 +74,15 @@ suspend fun SlidingPaneLayout.panelOpens(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the open state of the pane of [SlidingPaneLayout].
+ *
+ * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * change. Only one channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun SlidingPaneLayout.panelOpens(
         scope: CoroutineScope,
@@ -68,6 +97,14 @@ fun SlidingPaneLayout.panelOpens(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the open state of the pane of [SlidingPaneLayout].
+ *
+ * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * change. Only one flow can be used for a view at a time.
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun SlidingPaneLayout.panelOpens(): Flow<Boolean> = channelFlow {
     offer(isOpen)

@@ -21,6 +21,13 @@ import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on scroll-change events for [NestedScrollView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun NestedScrollView.scrollChangeEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -37,6 +44,12 @@ fun NestedScrollView.scrollChangeEvents(
     }
 }
 
+/**
+ * Perform an action on scroll-change events for [NestedScrollView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun NestedScrollView.scrollChangeEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (ViewScrollChangeEvent) -> Unit
@@ -56,6 +69,12 @@ suspend fun NestedScrollView.scrollChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of scroll-change events for [NestedScrollView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun NestedScrollView.scrollChangeEvents(
         scope: CoroutineScope,
@@ -69,6 +88,9 @@ fun NestedScrollView.scrollChangeEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of scroll-change events for [NestedScrollView].
+ */
 @CheckResult
 fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
     setOnScrollChangeListener(listener(this, ::offer))

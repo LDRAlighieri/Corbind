@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the offset change in [AppBarLayout].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun AppBarLayout.offsetChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +42,12 @@ fun AppBarLayout.offsetChanges(
     events.invokeOnClose { removeOnOffsetChangedListener(listener) }
 }
 
+/**
+ * Perform an action on the offset change in [AppBarLayout] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun AppBarLayout.offsetChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (Int) -> Unit
@@ -53,6 +66,12 @@ suspend fun AppBarLayout.offsetChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits the offset change in [AppBarLayout].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun AppBarLayout.offsetChanges(
         scope: CoroutineScope,
@@ -67,6 +86,9 @@ fun AppBarLayout.offsetChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits the offset change in [AppBarLayout].
+ */
 @CheckResult
 fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow {
     val listener = listener(this, ::offer)

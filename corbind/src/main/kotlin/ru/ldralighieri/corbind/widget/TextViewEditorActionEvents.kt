@@ -30,6 +30,15 @@ data class TextViewEditorActionEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on editor action events on [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [TextView.OnEditorActionListener].
+ * @param action An action to perform
+ */
 fun TextView.editorActionEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -45,6 +54,14 @@ fun TextView.editorActionEvents(
     events.invokeOnClose { setOnEditorActionListener(null) }
 }
 
+/**
+ * Perform an action on editor action events on [TextView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [TextView.OnEditorActionListener].
+ * @param action An action to perform
+ */
 suspend fun TextView.editorActionEvents(
         capacity: Int = Channel.RENDEZVOUS,
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
@@ -63,6 +80,14 @@ suspend fun TextView.editorActionEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of editor action events on [TextView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [TextView.OnEditorActionListener].
+ */
 @CheckResult
 fun TextView.editorActionEvents(
         scope: CoroutineScope,
@@ -77,6 +102,12 @@ fun TextView.editorActionEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of editor action events on [TextView].
+ *
+ * @param handled Predicate invoked each occurrence to determine the return value of the underlying
+ * [TextView.OnEditorActionListener].
+ */
 @CheckResult
 fun TextView.editorActionEvents(
         handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue

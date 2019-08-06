@@ -21,6 +21,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the selected item in [NavigationView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun NavigationView.itemSelections(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -36,6 +43,12 @@ fun NavigationView.itemSelections(
     events.invokeOnClose { setNavigationItemSelectedListener(null) }
 }
 
+/**
+ * Perform an action on the selected item in [NavigationView] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun NavigationView.itemSelections(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (MenuItem) -> Unit
@@ -54,6 +67,12 @@ suspend fun NavigationView.itemSelections(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits the selected item in [NavigationView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun NavigationView.itemSelections(
         scope: CoroutineScope,
@@ -68,6 +87,11 @@ fun NavigationView.itemSelections(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits the selected item in [NavigationView].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun NavigationView.itemSelections(): Flow<MenuItem> = channelFlow {
     setInitialValue(this@itemSelections, ::offer)

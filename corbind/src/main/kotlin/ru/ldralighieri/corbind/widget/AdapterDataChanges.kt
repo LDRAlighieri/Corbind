@@ -21,6 +21,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on data change events for [Adapter].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun <T : Adapter> T.dataChanges(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -37,6 +44,12 @@ fun <T : Adapter> T.dataChanges(
     events.invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
 }
 
+/**
+ * Perform an action on data change events for [Adapter] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun <T : Adapter> T.dataChanges(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (T) -> Unit
@@ -57,6 +70,12 @@ suspend fun <T : Adapter> T.dataChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of data change events for [Adapter].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun <T : Adapter> T.dataChanges(
         scope: CoroutineScope,
@@ -72,6 +91,11 @@ fun <T : Adapter> T.dataChanges(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of data change events for [Adapter].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun <T : Adapter> T.dataChanges(): Flow<T> = channelFlow {
     offer(this@dataChanges)

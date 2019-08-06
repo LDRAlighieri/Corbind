@@ -31,6 +31,13 @@ data class AdapterViewItemClickEvent(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on the item click events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -45,6 +52,12 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
     events.invokeOnClose { onItemClickListener = null }
 }
 
+/**
+ * Perform an action on the item click events for [AdapterView] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend (AdapterViewItemClickEvent) -> Unit
@@ -62,12 +75,17 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel of the item click events for [AdapterView].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(capacity) {
-
     onItemClickListener = listener(scope, ::safeOffer)
     invokeOnClose { onItemClickListener = null }
 }
@@ -76,6 +94,9 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow of the item click events for [AdapterView].
+ */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {
     onItemClickListener = listener(this, ::offer)

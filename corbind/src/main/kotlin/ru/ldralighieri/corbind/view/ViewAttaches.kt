@@ -20,6 +20,13 @@ import ru.ldralighieri.corbind.internal.safeOffer
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Perform an action on [View] attach events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun View.attaches(
         scope: CoroutineScope,
         capacity: Int = Channel.RENDEZVOUS,
@@ -35,6 +42,12 @@ fun View.attaches(
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+/**
+ * Perform an action on [View] attach events inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun View.attaches(
         capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
@@ -53,6 +66,12 @@ suspend fun View.attaches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on [View] attach events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun View.attaches(
         scope: CoroutineScope,
@@ -68,6 +87,9 @@ fun View.attaches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on [View] attach events.
+ */
 @CheckResult
 fun View.attaches(): Flow<Unit> = channelFlow {
     val listener = listener(this, true, ::offer)
@@ -79,12 +101,20 @@ fun View.attaches(): Flow<Unit> = channelFlow {
 // ===============================================================================================
 
 
+/**
+ * Perform an action on [View] detach events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun View.detaches(
         scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) {
 
-    val events = scope.actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -93,11 +123,18 @@ fun View.detaches(
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
+/**
+ * Perform an action on [View] detach events inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun View.detaches(
+        capacity: Int = Channel.RENDEZVOUS,
         action: suspend () -> Unit
 ) = coroutineScope {
 
-    val events = actor<Unit>(Dispatchers.Main, Channel.CONFLATED) {
+    val events = actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
 
@@ -110,10 +147,17 @@ suspend fun View.detaches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a channel which emits on [View] detach events.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun View.detaches(
-        scope: CoroutineScope
-): ReceiveChannel<Unit> = corbindReceiveChannel {
+        scope: CoroutineScope,
+        capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
 
     val listener = listener(scope, false, ::safeOffer)
     addOnAttachStateChangeListener(listener)
@@ -124,6 +168,9 @@ fun View.detaches(
 // -----------------------------------------------------------------------------------------------
 
 
+/**
+ * Create a flow which emits on [View] detach events.
+ */
 @CheckResult
 fun View.detaches(): Flow<Unit> = channelFlow {
     val listener = listener(this, false, ::offer)
