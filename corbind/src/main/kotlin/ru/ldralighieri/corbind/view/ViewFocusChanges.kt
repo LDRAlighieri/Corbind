@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.View
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -69,7 +67,7 @@ suspend fun View.focusChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -92,7 +90,7 @@ fun View.focusChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 /**
  * Create a flow of booleans representing the focus of [View].
@@ -110,7 +108,7 @@ fun View.focusChanges(): Flow<Boolean> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

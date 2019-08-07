@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.widget.SearchView
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 data class SearchViewQueryTextEvent(
         val view: SearchView,
@@ -25,7 +23,7 @@ data class SearchViewQueryTextEvent(
         val isSubmitted: Boolean
 )
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -73,7 +71,7 @@ suspend fun SearchView.queryTextChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -93,7 +91,7 @@ fun SearchView.queryTextChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -109,7 +107,7 @@ fun SearchView.queryTextChangeEvents(): Flow<SearchViewQueryTextEvent> = channel
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult
@@ -117,7 +115,7 @@ private fun initialValue(searchView: SearchView): SearchViewQueryTextEvent =
         SearchViewQueryTextEvent(searchView, searchView.query, false)
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

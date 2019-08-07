@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.leanback
 
 import androidx.annotation.CheckResult
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 sealed class SearchBarSearchQueryEvent {
     abstract val view: SearchBar
@@ -39,7 +37,7 @@ data class SearchBarSearchQuerySubmittedEvent(
         override val searchQuery: String
 ) : SearchBarSearchQueryEvent()
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -85,7 +83,7 @@ suspend fun SearchBar.searchQueryChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -104,7 +102,7 @@ fun SearchBar.searchQueryChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -117,7 +115,7 @@ fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> = chann
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

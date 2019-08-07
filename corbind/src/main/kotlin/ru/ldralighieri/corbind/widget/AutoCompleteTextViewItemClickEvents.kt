@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.view.View
@@ -19,7 +17,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -63,7 +61,7 @@ suspend fun AutoCompleteTextView.itemClickEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -82,7 +80,7 @@ fun AutoCompleteTextView.itemClickEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -95,7 +93,7 @@ fun AutoCompleteTextView.itemClickEvents(): Flow<AdapterViewItemClickEvent> = ch
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

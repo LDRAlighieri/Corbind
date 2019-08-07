@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.DragEvent
@@ -19,7 +17,7 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -75,7 +73,7 @@ suspend fun View.drags(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -100,7 +98,7 @@ fun View.drags(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -121,7 +119,7 @@ fun View.drags(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

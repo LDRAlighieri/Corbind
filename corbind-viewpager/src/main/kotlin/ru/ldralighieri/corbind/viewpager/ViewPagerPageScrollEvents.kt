@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.viewpager
 
 import androidx.annotation.CheckResult
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 data class ViewPagerPageScrollEvent(
         val viewPager: ViewPager,
@@ -26,7 +24,7 @@ data class ViewPagerPageScrollEvent(
         val positionOffsetPixels: Int
 )
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -73,7 +71,7 @@ suspend fun ViewPager.pageScrollEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -93,7 +91,7 @@ fun ViewPager.pageScrollEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -107,7 +105,7 @@ fun ViewPager.pageScrollEvents(): Flow<ViewPagerPageScrollEvent> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

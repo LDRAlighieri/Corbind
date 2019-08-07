@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.widget.AbsListView
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 data class AbsListViewScrollEvent(
         val view: AbsListView,
@@ -27,7 +25,7 @@ data class AbsListViewScrollEvent(
         val totalItemCount: Int
 )
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -77,7 +75,7 @@ suspend fun AbsListView.scrollEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -99,7 +97,7 @@ fun AbsListView.scrollEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -115,7 +113,7 @@ fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

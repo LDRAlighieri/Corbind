@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.appcompat
 
 import androidx.annotation.CheckResult
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -64,7 +62,7 @@ suspend fun SearchView.queryTextChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -84,7 +82,7 @@ fun SearchView.queryTextChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -100,7 +98,7 @@ fun SearchView.queryTextChanges(): Flow<CharSequence> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

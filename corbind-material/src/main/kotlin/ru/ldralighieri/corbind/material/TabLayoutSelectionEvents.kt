@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 sealed class TabLayoutSelectionEvent {
     abstract val view: TabLayout
@@ -39,7 +37,7 @@ data class TabLayoutSelectionUnselectedEvent(
         override val tab: TabLayout.Tab
 ) : TabLayoutSelectionEvent()
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -89,7 +87,7 @@ suspend fun TabLayout.selectionEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -111,7 +109,7 @@ fun TabLayout.selectionEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -129,7 +127,7 @@ fun TabLayout.selectionEvents(): Flow<TabLayoutSelectionEvent> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 private fun setInitialValue(
@@ -143,7 +141,7 @@ private fun setInitialValue(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

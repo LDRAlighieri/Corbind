@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.MenuItem
@@ -18,7 +16,7 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 sealed class MenuItemActionViewEvent {
     abstract val menuItem: MenuItem
@@ -32,7 +30,7 @@ data class MenuItemActionViewExpandEvent(
         override val menuItem: MenuItem
 ) : MenuItemActionViewEvent()
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -88,7 +86,7 @@ suspend fun MenuItem.actionViewEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -113,7 +111,7 @@ fun MenuItem.actionViewEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -134,7 +132,7 @@ fun MenuItem.actionViewEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.os.Build
@@ -19,7 +17,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 data class ViewScrollChangeEvent(
         val view: View,
@@ -29,7 +27,7 @@ data class ViewScrollChangeEvent(
         val oldScrollY: Int
 )
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -75,7 +73,7 @@ suspend fun View.scrollChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -95,7 +93,7 @@ fun View.scrollChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -109,7 +107,7 @@ fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

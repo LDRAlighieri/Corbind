@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.viewpager
 
 import androidx.annotation.CheckResult
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -63,7 +61,7 @@ suspend fun ViewPager.pageScrollStateChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -83,7 +81,7 @@ fun ViewPager.pageScrollStateChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -97,7 +95,7 @@ fun ViewPager.pageScrollStateChanges(): Flow<Int> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.View
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 sealed class ViewAttachEvent {
     abstract val view: View
@@ -31,7 +29,7 @@ data class ViewAttachDetachedEvent(
         override val view: View
 ) : ViewAttachEvent()
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -77,7 +75,7 @@ suspend fun View.attachEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -97,7 +95,7 @@ fun View.attachEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -111,7 +109,7 @@ fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

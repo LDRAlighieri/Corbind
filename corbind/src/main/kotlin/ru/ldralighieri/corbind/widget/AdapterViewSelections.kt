@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.view.View
@@ -19,7 +17,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 sealed class AdapterViewSelectionEvent {
     abstract val view: AdapterView<*>
@@ -36,7 +34,7 @@ data class AdapterViewNothingSelectionEvent(
         override val view: AdapterView<*>
 ) : AdapterViewSelectionEvent()
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -82,7 +80,7 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -102,7 +100,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -118,7 +116,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(): Flow<AdapterViewSelectionEve
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult
@@ -132,7 +130,7 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

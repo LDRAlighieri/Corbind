@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.widget.RatingBar
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 data class RatingBarChangeEvent(
         val view: RatingBar,
@@ -25,7 +23,7 @@ data class RatingBarChangeEvent(
         val fromUser: Boolean
 )
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -71,7 +69,7 @@ suspend fun RatingBar.ratingChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -91,7 +89,7 @@ fun RatingBar.ratingChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -107,7 +105,7 @@ fun RatingBar.ratingChangeEvents(): Flow<RatingBarChangeEvent> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult
@@ -115,7 +113,7 @@ private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =
         RatingBarChangeEvent(ratingBar, ratingBar.rating, false)
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

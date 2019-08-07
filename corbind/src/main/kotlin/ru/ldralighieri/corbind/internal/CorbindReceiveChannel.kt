@@ -1,11 +1,11 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 
 package ru.ldralighieri.corbind.internal
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 
-// -----------------------------------------------------------------------------------------------
+
 
 inline fun <T> corbindReceiveChannel(
         capacity: Int = Channel.RENDEZVOUS,
@@ -16,7 +16,7 @@ inline fun <T> corbindReceiveChannel(
     return channel
 }
 
-// -----------------------------------------------------------------------------------------------
+
 
 fun <T> Channel<T>.safeOffer(element: T): Boolean {
     return if (!isClosedForSend) {

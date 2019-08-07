@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.MotionEvent
@@ -19,7 +17,7 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 /**
  * Perform an action on hover events for [View].
@@ -74,7 +72,7 @@ suspend fun View.hovers(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 /**
  * Create a channel of hover events for [View].
@@ -98,7 +96,7 @@ fun View.hovers(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -119,7 +117,7 @@ fun View.hovers(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.widget.RadioGroup
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -63,7 +61,7 @@ suspend fun RadioGroup.checkedChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -83,7 +81,7 @@ fun RadioGroup.checkedChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -99,7 +97,7 @@ fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

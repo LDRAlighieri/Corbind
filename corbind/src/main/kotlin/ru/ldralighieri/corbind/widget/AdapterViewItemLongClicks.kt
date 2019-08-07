@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.view.View
@@ -20,7 +18,7 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -70,7 +68,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -92,7 +90,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -110,7 +108,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

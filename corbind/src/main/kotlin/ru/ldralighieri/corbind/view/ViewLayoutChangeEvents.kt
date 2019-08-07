@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.View
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 data class ViewLayoutChangeEvent(
         val view: View,
@@ -31,7 +29,7 @@ data class ViewLayoutChangeEvent(
         val oldBottom: Int
 )
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -77,7 +75,7 @@ suspend fun View.layoutChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 /**
  * Create a channel of layout-change events for [View].
@@ -95,7 +93,7 @@ fun View.layoutChangeEvents(
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -109,7 +107,7 @@ fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

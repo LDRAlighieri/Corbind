@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.widget.CompoundButton
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -69,7 +67,7 @@ suspend fun CompoundButton.checkedChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -92,7 +90,7 @@ fun CompoundButton.checkedChanges(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -111,7 +109,7 @@ fun CompoundButton.checkedChanges(): Flow<Boolean> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

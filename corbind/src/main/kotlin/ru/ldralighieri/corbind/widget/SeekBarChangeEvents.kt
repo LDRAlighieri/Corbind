@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.widget.SeekBar
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 sealed class SeekBarChangeEvent {
     abstract val view: SeekBar
@@ -37,7 +35,7 @@ data class SeekBarStopChangeEvent(
         override val view: SeekBar
 ) : SeekBarChangeEvent()
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -83,7 +81,7 @@ private suspend fun SeekBar.changeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -103,7 +101,7 @@ private fun SeekBar.changeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -119,7 +117,7 @@ fun SeekBar.changeEvents(): Flow<SeekBarChangeEvent> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult
@@ -127,7 +125,7 @@ private fun initialValue(seekBar: SeekBar): SeekBarChangeEvent =
         SeekBarProgressChangeEvent(seekBar, seekBar.progress, false)
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

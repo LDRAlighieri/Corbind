@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.text.Editable
@@ -19,7 +17,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 data class TextViewBeforeTextChangeEvent(
         val view: TextView,
@@ -29,7 +27,7 @@ data class TextViewBeforeTextChangeEvent(
         val after: Int
 )
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -78,7 +76,7 @@ suspend fun TextView.beforeTextChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -99,7 +97,7 @@ fun TextView.beforeTextChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -115,7 +113,7 @@ fun TextView.beforeTextChangeEvents(): Flow<TextViewBeforeTextChangeEvent> = cha
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult
@@ -123,7 +121,7 @@ private fun initialValue(textView: TextView): TextViewBeforeTextChangeEvent =
         TextViewBeforeTextChangeEvent(textView, textView.editableText, 0, 0, 0)
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.recyclerview
 
 import android.view.View
@@ -18,7 +16,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 sealed class RecyclerViewChildAttachStateChangeEvent {
     abstract val view: RecyclerView
@@ -35,7 +33,7 @@ data class RecyclerViewChildDetachEvent(
         override val child: View
 ) : RecyclerViewChildAttachStateChangeEvent()
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -83,7 +81,7 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -103,7 +101,7 @@ fun RecyclerView.childAttachStateChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -118,7 +116,7 @@ fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachSta
         }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

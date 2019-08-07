@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.View
@@ -18,7 +16,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -64,7 +62,7 @@ suspend fun View.globalLayouts(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -84,7 +82,7 @@ fun View.globalLayouts(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -98,7 +96,7 @@ fun View.globalLayouts(): Flow<Unit> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

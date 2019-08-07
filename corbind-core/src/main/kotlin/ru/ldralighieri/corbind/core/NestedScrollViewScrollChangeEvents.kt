@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.core
 
 import androidx.annotation.CheckResult
@@ -18,7 +16,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -66,7 +64,7 @@ suspend fun NestedScrollView.scrollChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -85,7 +83,7 @@ fun NestedScrollView.scrollChangeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -98,7 +96,7 @@ fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channel
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

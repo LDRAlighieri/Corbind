@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.widget.PopupMenu
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -67,7 +65,7 @@ suspend fun PopupMenu.dismisses(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -89,7 +87,7 @@ fun PopupMenu.dismisses(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -105,7 +103,7 @@ fun PopupMenu.dismisses(): Flow<Unit> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

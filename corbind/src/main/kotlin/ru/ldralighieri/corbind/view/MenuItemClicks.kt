@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.MenuItem
@@ -18,7 +16,7 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -74,7 +72,7 @@ suspend fun MenuItem.clicks(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -99,7 +97,7 @@ fun MenuItem.clicks(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -120,7 +118,7 @@ fun MenuItem.clicks(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

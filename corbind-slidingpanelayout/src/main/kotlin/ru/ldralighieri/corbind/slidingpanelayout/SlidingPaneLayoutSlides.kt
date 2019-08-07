@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.slidingpanelayout
 
 import android.view.View
@@ -18,7 +16,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -61,7 +59,7 @@ suspend fun SlidingPaneLayout.panelSlides(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -80,7 +78,7 @@ fun SlidingPaneLayout.panelSlides(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -96,7 +94,7 @@ fun SlidingPaneLayout.panelSlides(): Flow<Float> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

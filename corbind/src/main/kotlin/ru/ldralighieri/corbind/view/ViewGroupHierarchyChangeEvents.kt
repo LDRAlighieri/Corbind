@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.View
@@ -18,7 +16,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 /**
  * [ViewGroup] hierarchy change event
@@ -44,7 +42,7 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
         override val child: View
 ) : ViewGroupHierarchyChangeEvent()
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -89,7 +87,7 @@ suspend fun ViewGroup.changeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -108,7 +106,7 @@ fun ViewGroup.changeEvents(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -121,7 +119,7 @@ fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = channelFlow 
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

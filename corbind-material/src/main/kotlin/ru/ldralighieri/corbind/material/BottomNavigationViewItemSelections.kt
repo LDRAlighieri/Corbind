@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.material
 
 import android.view.MenuItem
@@ -18,7 +16,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -64,7 +62,7 @@ suspend fun BottomNavigationView.itemSelections(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -84,7 +82,7 @@ fun BottomNavigationView.itemSelections(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -100,7 +98,7 @@ fun BottomNavigationView.itemSelections(): Flow<MenuItem> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 private fun setInitialValue(
@@ -118,7 +116,7 @@ private fun setInitialValue(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

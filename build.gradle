@@ -74,7 +74,7 @@ buildscript {
 
 }
 
-// -----------------------------------------------------------------------------------------------
+
 
 plugins {
     id "com.diffplug.gradle.spotless" version "3.23.1"
@@ -120,6 +120,7 @@ subprojects {
             allWarningsAsErrors = true
 
             // Enable experimental coroutines APIs, including Flow
+            freeCompilerArgs += "-Xuse-experimental=kotlinx.coroutines.ObsoleteCoroutinesApi"
             freeCompilerArgs += "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"
             freeCompilerArgs += "-Xuse-experimental=kotlinx.coroutines.FlowPreview"
         }

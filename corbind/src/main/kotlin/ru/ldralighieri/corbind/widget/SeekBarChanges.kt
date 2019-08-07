@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.widget
 
 import android.widget.SeekBar
@@ -18,7 +16,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
 // TODO Вернуться и отрефакторить
-// -----------------------------------------------------------------------------------------------
+
 
 
 private fun SeekBar.changes(
@@ -53,7 +51,7 @@ private suspend fun SeekBar.changes(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult
@@ -68,7 +66,7 @@ private fun SeekBar.changes(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult
@@ -129,7 +127,7 @@ fun SeekBar.changes(
 fun SeekBar.changes() = changes(null)
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -178,7 +176,7 @@ fun SeekBar.userChanges(
 fun SeekBar.userChanges() = changes(true)
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -227,7 +225,7 @@ fun SeekBar.systemChanges(
 fun SeekBar.systemChanges() = changes(false)
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult

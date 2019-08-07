@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package ru.ldralighieri.corbind.leanback
 
 import androidx.annotation.CheckResult
@@ -17,7 +15,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -62,7 +60,7 @@ suspend fun SearchEditText.keyboardDismisses(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -81,7 +79,7 @@ fun SearchEditText.keyboardDismisses(
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 /**
@@ -94,7 +92,7 @@ fun SearchEditText.keyboardDismisses(): Flow<Unit> = channelFlow {
 }
 
 
-// -----------------------------------------------------------------------------------------------
+
 
 
 @CheckResult
