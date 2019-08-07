@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.view
 
 import android.view.View
@@ -15,22 +31,17 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
 sealed class ViewAttachEvent {
     abstract val view: View
 }
 
 data class ViewAttachAttachedEvent(
-        override val view: View
+    override val view: View
 ) : ViewAttachEvent()
 
 data class ViewAttachDetachedEvent(
-        override val view: View
+    override val view: View
 ) : ViewAttachEvent()
-
-
-
 
 /**
  * Perform an action on attach and detach events on [View].
@@ -40,9 +51,9 @@ data class ViewAttachDetachedEvent(
  * @param action An action to perform
  */
 fun View.attachEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (ViewAttachEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (ViewAttachEvent) -> Unit
 ) {
 
     val events = scope.actor<ViewAttachEvent>(Dispatchers.Main, capacity) {
@@ -61,8 +72,8 @@ fun View.attachEvents(
  * @param action An action to perform
  */
 suspend fun View.attachEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (ViewAttachEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (ViewAttachEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<ViewAttachEvent>(Dispatchers.Main, capacity) {
@@ -74,10 +85,6 @@ suspend fun View.attachEvents(
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
-
-
-
-
 /**
  * Create a channel of attach and detach events on [View].
  *
@@ -86,17 +93,13 @@ suspend fun View.attachEvents(
  */
 @CheckResult
 fun View.attachEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewAttachEvent> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::safeOffer)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
-
-
-
-
 
 /**
  * Create a flow of attach and detach events on [View].
@@ -108,15 +111,11 @@ fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (ViewAttachEvent) -> Boolean
-) = object: View.OnAttachStateChangeListener {
+    scope: CoroutineScope,
+    emitter: (ViewAttachEvent) -> Boolean
+) = object : View.OnAttachStateChangeListener {
 
     override fun onViewAttachedToWindow(v: View) { onEvent(ViewAttachAttachedEvent(v)) }
     override fun onViewDetachedFromWindow(v: View) { onEvent(ViewAttachDetachedEvent(v)) }

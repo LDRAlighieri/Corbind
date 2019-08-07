@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.widget
 
 import android.widget.SearchView
@@ -15,9 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
-
 /**
  * Perform an action on character sequences for query text changes on [SearchView].
  *
@@ -26,9 +39,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun SearchView.queryTextChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (CharSequence) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (CharSequence) -> Unit
 ) {
 
     val events = scope.actor<CharSequence>(Dispatchers.Main, capacity) {
@@ -48,8 +61,8 @@ fun SearchView.queryTextChanges(
  * @param action An action to perform
  */
 suspend fun SearchView.queryTextChanges(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (CharSequence) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (CharSequence) -> Unit
 ) = coroutineScope {
 
     val events = actor<CharSequence>(Dispatchers.Main, capacity) {
@@ -61,10 +74,6 @@ suspend fun SearchView.queryTextChanges(
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
-
-
-
-
 /**
  * Create an observable of character sequences for query text changes on [SearchView].
  *
@@ -73,17 +82,13 @@ suspend fun SearchView.queryTextChanges(
  */
 @CheckResult
 fun SearchView.queryTextChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
     safeOffer(query)
     setOnQueryTextListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnQueryTextListener(null) }
 }
-
-
-
-
 
 /**
  * Create an observable of character sequences for query text changes on [SearchView].
@@ -97,14 +102,10 @@ fun SearchView.queryTextChanges(): Flow<CharSequence> = channelFlow {
     awaitClose { setOnQueryTextListener(null) }
 }
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (CharSequence) -> Boolean
+    scope: CoroutineScope,
+    emitter: (CharSequence) -> Boolean
 ) = object : SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(s: String): Boolean {
@@ -116,5 +117,4 @@ private fun listener(
     }
 
     override fun onQueryTextSubmit(query: String) = false
-
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
@@ -15,9 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
-
 /**
  * Perform an action on the selected tab in [TabLayout].
  *
@@ -26,9 +39,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun TabLayout.selections(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (TabLayout.Tab) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (TabLayout.Tab) -> Unit
 ) {
 
     val events = scope.actor<TabLayout.Tab>(Dispatchers.Main, capacity) {
@@ -43,13 +56,13 @@ fun TabLayout.selections(
 
 /**
  * Perform an action on the selected tab in [TabLayout] inside new [CoroutineScope].
- * 
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
 suspend fun TabLayout.selections(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (TabLayout.Tab) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (TabLayout.Tab) -> Unit
 ) = coroutineScope {
 
     val events = actor<TabLayout.Tab>(Dispatchers.Main, capacity) {
@@ -62,10 +75,6 @@ suspend fun TabLayout.selections(
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
 }
 
-
-
-
-
 /**
  * Create a channel which emits the selected tab in [TabLayout].
  *
@@ -74,18 +83,14 @@ suspend fun TabLayout.selections(
  */
 @CheckResult
 fun TabLayout.selections(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
     setInitialValue(this@selections, ::safeOffer)
     val listener = listener(scope, ::safeOffer)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
-
-
-
-
 
 /**
  * Create a flow which emits the selected tab in [TabLayout].
@@ -100,32 +105,24 @@ fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
     awaitClose { removeOnTabSelectedListener(listener) }
 }
 
-
-
-
-
 private fun setInitialValue(
-        tabLayout: TabLayout,
-        emitter: (TabLayout.Tab) -> Boolean
+    tabLayout: TabLayout,
+    emitter: (TabLayout.Tab) -> Boolean
 ) {
     val index = tabLayout.selectedTabPosition
     if (index != -1) { emitter(tabLayout.getTabAt(index)!!) }
 }
 
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (TabLayout.Tab) -> Boolean
+    scope: CoroutineScope,
+    emitter: (TabLayout.Tab) -> Boolean
 ) = object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
 
     override fun onTabSelected(tab: TabLayout.Tab) {
         if (scope.isActive) { emitter(tab) }
     }
 
-    override fun onTabReselected(tab: TabLayout.Tab) {  }
-    override fun onTabUnselected(tab: TabLayout.Tab) {  }
-
+    override fun onTabReselected(tab: TabLayout.Tab) { }
+    override fun onTabUnselected(tab: TabLayout.Tab) { }
 }

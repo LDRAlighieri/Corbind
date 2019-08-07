@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.widget
 
 import android.widget.SeekBar
@@ -15,28 +31,23 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
 sealed class SeekBarChangeEvent {
     abstract val view: SeekBar
 }
 
 data class SeekBarProgressChangeEvent(
-        override val view: SeekBar,
-        val progress: Int,
-        val fromUser: Boolean
+    override val view: SeekBar,
+    val progress: Int,
+    val fromUser: Boolean
 ) : SeekBarChangeEvent()
 
 data class SeekBarStartChangeEvent(
-        override val view: SeekBar
+    override val view: SeekBar
 ) : SeekBarChangeEvent()
 
 data class SeekBarStopChangeEvent(
-        override val view: SeekBar
+    override val view: SeekBar
 ) : SeekBarChangeEvent()
-
-
-
 
 /**
  * Perform an action on progress change events for [SeekBar].
@@ -46,9 +57,9 @@ data class SeekBarStopChangeEvent(
  * @param action An action to perform
  */
 private fun SeekBar.changeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (SeekBarChangeEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (SeekBarChangeEvent) -> Unit
 ) {
 
     val events = scope.actor<SeekBarChangeEvent>(Dispatchers.Main, capacity) {
@@ -67,8 +78,8 @@ private fun SeekBar.changeEvents(
  * @param action An action to perform
  */
 private suspend fun SeekBar.changeEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (SeekBarChangeEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (SeekBarChangeEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<SeekBarChangeEvent>(Dispatchers.Main, capacity) {
@@ -80,10 +91,6 @@ private suspend fun SeekBar.changeEvents(
     events.invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
-
-
-
-
 /**
  * Create a channel of progress change events for [SeekBar].
  *
@@ -92,17 +99,13 @@ private suspend fun SeekBar.changeEvents(
  */
 @CheckResult
 private fun SeekBar.changeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
     offer(initialValue(this@changeEvents))
     setOnSeekBarChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
-
-
-
-
 
 /**
  * Create a flow of progress change events for [SeekBar].
@@ -116,22 +119,14 @@ fun SeekBar.changeEvents(): Flow<SeekBarChangeEvent> = channelFlow {
     awaitClose { setOnSeekBarChangeListener(null) }
 }
 
-
-
-
-
 @CheckResult
 private fun initialValue(seekBar: SeekBar): SeekBarChangeEvent =
         SeekBarProgressChangeEvent(seekBar, seekBar.progress, false)
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (SeekBarChangeEvent) -> Boolean
+    scope: CoroutineScope,
+    emitter: (SeekBarChangeEvent) -> Boolean
 ) = object : SeekBar.OnSeekBarChangeListener {
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -146,8 +141,7 @@ private fun listener(
         onEvent(SeekBarStopChangeEvent(seekBar))
     }
 
-    private fun onEvent(event: SeekBarChangeEvent)  {
+    private fun onEvent(event: SeekBarChangeEvent) {
         if (scope.isActive) { emitter(event) }
     }
-
 }

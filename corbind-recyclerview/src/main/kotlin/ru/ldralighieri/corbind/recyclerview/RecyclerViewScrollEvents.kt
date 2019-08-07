@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.recyclerview
 
 import androidx.annotation.CheckResult
@@ -15,12 +31,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
 data class RecyclerViewScrollEvent(val view: RecyclerView, val dx: Int, val dy: Int)
-
-
-
 
 /**
  * Perform an action on scroll events on [RecyclerView].
@@ -30,9 +41,9 @@ data class RecyclerViewScrollEvent(val view: RecyclerView, val dx: Int, val dy: 
  * @param action An action to perform
  */
 fun RecyclerView.scrollEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (RecyclerViewScrollEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (RecyclerViewScrollEvent) -> Unit
 ) {
 
     val events = scope.actor<RecyclerViewScrollEvent>(Dispatchers.Main, capacity) {
@@ -51,8 +62,8 @@ fun RecyclerView.scrollEvents(
  * @param action An action to perform
  */
 suspend fun RecyclerView.scrollEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (RecyclerViewScrollEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (RecyclerViewScrollEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<RecyclerViewScrollEvent>(Dispatchers.Main, capacity) {
@@ -64,10 +75,6 @@ suspend fun RecyclerView.scrollEvents(
     events.invokeOnClose { removeOnScrollListener(scrollListener) }
 }
 
-
-
-
-
 /**
  * Create a channel of scroll events on [RecyclerView].
  *
@@ -76,17 +83,13 @@ suspend fun RecyclerView.scrollEvents(
  */
 @CheckResult
 fun RecyclerView.scrollEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RecyclerViewScrollEvent> = corbindReceiveChannel(capacity) {
     val scrollListener = listener(scope, ::safeOffer)
     addOnScrollListener(scrollListener)
     invokeOnClose { removeOnScrollListener(scrollListener) }
 }
-
-
-
-
 
 /**
  * Create a flow of scroll events on [RecyclerView].
@@ -98,18 +101,13 @@ fun RecyclerView.scrollEvents(): Flow<RecyclerViewScrollEvent> = channelFlow {
     awaitClose { removeOnScrollListener(scrollListener) }
 }
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (RecyclerViewScrollEvent) -> Boolean
+    scope: CoroutineScope,
+    emitter: (RecyclerViewScrollEvent) -> Boolean
 ) = object : RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         if (scope.isActive) { emitter(RecyclerViewScrollEvent(recyclerView, dx, dy)) }
     }
-
 }

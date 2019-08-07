@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.widget
 
 import android.text.Editable
@@ -17,18 +33,13 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
 data class TextViewTextChangeEvent(
-        val view: TextView,
-        val text: CharSequence,
-        val start: Int,
-        val before: Int,
-        val count: Int
+    val view: TextView,
+    val text: CharSequence,
+    val start: Int,
+    val before: Int,
+    val count: Int
 )
-
-
-
 
 /**
  * Perform an action on text change events for [TextView].
@@ -38,9 +49,9 @@ data class TextViewTextChangeEvent(
  * @param action An action to perform
  */
 fun TextView.textChangeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (TextViewTextChangeEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (TextViewTextChangeEvent) -> Unit
 ) {
 
     val events = scope.actor<TextViewTextChangeEvent>(Dispatchers.Main, capacity) {
@@ -60,8 +71,8 @@ fun TextView.textChangeEvents(
  * @param action An action to perform
  */
 suspend fun TextView.textChangeEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (TextViewTextChangeEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (TextViewTextChangeEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<TextViewTextChangeEvent>(Dispatchers.Main, capacity) {
@@ -74,10 +85,6 @@ suspend fun TextView.textChangeEvents(
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
 
-
-
-
-
 /**
  * Create a channel of text change events for [TextView].
  *
@@ -86,18 +93,14 @@ suspend fun TextView.textChangeEvents(
  */
 @CheckResult
 fun TextView.textChangeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewTextChangeEvent> = corbindReceiveChannel(capacity) {
     safeOffer(initialValue(this@textChangeEvents))
     val listener = listener(scope, this@textChangeEvents, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
-
-
-
-
 
 /**
  * Create a flow of text change events for [TextView].
@@ -112,26 +115,18 @@ fun TextView.textChangeEvents(): Flow<TextViewTextChangeEvent> = channelFlow {
     awaitClose { removeTextChangedListener(listener) }
 }
 
-
-
-
-
 @CheckResult
 private fun initialValue(textView: TextView): TextViewTextChangeEvent =
         TextViewTextChangeEvent(textView, textView.editableText, 0, 0, 0)
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        textView: TextView,
-        emitter: (TextViewTextChangeEvent) -> Boolean
+    scope: CoroutineScope,
+    textView: TextView,
+    emitter: (TextViewTextChangeEvent) -> Boolean
 ) = object : TextWatcher {
 
-    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {  }
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) { }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         if (scope.isActive) {
@@ -139,4 +134,4 @@ private fun listener(
         }
     }
 
-    override fun afterTextChanged(s: Editable) {  }}
+    override fun afterTextChanged(s: Editable) { } }

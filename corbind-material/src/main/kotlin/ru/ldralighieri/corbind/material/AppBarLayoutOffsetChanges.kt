@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
@@ -15,9 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
-
 /**
  * Perform an action on the offset change in [AppBarLayout].
  *
@@ -26,9 +39,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun AppBarLayout.offsetChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Int) -> Unit
 ) {
 
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
@@ -47,8 +60,8 @@ fun AppBarLayout.offsetChanges(
  * @param action An action to perform
  */
 suspend fun AppBarLayout.offsetChanges(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Int) -> Unit
 ) = coroutineScope {
 
     val events = actor<Int>(Dispatchers.Main, capacity) {
@@ -60,10 +73,6 @@ suspend fun AppBarLayout.offsetChanges(
     events.invokeOnClose { removeOnOffsetChangedListener(listener) }
 }
 
-
-
-
-
 /**
  * Create a channel which emits the offset change in [AppBarLayout].
  *
@@ -72,17 +81,13 @@ suspend fun AppBarLayout.offsetChanges(
  */
 @CheckResult
 fun AppBarLayout.offsetChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::safeOffer)
     addOnOffsetChangedListener(listener)
     invokeOnClose { removeOnOffsetChangedListener(listener) }
 }
-
-
-
-
 
 /**
  * Create a flow which emits the offset change in [AppBarLayout].
@@ -94,14 +99,10 @@ fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow {
     awaitClose { removeOnOffsetChangedListener(listener) }
 }
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (Int) -> Boolean
+    scope: CoroutineScope,
+    emitter: (Int) -> Boolean
 ) = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
     if (scope.isActive) { emitter(verticalOffset) }
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.view
 
 import android.view.MotionEvent
@@ -17,9 +33,6 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
-
 /**
  * Perform an action on touch events for [View].
  *
@@ -30,10 +43,10 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun View.touches(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MotionEvent) -> Boolean = AlwaysTrue,
-        action: suspend (MotionEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MotionEvent) -> Boolean = AlwaysTrue,
+    action: suspend (MotionEvent) -> Unit
 ) {
 
     val events = scope.actor<MotionEvent>(Dispatchers.Main, capacity) {
@@ -53,9 +66,9 @@ fun View.touches(
  * @param action An action to perform
  */
 suspend fun View.touches(
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MotionEvent) -> Boolean = AlwaysTrue,
-        action: suspend (MotionEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MotionEvent) -> Boolean = AlwaysTrue,
+    action: suspend (MotionEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<MotionEvent>(Dispatchers.Main, capacity) {
@@ -65,10 +78,6 @@ suspend fun View.touches(
     setOnTouchListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnTouchListener(null) }
 }
-
-
-
-
 
 /**
  * Create a channel of touch events for [View].
@@ -80,17 +89,13 @@ suspend fun View.touches(
  */
 @CheckResult
 fun View.touches(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MotionEvent) -> Boolean = AlwaysTrue
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MotionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
     setOnTouchListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnTouchListener(null) }
 }
-
-
-
-
 
 /**
  * Create a flow of touch events for [View].
@@ -106,15 +111,11 @@ fun View.touches(
     awaitClose { setOnTouchListener(null) }
 }
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        handled: (MotionEvent) -> Boolean,
-        emitter: (MotionEvent) -> Boolean
+    scope: CoroutineScope,
+    handled: (MotionEvent) -> Boolean,
+    emitter: (MotionEvent) -> Boolean
 ) = View.OnTouchListener { _, motionEvent ->
 
     if (scope.isActive) {
@@ -124,5 +125,4 @@ private fun listener(
         }
     }
     return@OnTouchListener false
-
 }

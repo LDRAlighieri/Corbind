@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.material
 
 import android.view.MenuItem
@@ -16,9 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
-
 /**
  * Perform an action on the selected item in [NavigationView].
  *
@@ -27,9 +40,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun NavigationView.itemSelections(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (MenuItem) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (MenuItem) -> Unit
 ) {
 
     val events = scope.actor<MenuItem>(Dispatchers.Main, capacity) {
@@ -48,8 +61,8 @@ fun NavigationView.itemSelections(
  * @param action An action to perform
  */
 suspend fun NavigationView.itemSelections(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (MenuItem) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
 
     val events = actor<MenuItem>(Dispatchers.Main, capacity) {
@@ -61,10 +74,6 @@ suspend fun NavigationView.itemSelections(
     events.invokeOnClose { setNavigationItemSelectedListener(null) }
 }
 
-
-
-
-
 /**
  * Create a channel which emits the selected item in [NavigationView].
  *
@@ -73,17 +82,13 @@ suspend fun NavigationView.itemSelections(
  */
 @CheckResult
 fun NavigationView.itemSelections(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
     setInitialValue(this@itemSelections, ::safeOffer)
     setNavigationItemSelectedListener(listener(scope, ::safeOffer))
     invokeOnClose { setNavigationItemSelectedListener(null) }
 }
-
-
-
-
 
 /**
  * Create a flow which emits the selected item in [NavigationView].
@@ -97,13 +102,9 @@ fun NavigationView.itemSelections(): Flow<MenuItem> = channelFlow {
     awaitClose { setNavigationItemSelectedListener(null) }
 }
 
-
-
-
-
 private fun setInitialValue(
-        navigationView: NavigationView,
-        emitter: (MenuItem) -> Boolean
+    navigationView: NavigationView,
+    emitter: (MenuItem) -> Boolean
 ) {
     val menu = navigationView.menu
     for (i in 0 until menu.size()) {
@@ -115,14 +116,10 @@ private fun setInitialValue(
     }
 }
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (MenuItem) -> Boolean
+    scope: CoroutineScope,
+    emitter: (MenuItem) -> Boolean
 ) = NavigationView.OnNavigationItemSelectedListener {
     if (scope.isActive) { emitter(it) }
     return@OnNavigationItemSelectedListener true

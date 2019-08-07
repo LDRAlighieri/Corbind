@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.view
 
 import android.view.MenuItem
@@ -16,22 +32,17 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
 sealed class MenuItemActionViewEvent {
     abstract val menuItem: MenuItem
 }
 
 data class MenuItemActionViewCollapseEvent(
-        override val menuItem: MenuItem
+    override val menuItem: MenuItem
 ) : MenuItemActionViewEvent()
 
 data class MenuItemActionViewExpandEvent(
-        override val menuItem: MenuItem
+    override val menuItem: MenuItem
 ) : MenuItemActionViewEvent()
-
-
-
 
 /**
  * Perform an action on action view events for [MenuItem].
@@ -46,10 +57,10 @@ data class MenuItemActionViewExpandEvent(
  * @param action An action to perform
  */
 fun MenuItem.actionViewEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-        action: suspend (MenuItemActionViewEvent) -> Boolean
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
+    action: suspend (MenuItemActionViewEvent) -> Boolean
 ) {
 
     val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity) {
@@ -72,9 +83,9 @@ fun MenuItem.actionViewEvents(
  * @param action An action to perform
  */
 suspend fun MenuItem.actionViewEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-        action: suspend (MenuItemActionViewEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
+    action: suspend (MenuItemActionViewEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity) {
@@ -84,10 +95,6 @@ suspend fun MenuItem.actionViewEvents(
     setOnActionExpandListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnActionExpandListener(null) }
 }
-
-
-
-
 
 /**
  * Create a channel of action view events for [MenuItem].
@@ -102,17 +109,13 @@ suspend fun MenuItem.actionViewEvents(
  */
 @CheckResult
 fun MenuItem.actionViewEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel(capacity) {
     setOnActionExpandListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnActionExpandListener(null) }
 }
-
-
-
-
 
 /**
  * Create a flow of action view events for [MenuItem].
@@ -131,15 +134,11 @@ fun MenuItem.actionViewEvents(
     awaitClose { setOnActionExpandListener(null) }
 }
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        handled: (MenuItemActionViewEvent) -> Boolean,
-        emitter: (MenuItemActionViewEvent) -> Boolean
+    scope: CoroutineScope,
+    handled: (MenuItemActionViewEvent) -> Boolean,
+    emitter: (MenuItemActionViewEvent) -> Boolean
 ) = object : MenuItem.OnActionExpandListener {
 
     override fun onMenuItemActionExpand(item: MenuItem): Boolean {

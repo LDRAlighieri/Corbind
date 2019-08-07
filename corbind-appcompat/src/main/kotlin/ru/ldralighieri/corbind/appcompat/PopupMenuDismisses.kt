@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.appcompat
 
 import androidx.annotation.CheckResult
@@ -15,9 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
-
 /**
  * Perform an action on [PopupMenu] dismiss events.
  *
@@ -29,9 +42,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun PopupMenu.dismisses(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend () -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend () -> Unit
 ) {
 
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
@@ -52,8 +65,8 @@ fun PopupMenu.dismisses(
  * @param action An action to perform
  */
 suspend fun PopupMenu.dismisses(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend () -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend () -> Unit
 ) = coroutineScope {
 
     val events = actor<Unit>(Dispatchers.Main, capacity) {
@@ -63,9 +76,6 @@ suspend fun PopupMenu.dismisses(
     setOnDismissListener(listener(this, events::offer))
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
-
-
-
 
 /**
  * Create a channel which emits on [PopupMenu] dismiss events.
@@ -78,16 +88,12 @@ suspend fun PopupMenu.dismisses(
  */
 @CheckResult
 fun PopupMenu.dismisses(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     setOnDismissListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
-
-
-
-
 
 /**
  * Create a flow which emits on [PopupMenu] dismiss events.
@@ -101,14 +107,10 @@ fun PopupMenu.dismisses(): Flow<Unit> = channelFlow {
     awaitClose { setOnMenuItemClickListener(null) }
 }
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (Unit) -> Boolean
+    scope: CoroutineScope,
+    emitter: (Unit) -> Boolean
 ) = PopupMenu.OnDismissListener {
     if (scope.isActive) { emitter(Unit) }
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package ru.ldralighieri.corbind.widget
 
 import android.widget.RatingBar
@@ -15,9 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-
-
-
 /**
  * Perform an action on rating changes on [RatingBar].
  *
@@ -26,9 +39,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun RatingBar.ratingChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Float) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Float) -> Unit
 ) {
 
     val events = scope.actor<Float>(Dispatchers.Main, capacity) {
@@ -47,8 +60,8 @@ fun RatingBar.ratingChanges(
  * @param action An action to perform
  */
 suspend fun RatingBar.ratingChanges(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Float) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Float) -> Unit
 ) = coroutineScope {
 
     val events = actor<Float>(Dispatchers.Main, capacity) {
@@ -60,10 +73,6 @@ suspend fun RatingBar.ratingChanges(
     events.invokeOnClose { onRatingBarChangeListener = null }
 }
 
-
-
-
-
 /**
  * Create a change of the rating changes on [RatingBar].
  *
@@ -72,17 +81,13 @@ suspend fun RatingBar.ratingChanges(
  */
 @CheckResult
 fun RatingBar.ratingChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
     safeOffer(rating)
     onRatingBarChangeListener = listener(scope, ::safeOffer)
     invokeOnClose { onRatingBarChangeListener = null }
 }
-
-
-
-
 
 /**
  * Create a flow of the rating changes on [RatingBar].
@@ -96,14 +101,10 @@ fun RatingBar.ratingChanges(): Flow<Float> = channelFlow {
     awaitClose { onRatingBarChangeListener = null }
 }
 
-
-
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (Float) -> Boolean
+    scope: CoroutineScope,
+    emitter: (Float) -> Boolean
 ) = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
     if (scope.isActive) { emitter(rating) }
 }
