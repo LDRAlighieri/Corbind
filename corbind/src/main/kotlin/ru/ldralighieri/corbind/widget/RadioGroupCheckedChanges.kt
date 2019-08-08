@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.widget
 
@@ -17,13 +31,17 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Perform an action on checked view ID changes in [RadioGroup].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun RadioGroup.checkedChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Int) -> Unit
 ) {
 
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
@@ -35,9 +53,15 @@ fun RadioGroup.checkedChanges(
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
+/**
+ * Perform an action on checked view ID changes in [RadioGroup] inside new CoroutineScope.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun RadioGroup.checkedChanges(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Int) -> Unit
 ) = coroutineScope {
 
     val events = actor<Int>(Dispatchers.Main, capacity) {
@@ -49,24 +73,27 @@ suspend fun RadioGroup.checkedChanges(
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a channel of the checked view ID changes in [RadioGroup].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun RadioGroup.checkedChanges(
-        capacity: Int = Channel.RENDEZVOUS,
-        scope: CoroutineScope
+    capacity: Int = Channel.RENDEZVOUS,
+    scope: CoroutineScope
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     offer(checkedRadioButtonId)
     setOnCheckedChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a flow of the checked view ID changes in [RadioGroup].
+ *
+ * *Note:* A value will be emitted immediately on collect.
+ */
 @CheckResult
 fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
     offer(checkedRadioButtonId)
@@ -74,14 +101,10 @@ fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
     awaitClose { setOnCheckedChangeListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (Int) -> Boolean
+    scope: CoroutineScope,
+    emitter: (Int) -> Boolean
 ) = object : RadioGroup.OnCheckedChangeListener {
 
     private var lastChecked = -1
@@ -91,5 +114,4 @@ private fun listener(
             emitter(checkedId)
         }
     }
-
 }

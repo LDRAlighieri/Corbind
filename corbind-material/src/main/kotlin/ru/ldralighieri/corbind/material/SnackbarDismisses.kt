@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.material
 
@@ -17,13 +31,17 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Perform an action on the dismiss events from [Snackbar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 fun Snackbar.dismisses(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Int) -> Unit
 ) {
 
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
@@ -35,9 +53,15 @@ fun Snackbar.dismisses(
     events.invokeOnClose { removeCallback(callback) }
 }
 
+/**
+ * Perform an action on the dismiss events from [Snackbar] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
+ */
 suspend fun Snackbar.dismisses(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Int) -> Unit
 ) = coroutineScope {
 
     val events = actor<Int>(Dispatchers.Main, capacity) {
@@ -49,24 +73,25 @@ suspend fun Snackbar.dismisses(
     events.invokeOnClose { removeCallback(callback) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a channel which emits the dismiss events from [Snackbar].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
 @CheckResult
 fun Snackbar.dismisses(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val callback = callback(scope, ::safeOffer)
     addCallback(callback)
     invokeOnClose { removeCallback(callback) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a flow which emits the dismiss events from [Snackbar].
+ */
 @CheckResult
 fun Snackbar.dismisses(): Flow<Int> = channelFlow {
     val callback = callback(this, ::offer)
@@ -74,14 +99,10 @@ fun Snackbar.dismisses(): Flow<Int> = channelFlow {
     awaitClose { removeCallback(callback) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun callback(
-        scope: CoroutineScope,
-        emitter: (Int) -> Boolean
+    scope: CoroutineScope,
+    emitter: (Int) -> Boolean
 ) = object : Snackbar.Callback() {
     override fun onDismissed(transientBottomBar: Snackbar, event: Int) {
         if (scope.isActive) { emitter(event) }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 buildscript {
 
     ext {
@@ -16,7 +32,8 @@ buildscript {
                         'swiperefresh_layout' : '1.0.0',
                         'viewpager' : '1.0.0',
                         'material' : '1.0.0'
-                ]
+                ],
+                'ktlint': '0.33.0'
         ]
 
         deps = [
@@ -48,19 +65,16 @@ buildscript {
                 'compileSdk': 28,
                 'minSdk': 16,
                 'versionCode': 1,
-                'versionName': "0.13.0"
+                'versionName': "0.14.0"
         ]
     }
-
-    // -------------------------------------------------------------------------------------------
 
     repositories {
         mavenCentral()
         google()
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
-
-    // -------------------------------------------------------------------------------------------
 
     dependencies {
         // Android gradle
@@ -72,15 +86,15 @@ buildscript {
 
 }
 
-// -----------------------------------------------------------------------------------------------
 
 plugins {
-    id 'com.github.ben-manes.versions' version '0.21.0'
+    id "com.diffplug.gradle.spotless" version "3.24.0"
+    id 'com.github.ben-manes.versions' version '0.22.0'
+    id "io.gitlab.arturbosch.detekt" version "1.0.0-RC16"
 }
 
-// ------------------------------------------------------------------------------------------------
 
-subprojects {
+allprojects {
 
     repositories {
         mavenCentral()
@@ -91,6 +105,32 @@ subprojects {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         kotlinOptions {
             jvmTarget = "1.8"
+        }
+    }
+
+}
+
+
+subprojects {
+
+    apply plugin: 'com.diffplug.gradle.spotless'
+    spotless {
+        kotlin {
+            target "**/*.kt"
+            ktlint(versions.ktlint)
+            licenseHeaderFile project.rootProject.file('spotless/copyright.kt')
+        }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            // Treat all Kotlin warnings as errors
+            allWarningsAsErrors = true
+
+            // Enable experimental coroutines APIs, including Flow
+            freeCompilerArgs += "-Xuse-experimental=kotlinx.coroutines.ObsoleteCoroutinesApi"
+            freeCompilerArgs += "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"
+            freeCompilerArgs += "-Xuse-experimental=kotlinx.coroutines.FlowPreview"
         }
     }
 
@@ -106,13 +146,35 @@ subprojects {
 
 }
 
-// ------------------------------------------------------------------------------------------------
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+detekt {
+    toolVersion = "1.0.0-RC16"
+
+    failFast = false
+    buildUponDefaultConfig = true
+
+    config = files("default-detekt-config.yml")
+    input = files(
+            "corbind/src/main/kotlin",
+            "corbind-appcompat/src/main/kotlin",
+            "corbind-core/src/main/kotlin",
+            "corbind-drawerlayout/src/main/kotlin",
+            "corbind-leanback/src/main/kotlin",
+            "corbind-material/src/main/kotlin",
+            "corbind-recyclerview/src/main/kotlin",
+            "corbind-slidingpanelayout/src/main/kotlin",
+            "corbind-swiperefreshlayout/src/main/kotlin",
+            "corbind-viewpager/src/main/kotlin"
+    )
+    filters = ".*/resources/.*,.*/build/.*"
+    parallel = true
+
+    reports {
+        html.enabled = true
+        xml.enabled = false
+    }
 }
 
-// ------------------------------------------------------------------------------------------------
 
 configurations.all {
     resolutionStrategy {
@@ -126,7 +188,6 @@ configurations.all {
     }
 }
 
-// ------------------------------------------------------------------------------------------------
 
 dependencyUpdates.resolutionStrategy = {
     componentSelection { rules ->

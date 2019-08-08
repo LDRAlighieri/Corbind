@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.view
 
@@ -19,14 +33,23 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Perform an action on [DragEvent] for [View].
+ *
+ * *Warning:* The created actor uses [View.setOnDragListener] to emmit drags. Only one actor can
+ * be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnDragListener]
+ * @param action An action to perform
+ */
 fun View.drags(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (DragEvent) -> Boolean = AlwaysTrue,
-        action: suspend (DragEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (DragEvent) -> Boolean = AlwaysTrue,
+    action: suspend (DragEvent) -> Unit
 ) {
 
     val events = scope.actor<DragEvent>(Dispatchers.Main, capacity) {
@@ -37,10 +60,21 @@ fun View.drags(
     events.invokeOnClose { setOnDragListener(null) }
 }
 
+/**
+ * Perform an action on [DragEvent] for [View] inside new CoroutineScope.
+ *
+ * *Warning:* The created actor uses [View.setOnDragListener] to emmit drags. Only one actor can
+ * be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnDragListener]
+ * @param action An action to perform
+ */
 suspend fun View.drags(
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (DragEvent) -> Boolean = AlwaysTrue,
-        action: suspend (DragEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (DragEvent) -> Boolean = AlwaysTrue,
+    action: suspend (DragEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<DragEvent>(Dispatchers.Main, capacity) {
@@ -51,25 +85,36 @@ suspend fun View.drags(
     events.invokeOnClose { setOnDragListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a channel of [DragEvent] for [View].
+ *
+ * *Warning:* The created channel uses [View.setOnDragListener] to emmit drags. Only one channel
+ * can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnDragListener]
+ */
 @CheckResult
 fun View.drags(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (DragEvent) -> Boolean = AlwaysTrue
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (DragEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<DragEvent> = corbindReceiveChannel(capacity) {
-
     setOnDragListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnDragListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a flow of [DragEvent] for [View].
+ *
+ * *Warning:* The created flow uses [View.setOnDragListener] to emmit drags. Only one flow can be
+ * used for a view at a time.
+ *
+ * @param handled Predicate invoked with each value to determine the return value of the underlying
+ * [View.OnDragListener]
+ */
 @CheckResult
 fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue
@@ -78,15 +123,11 @@ fun View.drags(
     awaitClose { setOnDragListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        handled: (DragEvent) -> Boolean,
-        emitter: (DragEvent) -> Boolean
+    scope: CoroutineScope,
+    handled: (DragEvent) -> Boolean,
+    emitter: (DragEvent) -> Boolean
 ) = View.OnDragListener { _, dragEvent ->
 
     if (scope.isActive) {

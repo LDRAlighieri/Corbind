@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.view
 
@@ -18,14 +32,19 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Perform an action on pre-draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param proceedDrawingPass Let drawing process proceed
+ * @param action An action to perform
+ */
 fun View.preDraws(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        proceedDrawingPass: () -> Boolean,
-        action: suspend () -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    proceedDrawingPass: () -> Boolean,
+    action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
@@ -36,10 +55,17 @@ fun View.preDraws(
     events.invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
+/**
+ * Perform an action on pre-draws on [View] inside new [CoroutineScope].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param proceedDrawingPass Let drawing process proceed
+ * @param action An action to perform
+ */
 suspend fun View.preDraws(
-        capacity: Int = Channel.RENDEZVOUS,
-        proceedDrawingPass: () -> Boolean,
-        action: suspend () -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    proceedDrawingPass: () -> Boolean,
+    action: suspend () -> Unit
 ) = coroutineScope {
     val events = actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
@@ -50,25 +76,29 @@ suspend fun View.preDraws(
     events.invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a channel for pre-draws on [View].
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param proceedDrawingPass Let drawing process proceed
+ */
 @CheckResult
 fun View.preDraws(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        proceedDrawingPass: () -> Boolean
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    proceedDrawingPass: () -> Boolean
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, proceedDrawingPass, ::safeOffer)
     viewTreeObserver.addOnPreDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a flow for pre-draws on [View].
+ *
+ * @param proceedDrawingPass Let drawing process proceed
+ */
 @CheckResult
 fun View.preDraws(
     proceedDrawingPass: () -> Boolean
@@ -78,15 +108,11 @@ fun View.preDraws(
     awaitClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        proceedDrawingPass: () -> Boolean,
-        emitter: (Unit) -> Boolean
+    scope: CoroutineScope,
+    proceedDrawingPass: () -> Boolean,
+    emitter: (Unit) -> Boolean
 ) = ViewTreeObserver.OnPreDrawListener {
 
     if (scope.isActive) {
@@ -94,5 +120,4 @@ private fun listener(
         return@OnPreDrawListener proceedDrawingPass()
     }
     return@OnPreDrawListener true
-
 }

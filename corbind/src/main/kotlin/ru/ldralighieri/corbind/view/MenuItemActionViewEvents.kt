@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.view
 
@@ -18,28 +32,35 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
 sealed class MenuItemActionViewEvent {
     abstract val menuItem: MenuItem
 }
 
 data class MenuItemActionViewCollapseEvent(
-        override val menuItem: MenuItem
+    override val menuItem: MenuItem
 ) : MenuItemActionViewEvent()
 
 data class MenuItemActionViewExpandEvent(
-        override val menuItem: MenuItem
+    override val menuItem: MenuItem
 ) : MenuItemActionViewEvent()
 
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Perform an action on action view events for [MenuItem].
+ *
+ * *Warning:* The created actor uses [MenuItem.setOnActionExpandListener] to emmit action view
+ * events. Only one actor can be used for a menu item at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnActionExpandListener]
+ * @param action An action to perform
+ */
 fun MenuItem.actionViewEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-        action: suspend (MenuItemActionViewEvent) -> Boolean
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
+    action: suspend (MenuItemActionViewEvent) -> Boolean
 ) {
 
     val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity) {
@@ -50,10 +71,21 @@ fun MenuItem.actionViewEvents(
     events.invokeOnClose { setOnActionExpandListener(null) }
 }
 
+/**
+ * Perform an action on action view events for [MenuItem] inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [MenuItem.setOnActionExpandListener] to emmit action view
+ * events. Only one actor can be used for a menu item at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnActionExpandListener]
+ * @param action An action to perform
+ */
 suspend fun MenuItem.actionViewEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-        action: suspend (MenuItemActionViewEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
+    action: suspend (MenuItemActionViewEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity) {
@@ -64,24 +96,36 @@ suspend fun MenuItem.actionViewEvents(
     events.invokeOnClose { setOnActionExpandListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a channel of action view events for [MenuItem].
+ *
+ * *Warning:* The created channel uses [MenuItem.setOnActionExpandListener] to emmit action view
+ * events. Only one channel can be used for a menu item at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnActionExpandListener]
+ */
 @CheckResult
 fun MenuItem.actionViewEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel(capacity) {
     setOnActionExpandListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnActionExpandListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
+/**
+ * Create a flow of action view events for [MenuItem].
+ *
+ * *Warning:* The created flow uses [MenuItem.setOnActionExpandListener] to emmit action view
+ * events. Only one flow can be used for a menu item at a time.
+ *
+ * @param handled Function invoked with each value to determine the return value of the underlying
+ * [MenuItem.OnActionExpandListener]
+ */
 @CheckResult
 fun MenuItem.actionViewEvents(
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
@@ -90,15 +134,11 @@ fun MenuItem.actionViewEvents(
     awaitClose { setOnActionExpandListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        handled: (MenuItemActionViewEvent) -> Boolean,
-        emitter: (MenuItemActionViewEvent) -> Boolean
+    scope: CoroutineScope,
+    handled: (MenuItemActionViewEvent) -> Boolean,
+    emitter: (MenuItemActionViewEvent) -> Boolean
 ) = object : MenuItem.OnActionExpandListener {
 
     override fun onMenuItemActionExpand(item: MenuItem): Boolean {
