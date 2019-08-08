@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.widget
 
@@ -17,18 +31,13 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
 data class AbsListViewScrollEvent(
-        val view: AbsListView,
-        val scrollState: Int,
-        val firstVisibleItem: Int,
-        val visibleItemCount: Int,
-        val totalItemCount: Int
+    val view: AbsListView,
+    val scrollState: Int,
+    val firstVisibleItem: Int,
+    val visibleItemCount: Int,
+    val totalItemCount: Int
 )
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Perform an action on scroll events on [AbsListView].
@@ -41,9 +50,9 @@ data class AbsListViewScrollEvent(
  * @param action An action to perform
  */
 fun AbsListView.scrollEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (AbsListViewScrollEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (AbsListViewScrollEvent) -> Unit
 ) {
 
     val events = scope.actor<AbsListViewScrollEvent>(Dispatchers.Main, capacity) {
@@ -64,8 +73,8 @@ fun AbsListView.scrollEvents(
  * @param action An action to perform
  */
 suspend fun AbsListView.scrollEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (AbsListViewScrollEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (AbsListViewScrollEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<AbsListViewScrollEvent>(Dispatchers.Main, capacity) {
@@ -75,10 +84,6 @@ suspend fun AbsListView.scrollEvents(
     setOnScrollListener(listener(this, events::offer))
     events.invokeOnClose { setOnScrollListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a channel of scroll events on [AbsListView].
@@ -91,16 +96,12 @@ suspend fun AbsListView.scrollEvents(
  */
 @CheckResult
 fun AbsListView.scrollEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AbsListViewScrollEvent> = corbindReceiveChannel(capacity) {
     setOnScrollListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnScrollListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of scroll events on [AbsListView].
@@ -114,14 +115,10 @@ fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {
     awaitClose { setOnScrollListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (AbsListViewScrollEvent) -> Boolean
+    scope: CoroutineScope,
+    emitter: (AbsListViewScrollEvent) -> Boolean
 ) = object : AbsListView.OnScrollListener {
 
     private var currentScrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE
@@ -136,8 +133,10 @@ private fun listener(
     }
 
     override fun onScroll(
-            absListView: AbsListView, firstVisibleItem: Int, visibleItemCount: Int,
-            totalItemCount: Int
+        absListView: AbsListView,
+        firstVisibleItem: Int,
+        visibleItemCount: Int,
+        totalItemCount: Int
     ) {
         if (scope.isActive) {
             val event = AbsListViewScrollEvent(absListView, currentScrollState, firstVisibleItem,
@@ -145,5 +144,4 @@ private fun listener(
             emitter(event)
         }
     }
-
 }

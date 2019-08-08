@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.view
 
@@ -19,8 +33,6 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
 /**
  * Perform an action on hover events for [View].
  *
@@ -34,10 +46,10 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun View.hovers(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MotionEvent) -> Boolean = AlwaysTrue,
-        action: suspend (MotionEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MotionEvent) -> Boolean = AlwaysTrue,
+    action: suspend (MotionEvent) -> Unit
 ) {
 
     val events = scope.actor<MotionEvent>(Dispatchers.Main, capacity) {
@@ -60,9 +72,9 @@ fun View.hovers(
  * @param action An action to perform
  */
 suspend fun View.hovers(
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MotionEvent) -> Boolean = AlwaysTrue,
-        action: suspend (MotionEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MotionEvent) -> Boolean = AlwaysTrue,
+    action: suspend (MotionEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<MotionEvent>(Dispatchers.Main, capacity) {
@@ -72,9 +84,6 @@ suspend fun View.hovers(
     setOnHoverListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnHoverListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
 
 /**
  * Create a channel of hover events for [View].
@@ -89,17 +98,13 @@ suspend fun View.hovers(
  */
 @CheckResult
 fun View.hovers(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (MotionEvent) -> Boolean = AlwaysTrue
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (MotionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
     setOnHoverListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnHoverListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of hover events for [View].
@@ -118,15 +123,11 @@ fun View.hovers(
     awaitClose { setOnHoverListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        handled: (MotionEvent) -> Boolean,
-        emitter: (MotionEvent) -> Boolean
+    scope: CoroutineScope,
+    handled: (MotionEvent) -> Boolean,
+    emitter: (MotionEvent) -> Boolean
 ) = View.OnHoverListener { _, motionEvent ->
 
     if (scope.isActive) {
@@ -136,5 +137,4 @@ private fun listener(
         }
     }
     return@OnHoverListener false
-
 }

@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.widget
 
@@ -19,18 +33,13 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
 data class TextViewBeforeTextChangeEvent(
-        val view: TextView,
-        val text: CharSequence,
-        val start: Int,
-        val count: Int,
-        val after: Int
+    val view: TextView,
+    val text: CharSequence,
+    val start: Int,
+    val count: Int,
+    val after: Int
 )
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Perform an action before text change events for [TextView].
@@ -40,9 +49,9 @@ data class TextViewBeforeTextChangeEvent(
  * @param action An action to perform
  */
 fun TextView.beforeTextChangeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (TextViewBeforeTextChangeEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (TextViewBeforeTextChangeEvent) -> Unit
 ) {
 
     val events = scope.actor<TextViewBeforeTextChangeEvent>(Dispatchers.Main, capacity) {
@@ -62,8 +71,8 @@ fun TextView.beforeTextChangeEvents(
  * @param action An action to perform
  */
 suspend fun TextView.beforeTextChangeEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (TextViewBeforeTextChangeEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (TextViewBeforeTextChangeEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<TextViewBeforeTextChangeEvent>(Dispatchers.Main, capacity) {
@@ -77,10 +86,6 @@ suspend fun TextView.beforeTextChangeEvents(
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 /**
  * Create a channel of before text change events for [TextView].
  *
@@ -89,18 +94,14 @@ suspend fun TextView.beforeTextChangeEvents(
  */
 @CheckResult
 fun TextView.beforeTextChangeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewBeforeTextChangeEvent> = corbindReceiveChannel(capacity) {
     safeOffer(initialValue(this@beforeTextChangeEvents))
     val listener = listener(scope, this@beforeTextChangeEvents, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of before text change events for [TextView].
@@ -114,23 +115,15 @@ fun TextView.beforeTextChangeEvents(): Flow<TextViewBeforeTextChangeEvent> = cha
     awaitClose { removeTextChangedListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun initialValue(textView: TextView): TextViewBeforeTextChangeEvent =
         TextViewBeforeTextChangeEvent(textView, textView.editableText, 0, 0, 0)
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        textView: TextView,
-        emitter: (TextViewBeforeTextChangeEvent) -> Boolean
+    scope: CoroutineScope,
+    textView: TextView,
+    emitter: (TextViewBeforeTextChangeEvent) -> Boolean
 ) = object : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -139,7 +132,6 @@ private fun listener(
         }
     }
 
-    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {  }
-    override fun afterTextChanged(s: Editable) {  }
-
+    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) { }
+    override fun afterTextChanged(s: Editable) { }
 }

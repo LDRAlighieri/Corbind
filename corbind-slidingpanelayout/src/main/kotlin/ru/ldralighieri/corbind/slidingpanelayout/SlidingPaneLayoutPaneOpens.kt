@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.slidingpanelayout
 
@@ -18,9 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
-
 /**
  * Perform an action on the open state of the pane of [SlidingPaneLayout].
  *
@@ -32,9 +43,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun SlidingPaneLayout.panelOpens(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Boolean) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Boolean) -> Unit
 ) {
 
     val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
@@ -57,8 +68,8 @@ fun SlidingPaneLayout.panelOpens(
  * @param action An action to perform
  */
 suspend fun SlidingPaneLayout.panelOpens(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Boolean) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Boolean) -> Unit
 ) = coroutineScope {
 
     val events = actor<Boolean>(Dispatchers.Main, capacity) {
@@ -69,10 +80,6 @@ suspend fun SlidingPaneLayout.panelOpens(
     setPanelSlideListener(listener(this, events::offer))
     events.invokeOnClose { setPanelSlideListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a channel of the open state of the pane of [SlidingPaneLayout].
@@ -85,17 +92,13 @@ suspend fun SlidingPaneLayout.panelOpens(
  */
 @CheckResult
 fun SlidingPaneLayout.panelOpens(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     safeOffer(isOpen)
     setPanelSlideListener(listener(scope, ::safeOffer))
     invokeOnClose { setPanelSlideListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of the open state of the pane of [SlidingPaneLayout].
@@ -112,22 +115,17 @@ fun SlidingPaneLayout.panelOpens(): Flow<Boolean> = channelFlow {
     awaitClose { setPanelSlideListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (Boolean) -> Boolean
+    scope: CoroutineScope,
+    emitter: (Boolean) -> Boolean
 ) = object : SlidingPaneLayout.PanelSlideListener {
 
-    override fun onPanelSlide(panel: View, slideOffset: Float) {  }
+    override fun onPanelSlide(panel: View, slideOffset: Float) { }
     override fun onPanelOpened(panel: View) { onEvent(true) }
     override fun onPanelClosed(panel: View) { onEvent(false) }
 
     private fun onEvent(event: Boolean) {
         if (scope.isActive) { emitter(event) }
     }
-
 }

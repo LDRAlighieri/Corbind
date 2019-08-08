@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.view
 
@@ -17,9 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
-
 /**
  * Perform an action on [View] layout changes.
  *
@@ -28,9 +39,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun View.layoutChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend () -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend () -> Unit
 ) {
 
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
@@ -49,8 +60,8 @@ fun View.layoutChanges(
  * @param action An action to perform
  */
 suspend fun View.layoutChanges(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend () -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend () -> Unit
 ) = coroutineScope {
 
     val events = actor<Unit>(Dispatchers.Main, capacity) {
@@ -62,10 +73,6 @@ suspend fun View.layoutChanges(
     events.invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 /**
  * Create a channel which emits on [View] layout changes.
  *
@@ -74,17 +81,13 @@ suspend fun View.layoutChanges(
  */
 @CheckResult
 fun View.layoutChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::safeOffer)
     addOnLayoutChangeListener(listener)
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow which emits on [View] layout changes.
@@ -96,14 +99,10 @@ fun View.layoutChanges(): Flow<Unit> = channelFlow {
     awaitClose { removeOnLayoutChangeListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (Unit) -> Boolean
+    scope: CoroutineScope,
+    emitter: (Unit) -> Boolean
 ) = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
     if (scope.isActive) { emitter(Unit) }
 }

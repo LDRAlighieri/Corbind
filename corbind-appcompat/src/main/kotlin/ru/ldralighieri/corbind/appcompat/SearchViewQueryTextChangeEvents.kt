@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.appcompat
 
@@ -17,16 +31,11 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
 data class SearchViewQueryTextEvent(
-        val view: SearchView,
-        val queryText: CharSequence,
-        val isSubmitted: Boolean
+    val view: SearchView,
+    val queryText: CharSequence,
+    val isSubmitted: Boolean
 )
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Perform an action on [query text events][SearchViewQueryTextEvent] on [SearchView].
@@ -36,9 +45,9 @@ data class SearchViewQueryTextEvent(
  * @param action An action to perform
  */
 fun SearchView.queryTextChangeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (SearchViewQueryTextEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (SearchViewQueryTextEvent) -> Unit
 ) {
 
     val events = scope.actor<SearchViewQueryTextEvent>(Dispatchers.Main, capacity) {
@@ -58,8 +67,8 @@ fun SearchView.queryTextChangeEvents(
  * @param action An action to perform
  */
 suspend fun SearchView.queryTextChangeEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (SearchViewQueryTextEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (SearchViewQueryTextEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<SearchViewQueryTextEvent>(Dispatchers.Main, capacity) {
@@ -72,10 +81,6 @@ suspend fun SearchView.queryTextChangeEvents(
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 /**
  * Create a channel of [query text events][SearchViewQueryTextEvent] on [SearchView].
  *
@@ -84,17 +89,13 @@ suspend fun SearchView.queryTextChangeEvents(
  */
 @CheckResult
 fun SearchView.queryTextChangeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(capacity) {
     safeOffer(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))
     setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::safeOffer))
     invokeOnClose { setOnQueryTextListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of [query text events][SearchViewQueryTextEvent] on [SearchView].
@@ -108,15 +109,11 @@ fun SearchView.queryTextChangeEvents(): Flow<SearchViewQueryTextEvent> = channel
     awaitClose { setOnQueryTextListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        searchView: SearchView,
-        emitter: (SearchViewQueryTextEvent) -> Boolean
+    scope: CoroutineScope,
+    searchView: SearchView,
+    emitter: (SearchViewQueryTextEvent) -> Boolean
 ) = object : SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(s: String): Boolean {
@@ -134,5 +131,4 @@ private fun listener(
         }
         return false
     }
-
 }

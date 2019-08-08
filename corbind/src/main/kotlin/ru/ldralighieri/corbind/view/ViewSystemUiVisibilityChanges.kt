@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.view
 
@@ -17,9 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
-
 /**
  * Perform an action on a new system UI visibility for [View].
  *
@@ -31,9 +42,9 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun View.systemUiVisibilityChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Int) -> Unit
 ) {
 
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
@@ -54,8 +65,8 @@ fun View.systemUiVisibilityChanges(
  * @param action An action to perform
  */
 suspend fun View.systemUiVisibilityChanges(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (Int) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (Int) -> Unit
 ) = coroutineScope {
 
     val events = actor<Int>(Dispatchers.Main, capacity) {
@@ -65,10 +76,6 @@ suspend fun View.systemUiVisibilityChanges(
     setOnSystemUiVisibilityChangeListener(listener(this, events::offer))
     events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a channel of integers representing a new system UI visibility for [View].
@@ -81,16 +88,12 @@ suspend fun View.systemUiVisibilityChanges(
  */
 @CheckResult
 fun View.systemUiVisibilityChanges(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     setOnSystemUiVisibilityChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of integers representing a new system UI visibility for [View].
@@ -104,14 +107,10 @@ fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
     awaitClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (Int) -> Boolean
+    scope: CoroutineScope,
+    emitter: (Int) -> Boolean
 ) = View.OnSystemUiVisibilityChangeListener {
     if (scope.isActive) { emitter(it) }
 }

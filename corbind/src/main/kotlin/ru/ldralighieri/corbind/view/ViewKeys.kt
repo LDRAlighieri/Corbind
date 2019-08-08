@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.view
 
@@ -19,9 +33,6 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
-
 /**
  * Perform an action on key events for [View].
  *
@@ -35,10 +46,10 @@ import ru.ldralighieri.corbind.internal.safeOffer
  * @param action An action to perform
  */
 fun View.keys(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (KeyEvent) -> Boolean = AlwaysTrue,
-        action: suspend (KeyEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (KeyEvent) -> Boolean = AlwaysTrue,
+    action: suspend (KeyEvent) -> Unit
 ) {
 
     val events = scope.actor<KeyEvent>(Dispatchers.Main, capacity) {
@@ -61,9 +72,9 @@ fun View.keys(
  * @param action An action to perform
  */
 suspend fun View.keys(
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (KeyEvent) -> Boolean = AlwaysTrue,
-        action: suspend (KeyEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (KeyEvent) -> Boolean = AlwaysTrue,
+    action: suspend (KeyEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<KeyEvent>(Dispatchers.Main, capacity) {
@@ -73,10 +84,6 @@ suspend fun View.keys(
     setOnKeyListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnKeyListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a channel of key events for [View].
@@ -91,17 +98,13 @@ suspend fun View.keys(
  */
 @CheckResult
 fun View.keys(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (KeyEvent) -> Boolean = AlwaysTrue
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (KeyEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<KeyEvent> = corbindReceiveChannel(capacity) {
     setOnKeyListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnKeyListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of key events for [View].
@@ -120,15 +123,11 @@ fun View.keys(
     awaitClose { setOnKeyListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        handled: (KeyEvent) -> Boolean,
-        emitter: (KeyEvent) -> Boolean
+    scope: CoroutineScope,
+    handled: (KeyEvent) -> Boolean,
+    emitter: (KeyEvent) -> Boolean
 ) = View.OnKeyListener { _, _, keyEvent ->
 
     if (scope.isActive) {
@@ -138,5 +137,4 @@ private fun listener(
         }
     }
     return@OnKeyListener false
-
 }

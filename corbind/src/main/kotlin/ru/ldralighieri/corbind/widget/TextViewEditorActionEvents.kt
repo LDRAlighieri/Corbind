@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.widget
 
@@ -19,16 +33,11 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
 data class TextViewEditorActionEvent(
-        val view: TextView,
-        val actionId: Int,
-        val keyEvent: KeyEvent?
+    val view: TextView,
+    val actionId: Int,
+    val keyEvent: KeyEvent?
 )
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Perform an action on editor action events on [TextView].
@@ -40,10 +49,10 @@ data class TextViewEditorActionEvent(
  * @param action An action to perform
  */
 fun TextView.editorActionEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
-        action: suspend (TextViewEditorActionEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
+    action: suspend (TextViewEditorActionEvent) -> Unit
 ) {
 
     val events = scope.actor<TextViewEditorActionEvent>(Dispatchers.Main, capacity) {
@@ -63,9 +72,9 @@ fun TextView.editorActionEvents(
  * @param action An action to perform
  */
 suspend fun TextView.editorActionEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
-        action: suspend (TextViewEditorActionEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
+    action: suspend (TextViewEditorActionEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<TextViewEditorActionEvent>(Dispatchers.Main, capacity) {
@@ -75,10 +84,6 @@ suspend fun TextView.editorActionEvents(
     setOnEditorActionListener(listener(this, handled, events::offer))
     events.invokeOnClose { setOnEditorActionListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a channel of editor action events on [TextView].
@@ -90,17 +95,13 @@ suspend fun TextView.editorActionEvents(
  */
 @CheckResult
 fun TextView.editorActionEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel(capacity) {
     setOnEditorActionListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnEditorActionListener(null) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of editor action events on [TextView].
@@ -110,21 +111,17 @@ fun TextView.editorActionEvents(
  */
 @CheckResult
 fun TextView.editorActionEvents(
-        handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
+    handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
 ): Flow<TextViewEditorActionEvent> = channelFlow {
     setOnEditorActionListener(listener(this, handled, ::offer))
     awaitClose { setOnEditorActionListener(null) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        handled: (TextViewEditorActionEvent) -> Boolean,
-        emitter: (TextViewEditorActionEvent) -> Boolean
+    scope: CoroutineScope,
+    handled: (TextViewEditorActionEvent) -> Boolean,
+    emitter: (TextViewEditorActionEvent) -> Boolean
 ) = TextView.OnEditorActionListener { v, actionId, keyEvent ->
 
     if (scope.isActive) {
@@ -135,5 +132,4 @@ private fun listener(
         }
     }
     return@OnEditorActionListener false
-
 }

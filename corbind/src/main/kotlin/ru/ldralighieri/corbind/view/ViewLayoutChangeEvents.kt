@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.view
 
@@ -17,22 +31,17 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
 data class ViewLayoutChangeEvent(
-        val view: View,
-        val left: Int,
-        val top: Int,
-        val right: Int,
-        val bottom: Int,
-        val oldLeft: Int,
-        val oldTop: Int,
-        val oldRight: Int,
-        val oldBottom: Int
+    val view: View,
+    val left: Int,
+    val top: Int,
+    val right: Int,
+    val bottom: Int,
+    val oldLeft: Int,
+    val oldTop: Int,
+    val oldRight: Int,
+    val oldBottom: Int
 )
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Perform an action on layout-change events for [View].
@@ -42,9 +51,9 @@ data class ViewLayoutChangeEvent(
  * @param action An action to perform
  */
 fun View.layoutChangeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (ViewLayoutChangeEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (ViewLayoutChangeEvent) -> Unit
 ) {
 
     val events = scope.actor<ViewLayoutChangeEvent>(Dispatchers.Main, capacity) {
@@ -63,8 +72,8 @@ fun View.layoutChangeEvents(
  * @param action An action to perform
  */
 suspend fun View.layoutChangeEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (ViewLayoutChangeEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (ViewLayoutChangeEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<ViewLayoutChangeEvent>(Dispatchers.Main, capacity) {
@@ -76,9 +85,6 @@ suspend fun View.layoutChangeEvents(
     events.invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
 /**
  * Create a channel of layout-change events for [View].
  *
@@ -87,16 +93,13 @@ suspend fun View.layoutChangeEvents(
  */
 @CheckResult
 fun View.layoutChangeEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::safeOffer)
     addOnLayoutChangeListener(listener)
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of layout-change events for [View].
@@ -108,14 +111,10 @@ fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
     awaitClose { removeOnLayoutChangeListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        emitter: (ViewLayoutChangeEvent) -> Boolean
+    scope: CoroutineScope,
+    emitter: (ViewLayoutChangeEvent) -> Boolean
 ) = View.OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
 
     if (scope.isActive) {
@@ -123,5 +122,4 @@ private fun listener(
                 oldBottom)
         )
     }
-
 }

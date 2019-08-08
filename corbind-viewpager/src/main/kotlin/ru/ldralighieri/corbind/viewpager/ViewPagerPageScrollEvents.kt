@@ -1,4 +1,18 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
+/*
+ * Copyright 2019 Vladimir Raupov
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package ru.ldralighieri.corbind.viewpager
 
@@ -17,17 +31,12 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.safeOffer
 
-// -----------------------------------------------------------------------------------------------
-
 data class ViewPagerPageScrollEvent(
-        val viewPager: ViewPager,
-        val position: Int,
-        val positionOffset: Float,
-        val positionOffsetPixels: Int
+    val viewPager: ViewPager,
+    val position: Int,
+    val positionOffset: Float,
+    val positionOffsetPixels: Int
 )
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Perform an action on page scroll events on [ViewPager].
@@ -37,9 +46,9 @@ data class ViewPagerPageScrollEvent(
  * @param action An action to perform
  */
 fun ViewPager.pageScrollEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (ViewPagerPageScrollEvent) -> Unit
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (ViewPagerPageScrollEvent) -> Unit
 ) {
 
     val events = scope.actor<ViewPagerPageScrollEvent>(Dispatchers.Main, capacity) {
@@ -58,8 +67,8 @@ fun ViewPager.pageScrollEvents(
  * @param action An action to perform
  */
 suspend fun ViewPager.pageScrollEvents(
-        capacity: Int = Channel.RENDEZVOUS,
-        action: suspend (ViewPagerPageScrollEvent) -> Unit
+    capacity: Int = Channel.RENDEZVOUS,
+    action: suspend (ViewPagerPageScrollEvent) -> Unit
 ) = coroutineScope {
 
     val events = actor<ViewPagerPageScrollEvent>(Dispatchers.Main, capacity) {
@@ -72,10 +81,6 @@ suspend fun ViewPager.pageScrollEvents(
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 /**
  * Create a channel of page scroll events on [ViewPager].
  *
@@ -84,17 +89,13 @@ suspend fun ViewPager.pageScrollEvents(
  */
 @CheckResult
 fun ViewPager.pageScrollEvents(
-        scope: CoroutineScope,
-        capacity: Int = Channel.RENDEZVOUS
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewPagerPageScrollEvent> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, this@pageScrollEvents, ::safeOffer)
     addOnPageChangeListener(listener)
     invokeOnClose { removeOnPageChangeListener(listener) }
 }
-
-
-// -----------------------------------------------------------------------------------------------
-
 
 /**
  * Create a flow of page scroll events on [ViewPager].
@@ -106,15 +107,11 @@ fun ViewPager.pageScrollEvents(): Flow<ViewPagerPageScrollEvent> = channelFlow {
     awaitClose { removeOnPageChangeListener(listener) }
 }
 
-
-// -----------------------------------------------------------------------------------------------
-
-
 @CheckResult
 private fun listener(
-        scope: CoroutineScope,
-        viewPager: ViewPager,
-        emitter: (ViewPagerPageScrollEvent) -> Boolean
+    scope: CoroutineScope,
+    viewPager: ViewPager,
+    emitter: (ViewPagerPageScrollEvent) -> Boolean
 ) = object : ViewPager.OnPageChangeListener {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -125,7 +122,6 @@ private fun listener(
         }
     }
 
-    override fun onPageSelected(position: Int) {  }
-    override fun onPageScrollStateChanged(state: Int) {  }
-
+    override fun onPageSelected(position: Int) { }
+    override fun onPageScrollStateChanged(state: Int) { }
 }
