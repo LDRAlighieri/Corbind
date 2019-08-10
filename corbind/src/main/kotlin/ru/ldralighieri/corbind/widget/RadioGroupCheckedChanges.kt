@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.internal.offerElement
 
 /**
  * Perform an action on checked view ID changes in [RadioGroup].
@@ -85,7 +85,7 @@ fun RadioGroup.checkedChanges(
     scope: CoroutineScope
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     offer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, ::safeOffer))
+    setOnCheckedChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 

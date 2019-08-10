@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.internal.offerElement
 
 data class AdapterViewItemLongClickEvent(
     val view: AdapterView<*>,
@@ -101,7 +101,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel(capacity) {
-    onItemLongClickListener = listener(scope, handled, ::safeOffer)
+    onItemLongClickListener = listener(scope, handled, ::offerElement)
     invokeOnClose { onItemLongClickListener = null }
 }
 

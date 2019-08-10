@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.internal.offerElement
 
 data class RecyclerViewFlingEvent(val view: RecyclerView, val velocityX: Int, val velocityY: Int)
 
@@ -85,7 +85,7 @@ fun RecyclerView.flingEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel(capacity) {
-    onFlingListener = listener(scope, this@flingEvents, ::safeOffer)
+    onFlingListener = listener(scope, this@flingEvents, ::offerElement)
     invokeOnClose { onFlingListener = null }
 }
 
