@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.internal.offerElement
 
 /**
  * Perform an action on [PopupMenu] dismiss events.
@@ -91,7 +91,7 @@ fun PopupMenu.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnDismissListener(listener(scope, ::safeOffer))
+    setOnDismissListener(listener(scope, ::offerElement))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 

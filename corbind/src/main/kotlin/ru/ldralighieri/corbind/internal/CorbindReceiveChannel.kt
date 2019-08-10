@@ -28,9 +28,6 @@ inline fun <T> corbindReceiveChannel(
     return channel
 }
 
-fun <T> Channel<T>.safeOffer(element: T): Boolean {
-    return if (!isClosedForSend) {
-        offer(element)
-        true
-    } else { false }
+fun <T> Channel<T>.offerElement(element: T): Boolean {
+    return if (!isClosedForSend) { offer(element) } else { false }
 }

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.internal.offerElement
 
 sealed class SeekBarChangeEvent {
     abstract val view: SeekBar
@@ -103,7 +103,7 @@ private fun SeekBar.changeEvents(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
     offer(initialValue(this@changeEvents))
-    setOnSeekBarChangeListener(listener(scope, ::safeOffer))
+    setOnSeekBarChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 

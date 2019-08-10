@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.internal.offerElement
 
 /**
  * Perform an action on [DragEvent] for [View].
@@ -102,7 +102,7 @@ fun View.drags(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (DragEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<DragEvent> = corbindReceiveChannel(capacity) {
-    setOnDragListener(listener(scope, handled, ::safeOffer))
+    setOnDragListener(listener(scope, handled, ::offerElement))
     invokeOnClose { setOnDragListener(null) }
 }
 

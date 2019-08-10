@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.internal.offerElement
 
 data class TextViewEditorActionEvent(
     val view: TextView,
@@ -99,7 +99,7 @@ fun TextView.editorActionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel(capacity) {
-    setOnEditorActionListener(listener(scope, handled, ::safeOffer))
+    setOnEditorActionListener(listener(scope, handled, ::offerElement))
     invokeOnClose { setOnEditorActionListener(null) }
 }
 

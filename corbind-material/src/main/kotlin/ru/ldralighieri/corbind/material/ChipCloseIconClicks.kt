@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.internal.offerElement
 
 /**
  * Perform an action on [Chip] close icon click events.
@@ -92,7 +92,7 @@ fun Chip.clicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnCloseIconClickListener(listener(scope, ::safeOffer))
+    setOnCloseIconClickListener(listener(scope, ::offerElement))
     invokeOnClose { setOnClickListener(null) }
 }
 
