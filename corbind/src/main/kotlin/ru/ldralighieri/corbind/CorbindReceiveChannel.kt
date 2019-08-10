@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package ru.ldralighieri.corbind.internal
+package ru.ldralighieri.corbind
 
+import androidx.annotation.RestrictTo
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 inline fun <T> corbindReceiveChannel(
     capacity: Int = Channel.RENDEZVOUS,
     block: Channel<T>.() -> Unit
@@ -28,6 +30,7 @@ inline fun <T> corbindReceiveChannel(
     return channel
 }
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 fun <T> Channel<T>.offerElement(element: T): Boolean {
     return if (!isClosedForSend) { offer(element) } else { false }
 }
