@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.offerElement
 
 /**
  * Perform an action on refresh events on [SwipeRefreshLayout].
@@ -82,7 +82,7 @@ fun SwipeRefreshLayout.refreshes(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnRefreshListener(listener(scope, ::safeOffer))
+    setOnRefreshListener(listener(scope, ::offerElement))
     invokeOnClose { setOnRefreshListener(null) }
 }
 

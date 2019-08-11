@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.offerElement
 
 sealed class SearchBarSearchQueryEvent {
     abstract val view: SearchBar
@@ -104,7 +104,7 @@ fun SearchBar.searchQueryChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel(capacity) {
-    setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::safeOffer))
+    setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::offerElement))
     invokeOnClose { setSearchBarListener(null) }
 }
 

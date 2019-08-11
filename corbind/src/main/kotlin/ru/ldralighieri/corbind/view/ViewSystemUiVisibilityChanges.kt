@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.offerElement
 
 /**
  * Perform an action on a new system UI visibility for [View].
@@ -91,7 +91,7 @@ fun View.systemUiVisibilityChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    setOnSystemUiVisibilityChangeListener(listener(scope, ::safeOffer))
+    setOnSystemUiVisibilityChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 

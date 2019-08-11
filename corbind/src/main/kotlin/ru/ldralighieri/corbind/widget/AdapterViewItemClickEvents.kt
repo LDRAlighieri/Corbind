@@ -30,8 +30,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.offerElement
 
 data class AdapterViewItemClickEvent(
     val view: AdapterView<*>,
@@ -91,7 +91,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(capacity) {
-    onItemClickListener = listener(scope, ::safeOffer)
+    onItemClickListener = listener(scope, ::offerElement)
     invokeOnClose { onItemClickListener = null }
 }
 

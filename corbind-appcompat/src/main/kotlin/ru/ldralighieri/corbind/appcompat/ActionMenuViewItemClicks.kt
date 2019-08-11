@@ -29,8 +29,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.offerElement
 
 /**
  * Perform an action on clicked menu item in [ActionMenuView].
@@ -83,7 +83,7 @@ fun ActionMenuView.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setOnMenuItemClickListener(listener(scope, ::safeOffer))
+    setOnMenuItemClickListener(listener(scope, ::offerElement))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 

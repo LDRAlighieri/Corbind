@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.safeOffer
+import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.offerElement
 
 /**
  * Perform an action on character sequences for query text changes on [SearchView].
@@ -85,8 +85,8 @@ fun SearchView.queryTextChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
-    safeOffer(query)
-    setOnQueryTextListener(listener(scope, ::safeOffer))
+    offerElement(query)
+    setOnQueryTextListener(listener(scope, ::offerElement))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
