@@ -113,6 +113,9 @@ allprojects {
 
 subprojects {
 
+    group = GROUP
+    version = VERSION_NAME
+
     apply plugin: 'com.diffplug.gradle.spotless'
     spotless {
         kotlin {
