@@ -48,3 +48,5 @@ dependencies {
 
     api deps.androidx.core
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
