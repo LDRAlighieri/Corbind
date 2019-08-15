@@ -88,7 +88,7 @@ suspend fun Chip.closeIconClicks(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun Chip.clicks(
+fun Chip.closeIconClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
@@ -103,7 +103,7 @@ fun Chip.clicks(
  * flow can be used for a view at a time.
  */
 @CheckResult
-fun Chip.clicks(): Flow<Unit> = channelFlow {
+fun Chip.closeIconClicks(): Flow<Unit> = channelFlow {
     setOnCloseIconClickListener(listener(this, ::offer))
     awaitClose { setOnClickListener(null) }
 }

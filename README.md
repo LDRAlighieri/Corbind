@@ -35,9 +35,45 @@ Google 'material' library bindings:
 implementation 'ru.ldralighieri.corbind:corbind-material:1.0.0-RC'
 ```
 
+
+## How to use it?
+
+Simple use case with cold [Flow][flow] will look something like this:
+```kotlin
+findViewById<EditText>(R.id.et_name)
+    .textChanges() // Flow<CharSequence>
+    .onEach { /* handle text change events */ }
+    .catch { /* optional, exception handler */ }
+    .launchIn(scope = this)
+```
+
+If you prefer hot [ReceiveChannel][channel], then the use case will transform in something like this:
+```kotlin
+val slides = findViewById<ViewPager>(R.id.vp_slides)
+launch {
+    slides
+        .pageSelections(scope = this) // ReceiveChannel<Int>
+        .consumeEach {
+            /* handle ViewPager events */
+        }
+}
+```
+
+And if you just need to perform an action, the easiest way will be:
+```kotlin
+val confirm = findViewById<AppCompatButton>(R.id.bt_confirm)
+launch {
+    confirm
+        .clicks {
+            /* perform an action on View click events */
+        }
+}
+```
+
+
 ## Missed or forgot something?
 
-If I forgot something or you have any ideas what can be added or corrected, please create an issue or contact me directly. I am interested in making this library better.
+If I forgot something or you have any ideas what can be added or corrected, please create an issue or contact me directly.
 
 
 ## Special thanks to
@@ -62,6 +98,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
 
 [jw]: https://github.com/JakeWharton
 [rx]: https://github.com/JakeWharton/RxBinding
