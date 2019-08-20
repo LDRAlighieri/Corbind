@@ -39,5 +39,4 @@ abstract class CorbindActivity : AppCompatActivity(), CoroutineScope {
         job.cancel()
         super.onDestroy()
     }
-
 }

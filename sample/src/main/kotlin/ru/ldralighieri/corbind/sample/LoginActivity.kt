@@ -66,8 +66,6 @@ class LoginActivity : CorbindActivity() {
             .onEach { bt_login.isEnabled = it }
             .launchIn(this)
 
-
-
         flowOf(
             bt_login.clicks(),
 
@@ -80,7 +78,6 @@ class LoginActivity : CorbindActivity() {
             .onEach { Toast.makeText(this, R.string.login_success_message, Toast.LENGTH_SHORT).show() }
             .launchIn(this)
 
-
         swipe.refreshes()
             .onEach {
                 et_email.text?.clear()
@@ -90,7 +87,5 @@ class LoginActivity : CorbindActivity() {
                 Toast.makeText(this, R.string.login_swipe_message, Toast.LENGTH_SHORT).show()
             }
             .launchIn(this)
-
     }
-
 }

@@ -105,6 +105,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="flagNavigateNext"
+                    android:inputType="textEmailAddress"
                     android:text="@string/login_example_email"
                     />
 
@@ -127,6 +128,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
+                    android:inputType="textPassword"
                     android:text="@string/login_example_password"
                     />
 
