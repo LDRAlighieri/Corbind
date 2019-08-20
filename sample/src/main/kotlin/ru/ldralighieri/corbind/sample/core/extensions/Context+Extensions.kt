@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-rootProject.name = 'Corbind'
+package ru.ldralighieri.corbind.sample.core.extensions
 
-include ':corbind', ':sample'
-include ':corbind-appcompat'
-include ':corbind-core'
-include ':corbind-drawerlayout'
-include ':corbind-leanback'
-include ':corbind-material'
-include ':corbind-recyclerview'
-include ':corbind-slidingpanelayout'
-include ':corbind-swiperefreshlayout'
-include ':corbind-viewpager'
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
+
+val Context.inputMethodManager: InputMethodManager
+    get() = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

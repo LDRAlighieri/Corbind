@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-rootProject.name = 'Corbind'
+package ru.ldralighieri.corbind.sample.core.extensions
 
-include ':corbind', ':sample'
-include ':corbind-appcompat'
-include ':corbind-core'
-include ':corbind-drawerlayout'
-include ':corbind-leanback'
-include ':corbind-material'
-include ':corbind-recyclerview'
-include ':corbind-slidingpanelayout'
-include ':corbind-swiperefreshlayout'
-include ':corbind-viewpager'
+import android.app.Activity
+import android.view.inputmethod.InputMethodManager
+
+fun Activity.hideSoftInput() {
+    val imm: InputMethodManager? = inputMethodManager
+    val currentFocus = currentFocus
+    if (currentFocus != null && imm != null) {
+        imm.hideSoftInputFromWindow(currentFocus.windowToken, 0)
+    }
+}
