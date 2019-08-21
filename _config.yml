@@ -11,12 +11,12 @@ description: Coroutine binding APIs for Android UI widgets from the platform and
 # *** If you're not sure what this mean, then leave this section as it is. Only modify the url and baseurl if you know what you're doing!***
 
 # If you are building a simple GitHub user page (https://username.github.io) then use these settings:
-url: "https://ldralighieri.github.io/corbind"
-baseurl: "/corbind"
+# url: "https://ldralighieri.github.io"
+# baseurl: ""
 
 # If you are building a GitHub project page then use these settings:
-#url: "http://username.github.io/projectname"
-#baseurl: "/projectname"
+url: "https://ldralighieri.github.io/corbind"
+baseurl: "/corbind"
 
 # --- Navigation bar options --- #
 
