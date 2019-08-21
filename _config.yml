@@ -15,8 +15,8 @@ description: Coroutine binding APIs for Android UI widgets from the platform and
 # baseurl: ""
 
 # If you are building a GitHub project page then use these settings:
-url: "https://ldralighieri.github.io/corbind"
-baseurl: "/corbind"
+url: "https://ldralighieri.github.io/Corbind"
+baseurl: "/Corbind"
 
 # --- Navigation bar options --- #
 
@@ -85,14 +85,14 @@ social-network-links:
 
 # Select which share links to show in posts
 share-links-active:
-  twitter: false
-  facebook: false
-  linkedin: false
-  google: false
+#  twitter: true
+#  facebook: true
+#  linkedin: true
+#  google: true
 
 # How to display the link to the website in the footer
 # Remove this if you don't want a link in the footer
-url-pretty: "LDRAlighieri.github.io"  # eg. "deanattali.com/beautiful-jekyll"
+url-pretty: "ldralighieri.github.io"  # eg. "deanattali.com/beautiful-jekyll"
 
 # --- Web Statistics Section --- #
 
