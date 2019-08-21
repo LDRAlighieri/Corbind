@@ -16,7 +16,7 @@
 
 rootProject.name = 'Corbind'
 
-include ':corbind', ':sample'
+include ':corbind'
 include ':corbind-appcompat'
 include ':corbind-core'
 include ':corbind-drawerlayout'
@@ -26,3 +26,5 @@ include ':corbind-recyclerview'
 include ':corbind-slidingpanelayout'
 include ':corbind-swiperefreshlayout'
 include ':corbind-viewpager'
+
+include ':sample'

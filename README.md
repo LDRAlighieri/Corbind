@@ -4,7 +4,7 @@
 
 # Corbind
 
-Kotlin Coroutine binding APIs for Android UI widgets from the platform and support libraries. **Supports Flow, ReceiveChannel and Actor**.
+Kotlin Coroutines binding APIs for Android UI widgets from the platform and support libraries. **Supports Flow, ReceiveChannel and Actor**.
 
 
 ## Description
