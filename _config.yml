@@ -1,18 +1,18 @@
 # --- General options --- #
 
 # Name of website
-title: LDRAlighieri Lair
+title: Corbind
 
 # Short description of your site
-description: Vladimir Raupov personal site about Android and iOS development.
+description: Coroutine binding APIs for Android UI widgets from the platform and support libraries.
 
 # --- Local development options ---
 # If your website is hosted locally rather than on GitHub, then you need to uncomment the next two parameters to set the url and baseurl
 # *** If you're not sure what this mean, then leave this section as it is. Only modify the url and baseurl if you know what you're doing!***
 
 # If you are building a simple GitHub user page (https://username.github.io) then use these settings:
-url: "https://ldralighieri.github.io"
-baseurl: ""
+url: "https://ldralighieri.github.io/corbind"
+baseurl: "/corbind"
 
 # If you are building a GitHub project page then use these settings:
 #url: "http://username.github.io/projectname"
@@ -22,9 +22,7 @@ baseurl: ""
 
 # List of links in the navigation bar
 navbar-links:
-  Home: ""
-  Projects:
-    - Corbind: "https://github.com/LDRAlighieri/Corbind/"
+  Home: "https://ldralighieri.github.io"
 
 # Image to show in the navigation bar - image must be a square (width = height)
 # Remove this parameter if you don't want an image in the navbar
@@ -67,7 +65,7 @@ author:
 # You can reorder the items to define the link order.
 # If you want to add a new link that isn't here, you'll need to also edit the file _data/SocialNetworks.yml
 social-network-links:
-  github: ldralighieri
+  github: ldralighieri/corbind
   linkedin: ldralighieri
   email: "GLDRAlighieri@gmail.com"
   twitter: ldralighieri
