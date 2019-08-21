@@ -1,4 +1,0 @@
-#Tue Aug 20 21:50:14 VLAT 2019
-base.0=/Users/dante/work/android/Corbind/sample/build/intermediates/transforms/dexMerger/debug/0
-path.0=classes.dex
-renamed.0=classes.dex
