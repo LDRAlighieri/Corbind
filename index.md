@@ -1,8 +1,9 @@
 ---
 layout: page
 title: Corbind
-subtitle: Coroutine binding APIs for Android UI widgets from the platform and support libraries.
-meta-description: Coroutine binding APIs for Android UI widgets from the platform and support libraries.
+subtitle: Coroutines binding APIs for Android UI widgets from the platform and support libraries.
+description: Coroutines binding APIs for Android UI widgets from the platform and support libraries.
+tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding]
 ---
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
@@ -11,7 +12,7 @@ meta-description: Coroutine binding APIs for Android UI widgets from the platfor
 ![GitHub stars](https://img.shields.io/github/stars/LDRAlighieri/Corbind?style=social)
 
 
-Kotlin Coroutine binding APIs for Android UI widgets from the platform and support libraries. **Supports Flow, ReceiveChannel and Actor**.
+Kotlin Coroutines binding APIs for Android UI widgets from the platform and support libraries. **Supports Flow, ReceiveChannel and Actor**.
 
 
 ## Description
