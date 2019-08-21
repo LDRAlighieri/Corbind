@@ -2,8 +2,8 @@
 layout: page
 title: Corbind
 subtitle: Coroutine binding APIs for Android UI widgets from the platform and support libraries.
-<!-- gh-repo: ldralighieri/corbind -->
-<!-- gh-badge: star, watch -->
+gh-repo: ldralighieri/corbind
+gh-badge: star, watch
 meta-description: Coroutine binding APIs for Android UI widgets from the platform and support libraries.
 ---
 
