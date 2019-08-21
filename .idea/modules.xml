@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Corbind.iml" filepath="$PROJECT_DIR$/Corbind.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind/corbind.iml" filepath="$PROJECT_DIR$/corbind/corbind.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind-appcompat/corbind-appcompat.iml" filepath="$PROJECT_DIR$/corbind-appcompat/corbind-appcompat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind-core/corbind-core.iml" filepath="$PROJECT_DIR$/corbind-core/corbind-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind-drawerlayout/corbind-drawerlayout.iml" filepath="$PROJECT_DIR$/corbind-drawerlayout/corbind-drawerlayout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind-leanback/corbind-leanback.iml" filepath="$PROJECT_DIR$/corbind-leanback/corbind-leanback.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind-material/corbind-material.iml" filepath="$PROJECT_DIR$/corbind-material/corbind-material.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind-recyclerview/corbind-recyclerview.iml" filepath="$PROJECT_DIR$/corbind-recyclerview/corbind-recyclerview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind-slidingpanelayout/corbind-slidingpanelayout.iml" filepath="$PROJECT_DIR$/corbind-slidingpanelayout/corbind-slidingpanelayout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind-swiperefreshlayout/corbind-swiperefreshlayout.iml" filepath="$PROJECT_DIR$/corbind-swiperefreshlayout/corbind-swiperefreshlayout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/corbind-viewpager/corbind-viewpager.iml" filepath="$PROJECT_DIR$/corbind-viewpager/corbind-viewpager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
+    </modules>
+  </component>
+</project>

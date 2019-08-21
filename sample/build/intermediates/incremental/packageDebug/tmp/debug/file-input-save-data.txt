@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Tue Aug 20 21:50:14 VLAT 2019
+0.baseType=DIRECTORY
+0.base=/Users/dante/work/android/Corbind/sample/build/intermediates/transforms/dexMerger/debug/0
+0.path=classes.dex
+0.set=DEX
+count=1

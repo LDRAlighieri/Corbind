@@ -1,0 +1,171 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:1-40:12
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:1-40:12
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:1-40:12
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:1-40:12
+MERGED from [:corbind-swiperefreshlayout] /Users/dante/work/android/Corbind/corbind-swiperefreshlayout/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:1-22:12
+MERGED from [:corbind] /Users/dante/work/android/Corbind/corbind/build/intermediates/library_manifest/debug/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.0-beta2] /Users/dante/.gradle/caches/transforms-2/files-2.1/967ba2958fee87f613072e4e3cc741c6/AndroidManifest.xml:2:1-11:12
+MERGED from [com.google.android.material:material:1.1.0-alpha09] /Users/dante/.gradle/caches/transforms-2/files-2.1/590c4be0962c8068d9ce89798aed57e3/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/52c4f266020dc7c064101e60da7a6093/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/b590a4239abafbbff87b514cef91c5f3/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0-beta01] /Users/dante/.gradle/caches/transforms-2/files-2.1/7e23dc26859dae54e2464097556539e9/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.transition:transition:1.0.1] /Users/dante/.gradle/caches/transforms-2/files-2.1/b354baa1f49a95d503d6fa6ce6e7fd7d/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/90dba9fc4631cca329bc039bae266106/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/8e8cb3945b54b851f31bb1149b98db37/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/89f5c0bf5de151c65097ec889fa1d7db/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0-beta02] /Users/dante/.gradle/caches/transforms-2/files-2.1/9843db5d5631ee5510281437a183c85c/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.fragment:fragment:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/fde08594586dae739d0e556320e47642/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/ee8a70284183741bef43a09cffe06074/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0-beta01] /Users/dante/.gradle/caches/transforms-2/files-2.1/064e93b9b77db1918e557a302bf3ce07/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/03aff68d080ef9dd4138f52d3fb2a670/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/43f2b5592f3e89db9c12197996830dcb/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/5aa4a8e7da7f6a1d218106eeab956752/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity:1.0.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/424f99e8b88f3cad46ce0dca14de5c8d/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.1.0-rc02] /Users/dante/.gradle/caches/transforms-2/files-2.1/ff828856f68cf5631a403cc28b3b10f7/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/c299d8a10d0fb11188c152f338a27dac/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/88a1c78fe9e5153a36f0c279cf2d7733/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/75873b6a3a6ac559b6089eb7fc2fa46b/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/f7797d1aceb9282a45f64dc156d63409/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/8f7a0f3f4e4c41858be9afaccfa2f741/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/2ac03736ac3b564a39352a7609caf5c4/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.0.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/d1aba9d35f1905ff4cda6f1706e8a151/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/0d64918b928280d7ace8709020947ded/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/d93f78d7eb8827b1d2423390e2d57660/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/abd4137ecb1343349b5913d8efa7a9a8/AndroidManifest.xml:17:1-22:12
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:1-40:12
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:1-40:12
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:1-40:12
+	package
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:19:11-51
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:1-40:12
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:18:11-57
+	android:versionCode
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:1-40:12
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:17:11-69
+application
+ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:21:5-38:19
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.0-beta2] /Users/dante/.gradle/caches/transforms-2/files-2.1/967ba2958fee87f613072e4e3cc741c6/AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.0-beta2] /Users/dante/.gradle/caches/transforms-2/files-2.1/967ba2958fee87f613072e4e3cc741c6/AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.material:material:1.1.0-alpha09] /Users/dante/.gradle/caches/transforms-2/files-2.1/590c4be0962c8068d9ce89798aed57e3/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.1.0-alpha09] /Users/dante/.gradle/caches/transforms-2/files-2.1/590c4be0962c8068d9ce89798aed57e3/AndroidManifest.xml:22:5-20
+MERGED from [androidx.core:core:1.1.0-rc02] /Users/dante/.gradle/caches/transforms-2/files-2.1/ff828856f68cf5631a403cc28b3b10f7/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.1.0-rc02] /Users/dante/.gradle/caches/transforms-2/files-2.1/ff828856f68cf5631a403cc28b3b10f7/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/f7797d1aceb9282a45f64dc156d63409/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/f7797d1aceb9282a45f64dc156d63409/AndroidManifest.xml:24:5-25:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.1.0-rc02] /Users/dante/.gradle/caches/transforms-2/files-2.1/ff828856f68cf5631a403cc28b3b10f7/AndroidManifest.xml:24:18-86
+	android:supportsRtl
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:26:9-35
+	android:label
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:23:9-41
+	android:fullBackupContent
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:29:9-42
+	tools:ignore
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:28:9-48
+	android:roundIcon
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:25:9-54
+	android:icon
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:24:9-43
+	android:allowBackup
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:22:9-36
+	android:theme
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:27:9-45
+activity#ru.ldralighieri.corbind.sample.LoginActivity
+ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:31:9-36:20
+	android:name
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:31:19-48
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:32:13-35:29
+action#android.intent.action.MAIN
+ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:33:17-69
+	android:name
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:33:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:34:17-77
+	android:name
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml:34:27-74
+uses-sdk
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+MERGED from [:corbind-swiperefreshlayout] /Users/dante/work/android/Corbind/corbind-swiperefreshlayout/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:5-44
+MERGED from [:corbind-swiperefreshlayout] /Users/dante/work/android/Corbind/corbind-swiperefreshlayout/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:5-44
+MERGED from [:corbind] /Users/dante/work/android/Corbind/corbind/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:5-44
+MERGED from [:corbind] /Users/dante/work/android/Corbind/corbind/build/intermediates/library_manifest/debug/AndroidManifest.xml:20:5-44
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.0-beta2] /Users/dante/.gradle/caches/transforms-2/files-2.1/967ba2958fee87f613072e4e3cc741c6/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.0.0-beta2] /Users/dante/.gradle/caches/transforms-2/files-2.1/967ba2958fee87f613072e4e3cc741c6/AndroidManifest.xml:5:5-7:41
+MERGED from [com.google.android.material:material:1.1.0-alpha09] /Users/dante/.gradle/caches/transforms-2/files-2.1/590c4be0962c8068d9ce89798aed57e3/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.1.0-alpha09] /Users/dante/.gradle/caches/transforms-2/files-2.1/590c4be0962c8068d9ce89798aed57e3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/52c4f266020dc7c064101e60da7a6093/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/52c4f266020dc7c064101e60da7a6093/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/b590a4239abafbbff87b514cef91c5f3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/b590a4239abafbbff87b514cef91c5f3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0-beta01] /Users/dante/.gradle/caches/transforms-2/files-2.1/7e23dc26859dae54e2464097556539e9/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0-beta01] /Users/dante/.gradle/caches/transforms-2/files-2.1/7e23dc26859dae54e2464097556539e9/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.0.1] /Users/dante/.gradle/caches/transforms-2/files-2.1/b354baa1f49a95d503d6fa6ce6e7fd7d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.transition:transition:1.0.1] /Users/dante/.gradle/caches/transforms-2/files-2.1/b354baa1f49a95d503d6fa6ce6e7fd7d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/90dba9fc4631cca329bc039bae266106/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/90dba9fc4631cca329bc039bae266106/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/8e8cb3945b54b851f31bb1149b98db37/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/8e8cb3945b54b851f31bb1149b98db37/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/89f5c0bf5de151c65097ec889fa1d7db/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/89f5c0bf5de151c65097ec889fa1d7db/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0-beta02] /Users/dante/.gradle/caches/transforms-2/files-2.1/9843db5d5631ee5510281437a183c85c/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0-beta02] /Users/dante/.gradle/caches/transforms-2/files-2.1/9843db5d5631ee5510281437a183c85c/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/fde08594586dae739d0e556320e47642/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/fde08594586dae739d0e556320e47642/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/ee8a70284183741bef43a09cffe06074/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/ee8a70284183741bef43a09cffe06074/AndroidManifest.xml:20:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.1.0-beta01] /Users/dante/.gradle/caches/transforms-2/files-2.1/064e93b9b77db1918e557a302bf3ce07/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0-beta01] /Users/dante/.gradle/caches/transforms-2/files-2.1/064e93b9b77db1918e557a302bf3ce07/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/03aff68d080ef9dd4138f52d3fb2a670/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/03aff68d080ef9dd4138f52d3fb2a670/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/43f2b5592f3e89db9c12197996830dcb/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/43f2b5592f3e89db9c12197996830dcb/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/5aa4a8e7da7f6a1d218106eeab956752/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/5aa4a8e7da7f6a1d218106eeab956752/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.0.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/424f99e8b88f3cad46ce0dca14de5c8d/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.0.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/424f99e8b88f3cad46ce0dca14de5c8d/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.1.0-rc02] /Users/dante/.gradle/caches/transforms-2/files-2.1/ff828856f68cf5631a403cc28b3b10f7/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.1.0-rc02] /Users/dante/.gradle/caches/transforms-2/files-2.1/ff828856f68cf5631a403cc28b3b10f7/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/c299d8a10d0fb11188c152f338a27dac/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/c299d8a10d0fb11188c152f338a27dac/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/88a1c78fe9e5153a36f0c279cf2d7733/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/88a1c78fe9e5153a36f0c279cf2d7733/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/75873b6a3a6ac559b6089eb7fc2fa46b/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/75873b6a3a6ac559b6089eb7fc2fa46b/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/f7797d1aceb9282a45f64dc156d63409/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/f7797d1aceb9282a45f64dc156d63409/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/8f7a0f3f4e4c41858be9afaccfa2f741/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/8f7a0f3f4e4c41858be9afaccfa2f741/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/2ac03736ac3b564a39352a7609caf5c4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/2ac03736ac3b564a39352a7609caf5c4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.0.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/d1aba9d35f1905ff4cda6f1706e8a151/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0-rc01] /Users/dante/.gradle/caches/transforms-2/files-2.1/d1aba9d35f1905ff4cda6f1706e8a151/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/0d64918b928280d7ace8709020947ded/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/0d64918b928280d7ace8709020947ded/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/d93f78d7eb8827b1d2423390e2d57660/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/d93f78d7eb8827b1d2423390e2d57660/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/abd4137ecb1343349b5913d8efa7a9a8/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/dante/.gradle/caches/transforms-2/files-2.1/abd4137ecb1343349b5913d8efa7a9a8/AndroidManifest.xml:20:5-44
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+		ADDED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml
+		INJECTED from /Users/dante/work/android/Corbind/sample/src/main/AndroidManifest.xml

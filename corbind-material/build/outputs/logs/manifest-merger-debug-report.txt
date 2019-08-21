@@ -1,0 +1,19 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml:17:1-56
+INJECTED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml:17:1-56
+INJECTED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml:17:1-56
+	package
+		ADDED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml:17:11-53
+		INJECTED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml
+		INJECTED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml:17:1-56
+uses-sdk
+INJECTED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml
+INJECTED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml
+		ADDED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml
+		INJECTED from /Users/dante/work/android/Corbind/corbind-material/src/main/AndroidManifest.xml

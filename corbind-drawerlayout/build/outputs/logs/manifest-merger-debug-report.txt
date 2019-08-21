@@ -1,0 +1,19 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml:17:1-60
+INJECTED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml:17:1-60
+INJECTED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml:17:1-60
+	package
+		ADDED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml:17:11-57
+		INJECTED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml
+		INJECTED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml:17:1-60
+uses-sdk
+INJECTED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml
+INJECTED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml
+		ADDED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml
+		INJECTED from /Users/dante/work/android/Corbind/corbind-drawerlayout/src/main/AndroidManifest.xml

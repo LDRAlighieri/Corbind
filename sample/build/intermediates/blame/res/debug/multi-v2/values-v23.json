@@ -1,0 +1,58 @@
+{
+    "logs": [
+        {
+            "outputFile": "/Users/dante/work/android/Corbind/sample/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v23/values-v23.xml",
+            "map": [
+                {
+                    "source": "/Users/dante/.gradle/caches/transforms-2/files-2.1/52c4f266020dc7c064101e60da7a6093/res/values-v23/values-v23.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,20,34,35,36,37,41,42,43,44",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,190,325,400,487,1371,2267,2386,2513,2618,2842,2957,3064,3177",
+                        "endLines": "2,3,4,5,19,33,34,35,36,40,41,42,43,47",
+                        "endColumns": "134,134,74,86,12,12,118,126,104,12,114,106,112,12",
+                        "endOffsets": "185,320,395,482,1366,2262,2381,2508,2613,2837,2952,3059,3172,3402"
+                    }
+                },
+                {
+                    "source": "/Users/dante/.gradle/caches/transforms-2/files-2.1/c299d8a10d0fb11188c152f338a27dac/res/values-v23/values-v23.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "4",
+                        "endColumns": "12",
+                        "endOffsets": "200"
+                    },
+                    "to": {
+                        "startLines": "48",
+                        "startColumns": "4",
+                        "startOffsets": "3407",
+                        "endLines": "50",
+                        "endColumns": "12",
+                        "endOffsets": "3552"
+                    }
+                },
+                {
+                    "source": "/Users/dante/.gradle/caches/transforms-2/files-2.1/590c4be0962c8068d9ce89798aed57e3/res/values-v23/values-v23.xml",
+                    "from": {
+                        "startLines": "2,6,9,12,16,19",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "55,330,502,662,945,1121",
+                        "endLines": "5,8,11,15,18,21",
+                        "endColumns": "10,10,10,10,10,10",
+                        "endOffsets": "325,497,657,940,1116,1285"
+                    },
+                    "to": {
+                        "startLines": "51,55,58,61,65,68",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "3557,3832,4004,4164,4447,4623",
+                        "endLines": "54,57,60,64,67,70",
+                        "endColumns": "10,10,10,10,10,10",
+                        "endOffsets": "3827,3999,4159,4442,4618,4787"
+                    }
+                }
+            ]
+        }
+    ]
+}
