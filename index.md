@@ -2,11 +2,13 @@
 layout: page
 title: Corbind
 subtitle: Coroutines binding APIs for Android UI widgets from the platform and support libraries.
+image: img/corbind.svg
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries.
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding]
 ---
 
-<img src="/img/corbind.svg" alt="Corbind logo" align="center"/>
+<!-- ![Corbind](img/corbind.png) -->
+<!-- <img src="/img/corbind.svg" alt="Corbind logo" align="center"/> -->
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://www.codacy.com/app/LDRAlighieri/Corbind?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LDRAlighieri/Corbind&amp;utm_campaign=Badge_Grade)
