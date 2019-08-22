@@ -15,8 +15,8 @@ description: Coroutine binding APIs for Android UI widgets from the platform and
 # baseurl: ""
 
 # If you are building a GitHub project page then use these settings:
-# url: "https://ldralighieri.github.io/Corbind"
-# baseurl: ""
+url: "https://ldralighieri.github.io"
+baseurl: "/Corbind"
 
 # --- Navigation bar options --- #
 
