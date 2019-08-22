@@ -2,6 +2,7 @@
 layout: page
 title: Corbind
 subtitle: Coroutines binding APIs for Android UI widgets from the platform and support libraries.
+image: /img/corbind.svg
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries.
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding]
 ---
