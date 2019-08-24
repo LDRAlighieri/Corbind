@@ -32,25 +32,16 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
-/**
- * [ViewGroup] hierarchy change event
- */
 sealed class ViewGroupHierarchyChangeEvent {
     abstract val view: ViewGroup
     abstract val child: View
 }
 
-/**
- * A child view add event on a [ViewGroup].
- */
 data class ViewGroupHierarchyChildViewAddEvent(
     override val view: ViewGroup,
     override val child: View
 ) : ViewGroupHierarchyChangeEvent()
 
-/**
- * A child view remove event on a [ViewGroup].
- */
 data class ViewGroupHierarchyChildViewRemoveEvent(
     override val view: ViewGroup,
     override val child: View
