@@ -98,6 +98,7 @@ fun View.draws(
 /**
  * Create a flow for draws on [View].
  */
+@RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
 fun View.draws(): Flow<Unit> = channelFlow {
     val listener = listener(this, ::offer)
