@@ -18,24 +18,24 @@ This library is for Android applications only. Help you to transform Android UI 
 
 Platform bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.0.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind:1.0.0'
 ```
 
 AndroidX library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-core:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.0.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.0.0'
 ```
 
 Google 'material' library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.0.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.0.0'
 ```
 
 

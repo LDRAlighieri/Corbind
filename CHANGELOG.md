@@ -1,4 +1,15 @@
-﻿# ChangeLog
+
+# ChangeLog
+
+
+## Version 1.0.0
+
+* New: Added a small sample.
+* Update: Kotlin modules dependency to v1.3.50.
+* Update: Kotlin coroutine modules dependency to v1.3.0.
+* Fix: Fixed confusion with `Chip` extension name `clicks`, the correct name is `closeIconClicks`.
+* Fix: Added `@RequiresApi(Build.VERSION_CODES.JELLY_BEAN)` annotation for one of the `View` `draws` extensions.
+
 
 ## Version 1.0.0-RC
 
