@@ -51,7 +51,10 @@ fun View.globalLayouts(
 
     val listener = listener(scope, events::offer)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
-    events.invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+    events.invokeOnClose {
+        @Suppress("DEPRECATION") // Correct when minSdk 16
+        viewTreeObserver.removeGlobalOnLayoutListener(listener)
+    }
 }
 
 /**
@@ -71,7 +74,10 @@ suspend fun View.globalLayouts(
 
     val listener = listener(this, events::offer)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
-    events.invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+    events.invokeOnClose {
+        @Suppress("DEPRECATION") // Correct when minSdk 16
+        viewTreeObserver.removeGlobalOnLayoutListener(listener)
+    }
 }
 
 /**
@@ -87,7 +93,10 @@ fun View.globalLayouts(
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::offerElement)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
-    invokeOnClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+    invokeOnClose {
+        @Suppress("DEPRECATION") // Correct when minSdk 16
+        viewTreeObserver.removeGlobalOnLayoutListener(listener)
+    }
 }
 
 /**
@@ -97,7 +106,10 @@ fun View.globalLayouts(
 fun View.globalLayouts(): Flow<Unit> = channelFlow {
     val listener = listener(this, ::offer)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
-    awaitClose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+    awaitClose {
+        @Suppress("DEPRECATION") // Correct when minSdk 16
+        viewTreeObserver.removeGlobalOnLayoutListener(listener)
+    }
 }
 
 @CheckResult
