@@ -47,7 +47,7 @@ android {
 
 dependencies {
     api deps.kotlin.stdlib.jdk8
-    api deps.kotlin.coroutines.jdk8
+    api deps.kotlin.coroutines.core
     api deps.kotlin.coroutines.android
 
     api deps.androidx.annotation
