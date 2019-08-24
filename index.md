@@ -6,9 +6,13 @@ description: Coroutines binding APIs for Android UI widgets from the platform an
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding]
 ---
 
-<!-- ![Corbind](img/corbind.svg) -->
 <div style="text-align: center">
     <img src="img/corbind.svg" alt="Corbind logo"/>
+</div>
+
+<div style="text-align: center">
+  <a class="github-button" href="https://github.com/LDRAlighieri" data-size="large" aria-label="Follow @LDRAlighieri on GitHub">Follow</a>
+  <a class="github-button" href="https://github.com/LDRAlighieri/Corbind" data-icon="octicon-star" data-size="large" aria-label="Star LDRAlighieri/Corbind on GitHub">Star</a>
 </div>
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
@@ -29,24 +33,24 @@ This library is for Android applications only. Help you to transform Android UI 
 
 Platform bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.0.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind:1.0.0'
 ```
 
 AndroidX library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-core:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.0.0-RC'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.0.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.0.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.0.0'
 ```
 
 Google 'material' library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.0.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.0.0'
 ```
 
 
@@ -89,9 +93,9 @@ combine(
 
     et_password.textChanges()
         .map { it.length > 7 },
-            
+
     transform = { email, password -> email && password }
-) 
+)
     .onEach { bt_login.isEnabled = it }
     .launchIn(scope)
 ```
