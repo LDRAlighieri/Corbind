@@ -56,7 +56,7 @@ data class SeekBarStopChangeEvent(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-private fun SeekBar.changeEvents(
+fun SeekBar.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SeekBarChangeEvent) -> Unit
@@ -77,7 +77,7 @@ private fun SeekBar.changeEvents(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-private suspend fun SeekBar.changeEvents(
+suspend fun SeekBar.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SeekBarChangeEvent) -> Unit
 ) = coroutineScope {
@@ -98,7 +98,7 @@ private suspend fun SeekBar.changeEvents(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-private fun SeekBar.changeEvents(
+fun SeekBar.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
