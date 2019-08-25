@@ -106,7 +106,7 @@ fun TextView.afterTextChangeEvents(
  * *Note:* A value will be emitted immediately on collect.
  */
 @CheckResult
-private fun TextView.afterTextChangeEvents(): Flow<TextViewAfterTextChangeEvent> = channelFlow {
+fun TextView.afterTextChangeEvents(): Flow<TextViewAfterTextChangeEvent> = channelFlow {
     offer(initialValue(this@afterTextChangeEvents))
     val listener = listener(this, this@afterTextChangeEvents, ::offer)
     awaitClose { removeTextChangedListener(listener) }
