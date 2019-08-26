@@ -2,6 +2,13 @@
 # ChangeLog
 
 
+## Version 1.0.1
+
+* Fix: `TextView` `afterTextChangeEvents` access modifier changed (#1).
+* Fix: `SeekBar` `changeEvents` access modifier changed.
+* Fix: Fixed typo in RecyclerView artifact id (#2).
+
+
 ## Version 1.0.0
 
 * New: Added a small sample.
