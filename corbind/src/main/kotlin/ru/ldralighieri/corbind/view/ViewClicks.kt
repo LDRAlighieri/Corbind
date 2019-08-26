@@ -28,8 +28,29 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.suspendCancellableCoroutine
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
+import kotlin.coroutines.resume
+
+/**
+ * Suspend awaiting a click on this [View].
+ *
+ * *Warning:* This uses [View.setOnClickListener] to wait for a click.
+ * This is a one shot listener; it will be removed after the first click.
+ */
+suspend fun View.awaitClick() = suspendCancellableCoroutine<Unit> { cont ->
+    val listener = View.OnClickListener {
+        cont.resume(Unit)
+        setOnClickListener(null)
+    }
+
+    cont.invokeOnCancellation {
+        setOnClickListener(null)
+    }
+
+    setOnClickListener(listener)
+}
 
 /**
  * Perform an action on [View] click events.
