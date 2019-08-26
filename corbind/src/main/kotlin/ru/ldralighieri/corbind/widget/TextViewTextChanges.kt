@@ -96,6 +96,23 @@ fun TextView.textChanges(
 }
 
 /**
+ * Create a channel of character sequences for text changes on [TextView].
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ */
+@CheckResult
+suspend fun TextView.textChanges(
+    capacity: Int = Channel.RENDEZVOUS
+): ReceiveChannel<CharSequence> = coroutineScope {
+    corbindReceiveChannel<CharSequence>(capacity) {
+        offerElement(text)
+        val listener = listener(this@coroutineScope, ::offerElement)
+        addTextChangedListener(listener)
+        invokeOnClose { removeTextChangedListener(listener) }
+    }
+}
+
+/**
  * Create a flow of character sequences for text changes on [TextView].
  *
  * *Note:* A value will be emitted immediately on collect.
