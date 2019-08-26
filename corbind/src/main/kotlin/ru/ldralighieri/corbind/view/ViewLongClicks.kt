@@ -35,7 +35,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on `view` long-click events.
  *
- * *Warning:* The created actor uses [View.setOnLongClickListener] to emmit long clicks. Only one
+ * *Warning:* The created actor uses [View.setOnLongClickListener] to emit long clicks. Only one
  * actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -62,7 +62,7 @@ fun View.longClicks(
 /**
  * Perform an action on `view` long-click events inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnLongClickListener] to emmit long clicks. Only one
+ * *Warning:* The created actor uses [View.setOnLongClickListener] to emit long clicks. Only one
  * actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -87,7 +87,7 @@ suspend fun View.longClicks(
 /**
  * Create a channel which emits on `view` long-click events.
  *
- * *Warning:* The created channel uses [View.setOnLongClickListener] to emmit long clicks. Only
+ * *Warning:* The created channel uses [View.setOnLongClickListener] to emit long clicks. Only
  * one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -108,7 +108,7 @@ fun View.longClicks(
 /**
  * Create a flow which emits on `view` long-click events.
  *
- * *Warning:* The created flow uses [View.setOnLongClickListener] to emmit
+ * *Warning:* The created flow uses [View.setOnLongClickListener] to emit
  * long clicks. Only one flow can be used for a view at a time.
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying

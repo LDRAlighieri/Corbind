@@ -36,7 +36,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on hover events for [View].
  *
- * *Warning:* The created actor uses [View.setOnHoverListener] to emmit touches. Only one actor
+ * *Warning:* The created actor uses [View.setOnHoverListener] to emit touches. Only one actor
  * can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -63,7 +63,7 @@ fun View.hovers(
 /**
  * Perform an action on hover events for [View] inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnHoverListener] to emmit touches. Only one actor
+ * *Warning:* The created actor uses [View.setOnHoverListener] to emit touches. Only one actor
  * can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -88,7 +88,7 @@ suspend fun View.hovers(
 /**
  * Create a channel of hover events for [View].
  *
- * *Warning:* The created channel uses [View.setOnHoverListener] to emmit touches. Only one
+ * *Warning:* The created channel uses [View.setOnHoverListener] to emit touches. Only one
  * channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -109,7 +109,7 @@ fun View.hovers(
 /**
  * Create a flow of hover events for [View].
  *
- * *Warning:* The created flow uses [View.setOnHoverListener] to emmit touches. Only one flow can
+ * *Warning:* The created flow uses [View.setOnHoverListener] to emit touches. Only one flow can
  * be used for a view at a time.
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying

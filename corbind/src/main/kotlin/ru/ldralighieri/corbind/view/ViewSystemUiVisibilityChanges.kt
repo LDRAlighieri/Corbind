@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on a new system UI visibility for [View].
  *
- * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emmit
+ * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emit
  * system UI visibility changes. Only one actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -58,7 +58,7 @@ fun View.systemUiVisibilityChanges(
 /**
  * Perform an action on a new system UI visibility for [View] inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emmit
+ * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emit
  * system UI visibility changes. Only one actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -80,7 +80,7 @@ suspend fun View.systemUiVisibilityChanges(
 /**
  * Create a channel of integers representing a new system UI visibility for [View].
  *
- * *Warning:* The created channel uses [View.setOnSystemUiVisibilityChangeListener] to emmit
+ * *Warning:* The created channel uses [View.setOnSystemUiVisibilityChangeListener] to emit
  * system UI visibility changes. Only one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -98,7 +98,7 @@ fun View.systemUiVisibilityChanges(
 /**
  * Create a flow of integers representing a new system UI visibility for [View].
  *
- * *Warning:* The created flow uses [View.setOnSystemUiVisibilityChangeListener] to emmit
+ * *Warning:* The created flow uses [View.setOnSystemUiVisibilityChangeListener] to emit
  * system UI visibility changes. Only one flow can be used for a view at a time.
  */
 @CheckResult

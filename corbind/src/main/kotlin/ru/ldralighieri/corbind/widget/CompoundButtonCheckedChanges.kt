@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on checked state of [CompoundButton].
  *
- * *Warning:* The created actor uses [CompoundButton.setOnCheckedChangeListener] to emmit checked
+ * *Warning:* The created actor uses [CompoundButton.setOnCheckedChangeListener] to emit checked
  * changes. Only one actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -59,7 +59,7 @@ fun CompoundButton.checkedChanges(
 /**
  * Perform an action on checked state of [CompoundButton] inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [CompoundButton.setOnCheckedChangeListener] to emmit checked
+ * *Warning:* The created actor uses [CompoundButton.setOnCheckedChangeListener] to emit checked
  * changes. Only one actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -82,7 +82,7 @@ suspend fun CompoundButton.checkedChanges(
 /**
  * Create a channel of booleans representing the checked state of [CompoundButton].
  *
- * *Warning:* The created channel uses [CompoundButton.setOnCheckedChangeListener] to emmit
+ * *Warning:* The created channel uses [CompoundButton.setOnCheckedChangeListener] to emit
  * checked changes. Only one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -101,7 +101,7 @@ fun CompoundButton.checkedChanges(
 /**
  * Create a flow of booleans representing the checked state of [CompoundButton].
  *
- * *Warning:* The created flow uses [CompoundButton.setOnCheckedChangeListener] to emmit checked
+ * *Warning:* The created flow uses [CompoundButton.setOnCheckedChangeListener] to emit checked
  * changes. Only one flow can be used for a view at a time.
  *
  * *Note:* A value will be emitted immediately on collect.

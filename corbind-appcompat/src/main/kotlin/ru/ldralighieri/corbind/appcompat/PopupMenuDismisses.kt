@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [PopupMenu] dismiss events.
  *
- * *Warning:* The created actor uses [PopupMenu.setOnDismissListener] to emmit dismiss change.
+ * *Warning:* The created actor uses [PopupMenu.setOnDismissListener] to emit dismiss change.
  * Only one actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -58,7 +58,7 @@ fun PopupMenu.dismisses(
 /**
  * Perform an action on [PopupMenu] dismiss events inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [PopupMenu.setOnDismissListener] to emmit dismiss change.
+ * *Warning:* The created actor uses [PopupMenu.setOnDismissListener] to emit dismiss change.
  * Only one actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -80,7 +80,7 @@ suspend fun PopupMenu.dismisses(
 /**
  * Create a channel which emits on [PopupMenu] dismiss events.
  *
- * *Warning:* The created channel uses [PopupMenu.setOnDismissListener] to emmit dismiss change.
+ * *Warning:* The created channel uses [PopupMenu.setOnDismissListener] to emit dismiss change.
  * Only one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -98,7 +98,7 @@ fun PopupMenu.dismisses(
 /**
  * Create a flow which emits on [PopupMenu] dismiss events.
  *
- * *Warning:* The created flow uses [PopupMenu.setOnDismissListener] to emmit dismiss change.
+ * *Warning:* The created flow uses [PopupMenu.setOnDismissListener] to emit dismiss change.
  * Only one flow can be used for a view at a time.
  */
 @CheckResult

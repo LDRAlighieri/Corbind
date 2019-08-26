@@ -35,7 +35,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on the open state of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -61,7 +61,7 @@ fun SlidingPaneLayout.panelOpens(
  * Perform an action on the open state of the pane of [SlidingPaneLayout] inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -84,7 +84,7 @@ suspend fun SlidingPaneLayout.panelOpens(
 /**
  * Create a channel of the open state of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -103,7 +103,7 @@ fun SlidingPaneLayout.panelOpens(
 /**
  * Create a flow of the open state of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one flow can be used for a view at a time.
  *
  * *Note:* A value will be emitted immediately on collect.
