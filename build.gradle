@@ -31,41 +31,43 @@ buildscript {
                         'slidingpane_layout' : '1.0.0',
                         'swiperefresh_layout' : '1.0.0',
                         'viewpager' : '1.0.0',
+                        'viewpager2' : '1.0.0-beta03',
                         'material' : '1.0.0'
                 ],
-                'ktlint': '0.33.0'
+                'ktlint' : '0.33.0'
         ]
 
         deps = [
-                'kotlin': [
-                        'stdlib': [
+                'kotlin  ': [
+                        'stdlib    ': [
                                 'jdk6': "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
                                 'jdk8': "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
                         ],
                         'coroutines': [
-                                'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlin_coroutines}",
-                                'jdk8': "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${versions.kotlin_coroutines}",
+                                'core   ': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.kotlin_coroutines}",
+                                'jdk8   ': "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${versions.kotlin_coroutines}",
                                 'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.kotlin_coroutines}"
                         ]
                 ],
                 'androidx': [
-                        'core': "androidx.core:core:${versions.androidx.core}",
-                        'annotation': "androidx.annotation:annotation:${versions.androidx.annotation}",
-                        'appCompat': "androidx.appcompat:appcompat:${versions.androidx.appcompat}",
-                        'drawerLayout': "androidx.drawerlayout:drawerlayout:${versions.androidx.drawerlayout}",
-                        'leanback': "androidx.leanback:leanback:${versions.androidx.leanback}",
-                        'recyclerView': "androidx.recyclerview:recyclerview:${versions.androidx.recycler_view}",
-                        'slidingPaneLayout': "androidx.slidingpanelayout:slidingpanelayout:${versions.androidx.slidingpane_layout}",
+                        'core              ': "androidx.core:core:${versions.androidx.core}",
+                        'annotation        ': "androidx.annotation:annotation:${versions.androidx.annotation}",
+                        'appCompat         ': "androidx.appcompat:appcompat:${versions.androidx.appcompat}",
+                        'drawerLayout      ': "androidx.drawerlayout:drawerlayout:${versions.androidx.drawerlayout}",
+                        'leanback          ': "androidx.leanback:leanback:${versions.androidx.leanback}",
+                        'recyclerView      ': "androidx.recyclerview:recyclerview:${versions.androidx.recycler_view}",
+                        'slidingPaneLayout ': "androidx.slidingpanelayout:slidingpanelayout:${versions.androidx.slidingpane_layout}",
                         'swipeRefreshLayout': "androidx.swiperefreshlayout:swiperefreshlayout:${versions.androidx.swiperefresh_layout}",
-                        'viewPager': "androidx.viewpager:viewpager:${versions.androidx.viewpager}"
+                        'viewPager         ': "androidx.viewpager:viewpager:${versions.androidx.viewpager}",
+                        'viewPager2        ': "androidx.viewpager2:viewpager2:${versions.androidx.viewpager2}"
                 ],
                 'material': "com.google.android.material:material:${versions.androidx.material}"
         ]
 
         buildConfig = [
                 'compileSdk': 28,
-                'minSdk': 14,
-                'targetSdk': 28
+                'minSdk    ': 14,
+                'targetSdk ': 28
         ]
     }
 
@@ -81,7 +83,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:${versions.android_gradle}"
 
         // Kotlin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
 
 }
@@ -157,7 +159,8 @@ detekt {
             "corbind-recyclerview/src/main/kotlin",
             "corbind-slidingpanelayout/src/main/kotlin",
             "corbind-swiperefreshlayout/src/main/kotlin",
-            "corbind-viewpager/src/main/kotlin"
+            "corbind-viewpager/src/main/kotlin",
+            "corbind-viewpager2/src/main/kotlin"
     )
     filters = ".*/resources/.*,.*/build/.*"
     parallel = true
