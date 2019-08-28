@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package ru.ldralighieri.corbind.widget
+package ru.ldralighieri.corbind.material
 
 import android.view.View
-import android.widget.RadioGroup
 import androidx.annotation.CheckResult
+import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -33,7 +33,9 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
 /**
- * Perform an action on checked view ID changes in [RadioGroup].
+ * Perform an action on checked view ID changes in [ChipGroup].
+ *
+ * *Warning:* Only in single selection mode [ChipGroup.isSingleSelection]
  *
  * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
  *
@@ -41,7 +43,7 @@ import ru.ldralighieri.corbind.offerElement
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun RadioGroup.checkedChanges(
+fun ChipGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
@@ -51,20 +53,23 @@ fun RadioGroup.checkedChanges(
         for (checkedId in channel) action(checkedId)
     }
 
-    events.offer(checkedRadioButtonId)
+    checkSelectionMode(this)
+    events.offer(checkedChipId)
     setOnCheckedChangeListener(listener(scope, events::offer))
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
 /**
- * Perform an action on checked view ID changes in [RadioGroup] inside new CoroutineScope.
+ * Perform an action on checked view ID changes in [ChipGroup] inside new CoroutineScope.
+ *
+ * *Warning:* Only in single selection mode [ChipGroup.isSingleSelection]
  *
  * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun RadioGroup.checkedChanges(
+suspend fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
@@ -73,13 +78,16 @@ suspend fun RadioGroup.checkedChanges(
         for (checkedId in channel) action(checkedId)
     }
 
-    events.offer(checkedRadioButtonId)
+    checkSelectionMode(this@checkedChanges)
+    events.offer(checkedChipId)
     setOnCheckedChangeListener(listener(this, events::offer))
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
 /**
- * Create a channel of the checked view ID changes in [RadioGroup].
+ * Create a channel of the checked view ID changes in [ChipGroup].
+ *
+ * *Warning:* Only in single selection mode [ChipGroup.isSingleSelection]
  *
  * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
  *
@@ -87,36 +95,44 @@ suspend fun RadioGroup.checkedChanges(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun RadioGroup.checkedChanges(
+fun ChipGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offer(checkedRadioButtonId)
+    checkSelectionMode(this@checkedChanges)
+    offer(checkedChipId)
     setOnCheckedChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
 /**
- * Create a flow of the checked view ID changes in [RadioGroup].
+ * Create a flow of the checked view ID changes in [ChipGroup].
+ *
+ * *Warning:* Only in single selection mode [ChipGroup.isSingleSelection]
  *
  * *Note:* A value will be emitted immediately on collect. When the selection is cleared, checkedId
  * is [View.NO_ID]
  */
 @CheckResult
-fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
-    offer(checkedRadioButtonId)
+fun ChipGroup.checkedChanges(): Flow<Int> = channelFlow {
+    checkSelectionMode(this@checkedChanges)
+    offer(checkedChipId)
     setOnCheckedChangeListener(listener(this, ::offer))
     awaitClose { setOnCheckedChangeListener(null) }
+}
+
+private fun checkSelectionMode(group: ChipGroup) {
+    check(group.isSingleSelection) { "The ChipGroup is not in single selection mode." }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
     emitter: (Int) -> Boolean
-) = object : RadioGroup.OnCheckedChangeListener {
+) = object : ChipGroup.OnCheckedChangeListener {
 
     private var lastChecked = View.NO_ID
-    override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
+    override fun onCheckedChanged(group: ChipGroup, checkedId: Int) {
         if (scope.isActive && checkedId != lastChecked) {
             lastChecked = checkedId
             emitter(checkedId)

@@ -105,9 +105,9 @@ fun View.dismisses(): Flow<View> = channelFlow {
 @CheckResult
 private fun getBehavior(view: View): SwipeDismissBehavior<*> {
     val params = view.layoutParams as? CoordinatorLayout.LayoutParams
-            ?: throw IllegalArgumentException("The view is not in a Coordinator Layout.")
+        ?: throw IllegalArgumentException("The view is not in a Coordinator Layout.")
     return params.behavior as SwipeDismissBehavior<*>?
-            ?: throw IllegalStateException("There's no behavior set on this view.")
+        ?: throw IllegalStateException("There's no behavior set on this view.")
 }
 
 @CheckResult

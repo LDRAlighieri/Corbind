@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package ru.ldralighieri.corbind.widget
+package ru.ldralighieri.corbind.material
 
 import android.view.View
-import android.widget.RadioGroup
 import androidx.annotation.CheckResult
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.behavior.SwipeDismissBehavior
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -33,93 +34,91 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
 /**
- * Perform an action on checked view ID changes in [RadioGroup].
- *
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun RadioGroup.checkedChanges(
+fun View.dragStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
 
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
-        for (checkedId in channel) action(checkedId)
+        for (view in channel) action(view)
     }
 
-    events.offer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, events::offer))
-    events.invokeOnClose { setOnCheckedChangeListener(null) }
+    val behavior = getBehavior(this)
+    behavior.setListener(listener(scope, events::offer))
+    events.invokeOnClose { behavior.setListener(null) }
 }
 
 /**
- * Perform an action on checked view ID changes in [RadioGroup] inside new CoroutineScope.
- *
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun RadioGroup.checkedChanges(
+suspend fun View.dragStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
 
     val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (checkedId in channel) action(checkedId)
+        for (view in channel) action(view)
     }
 
-    events.offer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(this, events::offer))
-    events.invokeOnClose { setOnCheckedChangeListener(null) }
+    val behavior = getBehavior(this@dragStateChanges)
+    behavior.setListener(listener(this, events::offer))
+    events.invokeOnClose { behavior.setListener(null) }
 }
 
 /**
- * Create a channel of the checked view ID changes in [RadioGroup].
- *
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ * Create a channel which emits the drag state change events from [View] on [SwipeDismissBehavior].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun RadioGroup.checkedChanges(
+fun View.dragStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, ::offerElement))
-    invokeOnClose { setOnCheckedChangeListener(null) }
+    val behavior = getBehavior(this@dragStateChanges)
+    behavior.setListener(listener(scope, ::offerElement))
+    invokeOnClose { behavior.setListener(null) }
 }
 
 /**
- * Create a flow of the checked view ID changes in [RadioGroup].
- *
- * *Note:* A value will be emitted immediately on collect. When the selection is cleared, checkedId
- * is [View.NO_ID]
+ * Create a flow which emits the drag state change events from [View] on [SwipeDismissBehavior].
  */
 @CheckResult
-fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
-    offer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(this, ::offer))
-    awaitClose { setOnCheckedChangeListener(null) }
+fun View.dragStateChanges(): Flow<Int> = channelFlow {
+    val behavior = getBehavior(this@dragStateChanges)
+    behavior.setListener(listener(this, ::offer))
+    awaitClose { behavior.setListener(null) }
+}
+
+@CheckResult
+private fun getBehavior(view: View): SwipeDismissBehavior<*> {
+    val params = view.layoutParams as? CoordinatorLayout.LayoutParams
+        ?: throw IllegalArgumentException("The view is not in a Coordinator Layout.")
+    return params.behavior as SwipeDismissBehavior<*>?
+        ?: throw IllegalStateException("There's no behavior set on this view.")
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
     emitter: (Int) -> Boolean
-) = object : RadioGroup.OnCheckedChangeListener {
+) = object : SwipeDismissBehavior.OnDismissListener {
 
-    private var lastChecked = View.NO_ID
-    override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
-        if (scope.isActive && checkedId != lastChecked) {
-            lastChecked = checkedId
-            emitter(checkedId)
-        }
+    override fun onDismiss(view: View) { }
+
+    override fun onDragStateChanged(state: Int) {
+        if (scope.isActive) { emitter(state) }
     }
 }
