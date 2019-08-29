@@ -80,7 +80,6 @@ suspend fun ViewPager2.pageSelections(
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
-==
  */
 @CheckResult
 fun ViewPager2.pageSelections(
