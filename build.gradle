@@ -31,6 +31,7 @@ buildscript {
                         'slidingpane_layout' : '1.0.0',
                         'swiperefresh_layout' : '1.0.0',
                         'viewpager' : '1.0.0',
+                        'viewpager2' : '1.0.0-beta03',
                         'material' : '1.0.0'
                 ],
                 'ktlint': '0.33.0'
@@ -57,7 +58,8 @@ buildscript {
                         'recyclerView': "androidx.recyclerview:recyclerview:${versions.androidx.recycler_view}",
                         'slidingPaneLayout': "androidx.slidingpanelayout:slidingpanelayout:${versions.androidx.slidingpane_layout}",
                         'swipeRefreshLayout': "androidx.swiperefreshlayout:swiperefreshlayout:${versions.androidx.swiperefresh_layout}",
-                        'viewPager': "androidx.viewpager:viewpager:${versions.androidx.viewpager}"
+                        'viewPager': "androidx.viewpager:viewpager:${versions.androidx.viewpager}",
+                        'viewPager2': "androidx.viewpager2:viewpager2:${versions.androidx.viewpager2}"
                 ],
                 'material': "com.google.android.material:material:${versions.androidx.material}"
         ]
@@ -81,7 +83,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:${versions.android_gradle}"
 
         // Kotlin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
 
 }
@@ -157,7 +159,8 @@ detekt {
             "corbind-recyclerview/src/main/kotlin",
             "corbind-slidingpanelayout/src/main/kotlin",
             "corbind-swiperefreshlayout/src/main/kotlin",
-            "corbind-viewpager/src/main/kotlin"
+            "corbind-viewpager/src/main/kotlin",
+            "corbind-viewpager2/src/main/kotlin"
     )
     filters = ".*/resources/.*,.*/build/.*"
     parallel = true
