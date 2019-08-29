@@ -47,7 +47,7 @@ fun View.stateChanges(
 ) {
 
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
-        for (offset in channel) action(offset)
+        for (state in channel) action(state)
     }
 
     val behavior = getBehavior(this@stateChanges)
@@ -68,7 +68,7 @@ suspend fun View.stateChanges(
 ) = coroutineScope {
 
     val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (offset in channel) action(offset)
+        for (state in channel) action(state)
     }
 
     val behavior = getBehavior(this@stateChanges)

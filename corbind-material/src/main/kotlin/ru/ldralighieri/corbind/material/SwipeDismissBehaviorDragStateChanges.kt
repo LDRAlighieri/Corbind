@@ -47,7 +47,7 @@ fun View.dragStateChanges(
 ) {
 
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
-        for (view in channel) action(view)
+        for (state in channel) action(state)
     }
 
     val behavior = getBehavior(this)
@@ -68,7 +68,7 @@ suspend fun View.dragStateChanges(
 ) = coroutineScope {
 
     val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (view in channel) action(view)
+        for (state in channel) action(state)
     }
 
     val behavior = getBehavior(this@dragStateChanges)

@@ -45,7 +45,7 @@ fun Snackbar.shown(
 ) {
 
     val events = scope.actor<Snackbar>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
+        for (snackbar in channel) action(snackbar)
     }
 
     val callback = callback(scope, events::offer)
@@ -65,7 +65,7 @@ suspend fun Snackbar.shown(
 ) = coroutineScope {
 
     val events = actor<Snackbar>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
+        for (snackbar in channel) action(snackbar)
     }
 
     val callback = callback(this, events::offer)
