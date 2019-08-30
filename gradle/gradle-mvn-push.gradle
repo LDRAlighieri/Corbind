@@ -18,7 +18,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 def isReleaseBuild() {
-    return VERSION_NAME.contains("SNAPSHOT") == false
+    return !VERSION_NAME.contains("SNAPSHOT")
 }
 
 def getReleaseRepositoryUrl() {
@@ -133,6 +133,10 @@ afterEvaluate { project ->
 
                 externalDocumentationLink {
                     url = new URL("https://developer.android.com/reference/androidx/")
+                }
+
+                externalDocumentationLink {
+                    url = new URL("https://developer.android.com/reference/com/google/android/material/")
                 }
 
                 externalDocumentationLink {
