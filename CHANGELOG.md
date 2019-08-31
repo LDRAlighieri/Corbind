@@ -2,6 +2,30 @@
 # ChangeLog
 
 
+## Version 1.1.0
+
+* New: ViewPager2 module
+* New: Bindings list:
+    * AndroidX library bindings:
+        * `corbind-viewpager2`:
+			* `ViewPager2`:
+				* `pageScrollEvents`
+				* `pageScrollStateChanges`
+				* `pageSelections`
+	* Google "material" library bindings:
+	    * `corbind-material`:
+	        * `BottomSheetBehavior`:
+	            * `slides`
+	            * `stateChanges`
+	        * `ChipGroup`:
+	            * `checkedChanges` (only in single selection mode)
+	        * `Snackbar`:
+	            * `shown`
+	        * `SwipeDismissBehavior`:
+	            * 'dragStateChanges`
+* Fix: Fixed sources jars generation
+
+
 ## Version 1.0.1
 
 * Fix: `TextView` `afterTextChangeEvents` access modifier changed (#1).
