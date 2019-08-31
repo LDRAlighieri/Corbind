@@ -23,7 +23,7 @@
 	            * `shown`
 	        * `SwipeDismissBehavior`:
 	            * 'dragStateChanges`
-* Fix: Fixed sources jars generation
+* Fix: Fixed sources jars generation (#6)
 
 
 ## Version 1.0.1
