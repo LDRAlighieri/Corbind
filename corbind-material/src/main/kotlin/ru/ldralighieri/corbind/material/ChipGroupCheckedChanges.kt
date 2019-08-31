@@ -35,7 +35,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on checked view ID changes in [ChipGroup].
  *
- * *Warning:* Only in single selection mode [ChipGroup.isSingleSelection]
+ * *Warning:* Only in single selection mode
  *
  * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
  *
@@ -60,9 +60,9 @@ fun ChipGroup.checkedChanges(
 }
 
 /**
- * Perform an action on checked view ID changes in [ChipGroup] inside new CoroutineScope.
+ * Perform an action on checked view ID changes in [ChipGroup] inside new [CoroutineScope].
  *
- * *Warning:* Only in single selection mode [ChipGroup.isSingleSelection]
+ * *Warning:* Only in single selection mode
  *
  * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
  *
@@ -87,7 +87,7 @@ suspend fun ChipGroup.checkedChanges(
 /**
  * Create a channel of the checked view ID changes in [ChipGroup].
  *
- * *Warning:* Only in single selection mode [ChipGroup.isSingleSelection]
+ * *Warning:* Only in single selection mode
  *
  * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
  *
@@ -108,7 +108,7 @@ fun ChipGroup.checkedChanges(
 /**
  * Create a flow of the checked view ID changes in [ChipGroup].
  *
- * *Warning:* Only in single selection mode [ChipGroup.isSingleSelection]
+ * *Warning:* Only in single selection mode
  *
  * *Note:* A value will be emitted immediately on collect. When the selection is cleared, checkedId
  * is [View.NO_ID]

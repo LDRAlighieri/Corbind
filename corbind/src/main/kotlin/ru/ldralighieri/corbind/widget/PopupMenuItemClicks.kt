@@ -57,7 +57,7 @@ fun PopupMenu.itemClicks(
 }
 
 /**
- * Perform an action on clicked item in [PopupMenu] inside new CoroutineScope.
+ * Perform an action on clicked item in [PopupMenu] inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [PopupMenu.setOnMenuItemClickListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.

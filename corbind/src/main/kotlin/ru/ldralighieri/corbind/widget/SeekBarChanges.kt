@@ -96,7 +96,7 @@ fun SeekBar.changes(
 ) = changes(scope, capacity, null, action)
 
 /**
- * Perform an action on progress value changes on [SeekBar] inside new CoroutineScope.
+ * Perform an action on progress value changes on [SeekBar] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -141,7 +141,7 @@ fun SeekBar.userChanges(
 
 /**
  * Perform an action on progress value changes on [SeekBar] that were made only from the user inside
- * new CoroutineScope.
+ * new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -186,7 +186,7 @@ fun SeekBar.systemChanges(
 
 /**
  * Perform an action on progress value changes on [SeekBar] that were made only from the system inside
- * new CoroutineScope.
+ * new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
