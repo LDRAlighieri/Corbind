@@ -40,9 +40,9 @@ data class AbsListViewScrollEvent(
 )
 
 /**
- * Perform an action on scroll events on [AbsListView].
+ * Perform an action on [scroll events][AbsListViewScrollEvent] on [AbsListView].
  *
- * *Warning:* The created actor uses [AbsListView.setOnScrollListener] to emmit scroll changes.
+ * *Warning:* The created actor uses [AbsListView.setOnScrollListener] to emit scroll changes.
  * Only one actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -64,9 +64,10 @@ fun AbsListView.scrollEvents(
 }
 
 /**
- * Perform an action on scroll events on [AbsListView] inside new CoroutineScope.
+ * Perform an action on [scroll events][AbsListViewScrollEvent] on [AbsListView] inside new
+ * [CoroutineScope].
  *
- * *Warning:* The created actor uses [AbsListView.setOnScrollListener] to emmit scroll changes.
+ * *Warning:* The created actor uses [AbsListView.setOnScrollListener] to emit scroll changes.
  * Only one actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -86,9 +87,9 @@ suspend fun AbsListView.scrollEvents(
 }
 
 /**
- * Create a channel of scroll events on [AbsListView].
+ * Create a channel of [scroll events][AbsListViewScrollEvent] on [AbsListView].
  *
- * *Warning:* The created channel uses [AbsListView.setOnScrollListener] to emmit scroll changes.
+ * *Warning:* The created channel uses [AbsListView.setOnScrollListener] to emit scroll changes.
  * Only one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -104,9 +105,9 @@ fun AbsListView.scrollEvents(
 }
 
 /**
- * Create a flow of scroll events on [AbsListView].
+ * Create a flow of [scroll events][AbsListViewScrollEvent] on [AbsListView].
  *
- * *Warning:* The created flow uses [AbsListView.setOnScrollListener] to emmit scroll changes.
+ * *Warning:* The created flow uses [AbsListView.setOnScrollListener] to emit scroll changes.
  * Only one flow can be used for a view at a time.
  */
 @CheckResult

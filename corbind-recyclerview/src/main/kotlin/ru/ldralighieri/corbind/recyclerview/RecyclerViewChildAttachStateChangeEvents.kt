@@ -48,7 +48,8 @@ data class RecyclerViewChildDetachEvent(
 ) : RecyclerViewChildAttachStateChangeEvent()
 
 /**
- * Perform an action on  child attach state change events on [RecyclerView].
+ * Perform an action on [child attach state change events][RecyclerViewChildAttachStateChangeEvent]
+ * on [RecyclerView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -70,8 +71,8 @@ fun RecyclerView.childAttachStateChangeEvents(
 }
 
 /**
- * Perform an action on  child attach state change events on [RecyclerView] inside new
- * [CoroutineScope].
+ * Perform an action on [child attach state change events][RecyclerViewChildAttachStateChangeEvent]
+ * on [RecyclerView] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -92,7 +93,8 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
 }
 
 /**
- * Create a channel of child attach state change events on [RecyclerView].
+ * Create a channel of [child attach state change events][RecyclerViewChildAttachStateChangeEvent]
+ * on [RecyclerView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -108,7 +110,8 @@ fun RecyclerView.childAttachStateChangeEvents(
 }
 
 /**
- * Create a flow of child attach state change events on [RecyclerView].
+ * Create a flow of [child attach state change events][RecyclerViewChildAttachStateChangeEvent] on
+ * [RecyclerView].
  */
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachStateChangeEvent> =

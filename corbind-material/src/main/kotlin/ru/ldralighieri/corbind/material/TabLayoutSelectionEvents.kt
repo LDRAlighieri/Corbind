@@ -52,7 +52,8 @@ data class TabLayoutSelectionUnselectedEvent(
 ) : TabLayoutSelectionEvent()
 
 /**
- * Perform an action on selection, reselection, and unselection events for the tabs in [TabLayout].
+ * Perform an action on selection, reselection, and unselection [events][TabLayoutSelectionEvent]
+ * for the tabs in [TabLayout].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -75,8 +76,8 @@ fun TabLayout.selectionEvents(
 }
 
 /**
- * Perform an action on selection, reselection, and unselection events for the tabs in [TabLayout]
- * inside new [CoroutineScope].
+ * Perform an action on selection, reselection, and unselection [events][TabLayoutSelectionEvent]
+ * for the tabs in [TabLayout] inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -97,8 +98,8 @@ suspend fun TabLayout.selectionEvents(
 }
 
 /**
- * Create a channel which emits selection, reselection, and unselection events for the tabs in
- * [TabLayout].
+ * Create a channel which emits selection, reselection, and unselection
+ * [events][TabLayoutSelectionEvent] for the tabs in [TabLayout].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -115,8 +116,8 @@ fun TabLayout.selectionEvents(
 }
 
 /**
- * Create a flow which emits selection, reselection, and unselection events for the tabs in
- * [TabLayout].
+ * Create a flow which emits selection, reselection, and unselection
+ * [events][TabLayoutSelectionEvent] for the tabs in [TabLayout].
  *
  * *Note:* A value will be emitted immediately on collect.
  */

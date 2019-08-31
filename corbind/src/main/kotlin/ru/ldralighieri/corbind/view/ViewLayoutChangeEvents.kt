@@ -44,7 +44,7 @@ data class ViewLayoutChangeEvent(
 )
 
 /**
- * Perform an action on layout-change events for [View].
+ * Perform an action on [layout-change events][ViewLayoutChangeEvent] for [View].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -66,7 +66,8 @@ fun View.layoutChangeEvents(
 }
 
 /**
- * Perform an action on layout-change events for [View] inside new [CoroutineScope].
+ * Perform an action on [layout-change events][ViewLayoutChangeEvent] for [View] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -86,7 +87,7 @@ suspend fun View.layoutChangeEvents(
 }
 
 /**
- * Create a channel of layout-change events for [View].
+ * Create a channel of [layout-change events][ViewLayoutChangeEvent] for [View].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -102,7 +103,7 @@ fun View.layoutChangeEvents(
 }
 
 /**
- * Create a flow of layout-change events for [View].
+ * Create a flow of [layout-change events][ViewLayoutChangeEvent] for [View].
  */
 @CheckResult
 fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {

@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [View] focus change.
  *
- * *Warning:* The created actor uses [View.setOnFocusChangeListener] to emmit focus change. Only
+ * *Warning:* The created actor uses [View.setOnFocusChangeListener] to emit focus change. Only
  * one actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -59,7 +59,7 @@ fun View.focusChanges(
 /**
  * Perform an action on [View] focus change inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnFocusChangeListener] to emmit focus change. Only
+ * *Warning:* The created actor uses [View.setOnFocusChangeListener] to emit focus change. Only
  * one actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -82,7 +82,7 @@ suspend fun View.focusChanges(
 /**
  * Create a channel of booleans representing the focus of [View].
  *
- * *Warning:* The created channel uses [View.setOnFocusChangeListener] to emmit focus change.
+ * *Warning:* The created channel uses [View.setOnFocusChangeListener] to emit focus change.
  * Only one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -101,7 +101,7 @@ fun View.focusChanges(
 /**
  * Create a flow of booleans representing the focus of [View].
  *
- * *Warning:* The created flow uses [View.setOnFocusChangeListener] to emmit focus change. Only
+ * *Warning:* The created flow uses [View.setOnFocusChangeListener] to emit focus change. Only
  * one flow can be used for a view at a time.
  *
  * *Note:* A value will be emitted immediately on collect.

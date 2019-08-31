@@ -30,8 +30,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.offerElement
 
 data class AdapterViewItemLongClickEvent(
@@ -42,7 +42,7 @@ data class AdapterViewItemLongClickEvent(
 )
 
 /**
- * Perform an action on item long-click events for [AdapterView].
+ * Perform an action on [item long-click events][AdapterViewItemLongClickEvent] for [AdapterView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -66,7 +66,8 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 /**
- * Perform an action on item long-click events for [AdapterView] inside new [CoroutineScope].
+ * Perform an action on [item long-click events][AdapterViewItemLongClickEvent] for [AdapterView]
+ * inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -88,7 +89,8 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 /**
- * Create a channel of the item long-click events for [AdapterView].
+ * Create a channel of the [item long-click events][AdapterViewItemLongClickEvent] for
+ * [AdapterView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -106,7 +108,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 /**
- * Create a flow of the item long-click events for [AdapterView].
+ * Create a flow of the [item long-click events][AdapterViewItemLongClickEvent] for [AdapterView].
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
  * [AdapterView.OnItemLongClickListener]

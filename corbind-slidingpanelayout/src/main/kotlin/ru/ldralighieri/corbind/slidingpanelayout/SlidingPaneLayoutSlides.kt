@@ -35,7 +35,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.
  */
 fun SlidingPaneLayout.panelSlides(
@@ -55,7 +55,7 @@ fun SlidingPaneLayout.panelSlides(
 /**
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout] inside new [CoroutineScope].
  *
- * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.
  */
 suspend fun SlidingPaneLayout.panelSlides(
@@ -74,7 +74,7 @@ suspend fun SlidingPaneLayout.panelSlides(
 /**
  * Create a channel of the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one channel can be used for a view at a time.
  */
 @CheckResult
@@ -89,7 +89,7 @@ fun SlidingPaneLayout.panelSlides(
 /**
  * Create a flow of the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener] to emmit dismiss
+ * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one flow can be used for a view at a time.
  */
 @CheckResult

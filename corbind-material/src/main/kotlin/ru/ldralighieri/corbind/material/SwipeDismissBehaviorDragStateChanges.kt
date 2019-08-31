@@ -56,8 +56,8 @@ fun View.dragStateChanges(
 }
 
 /**
- * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior] inside new
- * [CoroutineScope].
+ * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior] inside
+ * new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform

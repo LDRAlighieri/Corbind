@@ -35,7 +35,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [Toolbar] navigation click events.
  *
- * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener] to emmit clicks. Only
+ * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener] to emit clicks. Only
  * one actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -59,7 +59,7 @@ fun Toolbar.navigationClicks(
 /**
  * Perform an action on [Toolbar] navigation click events inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener] to emmit clicks. Only
+ * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener] to emit clicks. Only
  * one actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -81,7 +81,7 @@ suspend fun Toolbar.navigationClicks(
 /**
  * Create a channel which emits on [Toolbar] navigation click events.
  *
- * *Warning:* The created channel uses [Toolbar.setNavigationOnClickListener] to emmit clicks.
+ * *Warning:* The created channel uses [Toolbar.setNavigationOnClickListener] to emit clicks.
  * Only one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -99,7 +99,7 @@ fun Toolbar.navigationClicks(
 /**
  * Create a flow which emits on [Toolbar] navigation click events.
  *
- * *Warning:* The created flow uses [Toolbar.setNavigationOnClickListener] to emmit clicks. Only
+ * *Warning:* The created flow uses [Toolbar.setNavigationOnClickListener] to emit clicks. Only
  * one flow can be used for a view at a time.
  */
 @CheckResult

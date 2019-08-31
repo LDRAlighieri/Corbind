@@ -39,7 +39,7 @@ data class ViewPager2PageScrollEvent(
 )
 
 /**
- * Perform an action on page scroll events on [ViewPager2].
+ * Perform an action on [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -61,7 +61,8 @@ fun ViewPager2.pageScrollEvents(
 }
 
 /**
- * Perform an action on page scroll events on [ViewPager2] inside new [CoroutineScope].
+ * Perform an action on [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -82,7 +83,7 @@ suspend fun ViewPager2.pageScrollEvents(
 }
 
 /**
- * Create a channel of page scroll events on [ViewPager2].
+ * Create a channel of [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -98,7 +99,7 @@ fun ViewPager2.pageScrollEvents(
 }
 
 /**
- * Create a flow of page scroll events on [ViewPager2].
+ * Create a flow of [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2].
  */
 @CheckResult
 fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = channelFlow {

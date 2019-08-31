@@ -44,7 +44,7 @@ data class ViewAttachDetachedEvent(
 ) : ViewAttachEvent()
 
 /**
- * Perform an action on attach and detach events on [View].
+ * Perform an action on [attach and detach events][ViewAttachEvent] on [View].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -66,7 +66,8 @@ fun View.attachEvents(
 }
 
 /**
- * Perform an action on attach and detach events on [View] inside new CoroutineScope.
+ * Perform an action on [attach and detach events][ViewAttachEvent] on [View] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -86,7 +87,7 @@ suspend fun View.attachEvents(
 }
 
 /**
- * Create a channel of attach and detach events on [View].
+ * Create a channel of [attach and detach events][ViewAttachEvent] on [View].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -102,7 +103,7 @@ fun View.attachEvents(
 }
 
 /**
- * Create a flow of attach and detach events on [View].
+ * Create a flow of [attach and detach events][ViewAttachEvent] on [View].
  */
 @CheckResult
 fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {

@@ -38,7 +38,7 @@ data class RatingBarChangeEvent(
 )
 
 /**
- * Perform an action on rating change events on [RatingBar].
+ * Perform an action on [rating change events][RatingBarChangeEvent] on [RatingBar].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -60,7 +60,8 @@ fun RatingBar.ratingChangeEvents(
 }
 
 /**
- * Perform an action on rating change events on [RatingBar] inside new CoroutineScope.
+ * Perform an action on [rating change events][RatingBarChangeEvent] on [RatingBar] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -80,7 +81,7 @@ suspend fun RatingBar.ratingChangeEvents(
 }
 
 /**
- * Create a channel of the rating change events on [RatingBar].
+ * Create a channel of the [rating change events][RatingBarChangeEvent] on [RatingBar].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -96,7 +97,7 @@ fun RatingBar.ratingChangeEvents(
 }
 
 /**
- * Create a flow of the rating change events on [RatingBar].
+ * Create a flow of the [rating change events][RatingBarChangeEvent] on [RatingBar].
  *
  * *Note:* A value will be emitted immediately on collect.
  */
