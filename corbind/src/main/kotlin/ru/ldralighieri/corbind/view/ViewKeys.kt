@@ -29,14 +29,14 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.offerElement
 
 /**
  * Perform an action on key events for [View].
  *
- * *Warning:* The created actor uses [View.setOnKeyListener] to emmit key events. Only one actor
+ * *Warning:* The created actor uses [View.setOnKeyListener] to emit key events. Only one actor
  * can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -63,7 +63,7 @@ fun View.keys(
 /**
  * Perform an action on key events for [View] inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnKeyListener] to emmit key events. Only one actor
+ * *Warning:* The created actor uses [View.setOnKeyListener] to emit key events. Only one actor
  * can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -88,7 +88,7 @@ suspend fun View.keys(
 /**
  * Create a channel of key events for [View].
  *
- * *Warning:* The created channel uses [View.setOnKeyListener] to emmit key events. Only one
+ * *Warning:* The created channel uses [View.setOnKeyListener] to emit key events. Only one
  * channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -109,7 +109,7 @@ fun View.keys(
 /**
  * Create a flow of key events for [View].
  *
- * *Warning:* The created flow uses [View.setOnKeyListener] to emmit key events. Only one flow
+ * *Warning:* The created flow uses [View.setOnKeyListener] to emit key events. Only one flow
  * can be used for a view at a time.
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying

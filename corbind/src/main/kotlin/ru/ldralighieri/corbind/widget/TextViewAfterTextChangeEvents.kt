@@ -39,7 +39,7 @@ data class TextViewAfterTextChangeEvent(
 )
 
 /**
- * Perform an action after text change events for [TextView].
+ * Perform an action [after text change events][TextViewAfterTextChangeEvent] for [TextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -62,7 +62,8 @@ fun TextView.afterTextChangeEvents(
 }
 
 /**
- * Perform an action after text change events for [TextView] inside new [CoroutineScope].
+ * Perform an action [after text change events][TextViewAfterTextChangeEvent] for [TextView] inside
+ * new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -84,7 +85,7 @@ suspend fun TextView.afterTextChangeEvents(
 }
 
 /**
- * Create a channel of after text change events for [TextView].
+ * Create a channel of [after text change events][TextViewAfterTextChangeEvent] for [TextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -101,7 +102,7 @@ fun TextView.afterTextChangeEvents(
 }
 
 /**
- * Create a channel of after text change events for [TextView].
+ * Create a flow of [after text change events][TextViewAfterTextChangeEvent] for [TextView].
  *
  * *Note:* A value will be emitted immediately on collect.
  */

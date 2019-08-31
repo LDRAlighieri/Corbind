@@ -42,7 +42,7 @@ data class TextViewTextChangeEvent(
 )
 
 /**
- * Perform an action on text change events for [TextView].
+ * Perform an action on [text change events][TextViewTextChangeEvent] for [TextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -65,7 +65,8 @@ fun TextView.textChangeEvents(
 }
 
 /**
- * Perform an action on text change events for [TextView] inside new [CoroutineScope].
+ * Perform an action on [text change events][TextViewTextChangeEvent] for [TextView] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -86,7 +87,7 @@ suspend fun TextView.textChangeEvents(
 }
 
 /**
- * Create a channel of text change events for [TextView].
+ * Create a channel of [text change events][TextViewTextChangeEvent] for [TextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -103,7 +104,7 @@ fun TextView.textChangeEvents(
 }
 
 /**
- * Create a flow of text change events for [TextView].
+ * Create a flow of [text change events][TextViewTextChangeEvent] for [TextView].
  *
  * *Note:* A value will be emitted immediately on collect.
  */

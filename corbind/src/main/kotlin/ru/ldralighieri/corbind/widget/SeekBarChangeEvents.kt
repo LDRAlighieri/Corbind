@@ -50,7 +50,7 @@ data class SeekBarStopChangeEvent(
 ) : SeekBarChangeEvent()
 
 /**
- * Perform an action on progress change events for [SeekBar].
+ * Perform an action on [change events][SeekBarChangeEvent] for [SeekBar].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -72,7 +72,8 @@ fun SeekBar.changeEvents(
 }
 
 /**
- * Perform an action on progress change events for [SeekBar] inside new [CoroutineScope].
+ * Perform an action on [change events][SeekBarChangeEvent] for [SeekBar] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -92,7 +93,7 @@ suspend fun SeekBar.changeEvents(
 }
 
 /**
- * Create a channel of progress change events for [SeekBar].
+ * Create a channel of [change events][SeekBarChangeEvent] for [SeekBar].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -108,7 +109,7 @@ fun SeekBar.changeEvents(
 }
 
 /**
- * Create a flow of progress change events for [SeekBar].
+ * Create a flow of [change events][SeekBarChangeEvent] for [SeekBar].
  *
  * *Note:* A value will be emitted immediately on collect.
  */

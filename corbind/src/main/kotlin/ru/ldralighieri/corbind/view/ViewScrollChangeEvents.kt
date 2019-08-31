@@ -42,7 +42,7 @@ data class ViewScrollChangeEvent(
 )
 
 /**
- * Perform an action on scroll-change events for [View].
+ * Perform an action on [scroll-change events][ViewScrollChangeEvent] for [View].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -64,7 +64,8 @@ fun View.scrollChangeEvents(
 }
 
 /**
- * Perform an action on scroll-change events for [View] inside new [CoroutineScope].
+ * Perform an action on [scroll-change events][ViewScrollChangeEvent] for [View] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -84,7 +85,7 @@ suspend fun View.scrollChangeEvents(
 }
 
 /**
- * Create a channel of scroll-change events for [View].
+ * Create a channel of [scroll-change events][ViewScrollChangeEvent] for [View].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -100,7 +101,7 @@ fun View.scrollChangeEvents(
 }
 
 /**
- * Create a flow of scroll-change events for [View].
+ * Create a flow of [scroll-change events][ViewScrollChangeEvent] for [View].
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult

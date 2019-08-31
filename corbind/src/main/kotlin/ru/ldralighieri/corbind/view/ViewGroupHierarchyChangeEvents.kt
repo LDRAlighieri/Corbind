@@ -48,7 +48,7 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
 ) : ViewGroupHierarchyChangeEvent()
 
 /**
- * Perform an action on hierarchy change events for [ViewGroup].
+ * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -69,7 +69,8 @@ fun ViewGroup.changeEvents(
 }
 
 /**
- * Perform an action on hierarchy change events for [ViewGroup] inside new CoroutineScope.
+ * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup]
+ * inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -89,7 +90,7 @@ suspend fun ViewGroup.changeEvents(
 }
 
 /**
- * Create a channel of hierarchy change events for [ViewGroup].
+ * Create a channel of [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -104,7 +105,7 @@ fun ViewGroup.changeEvents(
 }
 
 /**
- * Create a flow of hierarchy change events for [ViewGroup].
+ * Create a flow of [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
  */
 @CheckResult
 fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = channelFlow {

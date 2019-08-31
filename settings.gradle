@@ -26,5 +26,6 @@ include ':corbind-recyclerview'
 include ':corbind-slidingpanelayout'
 include ':corbind-swiperefreshlayout'
 include ':corbind-viewpager'
+include ':corbind-viewpager2'
 
 include ':sample'

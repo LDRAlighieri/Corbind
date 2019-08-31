@@ -31,10 +31,14 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
-data class RecyclerViewScrollEvent(val view: RecyclerView, val dx: Int, val dy: Int)
+data class RecyclerViewScrollEvent(
+    val view: RecyclerView,
+    val dx: Int,
+    val dy: Int
+)
 
 /**
- * Perform an action on scroll events on [RecyclerView].
+ * Perform an action on [scroll events][RecyclerViewScrollEvent] on [RecyclerView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -56,7 +60,8 @@ fun RecyclerView.scrollEvents(
 }
 
 /**
- * Perform an action on scroll events on [RecyclerView] inside new [CoroutineScope].
+ * Perform an action on [scroll events][RecyclerViewScrollEvent] on [RecyclerView] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -76,7 +81,7 @@ suspend fun RecyclerView.scrollEvents(
 }
 
 /**
- * Create a channel of scroll events on [RecyclerView].
+ * Create a channel of [scroll events][RecyclerViewScrollEvent] on [RecyclerView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -92,7 +97,7 @@ fun RecyclerView.scrollEvents(
 }
 
 /**
- * Create a flow of scroll events on [RecyclerView].
+ * Create a flow of [scroll events][RecyclerViewScrollEvent] on [RecyclerView].
  */
 @CheckResult
 fun RecyclerView.scrollEvents(): Flow<RecyclerViewScrollEvent> = channelFlow {

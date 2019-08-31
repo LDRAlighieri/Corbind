@@ -31,10 +31,14 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
-data class RecyclerViewFlingEvent(val view: RecyclerView, val velocityX: Int, val velocityY: Int)
+data class RecyclerViewFlingEvent(
+    val view: RecyclerView,
+    val velocityX: Int,
+    val velocityY: Int
+)
 
 /**
- * Perform an action on fling events on [RecyclerView].
+ * Perform an action on [fling events][RecyclerViewFlingEvent] on [RecyclerView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -55,7 +59,8 @@ fun RecyclerView.flingEvents(
 }
 
 /**
- * Perform an action on fling events on [RecyclerView] inside new [CoroutineScope].
+ * Perform an action on [fling events][RecyclerViewFlingEvent] on [RecyclerView] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -75,7 +80,7 @@ suspend fun RecyclerView.flingEvents(
 }
 
 /**
- * Create a channel of fling events on [RecyclerView].
+ * Create a channel of [fling events][RecyclerViewFlingEvent] on [RecyclerView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -90,7 +95,7 @@ fun RecyclerView.flingEvents(
 }
 
 /**
- * Create a flow of fling events on [RecyclerView].
+ * Create a flow of [fling events][RecyclerViewFlingEvent] on [RecyclerView].
  */
 @CheckResult
 fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow {

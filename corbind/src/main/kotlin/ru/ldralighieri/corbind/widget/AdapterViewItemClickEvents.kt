@@ -41,7 +41,7 @@ data class AdapterViewItemClickEvent(
 )
 
 /**
- * Perform an action on the item click events for [AdapterView].
+ * Perform an action on the [item click events][AdapterViewItemClickEvent] for [AdapterView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -62,7 +62,8 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 }
 
 /**
- * Perform an action on the item click events for [AdapterView] inside new CoroutineScope.
+ * Perform an action on the [item click events][AdapterViewItemClickEvent] for [AdapterView] inside
+ * new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -81,7 +82,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
 }
 
 /**
- * Create a channel of the item click events for [AdapterView].
+ * Create a channel of the [item click events][AdapterViewItemClickEvent] for [AdapterView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -96,7 +97,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 }
 
 /**
- * Create a flow of the item click events for [AdapterView].
+ * Create a flow of the [item click events][AdapterViewItemClickEvent] for [AdapterView].
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {

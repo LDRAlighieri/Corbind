@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
 /**
- * Perform an action on item click events on [AutoCompleteTextView].
+ * Perform an action on [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -55,7 +55,8 @@ fun AutoCompleteTextView.itemClickEvents(
 }
 
 /**
- * Perform an action on item click events on [AutoCompleteTextView] inside new [CoroutineScope].
+ * Perform an action on [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView]
+ * inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,7 +75,7 @@ suspend fun AutoCompleteTextView.itemClickEvents(
 }
 
 /**
- * Create a channel of item click events on [AutoCompleteTextView].
+ * Create a channel of [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -89,7 +90,7 @@ fun AutoCompleteTextView.itemClickEvents(
 }
 
 /**
- * Create a flow of item click events on [AutoCompleteTextView].
+ * Create a flow of [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView].
  */
 @CheckResult
 fun AutoCompleteTextView.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {

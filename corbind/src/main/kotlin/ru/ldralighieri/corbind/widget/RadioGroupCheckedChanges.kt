@@ -16,6 +16,7 @@
 
 package ru.ldralighieri.corbind.widget
 
+import android.view.View
 import android.widget.RadioGroup
 import androidx.annotation.CheckResult
 import kotlinx.coroutines.CoroutineScope
@@ -33,6 +34,8 @@ import ru.ldralighieri.corbind.offerElement
 
 /**
  * Perform an action on checked view ID changes in [RadioGroup].
+ *
+ * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -56,6 +59,8 @@ fun RadioGroup.checkedChanges(
 /**
  * Perform an action on checked view ID changes in [RadioGroup] inside new CoroutineScope.
  *
+ * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -76,13 +81,15 @@ suspend fun RadioGroup.checkedChanges(
 /**
  * Create a channel of the checked view ID changes in [RadioGroup].
  *
+ * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun RadioGroup.checkedChanges(
-    capacity: Int = Channel.RENDEZVOUS,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     offer(checkedRadioButtonId)
     setOnCheckedChangeListener(listener(scope, ::offerElement))
@@ -92,7 +99,8 @@ fun RadioGroup.checkedChanges(
 /**
  * Create a flow of the checked view ID changes in [RadioGroup].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately on collect. When the selection is cleared, checkedId
+ * is [View.NO_ID]
  */
 @CheckResult
 fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
@@ -107,7 +115,7 @@ private fun listener(
     emitter: (Int) -> Boolean
 ) = object : RadioGroup.OnCheckedChangeListener {
 
-    private var lastChecked = -1
+    private var lastChecked = View.NO_ID
     override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
         if (scope.isActive && checkedId != lastChecked) {
             lastChecked = checkedId

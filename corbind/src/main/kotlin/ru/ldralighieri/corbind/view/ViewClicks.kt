@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [View] click events.
  *
- * *Warning:* The created actor uses [View.setOnClickListener] to emmit clicks. Only one actor
+ * *Warning:* The created actor uses [View.setOnClickListener] to emit clicks. Only one actor
  * can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -58,7 +58,7 @@ fun View.clicks(
 /**
  * Perform an action on [View] click events inside new CoroutineScope.
  *
- * *Warning:* The created actor uses [View.setOnClickListener] to emmit clicks. Only one actor
+ * *Warning:* The created actor uses [View.setOnClickListener] to emit clicks. Only one actor
  * can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -80,7 +80,7 @@ suspend fun View.clicks(
 /**
  * Create a channel which emits on [View] click events
  *
- * *Warning:* The created channel uses [View.setOnClickListener] to emmit clicks. Only one
+ * *Warning:* The created channel uses [View.setOnClickListener] to emit clicks. Only one
  * channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -98,7 +98,7 @@ fun View.clicks(
 /**
  * Create a flow which emits on [View] click events
  *
- * *Warning:* The created flow uses [View.setOnClickListener] to emmit clicks. Only one flow can
+ * *Warning:* The created flow uses [View.setOnClickListener] to emit clicks. Only one flow can
  * be used for a view at a time.
  */
 @CheckResult

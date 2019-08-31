@@ -29,8 +29,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.offerElement
 
 data class TextViewEditorActionEvent(
@@ -40,7 +40,7 @@ data class TextViewEditorActionEvent(
 )
 
 /**
- * Perform an action on editor action events on [TextView].
+ * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -64,7 +64,8 @@ fun TextView.editorActionEvents(
 }
 
 /**
- * Perform an action on editor action events on [TextView] inside new [CoroutineScope].
+ * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView] inside new
+ * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -86,7 +87,7 @@ suspend fun TextView.editorActionEvents(
 }
 
 /**
- * Create a channel of editor action events on [TextView].
+ * Create a channel of [editor action events][TextViewEditorActionEvent] on [TextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -104,7 +105,7 @@ fun TextView.editorActionEvents(
 }
 
 /**
- * Create a flow of editor action events on [TextView].
+ * Create a flow of [editor action events][TextViewEditorActionEvent] on [TextView].
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
  * [TextView.OnEditorActionListener].

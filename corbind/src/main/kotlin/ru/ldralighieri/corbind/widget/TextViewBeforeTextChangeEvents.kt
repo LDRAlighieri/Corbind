@@ -42,7 +42,7 @@ data class TextViewBeforeTextChangeEvent(
 )
 
 /**
- * Perform an action before text change events for [TextView].
+ * Perform an action [before text change events][TextViewBeforeTextChangeEvent] for [TextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -65,7 +65,8 @@ fun TextView.beforeTextChangeEvents(
 }
 
 /**
- * Perform an action before text change events for [TextView] inside new [CoroutineScope].
+ * Perform an action [before text change events][TextViewBeforeTextChangeEvent] for [TextView]
+ * inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -87,7 +88,7 @@ suspend fun TextView.beforeTextChangeEvents(
 }
 
 /**
- * Create a channel of before text change events for [TextView].
+ * Create a channel of [before text change events][TextViewBeforeTextChangeEvent] for [TextView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -104,7 +105,7 @@ fun TextView.beforeTextChangeEvents(
 }
 
 /**
- * Create a flow of before text change events for [TextView].
+ * Create a flow of [before text change events][TextViewBeforeTextChangeEvent] for [TextView].
  *
  * *Note:* A value will be emitted immediately on collect.
  */

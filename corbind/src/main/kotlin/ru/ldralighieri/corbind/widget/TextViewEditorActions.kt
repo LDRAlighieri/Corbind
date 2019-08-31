@@ -28,14 +28,14 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.offerElement
 
 /**
  * Perform an action on editor actions on [TextView].
  *
- * *Warning:* The created actor uses [TextView.OnEditorActionListener] to emmit actions. Only one
+ * *Warning:* The created actor uses [TextView.OnEditorActionListener] to emit actions. Only one
  * actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -62,7 +62,7 @@ fun TextView.editorActions(
 /**
  * Perform an action on editor actions on [TextView] inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [TextView.OnEditorActionListener] to emmit actions. Only one
+ * *Warning:* The created actor uses [TextView.OnEditorActionListener] to emit actions. Only one
  * actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -87,7 +87,7 @@ suspend fun TextView.editorActions(
 /**
  * Create a channel of editor actions on [TextView].
  *
- * *Warning:* The created channel uses [TextView.OnEditorActionListener] to emmit actions. Only
+ * *Warning:* The created channel uses [TextView.OnEditorActionListener] to emit actions. Only
  * one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
@@ -108,7 +108,7 @@ fun TextView.editorActions(
 /**
  * Create a flow of editor actions on [TextView].
  *
- * *Warning:* The created flow uses [TextView.OnEditorActionListener] to emmit actions. Only one
+ * *Warning:* The created flow uses [TextView.OnEditorActionListener] to emit actions. Only one
  * flow can be used for a view at a time.
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
