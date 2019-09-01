@@ -7,7 +7,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 ---
 
 <div style="text-align: center">
-    <img src="../img/corbind.svg" alt="Corbind logo"/>
+    <img src="https://ldralighieri.github.io/Corbind/img/corbind.svg" alt="Corbind logo"/>
 </div>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
