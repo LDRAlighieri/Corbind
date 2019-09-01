@@ -57,7 +57,6 @@ Google 'material' library bindings:
 ```groovy
 implementation 'ru.ldralighieri.corbind:corbind-material:1.1.0'
 ```
-<br>
 
 
 ## List of extensions
@@ -120,7 +119,6 @@ combine(
     .onEach { bt_login.isEnabled = it }
     .launchIn(scope)
 ```
-<br>
 
 
 ## Missed or forgot something?
