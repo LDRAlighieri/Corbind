@@ -22,6 +22,18 @@ description: Coroutine binding APIs for Android UI widgets from the platform and
 
 # List of links in the navigation bar
 navbar-links:
+  Components:
+    - corbind: "components/corbind"
+    - corbind-appcompat: "components/corbind-appcompat"
+    - corbind-core: "components/corbind-core"
+    - corbind-drawerlayout: "components/corbind-drawerlayout"
+    - corbind-leanback: "components/corbind-leanback"
+    - corbind-material: "components/corbind-material"
+    - corbind-recyclerview: "components/corbind-recyclerview"
+    - corbind-slidingpanelayout: "components/corbind-slidingpanelayout"
+    - corbind-swiperefreshlayout: "components/corbind-swiperefreshlayout"
+    - corbind-viewpager: "components/corbind-viewpager"
+    - corbind-viewpager2: "components/corbind-viewpager2"
   Changelog: "changelog"
   Home: "https://ldralighieri.github.io"
 
