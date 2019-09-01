@@ -60,7 +60,7 @@ implementation 'ru.ldralighieri.corbind:corbind-material:1.1.0'
 
 
 ## List of extensions
-You can find a list of extensions in the description of each module.<br>
+You can find a list of extensions in the description of each module:<br>
 [corbind]<br>
 [corbind-appcompat]<br>
 [corbind-core]<br>
