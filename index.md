@@ -57,19 +57,21 @@ Google 'material' library bindings:
 ```groovy
 implementation 'ru.ldralighieri.corbind:corbind-material:1.1.0'
 ```
+<br>
+
 
 ## List of extensions
-You can find a list of extensions in the description of each module.
-[corbind]
-[corbind-appcompat]
-[corbind-core]
-[corbind-drawerlayout]
-[corbind-leanback]
-[corbind-material]
-[corbind-recyclerview]
-[corbind-slidingpanelayout]
-[corbind-swiperefreshlayout]
-[corbind-viewpager]
+You can find a list of extensions in the description of each module.<br>
+[corbind]<br>
+[corbind-appcompat]<br>
+[corbind-core]<br>
+[corbind-drawerlayout]<br>
+[corbind-leanback]<br>
+[corbind-material]<br>
+[corbind-recyclerview]<br>
+[corbind-slidingpanelayout]<br>
+[corbind-swiperefreshlayout]<br>
+[corbind-viewpager]<br>
 [corbind-viewpager2]
 
 
@@ -118,6 +120,7 @@ combine(
     .onEach { bt_login.isEnabled = it }
     .launchIn(scope)
 ```
+<br>
 
 
 ## Missed or forgot something?
