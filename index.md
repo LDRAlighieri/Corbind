@@ -42,8 +42,8 @@ implementation 'ru.ldralighieri.corbind:corbind:1.1.0'
 
 AndroidX library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-core:1.1.0'
 implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.1.0'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.1.0'
 implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.1.0'
 implementation 'ru.ldralighieri.corbind:corbind-leanback:1.1.0'
 implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.1.0'
@@ -57,6 +57,20 @@ Google 'material' library bindings:
 ```groovy
 implementation 'ru.ldralighieri.corbind:corbind-material:1.1.0'
 ```
+
+## List of extensions
+You can find a list of extensions in the description of each module.
+[corbind]
+[corbind-appcompat]
+[corbind-core]
+[corbind-drawerlayout]
+[corbind-leanback]
+[corbind-material]
+[corbind-recyclerview]
+[corbind-slidingpanelayout]
+[corbind-swiperefreshlayout]
+[corbind-viewpager]
+[corbind-viewpager2]
 
 
 ## How to use it?
@@ -121,3 +135,15 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 [flow]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html
 [channel]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/index.html
 [actor]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
+
+[corbind]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind
+[corbind-appcompat]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-appcompat
+[corbind-core]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-core
+[corbind-drawerlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-drawerlayout
+[corbind-leanback]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-leanback
+[corbind-material]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-material
+[corbind-recyclerview]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-recyclerview
+[corbind-slidingpanelayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-slidingpanelayout
+[corbind-swiperefreshlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-swiperefreshlayout
+[corbind-viewpager]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-viewpager
+[corbind-viewpager2]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-viewpager2
