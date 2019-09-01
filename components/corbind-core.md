@@ -2,12 +2,19 @@
 layout: page
 title: Corbind
 subtitle: corbind-core module
-show-avatar: false
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Androidx core bindings.
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx core bindings]
 ---
 
-# corbind-core
+<div style="text-align: center">
+    <img src="img/corbind.svg" alt="Corbind logo"/>
+</div>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<div style="text-align: center">
+  <a class="github-button" href="https://github.com/LDRAlighieri" data-size="large" aria-label="Follow @LDRAlighieri on GitHub">Follow</a>
+  <a class="github-button" href="https://github.com/LDRAlighieri/Corbind" data-icon="octicon-star" data-size="large" aria-label="Star LDRAlighieri/Corbind on GitHub">Star</a>
+</div>
 
 To add androidx core bindings, import `corbind-core` module:
 
