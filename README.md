@@ -26,8 +26,8 @@ implementation 'ru.ldralighieri.corbind:corbind:1.1.0'
 
 AndroidX library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-core:1.1.0'
 implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.1.0'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.1.0'
 implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.1.0'
 implementation 'ru.ldralighieri.corbind:corbind-leanback:1.1.0'
 implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.1.0'
