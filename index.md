@@ -137,14 +137,14 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 [channel]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/index.html
 [actor]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
 
-[corbind]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind
-[corbind-appcompat]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-appcompat
-[corbind-core]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-core
-[corbind-drawerlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-drawerlayout
-[corbind-leanback]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-leanback
-[corbind-material]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-material
-[corbind-recyclerview]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-recyclerview
-[corbind-slidingpanelayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-slidingpanelayout
-[corbind-swiperefreshlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-swiperefreshlayout
-[corbind-viewpager]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-viewpager
-[corbind-viewpager2]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-viewpager2
+[corbind]: https://ldralighieri.github.io/Corbind/modules/corbind/
+[corbind-appcompat]: https://ldralighieri.github.io/Corbind/modules/corbind-appcompat
+[corbind-core]: https://ldralighieri.github.io/Corbind/modules/corbind-core
+[corbind-drawerlayout]: https://ldralighieri.github.io/Corbind/modules/corbind-drawerlayout
+[corbind-leanback]: https://ldralighieri.github.io/Corbind/modules/corbind-leanback
+[corbind-material]: https://ldralighieri.github.io/Corbind/modules/corbind-material
+[corbind-recyclerview]: https://ldralighieri.github.io/Corbind/modules/corbind-recyclerview
+[corbind-slidingpanelayout]: https://ldralighieri.github.io/Corbind/modules/corbind-slidingpanelayout
+[corbind-swiperefreshlayout]: https://ldralighieri.github.io/Corbind/modules/corbind-swiperefreshlayout
+[corbind-viewpager]: https://ldralighieri.github.io/Corbind/modules/corbind-viewpager
+[corbind-viewpager2]: https://ldralighieri.github.io/Corbind/modules/corbind-viewpager2
