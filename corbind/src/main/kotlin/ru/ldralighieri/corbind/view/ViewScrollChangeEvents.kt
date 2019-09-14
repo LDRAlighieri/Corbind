@@ -54,7 +54,6 @@ fun View.scrollChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewScrollChangeEvent) -> Unit
 ) {
-
     val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -64,7 +63,7 @@ fun View.scrollChangeEvents(
 }
 
 /**
- * Perform an action on [scroll-change events][ViewScrollChangeEvent] for [View] inside new
+ * Perform an action on [scroll-change events][ViewScrollChangeEvent] for [View], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -75,13 +74,7 @@ suspend fun View.scrollChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewScrollChangeEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<ViewScrollChangeEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    setOnScrollChangeListener(listener(this, events::offer))
-    events.invokeOnClose { setOnScrollChangeListener(null) }
+    scrollChangeEvents(this, capacity, action)
 }
 
 /**

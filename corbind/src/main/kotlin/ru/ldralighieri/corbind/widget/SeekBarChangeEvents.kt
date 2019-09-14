@@ -61,7 +61,6 @@ fun SeekBar.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SeekBarChangeEvent) -> Unit
 ) {
-
     val events = scope.actor<SeekBarChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -72,7 +71,7 @@ fun SeekBar.changeEvents(
 }
 
 /**
- * Perform an action on [change events][SeekBarChangeEvent] for [SeekBar] inside new
+ * Perform an action on [change events][SeekBarChangeEvent] for [SeekBar], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -82,14 +81,7 @@ suspend fun SeekBar.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SeekBarChangeEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<SeekBarChangeEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    events.offer(initialValue(this@changeEvents))
-    setOnSeekBarChangeListener(listener(this, events::offer))
-    events.invokeOnClose { setOnSeekBarChangeListener(null) }
+    changeEvents(this, capacity, action)
 }
 
 /**

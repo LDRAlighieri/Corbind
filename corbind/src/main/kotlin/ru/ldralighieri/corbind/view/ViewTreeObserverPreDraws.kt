@@ -56,7 +56,7 @@ fun View.preDraws(
 }
 
 /**
- * Perform an action on pre-draws on [View] inside new [CoroutineScope].
+ * Perform an action on pre-draws on [View], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param proceedDrawingPass Let drawing process proceed
@@ -67,13 +67,7 @@ suspend fun View.preDraws(
     proceedDrawingPass: () -> Boolean,
     action: suspend () -> Unit
 ) = coroutineScope {
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    val listener = listener(this, proceedDrawingPass, events::offer)
-    viewTreeObserver.addOnPreDrawListener(listener)
-    events.invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
+    preDraws(this, capacity, proceedDrawingPass, action)
 }
 
 /**
@@ -114,7 +108,6 @@ private fun listener(
     proceedDrawingPass: () -> Boolean,
     emitter: (Unit) -> Boolean
 ) = ViewTreeObserver.OnPreDrawListener {
-
     if (scope.isActive) {
         emitter(Unit)
         return@OnPreDrawListener proceedDrawingPass()

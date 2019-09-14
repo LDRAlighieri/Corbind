@@ -45,7 +45,6 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (position in channel) action(position)
     }
@@ -56,7 +55,7 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
 }
 
 /**
- * Perform an action on the selected position of [AdapterView] inside new [CoroutineScope].
+ * Perform an action on the selected position of [AdapterView], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -65,14 +64,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (position in channel) action(position)
-    }
-
-    events.offer(selectedItemPosition)
-    onItemSelectedListener = listener(this, events::offer)
-    events.invokeOnClose { onItemSelectedListener = null }
+    itemSelections(this, capacity, action)
 }
 
 /**

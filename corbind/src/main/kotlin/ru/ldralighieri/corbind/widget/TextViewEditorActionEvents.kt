@@ -54,7 +54,6 @@ fun TextView.editorActionEvents(
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
     action: suspend (TextViewEditorActionEvent) -> Unit
 ) {
-
     val events = scope.actor<TextViewEditorActionEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -64,7 +63,7 @@ fun TextView.editorActionEvents(
 }
 
 /**
- * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView] inside new
+ * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -77,13 +76,7 @@ suspend fun TextView.editorActionEvents(
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
     action: suspend (TextViewEditorActionEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<TextViewEditorActionEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    setOnEditorActionListener(listener(this, handled, events::offer))
-    events.invokeOnClose { setOnEditorActionListener(null) }
+    editorActionEvents(this, capacity, handled, action)
 }
 
 /**
@@ -124,7 +117,6 @@ private fun listener(
     handled: (TextViewEditorActionEvent) -> Boolean,
     emitter: (TextViewEditorActionEvent) -> Boolean
 ) = TextView.OnEditorActionListener { v, actionId, keyEvent ->
-
     if (scope.isActive) {
         val event = TextViewEditorActionEvent(v, actionId, keyEvent)
         if (handled(event)) {

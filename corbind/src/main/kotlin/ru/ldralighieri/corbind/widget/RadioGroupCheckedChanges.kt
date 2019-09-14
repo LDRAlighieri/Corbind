@@ -46,7 +46,6 @@ fun RadioGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (checkedId in channel) action(checkedId)
     }
@@ -57,7 +56,7 @@ fun RadioGroup.checkedChanges(
 }
 
 /**
- * Perform an action on checked view ID changes in [RadioGroup] inside new CoroutineScope.
+ * Perform an action on checked view ID changes in [RadioGroup], inside new [CoroutineScope].
  *
  * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
  *
@@ -68,14 +67,7 @@ suspend fun RadioGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (checkedId in channel) action(checkedId)
-    }
-
-    events.offer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(this, events::offer))
-    events.invokeOnClose { setOnCheckedChangeListener(null) }
+    checkedChanges(this, capacity, action)
 }
 
 /**

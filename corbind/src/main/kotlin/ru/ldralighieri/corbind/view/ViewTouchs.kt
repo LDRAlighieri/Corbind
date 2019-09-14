@@ -48,7 +48,6 @@ fun View.touches(
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
     action: suspend (MotionEvent) -> Unit
 ) {
-
     val events = scope.actor<MotionEvent>(Dispatchers.Main, capacity) {
         for (motion in channel) action(motion)
     }

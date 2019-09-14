@@ -53,19 +53,18 @@ fun TextView.beforeTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TextViewBeforeTextChangeEvent) -> Unit
 ) {
-
     val events = scope.actor<TextViewBeforeTextChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
     events.offer(initialValue(this))
-    val listener = listener(scope = scope, textView = this, emitter = events::offer)
+    val listener = listener(scope, this, events::offer)
     addTextChangedListener(listener)
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
 
 /**
- * Perform an action [before text change events][TextViewBeforeTextChangeEvent] for [TextView]
+ * Perform an action [before text change events][TextViewBeforeTextChangeEvent] for [TextView],
  * inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -75,16 +74,7 @@ suspend fun TextView.beforeTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TextViewBeforeTextChangeEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<TextViewBeforeTextChangeEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    events.offer(initialValue(this@beforeTextChangeEvents))
-    val listener = listener(scope = this, textView = this@beforeTextChangeEvents,
-            emitter = events::offer)
-    addTextChangedListener(listener)
-    events.invokeOnClose { removeTextChangedListener(listener) }
+    beforeTextChangeEvents(this, capacity, action)
 }
 
 /**

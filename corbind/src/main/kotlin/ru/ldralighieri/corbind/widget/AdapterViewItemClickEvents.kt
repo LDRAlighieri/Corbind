@@ -52,7 +52,6 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AdapterViewItemClickEvent) -> Unit
 ) {
-
     val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -62,7 +61,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 }
 
 /**
- * Perform an action on the [item click events][AdapterViewItemClickEvent] for [AdapterView] inside
+ * Perform an action on the [item click events][AdapterViewItemClickEvent] for [AdapterView], inside
  * new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -72,13 +71,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AdapterViewItemClickEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<AdapterViewItemClickEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    onItemClickListener = listener(this, events::offer)
-    events.invokeOnClose { onItemClickListener = null }
+    itemClickEvents(this, capacity, action)
 }
 
 /**
