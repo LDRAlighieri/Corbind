@@ -46,7 +46,6 @@ fun PopupMenu.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -56,7 +55,7 @@ fun PopupMenu.dismisses(
 }
 
 /**
- * Perform an action on [PopupMenu] dismiss events inside new [CoroutineScope].
+ * Perform an action on [PopupMenu] dismiss events, inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [PopupMenu.setOnDismissListener] to emit dismiss change.
  * Only one actor can be used for a view at a time.
@@ -68,13 +67,7 @@ suspend fun PopupMenu.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    setOnDismissListener(listener(this, events::offer))
-    events.invokeOnClose { setOnMenuItemClickListener(null) }
+    dismisses(this, capacity, action)
 }
 
 /**
