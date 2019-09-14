@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx slidingpanelayout bindings, import `corbind-slidingpanelayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.1.0'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.1.2'
 ```
 
 ## List of extensions
