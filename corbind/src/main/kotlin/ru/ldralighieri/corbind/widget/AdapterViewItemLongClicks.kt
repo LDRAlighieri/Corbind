@@ -58,7 +58,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 /**
- * Perform an action on position of item long-clicks for [AdapterView], inside new CoroutineScope.
+ * Perform an action on position of item long-clicks for [AdapterView], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked each occurrence to determine the return value of the underlying

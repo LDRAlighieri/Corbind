@@ -85,7 +85,7 @@ fun CompoundButton.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    offer(isChecked)
+    offerElement(isChecked)
     setOnCheckedChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }

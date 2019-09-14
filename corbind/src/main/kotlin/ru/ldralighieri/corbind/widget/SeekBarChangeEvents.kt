@@ -95,7 +95,7 @@ fun SeekBar.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
-    offer(initialValue(this@changeEvents))
+    offerElement(initialValue(this@changeEvents))
     setOnSeekBarChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }

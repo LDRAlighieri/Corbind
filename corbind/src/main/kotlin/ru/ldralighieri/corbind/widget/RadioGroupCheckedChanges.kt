@@ -83,7 +83,7 @@ fun RadioGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offer(checkedRadioButtonId)
+    offerElement(checkedRadioButtonId)
     setOnCheckedChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }

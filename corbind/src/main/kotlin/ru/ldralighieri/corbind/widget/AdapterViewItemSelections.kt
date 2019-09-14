@@ -79,7 +79,7 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offer(selectedItemPosition)
+    offerElement(selectedItemPosition)
     onItemSelectedListener = listener(scope, ::offerElement)
     invokeOnClose { onItemSelectedListener = null }
 }

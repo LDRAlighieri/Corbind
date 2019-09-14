@@ -37,6 +37,10 @@ import ru.ldralighieri.corbind.offerElement
  *
  * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun SlidingPaneLayout.panelSlides(
     scope: CoroutineScope,
@@ -57,6 +61,9 @@ fun SlidingPaneLayout.panelSlides(
  *
  * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun SlidingPaneLayout.panelSlides(
     capacity: Int = Channel.RENDEZVOUS,
@@ -70,6 +77,9 @@ suspend fun SlidingPaneLayout.panelSlides(
  *
  * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun SlidingPaneLayout.panelSlides(

@@ -78,7 +78,7 @@ fun <T : Adapter> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
-    offer(this@dataChanges)
+    offerElement(this@dataChanges)
     val dataSetObserver = observer(scope, this@dataChanges, ::offerElement)
     registerDataSetObserver(dataSetObserver)
     invokeOnClose { unregisterDataSetObserver(dataSetObserver) }

@@ -91,7 +91,7 @@ fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@checkedChanges)
-    offer(checkedChipId)
+    offerElement(checkedChipId)
     setOnCheckedChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }

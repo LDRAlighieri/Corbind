@@ -80,8 +80,8 @@ suspend fun RatingBar.ratingChangeEvents(
  */
 @CheckResult
 fun RatingBar.ratingChangeEvents(
-    capacity: Int = Channel.RENDEZVOUS,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel(capacity) {
     offerElement(initialValue(this@ratingChangeEvents))
     onRatingBarChangeListener = listener(scope, ::offerElement)

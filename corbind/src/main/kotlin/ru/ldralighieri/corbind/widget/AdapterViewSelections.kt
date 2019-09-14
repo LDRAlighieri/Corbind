@@ -93,7 +93,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(capacity) {
-    offer(initialValue(this@selectionEvents))
+    offerElement(initialValue(this@selectionEvents))
     onItemSelectedListener = listener(scope, ::offerElement)
     invokeOnClose { onItemSelectedListener = null }
 }

@@ -63,7 +63,7 @@ fun ViewGroup.changeEvents(
         for (event in channel) action(event)
     }
 
-    setOnHierarchyChangeListener(listener(scope = scope, viewGroup = this, emitter = events::offer))
+    setOnHierarchyChangeListener(listener(scope, this, events::offer))
     events.invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
