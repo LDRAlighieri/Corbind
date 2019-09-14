@@ -45,7 +45,6 @@ fun View.slides(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit
 ) {
-
     val events = scope.actor<Float>(Dispatchers.Main, capacity) {
         for (offset in channel) action(offset)
     }
@@ -56,7 +55,7 @@ fun View.slides(
 }
 
 /**
- * Perform an action on the slide offset events from [View] on [BottomSheetBehavior] inside new
+ * Perform an action on the slide offset events from [View] on [BottomSheetBehavior], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -66,14 +65,7 @@ suspend fun View.slides(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Float>(Dispatchers.Main, capacity) {
-        for (offset in channel) action(offset)
-    }
-
-    val behavior = getBehavior(this@slides)
-    behavior.setBottomSheetCallback(callback(this, events::offer))
-    events.invokeOnClose { behavior.setBottomSheetCallback(null) }
+    slides(this, capacity, action)
 }
 
 /**

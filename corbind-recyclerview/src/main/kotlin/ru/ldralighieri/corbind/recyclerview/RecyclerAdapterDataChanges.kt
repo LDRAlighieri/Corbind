@@ -43,19 +43,18 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (T) -> Unit
 ) {
-
     val events = scope.actor<T>(Dispatchers.Main, capacity) {
         for (adapter in channel) action(adapter)
     }
 
     events.offer(this)
-    val dataObserver = observer(scope = scope, adapter = this, emitter = events::offer)
+    val dataObserver = observer(scope, this, events::offer)
     registerAdapterDataObserver(dataObserver)
     events.invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
 
 /**
- * Perform an action on data change events for [RecyclerView.Adapter] inside new [CoroutineScope].
+ * Perform an action on data change events for [RecyclerView.Adapter], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -64,15 +63,7 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (T) -> Unit
 ) = coroutineScope {
-
-    val events = actor<T>(Dispatchers.Main, capacity) {
-        for (adapter in channel) action(adapter)
-    }
-
-    events.offer(this@dataChanges)
-    val dataObserver = observer(scope = this, adapter = this@dataChanges, emitter = events::offer)
-    registerAdapterDataObserver(dataObserver)
-    events.invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
+    dataChanges(this, capacity, action)
 }
 
 /**

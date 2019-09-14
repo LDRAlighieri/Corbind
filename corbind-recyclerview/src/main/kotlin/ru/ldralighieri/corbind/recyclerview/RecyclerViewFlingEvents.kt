@@ -49,17 +49,16 @@ fun RecyclerView.flingEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewFlingEvent) -> Unit
 ) {
-
     val events = scope.actor<RecyclerViewFlingEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
-    onFlingListener = listener(scope = scope, recyclerView = this, emitter = events::offer)
+    onFlingListener = listener(scope, this, events::offer)
     events.invokeOnClose { onFlingListener = null }
 }
 
 /**
- * Perform an action on [fling events][RecyclerViewFlingEvent] on [RecyclerView] inside new
+ * Perform an action on [fling events][RecyclerViewFlingEvent] on [RecyclerView], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -69,14 +68,7 @@ suspend fun RecyclerView.flingEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewFlingEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<RecyclerViewFlingEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    onFlingListener = listener(scope = this, recyclerView = this@flingEvents,
-            emitter = events::offer)
-    events.invokeOnClose { onFlingListener = null }
+    flingEvents(this, capacity, action)
 }
 
 /**

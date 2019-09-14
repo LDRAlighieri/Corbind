@@ -43,7 +43,6 @@ fun RecyclerView.scrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (state in channel) action(state)
     }
@@ -54,7 +53,7 @@ fun RecyclerView.scrollStateChanges(
 }
 
 /**
- * Perform an action on scroll state changes on [RecyclerView] inside new [CoroutineScope].
+ * Perform an action on scroll state changes on [RecyclerView], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -63,14 +62,7 @@ suspend fun RecyclerView.scrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (state in channel) action(state)
-    }
-
-    val scrollListener = listener(this, events::offer)
-    addOnScrollListener(scrollListener)
-    events.invokeOnClose { removeOnScrollListener(scrollListener) }
+    scrollStateChanges(this, capacity, action)
 }
 
 /**

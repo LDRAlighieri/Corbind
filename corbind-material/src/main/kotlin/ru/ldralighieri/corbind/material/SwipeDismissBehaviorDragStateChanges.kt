@@ -45,7 +45,6 @@ fun View.dragStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (state in channel) action(state)
     }
@@ -56,7 +55,7 @@ fun View.dragStateChanges(
 }
 
 /**
- * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior] inside
+ * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior], inside
  * new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -66,14 +65,7 @@ suspend fun View.dragStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (state in channel) action(state)
-    }
-
-    val behavior = getBehavior(this@dragStateChanges)
-    behavior.setListener(listener(this, events::offer))
-    events.invokeOnClose { behavior.setListener(null) }
+    dragStateChanges(this, capacity, action)
 }
 
 /**
