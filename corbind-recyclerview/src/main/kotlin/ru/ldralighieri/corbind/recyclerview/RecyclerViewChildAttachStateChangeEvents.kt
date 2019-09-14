@@ -60,19 +60,18 @@ fun RecyclerView.childAttachStateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit
 ) {
-
     val events = scope.actor<RecyclerViewChildAttachStateChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope = scope, recyclerView = this, emitter = events::offer)
+    val listener = listener(scope, this, events::offer)
     addOnChildAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
 }
 
 /**
  * Perform an action on [child attach state change events][RecyclerViewChildAttachStateChangeEvent]
- * on [RecyclerView] inside new [CoroutineScope].
+ * on [RecyclerView], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -81,15 +80,7 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<RecyclerViewChildAttachStateChangeEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    val listener = listener(scope = this, recyclerView = this@childAttachStateChangeEvents,
-            emitter = events::offer)
-    addOnChildAttachStateChangeListener(listener)
-    events.invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
+    childAttachStateChangeEvents(this, capacity, action)
 }
 
 /**

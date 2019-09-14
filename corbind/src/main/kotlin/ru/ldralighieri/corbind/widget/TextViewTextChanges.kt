@@ -45,7 +45,6 @@ fun TextView.textChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CharSequence) -> Unit
 ) {
-
     val events = scope.actor<CharSequence>(Dispatchers.Main, capacity) {
         for (chars in channel) action(chars)
     }
@@ -57,7 +56,7 @@ fun TextView.textChanges(
 }
 
 /**
- * Perform an action on character sequences for text changes on [TextView] inside new
+ * Perform an action on character sequences for text changes on [TextView], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -67,15 +66,7 @@ suspend fun TextView.textChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CharSequence) -> Unit
 ) = coroutineScope {
-
-    val events = actor<CharSequence>(Dispatchers.Main, capacity) {
-        for (chars in channel) action(chars)
-    }
-
-    events.offer(text)
-    val listener = listener(this, events::offer)
-    addTextChangedListener(listener)
-    events.invokeOnClose { removeTextChangedListener(listener) }
+    textChanges(this, capacity, action)
 }
 
 /**

@@ -54,7 +54,6 @@ fun AbsListView.scrollEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AbsListViewScrollEvent) -> Unit
 ) {
-
     val events = scope.actor<AbsListViewScrollEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -64,7 +63,7 @@ fun AbsListView.scrollEvents(
 }
 
 /**
- * Perform an action on [scroll events][AbsListViewScrollEvent] on [AbsListView] inside new
+ * Perform an action on [scroll events][AbsListViewScrollEvent] on [AbsListView], inside new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [AbsListView.setOnScrollListener] to emit scroll changes.
@@ -77,13 +76,7 @@ suspend fun AbsListView.scrollEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AbsListViewScrollEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<AbsListViewScrollEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    setOnScrollListener(listener(this, events::offer))
-    events.invokeOnClose { setOnScrollListener(null) }
+    scrollEvents(this, capacity, action)
 }
 
 /**

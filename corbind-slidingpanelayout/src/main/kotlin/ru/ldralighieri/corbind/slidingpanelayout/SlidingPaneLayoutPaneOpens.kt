@@ -47,7 +47,6 @@ fun SlidingPaneLayout.panelOpens(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit
 ) {
-
     val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -58,7 +57,7 @@ fun SlidingPaneLayout.panelOpens(
 }
 
 /**
- * Perform an action on the open state of the pane of [SlidingPaneLayout] inside new
+ * Perform an action on the open state of the pane of [SlidingPaneLayout], inside new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
@@ -71,14 +70,7 @@ suspend fun SlidingPaneLayout.panelOpens(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Boolean>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    events.offer(isOpen)
-    setPanelSlideListener(listener(this, events::offer))
-    events.invokeOnClose { setPanelSlideListener(null) }
+    panelOpens(this, capacity, action)
 }
 
 /**

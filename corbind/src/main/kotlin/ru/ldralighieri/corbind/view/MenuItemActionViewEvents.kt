@@ -60,9 +60,8 @@ fun MenuItem.actionViewEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-    action: suspend (MenuItemActionViewEvent) -> Boolean
+    action: suspend (MenuItemActionViewEvent) -> Unit
 ) {
-
     val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -72,7 +71,7 @@ fun MenuItem.actionViewEvents(
 }
 
 /**
- * Perform an action on [action view events][MenuItemActionViewEvent] for [MenuItem] inside new
+ * Perform an action on [action view events][MenuItemActionViewEvent] for [MenuItem], inside new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [MenuItem.setOnActionExpandListener] to emit action view
@@ -88,13 +87,7 @@ suspend fun MenuItem.actionViewEvents(
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
     action: suspend (MenuItemActionViewEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    setOnActionExpandListener(listener(this, handled, events::offer))
-    events.invokeOnClose { setOnActionExpandListener(null) }
+    actionViewEvents(this, capacity, handled, action)
 }
 
 /**

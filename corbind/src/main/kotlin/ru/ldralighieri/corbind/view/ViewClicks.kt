@@ -46,7 +46,6 @@ fun View.clicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -56,7 +55,7 @@ fun View.clicks(
 }
 
 /**
- * Perform an action on [View] click events inside new CoroutineScope.
+ * Perform an action on [View] click events, inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnClickListener] to emit clicks. Only one actor
  * can be used for a view at a time.
@@ -68,13 +67,7 @@ suspend fun View.clicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    setOnClickListener(listener(this, events::offer))
-    events.invokeOnClose { setOnClickListener(null) }
+    clicks(this, capacity, action)
 }
 
 /**

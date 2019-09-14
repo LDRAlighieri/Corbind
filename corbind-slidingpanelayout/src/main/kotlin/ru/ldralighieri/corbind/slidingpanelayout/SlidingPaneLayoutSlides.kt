@@ -37,13 +37,16 @@ import ru.ldralighieri.corbind.offerElement
  *
  * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 fun SlidingPaneLayout.panelSlides(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit
 ) {
-
     val events = scope.actor<Float>(Dispatchers.Main, capacity) {
         for (slide in channel) action(slide)
     }
@@ -53,22 +56,20 @@ fun SlidingPaneLayout.panelSlides(
 }
 
 /**
- * Perform an action on the slide offset of the pane of [SlidingPaneLayout] inside new [CoroutineScope].
+ * Perform an action on the slide offset of the pane of [SlidingPaneLayout], inside new
+ * [CoroutineScope].
  *
  * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.
+ *
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param action An action to perform
  */
 suspend fun SlidingPaneLayout.panelSlides(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Float>(Dispatchers.Main, capacity) {
-        for (slide in channel) action(slide)
-    }
-
-    setPanelSlideListener(listener(this, events::offer))
-    events.invokeOnClose { setPanelSlideListener(null) }
+    panelSlides(this, capacity, action)
 }
 
 /**
@@ -76,6 +77,9 @@ suspend fun SlidingPaneLayout.panelSlides(
  *
  * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
  * change. Only one channel can be used for a view at a time.
+ *
+ * @param scope Root coroutine scope
+ * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
 fun SlidingPaneLayout.panelSlides(

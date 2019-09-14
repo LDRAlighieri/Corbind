@@ -43,7 +43,6 @@ fun ViewPager2.pageSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (position in channel) action(position)
     }
@@ -55,7 +54,7 @@ fun ViewPager2.pageSelections(
 }
 
 /**
- * Perform an action on page selected events on [ViewPager2] inside new [CoroutineScope].
+ * Perform an action on page selected events on [ViewPager2], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -64,15 +63,7 @@ suspend fun ViewPager2.pageSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (position in channel) action(position)
-    }
-
-    events.offer(currentItem)
-    val callback = callback(this, events::offer)
-    registerOnPageChangeCallback(callback)
-    events.invokeOnClose { unregisterOnPageChangeCallback(callback) }
+    pageSelections(this, capacity, action)
 }
 
 /**

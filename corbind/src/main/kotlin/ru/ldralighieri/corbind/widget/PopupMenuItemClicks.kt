@@ -47,7 +47,6 @@ fun PopupMenu.itemClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit
 ) {
-
     val events = scope.actor<MenuItem>(Dispatchers.Main, capacity) {
         for (item in channel) action(item)
     }
@@ -57,7 +56,7 @@ fun PopupMenu.itemClicks(
 }
 
 /**
- * Perform an action on clicked item in [PopupMenu] inside new [CoroutineScope].
+ * Perform an action on clicked item in [PopupMenu], inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [PopupMenu.setOnMenuItemClickListener] to emit dismiss
  * change. Only one actor can be used for a view at a time.
@@ -69,13 +68,7 @@ suspend fun PopupMenu.itemClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
-
-    val events = actor<MenuItem>(Dispatchers.Main, capacity) {
-        for (item in channel) action(item)
-    }
-
-    setOnMenuItemClickListener(listener(this, events::offer))
-    events.invokeOnClose { setOnMenuItemClickListener(null) }
+    itemClicks(this, capacity, action)
 }
 
 /**

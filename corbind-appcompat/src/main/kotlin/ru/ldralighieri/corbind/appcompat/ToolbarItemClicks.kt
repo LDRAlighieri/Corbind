@@ -44,7 +44,6 @@ fun Toolbar.itemClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit
 ) {
-
     val events = scope.actor<MenuItem>(Dispatchers.Main, capacity) {
         for (item in channel) action(item)
     }
@@ -54,7 +53,7 @@ fun Toolbar.itemClicks(
 }
 
 /**
- * Perform an action on the clicked item in [Toolbar] menu inside new [CoroutineScope].
+ * Perform an action on the clicked item in [Toolbar] menu, inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -63,13 +62,7 @@ suspend fun Toolbar.itemClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
-
-    val events = actor<MenuItem>(Dispatchers.Main, capacity) {
-        for (item in channel) action(item)
-    }
-
-    setOnMenuItemClickListener(listener(this, events::offer))
-    events.invokeOnClose { setOnMenuItemClickListener(null) }
+    itemClicks(this, capacity, action)
 }
 
 /**

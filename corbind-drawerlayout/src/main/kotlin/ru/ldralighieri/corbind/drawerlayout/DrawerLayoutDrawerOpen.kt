@@ -46,7 +46,6 @@ fun DrawerLayout.drawerOpens(
     gravity: Int,
     action: suspend (Boolean) -> Unit
 ) {
-
     val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
         for (open in channel) action(open)
     }
@@ -58,7 +57,7 @@ fun DrawerLayout.drawerOpens(
 }
 
 /**
- * Perform an action on the open state of the drawer of [DrawerLayout] inside new [CoroutineScope].
+ * Perform an action on the open state of the drawer of [DrawerLayout], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param gravity Gravity of the drawer to check
@@ -69,15 +68,7 @@ suspend fun DrawerLayout.drawerOpens(
     gravity: Int,
     action: suspend (Boolean) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Boolean>(Dispatchers.Main, capacity) {
-        for (open in channel) action(open)
-    }
-
-    events.offer(isDrawerOpen(gravity))
-    val listener = listener(this, gravity, events::offer)
-    addDrawerListener(listener)
-    events.invokeOnClose { removeDrawerListener(listener) }
+    drawerOpens(this, capacity, gravity, action)
 }
 
 /**

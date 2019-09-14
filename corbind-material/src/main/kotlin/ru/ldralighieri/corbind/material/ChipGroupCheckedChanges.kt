@@ -48,7 +48,6 @@ fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (checkedId in channel) action(checkedId)
     }
@@ -60,7 +59,7 @@ fun ChipGroup.checkedChanges(
 }
 
 /**
- * Perform an action on checked view ID changes in [ChipGroup] inside new [CoroutineScope].
+ * Perform an action on checked view ID changes in [ChipGroup], inside new [CoroutineScope].
  *
  * *Warning:* Only in single selection mode
  *
@@ -73,15 +72,7 @@ suspend fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (checkedId in channel) action(checkedId)
-    }
-
-    checkSelectionMode(this@checkedChanges)
-    events.offer(checkedChipId)
-    setOnCheckedChangeListener(listener(this, events::offer))
-    events.invokeOnClose { setOnCheckedChangeListener(null) }
+    checkedChanges(this, capacity, action)
 }
 
 /**
@@ -100,7 +91,7 @@ fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@checkedChanges)
-    offer(checkedChipId)
+    offerElement(checkedChipId)
     setOnCheckedChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }

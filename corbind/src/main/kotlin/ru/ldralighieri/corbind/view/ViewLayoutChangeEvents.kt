@@ -55,7 +55,6 @@ fun View.layoutChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewLayoutChangeEvent) -> Unit
 ) {
-
     val events = scope.actor<ViewLayoutChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -66,7 +65,7 @@ fun View.layoutChangeEvents(
 }
 
 /**
- * Perform an action on [layout-change events][ViewLayoutChangeEvent] for [View] inside new
+ * Perform an action on [layout-change events][ViewLayoutChangeEvent] for [View], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -76,14 +75,7 @@ suspend fun View.layoutChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewLayoutChangeEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<ViewLayoutChangeEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    val listener = listener(this, events::offer)
-    addOnLayoutChangeListener(listener)
-    events.invokeOnClose { removeOnLayoutChangeListener(listener) }
+    layoutChangeEvents(this, capacity, action)
 }
 
 /**
@@ -117,7 +109,6 @@ private fun listener(
     scope: CoroutineScope,
     emitter: (ViewLayoutChangeEvent) -> Boolean
 ) = View.OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
-
     if (scope.isActive) {
         emitter(ViewLayoutChangeEvent(v, left, top, right, bottom, oldLeft, oldTop, oldRight,
                 oldBottom)

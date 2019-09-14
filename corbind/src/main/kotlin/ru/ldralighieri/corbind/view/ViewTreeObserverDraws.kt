@@ -47,7 +47,6 @@ fun View.draws(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -58,7 +57,7 @@ fun View.draws(
 }
 
 /**
- * Perform an action on draws on [View] inside new [CoroutineScope].
+ * Perform an action on draws on [View], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -68,14 +67,7 @@ suspend fun View.draws(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    val listener = listener(this, events::offer)
-    viewTreeObserver.addOnDrawListener(listener)
-    events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
+    draws(this, capacity, action)
 }
 
 /**

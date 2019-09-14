@@ -49,7 +49,6 @@ fun RatingBar.ratingChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RatingBarChangeEvent) -> Unit
 ) {
-
     val events = scope.actor<RatingBarChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -60,7 +59,7 @@ fun RatingBar.ratingChangeEvents(
 }
 
 /**
- * Perform an action on [rating change events][RatingBarChangeEvent] on [RatingBar] inside new
+ * Perform an action on [rating change events][RatingBarChangeEvent] on [RatingBar], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -70,14 +69,7 @@ suspend fun RatingBar.ratingChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RatingBarChangeEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<RatingBarChangeEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    events.offer(initialValue(this@ratingChangeEvents))
-    onRatingBarChangeListener = listener(this, events::offer)
-    events.invokeOnClose { onRatingBarChangeListener = null }
+    ratingChangeEvents(this, capacity, action)
 }
 
 /**
@@ -88,11 +80,11 @@ suspend fun RatingBar.ratingChangeEvents(
  */
 @CheckResult
 fun RatingBar.ratingChangeEvents(
-    capacity: Int = Channel.RENDEZVOUS,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel(capacity) {
     offerElement(initialValue(this@ratingChangeEvents))
-    onRatingBarChangeListener = listener(scope, ::offer)
+    onRatingBarChangeListener = listener(scope, ::offerElement)
     invokeOnClose { onRatingBarChangeListener = null }
 }
 

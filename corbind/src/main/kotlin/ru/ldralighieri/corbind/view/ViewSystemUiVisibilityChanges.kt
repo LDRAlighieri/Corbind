@@ -34,8 +34,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on a new system UI visibility for [View].
  *
- * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emit
- * system UI visibility changes. Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emit system
+ * UI visibility changes. Only one actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -46,7 +46,6 @@ fun View.systemUiVisibilityChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (visibility in channel) action(visibility)
     }
@@ -56,10 +55,10 @@ fun View.systemUiVisibilityChanges(
 }
 
 /**
- * Perform an action on a new system UI visibility for [View] inside new [CoroutineScope].
+ * Perform an action on a new system UI visibility for [View], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emit
- * system UI visibility changes. Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener] to emit system
+ * UI visibility changes. Only one actor can be used for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -68,20 +67,14 @@ suspend fun View.systemUiVisibilityChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (visibility in channel) action(visibility)
-    }
-
-    setOnSystemUiVisibilityChangeListener(listener(this, events::offer))
-    events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
+    systemUiVisibilityChanges(this, capacity, action)
 }
 
 /**
  * Create a channel of integers representing a new system UI visibility for [View].
  *
- * *Warning:* The created channel uses [View.setOnSystemUiVisibilityChangeListener] to emit
- * system UI visibility changes. Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [View.setOnSystemUiVisibilityChangeListener] to emit system
+ * UI visibility changes. Only one channel can be used for a view at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -98,8 +91,8 @@ fun View.systemUiVisibilityChanges(
 /**
  * Create a flow of integers representing a new system UI visibility for [View].
  *
- * *Warning:* The created flow uses [View.setOnSystemUiVisibilityChangeListener] to emit
- * system UI visibility changes. Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [View.setOnSystemUiVisibilityChangeListener] to emit system
+ * UI visibility changes. Only one flow can be used for a view at a time.
  */
 @CheckResult
 fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {

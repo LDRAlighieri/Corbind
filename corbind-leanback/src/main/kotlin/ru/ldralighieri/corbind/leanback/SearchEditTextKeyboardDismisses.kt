@@ -43,7 +43,6 @@ fun SearchEditText.keyboardDismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -53,7 +52,7 @@ fun SearchEditText.keyboardDismisses(
 }
 
 /**
- * Perform an action on the keyboard dismiss events from [SearchEditText] inside new
+ * Perform an action on the keyboard dismiss events from [SearchEditText], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -63,13 +62,7 @@ suspend fun SearchEditText.keyboardDismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    setOnKeyboardDismissListener(listener(this, events::offer))
-    events.invokeOnClose { setOnKeyboardDismissListener(null) }
+    keyboardDismisses(this, capacity, action)
 }
 
 /**

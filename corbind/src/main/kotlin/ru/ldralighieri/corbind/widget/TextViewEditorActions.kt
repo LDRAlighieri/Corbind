@@ -50,7 +50,6 @@ fun TextView.editorActions(
     handled: (Int) -> Boolean = AlwaysTrue,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (actionId in channel) action(actionId)
     }
@@ -60,7 +59,7 @@ fun TextView.editorActions(
 }
 
 /**
- * Perform an action on editor actions on [TextView] inside new [CoroutineScope].
+ * Perform an action on editor actions on [TextView], inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [TextView.OnEditorActionListener] to emit actions. Only one
  * actor can be used for a view at a time.
@@ -75,13 +74,7 @@ suspend fun TextView.editorActions(
     handled: (Int) -> Boolean = AlwaysTrue,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (actionId in channel) action(actionId)
-    }
-
-    setOnEditorActionListener(listener(this, handled, events::offer))
-    events.invokeOnClose { setOnEditorActionListener(null) }
+    editorActions(this, capacity, handled, action)
 }
 
 /**
@@ -128,7 +121,6 @@ private fun listener(
     handled: (Int) -> Boolean,
     emitter: (Int) -> Boolean
 ) = TextView.OnEditorActionListener { _, actionId, _ ->
-
     if (scope.isActive && handled(actionId)) {
         emitter(actionId)
         return@OnEditorActionListener true

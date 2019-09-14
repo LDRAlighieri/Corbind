@@ -55,7 +55,6 @@ fun View.attachEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewAttachEvent) -> Unit
 ) {
-
     val events = scope.actor<ViewAttachEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -66,7 +65,7 @@ fun View.attachEvents(
 }
 
 /**
- * Perform an action on [attach and detach events][ViewAttachEvent] on [View] inside new
+ * Perform an action on [attach and detach events][ViewAttachEvent] on [View], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -76,14 +75,7 @@ suspend fun View.attachEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewAttachEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<ViewAttachEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    val listener = listener(this, events::offer)
-    addOnAttachStateChangeListener(listener)
-    events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
+    attachEvents(this, capacity, action)
 }
 
 /**

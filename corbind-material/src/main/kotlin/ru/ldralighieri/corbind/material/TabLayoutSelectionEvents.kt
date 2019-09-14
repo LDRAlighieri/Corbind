@@ -64,20 +64,19 @@ fun TabLayout.selectionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TabLayoutSelectionEvent) -> Unit
 ) {
-
     val events = scope.actor<TabLayoutSelectionEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
     setInitialValue(this, events::offer)
-    val listener = listener(scope = scope, tabLayout = this, emitter = events::offer)
+    val listener = listener(scope, this, events::offer)
     addOnTabSelectedListener(listener)
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
 }
 
 /**
  * Perform an action on selection, reselection, and unselection [events][TabLayoutSelectionEvent]
- * for the tabs in [TabLayout] inside new [CoroutineScope].
+ * for the tabs in [TabLayout], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -86,15 +85,7 @@ suspend fun TabLayout.selectionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TabLayoutSelectionEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<TabLayoutSelectionEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    setInitialValue(this@selectionEvents, events::offer)
-    val listener = listener(scope = this, tabLayout = this@selectionEvents, emitter = events::offer)
-    addOnTabSelectedListener(listener)
-    events.invokeOnClose { removeOnTabSelectedListener(listener) }
+    selectionEvents(this, capacity, action)
 }
 
 /**

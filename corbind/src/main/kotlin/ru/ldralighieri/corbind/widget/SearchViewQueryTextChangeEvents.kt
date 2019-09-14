@@ -49,18 +49,17 @@ fun SearchView.queryTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SearchViewQueryTextEvent) -> Unit
 ) {
-
     val events = scope.actor<SearchViewQueryTextEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
     events.offer(initialValue(this))
-    setOnQueryTextListener(listener(scope = scope, searchView = this, emitter = events::offer))
+    setOnQueryTextListener(listener(scope, this, events::offer))
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
 /**
- * Perform an action on [query text events][SearchViewQueryTextEvent] on [SearchView] inside new
+ * Perform an action on [query text events][SearchViewQueryTextEvent] on [SearchView], inside new
  * [CoroutineScope]
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -70,15 +69,7 @@ suspend fun SearchView.queryTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SearchViewQueryTextEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<SearchViewQueryTextEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    events.offer(initialValue(this@queryTextChangeEvents))
-    setOnQueryTextListener(listener(scope = this, searchView = this@queryTextChangeEvents,
-            emitter = events::offer))
-    events.invokeOnClose { setOnQueryTextListener(null) }
+    queryTextChangeEvents(this, capacity, action)
 }
 
 /**
