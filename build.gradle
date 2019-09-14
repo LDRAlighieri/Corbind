@@ -66,9 +66,9 @@ buildscript {
         ]
 
         buildConfig = [
-                'compileSdk': 28,
+                'compileSdk': 29,
                 'minSdk': 14,
-                'targetSdk': 28
+                'targetSdk': 29
         ]
     }
 

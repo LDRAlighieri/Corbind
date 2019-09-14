@@ -18,29 +18,28 @@
 <resources>
 
     <!-- Theme colors -->
-    <color name="colorPrimary">#03A9F4</color>
-    <color name="colorPrimaryVariant">#1976D2</color>
-    <color name="colorPrimaryDark">#1976D2</color>
-    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorPrimary">#EF5350</color>
+    <color name="colorPrimaryVariant">#C2185B</color>
+    <color name="colorPrimaryDark">#C2185B</color>
+    <color name="colorOnPrimary">#000000</color>
 
-    <color name="colorSecondary">#64B5F6</color>
-    <color name="colorSecondaryVariant">#64B5F6</color>
-    <color name="colorOnSecondary">#000000</color>
+    <color name="colorSecondary">#C86470</color>
+    <color name="colorSecondaryVariant">#C86470</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
 
-    <color name="colorBackground">#FFF</color>
-    <color name="colorOnBackground">#000</color>
+    <color name="colorBackground">#000</color>
+    <color name="colorOnBackground">#FFF</color>
 
-    <color name="colorSurface">#E0E0E0</color>
-    <color name="colorOnSurface">#000</color>
+    <color name="colorSurface">#121212</color>
+    <color name="colorOnSurface">#FFFFFF</color>
 
     <color name="colorError">#CF6679</color>
     <color name="colorOnError">#000000</color>
 
     <!-- Scrim colors -->
-    <color name="system_ui_scrim_light">#B3FFFFFF</color>
-    <color name="system_ui_scrim_black">#40000000</color>
+    <color name="system_ui_scrim_light">#2EFFFFFF</color>
+    <color name="system_ui_scrim_black">#B3000000</color>
 
-    <color name="status_bar_scrim">@color/system_ui_scrim_black</color>
-    <color name="nav_bar_scrim">@color/system_ui_scrim_black</color>
+    <color name="status_bar_scrim">@android:color/transparent</color>
 
 </resources>

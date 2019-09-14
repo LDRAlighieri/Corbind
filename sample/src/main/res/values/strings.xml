@@ -17,7 +17,7 @@
 <resources>
 
     <string name="app_name">Corbind</string>
-    <string name="login_title">Corbind</string>
+    <string name="login_title">CORBIND</string>
     <string name="login_button_text">signup</string>
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Password</string>
