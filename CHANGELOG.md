@@ -2,6 +2,14 @@
 # ChangeLog
 
 
+## Version 1.1.2
+
+* Update: Kotlin coroutines modules dependency to v1.3.1
+* Update: Android sdk to v29
+* Update: Updated sample
+* Fix: Fixed various inaccuracies, refactoring
+
+
 ## Version 1.1.0
 
 * New: ViewPager2 module
