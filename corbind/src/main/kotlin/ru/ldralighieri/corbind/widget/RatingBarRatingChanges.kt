@@ -43,7 +43,6 @@ fun RatingBar.ratingChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit
 ) {
-
     val events = scope.actor<Float>(Dispatchers.Main, capacity) {
         for (rating in channel) action(rating)
     }
@@ -54,7 +53,7 @@ fun RatingBar.ratingChanges(
 }
 
 /**
- * Perform an action on rating changes on [RatingBar] inside new CoroutineScope.
+ * Perform an action on rating changes on [RatingBar], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -63,14 +62,7 @@ suspend fun RatingBar.ratingChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Float>(Dispatchers.Main, capacity) {
-        for (rating in channel) action(rating)
-    }
-
-    events.offer(rating)
-    onRatingBarChangeListener = listener(this, events::offer)
-    events.invokeOnClose { onRatingBarChangeListener = null }
+    ratingChanges(this, capacity, action)
 }
 
 /**

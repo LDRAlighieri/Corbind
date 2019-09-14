@@ -50,7 +50,6 @@ fun Toolbar.navigationClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -60,7 +59,7 @@ fun Toolbar.navigationClicks(
 }
 
 /**
- * Perform an action on [Toolbar] navigation click events inside new [CoroutineScope].
+ * Perform an action on [Toolbar] navigation click events, inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener] to emit clicks.
  * Only one actor can be used for a view at a time.
@@ -73,13 +72,7 @@ suspend fun Toolbar.navigationClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    setNavigationOnClickListener(listener(this, events::offer))
-    events.invokeOnClose { setNavigationOnClickListener(null) }
+    navigationClicks(this, capacity, action)
 }
 
 /**

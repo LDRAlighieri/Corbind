@@ -43,7 +43,6 @@ fun SwipeRefreshLayout.refreshes(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -53,7 +52,7 @@ fun SwipeRefreshLayout.refreshes(
 }
 
 /**
- * Perform an action on refresh events on [SwipeRefreshLayout] inside new [CoroutineScope].
+ * Perform an action on refresh events on [SwipeRefreshLayout], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -62,13 +61,7 @@ suspend fun SwipeRefreshLayout.refreshes(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    setOnRefreshListener(listener(this, events::offer))
-    events.invokeOnClose { setOnRefreshListener(null) }
+    refreshes(this, capacity, action)
 }
 
 /**

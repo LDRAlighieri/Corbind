@@ -43,7 +43,6 @@ fun ViewPager2.pageScrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (state in channel) action(state)
     }
@@ -54,7 +53,7 @@ fun ViewPager2.pageScrollStateChanges(
 }
 
 /**
- * Perform an action on scroll state change events on [ViewPager2] inside new [CoroutineScope].
+ * Perform an action on scroll state change events on [ViewPager2], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -63,14 +62,7 @@ suspend fun ViewPager2.pageScrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (state in channel) action(state)
-    }
-
-    val callback = callback(this, events::offer)
-    registerOnPageChangeCallback(callback)
-    events.invokeOnClose { unregisterOnPageChangeCallback(callback) }
+    pageScrollStateChanges(this, capacity, action)
 }
 
 /**

@@ -44,7 +44,6 @@ fun NestedScrollView.scrollChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewScrollChangeEvent) -> Unit
 ) {
-
     val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -56,7 +55,7 @@ fun NestedScrollView.scrollChangeEvents(
 }
 
 /**
- * Perform an action on scroll-change events for [NestedScrollView] inside new [CoroutineScope].
+ * Perform an action on scroll-change events for [NestedScrollView], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -65,15 +64,7 @@ suspend fun NestedScrollView.scrollChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewScrollChangeEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<ViewScrollChangeEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    setOnScrollChangeListener(listener(this, events::offer))
-    events.invokeOnClose {
-        setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
-    }
+    scrollChangeEvents(this, capacity, action)
 }
 
 /**

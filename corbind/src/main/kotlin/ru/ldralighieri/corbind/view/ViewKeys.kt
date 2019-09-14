@@ -51,7 +51,6 @@ fun View.keys(
     handled: (KeyEvent) -> Boolean = AlwaysTrue,
     action: suspend (KeyEvent) -> Unit
 ) {
-
     val events = scope.actor<KeyEvent>(Dispatchers.Main, capacity) {
         for (key in channel) action(key)
     }
@@ -61,7 +60,7 @@ fun View.keys(
 }
 
 /**
- * Perform an action on key events for [View] inside new [CoroutineScope].
+ * Perform an action on key events for [View], inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnKeyListener] to emit key events. Only one actor
  * can be used for a view at a time.
@@ -76,13 +75,7 @@ suspend fun View.keys(
     handled: (KeyEvent) -> Boolean = AlwaysTrue,
     action: suspend (KeyEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<KeyEvent>(Dispatchers.Main, capacity) {
-        for (key in channel) action(key)
-    }
-
-    setOnKeyListener(listener(this, handled, events::offer))
-    events.invokeOnClose { setOnKeyListener(null) }
+    keys(this, capacity, handled, action)
 }
 
 /**
@@ -129,7 +122,6 @@ private fun listener(
     handled: (KeyEvent) -> Boolean,
     emitter: (KeyEvent) -> Boolean
 ) = View.OnKeyListener { _, _, keyEvent ->
-
     if (scope.isActive) {
         if (handled(keyEvent)) {
             emitter(keyEvent)

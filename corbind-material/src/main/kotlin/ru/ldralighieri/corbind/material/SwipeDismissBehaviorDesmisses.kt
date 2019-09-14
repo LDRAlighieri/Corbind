@@ -45,7 +45,6 @@ fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (View) -> Unit
 ) {
-
     val events = scope.actor<View>(Dispatchers.Main, capacity) {
         for (view in channel) action(view)
     }
@@ -56,7 +55,7 @@ fun View.dismisses(
 }
 
 /**
- * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior] inside new
+ * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -66,14 +65,7 @@ suspend fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (View) -> Unit
 ) = coroutineScope {
-
-    val events = actor<View>(Dispatchers.Main, capacity) {
-        for (view in channel) action(view)
-    }
-
-    val behavior = getBehavior(this@dismisses)
-    behavior.setListener(listener(this, events::offer))
-    events.invokeOnClose { behavior.setListener(null) }
+    dismisses(this, capacity, action)
 }
 
 /**

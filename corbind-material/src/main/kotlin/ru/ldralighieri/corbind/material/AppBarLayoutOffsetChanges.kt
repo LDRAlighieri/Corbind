@@ -43,7 +43,6 @@ fun AppBarLayout.offsetChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (offset in channel) action(offset)
     }
@@ -54,7 +53,7 @@ fun AppBarLayout.offsetChanges(
 }
 
 /**
- * Perform an action on the offset change in [AppBarLayout] inside new [CoroutineScope].
+ * Perform an action on the offset change in [AppBarLayout], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -63,14 +62,7 @@ suspend fun AppBarLayout.offsetChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (offset in channel) action(offset)
-    }
-
-    val listener = listener(this, events::offer)
-    addOnOffsetChangedListener(listener)
-    events.invokeOnClose { removeOnOffsetChangedListener(listener) }
+    offsetChanges(this, capacity, action)
 }
 
 /**

@@ -45,7 +45,6 @@ fun View.stateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (state in channel) action(state)
     }
@@ -56,7 +55,7 @@ fun View.stateChanges(
 }
 
 /**
- * Perform an action on the state change events from [View] on [BottomSheetBehavior] inside new
+ * Perform an action on the state change events from [View] on [BottomSheetBehavior], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -66,14 +65,7 @@ suspend fun View.stateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (state in channel) action(state)
-    }
-
-    val behavior = getBehavior(this@stateChanges)
-    behavior.setBottomSheetCallback(callback(this, events::offer))
-    events.invokeOnClose { behavior.setBottomSheetCallback(null) }
+    stateChanges(this, capacity, action)
 }
 
 /**

@@ -43,7 +43,6 @@ fun SearchView.queryTextChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CharSequence) -> Unit
 ) {
-
     val events = scope.actor<CharSequence>(Dispatchers.Main, capacity) {
         for (chars in channel) action(chars)
     }
@@ -54,7 +53,7 @@ fun SearchView.queryTextChanges(
 }
 
 /**
- * Perform an action on character sequences for query text changes on [SearchView] inside new
+ * Perform an action on character sequences for query text changes on [SearchView], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -64,14 +63,7 @@ suspend fun SearchView.queryTextChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CharSequence) -> Unit
 ) = coroutineScope {
-
-    val events = actor<CharSequence>(Dispatchers.Main, capacity) {
-        for (chars in channel) action(chars)
-    }
-
-    events.offer(query)
-    setOnQueryTextListener(listener(this, events::offer))
-    events.invokeOnClose { setOnQueryTextListener(null) }
+    queryTextChanges(this, capacity, action)
 }
 
 /**

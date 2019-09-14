@@ -47,7 +47,6 @@ fun Chip.closeIconClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -57,7 +56,7 @@ fun Chip.closeIconClicks(
 }
 
 /**
- * Perform an action on [Chip] close icon click events inside new [CoroutineScope].
+ * Perform an action on [Chip] close icon click events, inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [Chip.setOnCloseIconClickListener] to emit clicks. Only one
  * actor can be used for a view at a time.
@@ -69,13 +68,7 @@ suspend fun Chip.closeIconClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    setOnCloseIconClickListener(listener(this, events::offer))
-    events.invokeOnClose { setOnCloseIconClickListener(null) }
+    closeIconClicks(this, capacity, action)
 }
 
 /**

@@ -46,7 +46,6 @@ fun View.focusChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit
 ) {
-
     val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
         for (focus in channel) action(focus)
     }
@@ -57,7 +56,7 @@ fun View.focusChanges(
 }
 
 /**
- * Perform an action on [View] focus change inside new [CoroutineScope].
+ * Perform an action on [View] focus change, inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnFocusChangeListener] to emit focus change. Only
  * one actor can be used for a view at a time.
@@ -69,14 +68,7 @@ suspend fun View.focusChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Boolean>(Dispatchers.Main, capacity) {
-        for (focus in channel) action(focus)
-    }
-
-    events.offer(hasFocus())
-    onFocusChangeListener = listener(this, events::offer)
-    events.invokeOnClose { onFocusChangeListener = null }
+    focusChanges(this, capacity, action)
 }
 
 /**

@@ -37,7 +37,6 @@ private fun SeekBar.changes(
     shouldBeFromUser: Boolean?,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (progress in channel) action(progress)
     }
@@ -52,14 +51,7 @@ private suspend fun SeekBar.changes(
     shouldBeFromUser: Boolean?,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (progress in channel) action(progress)
-    }
-
-    events.offer(progress)
-    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, events::offer))
-    events.invokeOnClose { setOnSeekBarChangeListener(null) }
+    changes(this, capacity, shouldBeFromUser, action)
 }
 
 @CheckResult

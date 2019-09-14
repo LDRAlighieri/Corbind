@@ -50,7 +50,6 @@ fun MenuItem.clicks(
     handled: (MenuItem) -> Boolean = AlwaysTrue,
     action: suspend (MenuItem) -> Unit
 ) {
-
     val events = scope.actor<MenuItem>(Dispatchers.Main, capacity) {
         for (item in channel) action(item)
     }
@@ -60,7 +59,7 @@ fun MenuItem.clicks(
 }
 
 /**
- * Perform an action on [MenuItem] click events inside new [CoroutineScope].
+ * Perform an action on [MenuItem] click events, inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [MenuItem.setOnMenuItemClickListener] to emit clicks. Only
  * one actor can be used for a menu item at a time.
@@ -75,13 +74,7 @@ suspend fun MenuItem.clicks(
     handled: (MenuItem) -> Boolean = AlwaysTrue,
     action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
-
-    val events = actor<MenuItem>(Dispatchers.Main, capacity) {
-        for (item in channel) action(item)
-    }
-
-    setOnMenuItemClickListener(listener(this, handled, events::offer))
-    events.invokeOnClose { setOnMenuItemClickListener(null) }
+    clicks(this, capacity, handled, action)
 }
 
 /**
@@ -128,13 +121,11 @@ private fun listener(
     handled: (MenuItem) -> Boolean,
     emitter: (MenuItem) -> Boolean
 ) = MenuItem.OnMenuItemClickListener { item ->
-
     if (scope.isActive) {
         if (handled(item)) {
             emitter(item)
             return@OnMenuItemClickListener true
         }
     }
-
     return@OnMenuItemClickListener false
 }

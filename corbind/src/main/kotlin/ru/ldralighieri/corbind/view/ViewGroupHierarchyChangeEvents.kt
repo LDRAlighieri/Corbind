@@ -59,17 +59,16 @@ fun ViewGroup.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
 ) {
-
     val events = scope.actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
 
-    setOnHierarchyChangeListener(listener(scope = scope, viewGroup = this, emitter = events::offer))
+    setOnHierarchyChangeListener(listener(scope, this, events::offer))
     events.invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
 /**
- * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup]
+ * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup],
  * inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -79,14 +78,7 @@ suspend fun ViewGroup.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    setOnHierarchyChangeListener(listener(scope = this, viewGroup = this@changeEvents,
-            emitter = events::offer))
-    events.invokeOnClose { setOnHierarchyChangeListener(null) }
+    changeEvents(this, capacity, action)
 }
 
 /**

@@ -51,7 +51,6 @@ fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue,
     action: suspend (DragEvent) -> Unit
 ) {
-
     val events = scope.actor<DragEvent>(Dispatchers.Main, capacity) {
         for (drag in channel) action(drag)
     }
@@ -61,7 +60,7 @@ fun View.drags(
 }
 
 /**
- * Perform an action on [DragEvent] for [View] inside new CoroutineScope.
+ * Perform an action on [DragEvent] for [View], inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnDragListener] to emit drags. Only one actor can
  * be used for a view at a time.
@@ -76,13 +75,7 @@ suspend fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue,
     action: suspend (DragEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<DragEvent>(Dispatchers.Main, capacity) {
-        for (drag in channel) action(drag)
-    }
-
-    setOnDragListener(listener(this, handled, events::offer))
-    events.invokeOnClose { setOnDragListener(null) }
+    drags(this, capacity, handled, action)
 }
 
 /**
@@ -129,7 +122,6 @@ private fun listener(
     handled: (DragEvent) -> Boolean,
     emitter: (DragEvent) -> Boolean
 ) = View.OnDragListener { _, dragEvent ->
-
     if (scope.isActive) {
         if (handled(dragEvent)) {
             emitter(dragEvent)

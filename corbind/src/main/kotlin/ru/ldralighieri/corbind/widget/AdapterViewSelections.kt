@@ -60,7 +60,6 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AdapterViewSelectionEvent) -> Unit
 ) {
-
     val events = scope.actor<AdapterViewSelectionEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -71,7 +70,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 }
 
 /**
- * Perform an action on selection events for [AdapterView] inside new CoroutineScope.
+ * Perform an action on selection events for [AdapterView], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -80,14 +79,7 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AdapterViewSelectionEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<AdapterViewSelectionEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    events.offer(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(this, events::offer)
-    events.invokeOnClose { onItemSelectedListener = null }
+    selectionEvents(this, capacity, action)
 }
 
 /**
@@ -101,7 +93,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(capacity) {
-    offer(initialValue(this@selectionEvents))
+    offerElement(initialValue(this@selectionEvents))
     onItemSelectedListener = listener(scope, ::offerElement)
     invokeOnClose { onItemSelectedListener = null }
 }

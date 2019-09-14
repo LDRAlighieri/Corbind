@@ -51,7 +51,6 @@ fun View.hovers(
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
     action: suspend (MotionEvent) -> Unit
 ) {
-
     val events = scope.actor<MotionEvent>(Dispatchers.Main, capacity) {
         for (motion in channel) action(motion)
     }
@@ -61,7 +60,7 @@ fun View.hovers(
 }
 
 /**
- * Perform an action on hover events for [View] inside new [CoroutineScope].
+ * Perform an action on hover events for [View], inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnHoverListener] to emit touches. Only one actor
  * can be used for a view at a time.
@@ -76,13 +75,7 @@ suspend fun View.hovers(
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
     action: suspend (MotionEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<MotionEvent>(Dispatchers.Main, capacity) {
-        for (motion in channel) action(motion)
-    }
-
-    setOnHoverListener(listener(this, handled, events::offer))
-    events.invokeOnClose { setOnHoverListener(null) }
+    hovers(this, capacity, handled, action)
 }
 
 /**
@@ -129,7 +122,6 @@ private fun listener(
     handled: (MotionEvent) -> Boolean,
     emitter: (MotionEvent) -> Boolean
 ) = View.OnHoverListener { _, motionEvent ->
-
     if (scope.isActive) {
         if (handled(motionEvent)) {
             emitter(motionEvent)

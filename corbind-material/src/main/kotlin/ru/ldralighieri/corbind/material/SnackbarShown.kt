@@ -43,7 +43,6 @@ fun Snackbar.shown(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Snackbar) -> Unit
 ) {
-
     val events = scope.actor<Snackbar>(Dispatchers.Main, capacity) {
         for (snackbar in channel) action(snackbar)
     }
@@ -54,7 +53,7 @@ fun Snackbar.shown(
 }
 
 /**
- * Perform an action on the show events from [Snackbar] inside new [CoroutineScope].
+ * Perform an action on the show events from [Snackbar], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -63,14 +62,7 @@ suspend fun Snackbar.shown(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Snackbar) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Snackbar>(Dispatchers.Main, capacity) {
-        for (snackbar in channel) action(snackbar)
-    }
-
-    val callback = callback(this, events::offer)
-    addCallback(callback)
-    events.invokeOnClose { removeCallback(callback) }
+    shown(this, capacity, action)
 }
 
 /**

@@ -43,7 +43,6 @@ fun View.layoutChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -54,7 +53,7 @@ fun View.layoutChanges(
 }
 
 /**
- * Perform an action on [View] layout changes inside new [CoroutineScope].
+ * Perform an action on [View] layout changes, inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -63,14 +62,7 @@ suspend fun View.layoutChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    val listener = listener(this, events::offer)
-    addOnLayoutChangeListener(listener)
-    events.invokeOnClose { removeOnLayoutChangeListener(listener) }
+    layoutChanges(this, capacity, action)
 }
 
 /**

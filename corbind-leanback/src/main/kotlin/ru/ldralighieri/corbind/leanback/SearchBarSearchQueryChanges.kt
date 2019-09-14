@@ -43,7 +43,6 @@ fun SearchBar.searchQueryChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (String) -> Unit
 ) {
-
     val events = scope.actor<String>(Dispatchers.Main, capacity) {
         for (query in channel) action(query)
     }
@@ -53,7 +52,7 @@ fun SearchBar.searchQueryChanges(
 }
 
 /**
- * Perform an action on String values for search query changes on [SearchBar] inside new
+ * Perform an action on String values for search query changes on [SearchBar], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -63,13 +62,7 @@ suspend fun SearchBar.searchQueryChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (String) -> Unit
 ) = coroutineScope {
-
-    val events = actor<String>(Dispatchers.Main, capacity) {
-        for (query in channel) action(query)
-    }
-
-    setSearchBarListener(listener(this, events::offer))
-    events.invokeOnClose { setSearchBarListener(null) }
+    searchQueryChanges(this, capacity, action)
 }
 
 /**

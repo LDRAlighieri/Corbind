@@ -45,7 +45,6 @@ fun AutoCompleteTextView.itemClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AdapterViewItemClickEvent) -> Unit
 ) {
-
     val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main, capacity) {
         for (event in channel) action(event)
     }
@@ -55,7 +54,7 @@ fun AutoCompleteTextView.itemClickEvents(
 }
 
 /**
- * Perform an action on [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView]
+ * Perform an action on [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView],
  * inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -65,13 +64,7 @@ suspend fun AutoCompleteTextView.itemClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AdapterViewItemClickEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<AdapterViewItemClickEvent>(Dispatchers.Main, capacity) {
-        for (event in channel) action(event)
-    }
-
-    onItemClickListener = listener(this, events::offer)
-    events.invokeOnClose { onItemClickListener = null }
+    itemClickEvents(this, capacity, action)
 }
 
 /**

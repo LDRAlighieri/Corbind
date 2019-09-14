@@ -43,7 +43,6 @@ fun View.attaches(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -54,7 +53,7 @@ fun View.attaches(
 }
 
 /**
- * Perform an action on [View] attach events inside new CoroutineScope.
+ * Perform an action on [View] attach events, inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -63,14 +62,7 @@ suspend fun View.attaches(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    val listener = listener(this, true, events::offer)
-    addOnAttachStateChangeListener(listener)
-    events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
+    attaches(this, capacity, action)
 }
 
 /**
@@ -84,7 +76,6 @@ fun View.attaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     val listener = listener(scope, true, ::offerElement)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
@@ -112,7 +103,6 @@ fun View.detaches(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-
     val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
         for (unit in channel) action()
     }
@@ -123,7 +113,7 @@ fun View.detaches(
 }
 
 /**
- * Perform an action on [View] detach events inside new CoroutineScope.
+ * Perform an action on [View] detach events, inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -132,14 +122,7 @@ suspend fun View.detaches(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-
-    val events = actor<Unit>(Dispatchers.Main, capacity) {
-        for (unit in channel) action()
-    }
-
-    val listener = listener(this, false, events::offer)
-    addOnAttachStateChangeListener(listener)
-    events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
+    detaches(this, capacity, action)
 }
 
 /**
@@ -153,7 +136,6 @@ fun View.detaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-
     val listener = listener(scope, false, ::offerElement)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }

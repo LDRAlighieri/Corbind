@@ -46,7 +46,6 @@ fun CompoundButton.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit
 ) {
-
     val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
         for (checked in channel) action(checked)
     }
@@ -57,7 +56,7 @@ fun CompoundButton.checkedChanges(
 }
 
 /**
- * Perform an action on checked state of [CompoundButton] inside new [CoroutineScope].
+ * Perform an action on checked state of [CompoundButton], inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [CompoundButton.setOnCheckedChangeListener] to emit checked
  * changes. Only one actor can be used for a view at a time.
@@ -69,14 +68,7 @@ suspend fun CompoundButton.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Boolean>(Dispatchers.Main, capacity) {
-        for (checked in channel) action(checked)
-    }
-
-    events.offer(isChecked)
-    setOnCheckedChangeListener(listener(this, events::offer))
-    events.invokeOnClose { setOnCheckedChangeListener(null) }
+    checkedChanges(this, capacity, action)
 }
 
 /**
@@ -93,7 +85,7 @@ fun CompoundButton.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    offer(isChecked)
+    offerElement(isChecked)
     setOnCheckedChangeListener(listener(scope, ::offerElement))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }

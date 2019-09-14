@@ -18,7 +18,6 @@ package ru.ldralighieri.corbind.sample
 
 import android.os.Bundle
 import android.util.Patterns
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
@@ -41,16 +40,7 @@ class LoginActivity : CorbindActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        setFullscreenFlags()
         bindViews()
-    }
-
-    private fun setFullscreenFlags() {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
     }
 
     private fun bindViews() {

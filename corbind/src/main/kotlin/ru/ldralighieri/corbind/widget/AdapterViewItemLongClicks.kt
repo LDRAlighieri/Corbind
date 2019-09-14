@@ -49,7 +49,6 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
     handled: () -> Boolean = AlwaysTrue,
     action: suspend (Int) -> Unit
 ) {
-
     val events = scope.actor<Int>(Dispatchers.Main, capacity) {
         for (position in channel) action(position)
     }
@@ -59,7 +58,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 /**
- * Perform an action on position of item long-clicks for [AdapterView] inside new CoroutineScope.
+ * Perform an action on position of item long-clicks for [AdapterView], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked each occurrence to determine the return value of the underlying
@@ -71,13 +70,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
     handled: () -> Boolean = AlwaysTrue,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-
-    val events = actor<Int>(Dispatchers.Main, capacity) {
-        for (position in channel) action(position)
-    }
-
-    onItemLongClickListener = listener(this, handled, events::offer)
-    events.invokeOnClose { onItemLongClickListener = null }
+    itemLongClicks(this, capacity, handled, action)
 }
 
 /**
@@ -118,7 +111,6 @@ private fun listener(
     handled: () -> Boolean,
     emitter: (Int) -> Boolean
 ) = AdapterView.OnItemLongClickListener { _, _: View?, position, _ ->
-
     if (scope.isActive) {
         if (handled()) {
             emitter(position)

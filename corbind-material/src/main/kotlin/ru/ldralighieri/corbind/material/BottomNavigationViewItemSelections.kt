@@ -44,7 +44,6 @@ fun BottomNavigationView.itemSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit
 ) {
-
     val events = scope.actor<MenuItem>(Dispatchers.Main, capacity) {
         for (item in channel) action(item)
     }
@@ -55,7 +54,7 @@ fun BottomNavigationView.itemSelections(
 }
 
 /**
- * Perform an action on the selected item in [BottomNavigationView] inside new [CoroutineScope].
+ * Perform an action on the selected item in [BottomNavigationView], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -64,14 +63,7 @@ suspend fun BottomNavigationView.itemSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
-
-    val events = actor<MenuItem>(Dispatchers.Main, capacity) {
-        for (item in channel) action(item)
-    }
-
-    setInitialValue(this@itemSelections, events::offer)
-    setOnNavigationItemSelectedListener(listener(this, events::offer))
-    events.invokeOnClose { setOnNavigationItemSelectedListener(null) }
+    itemSelections(this, capacity, action)
 }
 
 /**

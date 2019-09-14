@@ -44,19 +44,18 @@ fun <T : Adapter> T.dataChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (T) -> Unit
 ) {
-
     val events = scope.actor<T>(Dispatchers.Main, capacity) {
         for (adapter in channel) action(adapter)
     }
 
     events.offer(this)
-    val dataSetObserver = observer(scope = scope, adapter = this, emitter = events::offer)
+    val dataSetObserver = observer(scope, this, events::offer)
     registerDataSetObserver(dataSetObserver)
     events.invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
 }
 
 /**
- * Perform an action on data change events for [Adapter] inside new [CoroutineScope].
+ * Perform an action on data change events for [Adapter], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -65,16 +64,7 @@ suspend fun <T : Adapter> T.dataChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (T) -> Unit
 ) = coroutineScope {
-
-    val events = actor<T>(Dispatchers.Main, capacity) {
-        for (adapter in channel) action(adapter)
-    }
-
-    events.offer(this@dataChanges)
-    val dataSetObserver = observer(scope = this, adapter = this@dataChanges,
-            emitter = events::offer)
-    registerDataSetObserver(dataSetObserver)
-    events.invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
+    dataChanges(this, capacity, action)
 }
 
 /**
@@ -88,7 +78,7 @@ fun <T : Adapter> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
-    offer(this@dataChanges)
+    offerElement(this@dataChanges)
     val dataSetObserver = observer(scope, this@dataChanges, ::offerElement)
     registerDataSetObserver(dataSetObserver)
     invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
