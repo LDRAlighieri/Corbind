@@ -16,8 +16,9 @@
 
 package ru.ldralighieri.corbind.material
 
+import android.view.MenuItem
 import androidx.annotation.CheckResult
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -32,88 +33,68 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
 /**
- * Perform an action on the selected tab in [TabLayout].
+ * Perform an action on the reselected item in [BottomNavigationView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun TabLayout.selections(
+fun BottomNavigationView.itemReselections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TabLayout.Tab) -> Unit
+    action: suspend (MenuItem) -> Unit
 ) {
-    val events = scope.actor<TabLayout.Tab>(Dispatchers.Main, capacity) {
-        for (tab in channel) action(tab)
+    val events = scope.actor<MenuItem>(Dispatchers.Main, capacity) {
+        for (item in channel) action(item)
     }
 
-    setInitialValue(this, events::offer)
-    val listener = listener(scope, events::offer)
-    addOnTabSelectedListener(listener)
-    events.invokeOnClose { removeOnTabSelectedListener(listener) }
+    setOnNavigationItemReselectedListener(listener(scope, events::offer))
+    events.invokeOnClose { setOnNavigationItemReselectedListener(null) }
 }
 
 /**
- * Perform an action on the selected tab in [TabLayout], inside new [CoroutineScope].
+ * Perform an action on the reselected item in [BottomNavigationView], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun TabLayout.selections(
+suspend fun BottomNavigationView.itemReselections(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TabLayout.Tab) -> Unit
+    action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
-    selections(this, capacity, action)
+    itemReselections(this, capacity, action)
 }
 
 /**
- * Create a channel which emits the selected tab in [TabLayout].
+ * Create a channel which emits the reselected item in [BottomNavigationView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun TabLayout.selections(
+fun BottomNavigationView.itemReselections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@selections, ::offerElement)
-    val listener = listener(scope, ::offerElement)
-    addOnTabSelectedListener(listener)
-    invokeOnClose { removeOnTabSelectedListener(listener) }
+): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
+    setOnNavigationItemReselectedListener(listener(scope, ::offerElement))
+    invokeOnClose { setOnNavigationItemReselectedListener(null) }
 }
 
 /**
- * Create a flow which emits the selected tab in [TabLayout].
+ * Create a flow which emits the reselected item in [BottomNavigationView].
  *
  * *Note:* A value will be emitted immediately on collect.
  */
 @CheckResult
-fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
-    setInitialValue(this@selections, ::offer)
-    val listener = listener(this, ::offer)
-    addOnTabSelectedListener(listener)
-    awaitClose { removeOnTabSelectedListener(listener) }
-}
-
-private fun setInitialValue(
-    tabLayout: TabLayout,
-    emitter: (TabLayout.Tab) -> Boolean
-) {
-    val index = tabLayout.selectedTabPosition
-    if (index != -1) { emitter(tabLayout.getTabAt(index)!!) }
+fun BottomNavigationView.itemReselections(): Flow<MenuItem> = channelFlow {
+    setOnNavigationItemReselectedListener(listener(this, ::offer))
+    awaitClose { setOnNavigationItemReselectedListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (TabLayout.Tab) -> Boolean
-) = object : TabLayout.OnTabSelectedListener {
-
-    override fun onTabSelected(tab: TabLayout.Tab) {
-        if (scope.isActive) { emitter(tab) }
-    }
-
-    override fun onTabReselected(tab: TabLayout.Tab) { }
-    override fun onTabUnselected(tab: TabLayout.Tab) { }
+    emitter: (MenuItem) -> Boolean
+) = BottomNavigationView.OnNavigationItemReselectedListener {
+    if (scope.isActive) { emitter(it) }
 }

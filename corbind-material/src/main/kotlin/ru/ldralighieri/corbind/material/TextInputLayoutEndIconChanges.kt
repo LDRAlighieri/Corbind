@@ -17,7 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -32,88 +32,75 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
 /**
- * Perform an action on the selected tab in [TabLayout].
+ * Perform an action on [TextInputLayout] end icon mode changes.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun TabLayout.selections(
+fun TextInputLayout.endIconChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TabLayout.Tab) -> Unit
+    action: suspend (Int) -> Unit
 ) {
-    val events = scope.actor<TabLayout.Tab>(Dispatchers.Main, capacity) {
-        for (tab in channel) action(tab)
+    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
+        for (mode in channel) action(mode)
     }
 
-    setInitialValue(this, events::offer)
     val listener = listener(scope, events::offer)
-    addOnTabSelectedListener(listener)
-    events.invokeOnClose { removeOnTabSelectedListener(listener) }
+    addOnEndIconChangedListener(listener)
+    events.invokeOnClose { removeOnEndIconChangedListener(listener) }
 }
 
 /**
- * Perform an action on the selected tab in [TabLayout], inside new [CoroutineScope].
+ * Perform an action on [TextInputLayout] end icon mode changes, inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun TabLayout.selections(
+suspend fun TextInputLayout.endIconChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TabLayout.Tab) -> Unit
+    action: suspend (Int) -> Unit
 ) = coroutineScope {
-    selections(this, capacity, action)
+    endIconChanges(this, capacity, action)
 }
 
 /**
- * Create a channel which emits the selected tab in [TabLayout].
+ * Create a channel which emits on [TextInputLayout] end icon mode changes.
+ *
+ * *Note:* Emitted value is the [TextInputLayout.EndIconMode] the [TextInputLayout] previously had
+ * set
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun TabLayout.selections(
+fun TextInputLayout.endIconChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@selections, ::offerElement)
+): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::offerElement)
-    addOnTabSelectedListener(listener)
-    invokeOnClose { removeOnTabSelectedListener(listener) }
+    addOnEndIconChangedListener(listener)
+    invokeOnClose { removeOnEndIconChangedListener(listener) }
 }
 
 /**
- * Create a flow which emits the selected tab in [TabLayout].
+ * Create a flow which emits on [TextInputLayout] end icon mode changes.
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* Emitted value is the [TextInputLayout.EndIconMode] the [TextInputLayout] previously had
+ * set
  */
 @CheckResult
-fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
-    setInitialValue(this@selections, ::offer)
+fun TextInputLayout.endIconChanges(): Flow<Int> = channelFlow {
     val listener = listener(this, ::offer)
-    addOnTabSelectedListener(listener)
-    awaitClose { removeOnTabSelectedListener(listener) }
-}
-
-private fun setInitialValue(
-    tabLayout: TabLayout,
-    emitter: (TabLayout.Tab) -> Boolean
-) {
-    val index = tabLayout.selectedTabPosition
-    if (index != -1) { emitter(tabLayout.getTabAt(index)!!) }
+    addOnEndIconChangedListener(listener)
+    awaitClose { removeOnEndIconChangedListener(listener) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (TabLayout.Tab) -> Boolean
-) = object : TabLayout.OnTabSelectedListener {
-
-    override fun onTabSelected(tab: TabLayout.Tab) {
-        if (scope.isActive) { emitter(tab) }
-    }
-
-    override fun onTabReselected(tab: TabLayout.Tab) { }
-    override fun onTabUnselected(tab: TabLayout.Tab) { }
+    emitter: (Int) -> Boolean
+) = TextInputLayout.OnEndIconChangedListener { _, previousIcon ->
+    if (scope.isActive) { emitter(previousIcon) }
 }

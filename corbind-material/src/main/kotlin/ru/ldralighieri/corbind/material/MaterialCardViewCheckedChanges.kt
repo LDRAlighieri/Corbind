@@ -17,7 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -32,88 +32,86 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
 /**
- * Perform an action on the selected tab in [TabLayout].
+ * Perform an action on [MaterialCardView] check state change.
+ *
+ * *Warning:* Perform only when the [MaterialCardView] is in checkable state.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun TabLayout.selections(
+fun MaterialCardView.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TabLayout.Tab) -> Unit
+    action: suspend (Boolean) -> Unit
 ) {
-    val events = scope.actor<TabLayout.Tab>(Dispatchers.Main, capacity) {
-        for (tab in channel) action(tab)
+    val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
+        for (checked in channel) action(checked)
     }
 
-    setInitialValue(this, events::offer)
+    checkCheckableState(this)
+    events.offer(isChecked)
     val listener = listener(scope, events::offer)
-    addOnTabSelectedListener(listener)
-    events.invokeOnClose { removeOnTabSelectedListener(listener) }
+    setOnCheckedChangeListener(listener)
+    events.invokeOnClose { setOnCheckedChangeListener(listener) }
 }
 
 /**
- * Perform an action on the selected tab in [TabLayout], inside new [CoroutineScope].
+ * Perform an action on [MaterialCardView] check state change, inside new [CoroutineScope].
+ *
+ * *Warning:* Perform only when the [MaterialCardView] is in checkable state.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun TabLayout.selections(
+suspend fun MaterialCardView.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TabLayout.Tab) -> Unit
+    action: suspend (Boolean) -> Unit
 ) = coroutineScope {
-    selections(this, capacity, action)
+    checkedChanges(this, capacity, action)
 }
 
 /**
- * Create a channel which emits the selected tab in [TabLayout].
+ * Create a channel which emits on [MaterialCardView] check state change.
+ *
+ * *Warning:* Emits only when the [MaterialCardView] is in checkable state.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun TabLayout.selections(
+fun MaterialCardView.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@selections, ::offerElement)
+): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
+    checkCheckableState(this@checkedChanges)
+    offerElement(isChecked)
     val listener = listener(scope, ::offerElement)
-    addOnTabSelectedListener(listener)
-    invokeOnClose { removeOnTabSelectedListener(listener) }
+    setOnCheckedChangeListener(listener)
+    invokeOnClose { setOnCheckedChangeListener(listener) }
 }
 
 /**
- * Create a flow which emits the selected tab in [TabLayout].
+ * Create a flow which emits on [MaterialCardView] check state change.
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* Emits only when the [MaterialCardView] is in checkable state.
  */
 @CheckResult
-fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
-    setInitialValue(this@selections, ::offer)
-    val listener = listener(this, ::offer)
-    addOnTabSelectedListener(listener)
-    awaitClose { removeOnTabSelectedListener(listener) }
+fun MaterialCardView.checkedChanges(): Flow<Boolean> = channelFlow {
+    checkCheckableState(this@checkedChanges)
+    offer(isChecked)
+    setOnCheckedChangeListener(listener(this, ::offer))
+    awaitClose { setOnCheckedChangeListener(null) }
 }
 
-private fun setInitialValue(
-    tabLayout: TabLayout,
-    emitter: (TabLayout.Tab) -> Boolean
-) {
-    val index = tabLayout.selectedTabPosition
-    if (index != -1) { emitter(tabLayout.getTabAt(index)!!) }
+private fun checkCheckableState(card: MaterialCardView) {
+    check(card.isCheckable) { "The MaterialCardView is not checkable." }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (TabLayout.Tab) -> Boolean
-) = object : TabLayout.OnTabSelectedListener {
-
-    override fun onTabSelected(tab: TabLayout.Tab) {
-        if (scope.isActive) { emitter(tab) }
-    }
-
-    override fun onTabReselected(tab: TabLayout.Tab) { }
-    override fun onTabUnselected(tab: TabLayout.Tab) { }
+    emitter: (Boolean) -> Boolean
+) = MaterialCardView.OnCheckedChangeListener { _, isChecked ->
+    if (scope.isActive) { emitter(isChecked) }
 }
