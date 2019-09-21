@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on checked view ID changes in [ChipGroup].
@@ -101,8 +101,8 @@ fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@checkedChanges)
-    offerElement(checkedChipId)
-    setOnCheckedChangeListener(listener(scope, ::offerElement))
+    safeOffer(checkedChipId)
+    setOnCheckedChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 

@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on key events for [View].
@@ -102,7 +102,7 @@ fun View.keys(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (KeyEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<KeyEvent> = corbindReceiveChannel(capacity) {
-    setOnKeyListener(listener(scope, handled, ::offerElement))
+    setOnKeyListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnKeyListener(null) }
 }
 

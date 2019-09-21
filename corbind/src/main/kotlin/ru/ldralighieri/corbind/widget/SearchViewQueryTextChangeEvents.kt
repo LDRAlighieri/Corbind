@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class SearchViewQueryTextEvent(
     val view: SearchView,
@@ -40,8 +40,8 @@ data class SearchViewQueryTextEvent(
 /**
  * Perform an action on [query text events][SearchViewQueryTextEvent] on [SearchView].
  *
- * *Warning:* The created actor uses [SearchView.OnQueryTextListener]. Only one actor can be used at
- * a time.
+ * *Warning:* The created actor uses [SearchView.setOnQueryTextListener]. Only one actor can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -65,8 +65,8 @@ fun SearchView.queryTextChangeEvents(
  * Perform an action on [query text events][SearchViewQueryTextEvent] on [SearchView], inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [SearchView.OnQueryTextListener]. Only one actor can be used at
- * a time.
+ * *Warning:* The created actor uses [SearchView.setOnQueryTextListener]. Only one actor can be used
+ * at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -81,7 +81,7 @@ suspend fun SearchView.queryTextChangeEvents(
 /**
  * Create a channel of [query text events][SearchViewQueryTextEvent] on [SearchView].
  *
- * *Warning:* The created channel uses [SearchView.OnQueryTextListener]. Only one channel can be
+ * *Warning:* The created channel uses [SearchView.setOnQueryTextListener]. Only one channel can be
  * used at a time.
  *
  * *Note:* A value will be emitted immediately.
@@ -103,16 +103,16 @@ fun SearchView.queryTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(capacity) {
-    offerElement(initialValue(this@queryTextChangeEvents))
-    setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::offerElement))
+    safeOffer(initialValue(this@queryTextChangeEvents))
+    setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::safeOffer))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
 /**
  * Create a flow of [query text events][SearchViewQueryTextEvent] on [SearchView].
  *
- * *Warning:* The created flow uses [SearchView.OnQueryTextListener]. Only one flow can be used at a
- * time.
+ * *Warning:* The created flow uses [SearchView.setOnQueryTextListener]. Only one flow can be used
+ * at a time.
  *
  * *Note:* A value will be emitted immediately.
  *

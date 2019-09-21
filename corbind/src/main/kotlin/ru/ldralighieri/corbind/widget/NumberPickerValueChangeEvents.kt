@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class NumberPickerValueChangeEvent(
     val picker: NumberPicker,
@@ -40,7 +40,7 @@ data class NumberPickerValueChangeEvent(
 /**
  * Perform an action on [NumberPicker] [value change events][NumberPickerValueChangeEvent].
  *
- * *Warning:* The created actor uses [NumberPicker.OnValueChangeListener]. Only one actor can be
+ * *Warning:* The created actor uses [NumberPicker.setOnValueChangedListener]. Only one actor can be
  * used at a time.
  *
  * @param scope Root coroutine scope
@@ -65,7 +65,7 @@ fun NumberPicker.valueChangeEvents(
  * Perform an action on [NumberPicker] [value change events][NumberPickerValueChangeEvent], inside
  * new [CoroutineScope].
  *
- * *Warning:* The created actor uses [NumberPicker.OnValueChangeListener]. Only one actor can be
+ * *Warning:* The created actor uses [NumberPicker.setOnValueChangedListener]. Only one actor can be
  * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -81,8 +81,8 @@ suspend fun NumberPicker.valueChangeEvents(
 /**
  * Create a channel which emits on [NumberPicker] [value change events][NumberPickerValueChangeEvent].
  *
- * *Warning:* The created channel uses [NumberPicker.OnValueChangeListener]. Only one channel can be
- * used at a time.
+ * *Warning:* The created channel uses [NumberPicker.setOnValueChangedListener]. Only one channel
+ * can be used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -104,15 +104,15 @@ fun NumberPicker.valueChangeEvents(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<NumberPickerValueChangeEvent> = corbindReceiveChannel(capacity) {
     offer(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
-    setOnValueChangedListener(listener(scope, ::offerElement))
+    setOnValueChangedListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnValueChangedListener(null) }
 }
 
 /**
  * Create a flow which emits on [NumberPicker] [value change events][NumberPickerValueChangeEvent].
  *
- * *Warning:* The created flow uses [NumberPicker.OnValueChangeListener]. Only one flow can be used
- * at a time.
+ * *Warning:* The created flow uses [NumberPicker.setOnValueChangedListener]. Only one flow can be
+ * used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *

@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [MaterialButton] check change in [MaterialButtonToggleGroup].
@@ -105,8 +105,8 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@buttonCheckedChanges)
-    offerElement(checkedButtonId)
-    val listener = listener(scope, ::offerElement)
+    safeOffer(checkedButtonId)
+    val listener = listener(scope, ::safeOffer)
     addOnButtonCheckedListener(listener)
     invokeOnClose { removeOnButtonCheckedListener(listener) }
 }

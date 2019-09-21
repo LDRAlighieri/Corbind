@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the slide offset events from [View] on [BottomSheetBehavior].
@@ -98,7 +98,7 @@ fun View.slides(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@slides)
-    behavior.bottomSheetCallback = callback(scope, ::offerElement)
+    behavior.bottomSheetCallback = callback(scope, ::safeOffer)
     invokeOnClose { behavior.bottomSheetCallback = null }
 }
 

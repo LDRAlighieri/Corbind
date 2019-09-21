@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on data change events for [RecyclerView.Adapter].
@@ -88,8 +88,8 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
-    offerElement(this@dataChanges)
-    val dataObserver = observer(scope, this@dataChanges, ::offerElement)
+    safeOffer(this@dataChanges)
+    val dataObserver = observer(scope, this@dataChanges, ::safeOffer)
     registerAdapterDataObserver(dataObserver)
     invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }

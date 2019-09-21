@@ -30,12 +30,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on checked view ID changes in [RadioGroup].
  *
- * *Warning:* The created actor uses [RadioGroup.OnCheckedChangeListener]. Only one actor can be
+ * *Warning:* The created actor uses [RadioGroup.setOnCheckedChangeListener]. Only one actor can be
  * used at a time.
  *
  * @param scope Root coroutine scope
@@ -59,7 +59,7 @@ fun RadioGroup.checkedChanges(
 /**
  * Perform an action on checked view ID changes in [RadioGroup], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [RadioGroup.OnCheckedChangeListener]. Only one actor can be
+ * *Warning:* The created actor uses [RadioGroup.setOnCheckedChangeListener]. Only one actor can be
  * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -75,7 +75,7 @@ suspend fun RadioGroup.checkedChanges(
 /**
  * Create a channel of the checked view ID changes in [RadioGroup].
  *
- * *Warning:* The created channel uses [RadioGroup.OnCheckedChangeListener]. Only one channel can
+ * *Warning:* The created channel uses [RadioGroup.setOnCheckedChangeListener]. Only one channel can
  * be used at a time.
  *
  * *Note:* A value will be emitted immediately. When the selection is cleared, checkedId is
@@ -98,16 +98,16 @@ fun RadioGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerElement(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, ::offerElement))
+    safeOffer(checkedRadioButtonId)
+    setOnCheckedChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
 /**
  * Create a flow of the checked view ID changes in [RadioGroup].
  *
- * *Warning:* The created flow uses [RadioGroup.OnCheckedChangeListener]. Only one flow can be used
- * at a time.
+ * *Warning:* The created flow uses [RadioGroup.setOnCheckedChangeListener]. Only one flow can be
+ * used at a time.
  *
  * *Note:* A value will be emitted immediately. When the selection is cleared, checkedId is
  * [View.NO_ID]

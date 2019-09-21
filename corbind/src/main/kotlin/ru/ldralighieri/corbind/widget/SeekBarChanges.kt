@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 private fun SeekBar.changes(
     scope: CoroutineScope,
@@ -60,8 +60,8 @@ private fun SeekBar.changes(
     capacity: Int,
     shouldBeFromUser: Boolean?
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerElement(progress)
-    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::offerElement))
+    safeOffer(progress)
+    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::safeOffer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -77,8 +77,8 @@ private fun SeekBar.changes(
 /**
  * Perform an action on progress value changes on [SeekBar].
  *
- * *Warning:* The created actor uses [SeekBar.OnSeekBarChangeListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -93,8 +93,8 @@ fun SeekBar.changes(
 /**
  * Perform an action on progress value changes on [SeekBar] inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [SeekBar.OnSeekBarChangeListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -107,7 +107,7 @@ suspend fun SeekBar.changes(
 /**
  * Create a channel of progress value changes on [SeekBar].
  *
- * *Warning:* The created channel uses [SeekBar.OnSeekBarChangeListener]. Only one channel can be
+ * *Warning:* The created channel uses [SeekBar.setOnSeekBarChangeListener]. Only one channel can be
  * used at a time.
  *
  * *Note:* A value will be emitted immediately.
@@ -133,8 +133,8 @@ fun SeekBar.changes(
 /**
  * Create a flow of progress value changes on [SeekBar].
  *
- * *Warning:* The created flow uses [SeekBar.OnSeekBarChangeListener]. Only one flow can be used at
- * a time.
+ * *Warning:* The created flow uses [SeekBar.setOnSeekBarChangeListener]. Only one flow can be used
+ * at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -159,8 +159,8 @@ fun SeekBar.changes(): Flow<Int> = changes(null)
 /**
  * Perform an action on progress value changes on [SeekBar] that were made only from the user.
  *
- * *Warning:* The created actor uses [SeekBar.OnSeekBarChangeListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -176,8 +176,8 @@ fun SeekBar.userChanges(
  * Perform an action on progress value changes on [SeekBar] that were made only from the user inside
  * new [CoroutineScope].
  *
- * *Warning:* The created actor uses [SeekBar.OnSeekBarChangeListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -190,7 +190,7 @@ suspend fun SeekBar.userChanges(
 /**
  * Create a channel of progress value changes on [SeekBar] that were made only from the user.
  *
- * *Warning:* The created channel uses [SeekBar.OnSeekBarChangeListener]. Only one channel can be
+ * *Warning:* The created channel uses [SeekBar.setOnSeekBarChangeListener]. Only one channel can be
  * used at a time.
  *
  * *Note:* A value will be emitted immediately.
@@ -216,8 +216,8 @@ fun SeekBar.userChanges(
 /**
  * Create a flow of progress value changes on [SeekBar] that were made only from the user.
  *
- * *Warning:* The created flow uses [SeekBar.OnSeekBarChangeListener]. Only one flow can be used at
- * a time.
+ * *Warning:* The created flow uses [SeekBar.setOnSeekBarChangeListener]. Only one flow can be used
+ * at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -242,8 +242,8 @@ fun SeekBar.userChanges(): Flow<Int> = changes(true)
 /**
  * Perform an action on progress value changes on [SeekBar] that were made only from the system.
  *
- * *Warning:* The created actor uses [SeekBar.OnSeekBarChangeListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -259,8 +259,8 @@ fun SeekBar.systemChanges(
  * Perform an action on progress value changes on [SeekBar] that were made only from the system inside
  * new [CoroutineScope].
  *
- * *Warning:* The created actor uses [SeekBar.OnSeekBarChangeListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -273,7 +273,7 @@ suspend fun SeekBar.systemChanges(
 /**
  * Create a channel of progress value changes on [SeekBar] that were made only from the system.
  *
- * *Warning:* The created channel uses [SeekBar.OnSeekBarChangeListener]. Only one channel can be
+ * *Warning:* The created channel uses [SeekBar.setOnSeekBarChangeListener]. Only one channel can be
  * used at a time.
  *
  * *Note:* A value will be emitted immediately.
@@ -299,8 +299,8 @@ fun SeekBar.systemChanges(
 /**
  * Create a flow of progress value changes on [SeekBar] that were made only from the system.
  *
- * *Warning:* The created flow uses [SeekBar.OnSeekBarChangeListener]. Only one flow can be used at
- * a time.
+ * *Warning:* The created flow uses [SeekBar.setOnSeekBarChangeListener]. Only one flow can be used
+ * at a time.
  *
  * *Note:* A value will be emitted immediately.
  *

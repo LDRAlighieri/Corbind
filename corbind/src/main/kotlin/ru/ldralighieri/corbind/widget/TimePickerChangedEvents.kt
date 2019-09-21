@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class TimeChangedEvent(
     val view: TimePicker,
@@ -42,8 +42,8 @@ data class TimeChangedEvent(
 /**
  * Perform an action on [TimePicker] [time changed events][TimeChangedEvent].
  *
- * *Warning:* The created actor uses [TimePicker.OnTimeChangedListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [TimePicker.setOnTimeChangedListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -68,8 +68,8 @@ fun TimePicker.timeChangeEvents(
  * Perform an action on [TimePicker] [time changed events][TimeChangedEvent], inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [TimePicker.OnTimeChangedListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [TimePicker.setOnTimeChangedListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -85,8 +85,8 @@ suspend fun TimePicker.timeChangeEvents(
 /**
  * Create a channel which emits on [TimePicker] [time changed events][TimeChangedEvent].
  *
- * *Warning:* The created channel uses [TimePicker.OnTimeChangedListener]. Only one channel can be
- * used at a time.
+ * *Warning:* The created channel uses [TimePicker.setOnTimeChangedListener]. Only one channel can
+ * be used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -108,16 +108,16 @@ fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TimeChangedEvent> = corbindReceiveChannel(capacity) {
-    offerElement(TimeChangedEvent(this@timeChangeEvents, hour, minute))
-    setOnTimeChangedListener(listener(scope, ::offerElement))
+    safeOffer(TimeChangedEvent(this@timeChangeEvents, hour, minute))
+    setOnTimeChangedListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnTimeChangedListener(null) }
 }
 
 /**
  * Create a flow which emits on [TimePicker] [time changed events][TimeChangedEvent].
  *
- * *Warning:* The created flow uses [TimePicker.OnTimeChangedListener]. Only one flow can be used at
- * a time.
+ * *Warning:* The created flow uses [TimePicker.setOnTimeChangedListener]. Only one flow can be used
+ * at a time.
  *
  * *Note:* A value will be emitted immediately.
  *

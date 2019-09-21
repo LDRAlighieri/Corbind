@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class TextViewEditorActionEvent(
     val view: TextView,
@@ -42,8 +42,8 @@ data class TextViewEditorActionEvent(
 /**
  * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView].
  *
- * *Warning:* The created actor uses [TextView.OnEditorActionListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [TextView.setOnEditorActionListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -69,8 +69,8 @@ fun TextView.editorActionEvents(
  * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView], inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [TextView.OnEditorActionListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [TextView.setOnEditorActionListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -88,7 +88,7 @@ suspend fun TextView.editorActionEvents(
 /**
  * Create a channel of [editor action events][TextViewEditorActionEvent] on [TextView].
  *
- * *Warning:* The created channel uses [TextView.OnEditorActionListener]. Only one channel can be
+ * *Warning:* The created channel uses [TextView.setOnEditorActionListener]. Only one channel can be
  * used at a time.
  *
  * Example:
@@ -111,15 +111,15 @@ fun TextView.editorActionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel(capacity) {
-    setOnEditorActionListener(listener(scope, handled, ::offerElement))
+    setOnEditorActionListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnEditorActionListener(null) }
 }
 
 /**
  * Create a flow of [editor action events][TextViewEditorActionEvent] on [TextView].
  *
- * *Warning:* The created flow uses [TextView.OnEditorActionListener]. Only one flow can be used at
- * a time.
+ * *Warning:* The created flow uses [TextView.setOnEditorActionListener]. Only one flow can be used
+ * at a time.
  *
  * Example:
  *

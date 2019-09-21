@@ -29,13 +29,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on refresh events on [SwipeRefreshLayout].
  *
- * *Warning:* The created actor uses [SwipeRefreshLayout.OnRefreshListener]. Only one actor can be
- * used at a time.
+ * *Warning:* The created actor uses [SwipeRefreshLayout.setOnRefreshListener]. Only one actor can
+ * be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -57,8 +57,8 @@ fun SwipeRefreshLayout.refreshes(
 /**
  * Perform an action on refresh events on [SwipeRefreshLayout], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [SwipeRefreshLayout.OnRefreshListener]. Only one actor can be
- * used at a time.
+ * *Warning:* The created actor uses [SwipeRefreshLayout.setOnRefreshListener]. Only one actor can
+ * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -73,8 +73,8 @@ suspend fun SwipeRefreshLayout.refreshes(
 /**
  * Create a channel of refresh events on [SwipeRefreshLayout].
  *
- * *Warning:* The created channel uses [SwipeRefreshLayout.OnRefreshListener]. Only one channel can
- * be used at a time.
+ * *Warning:* The created channel uses [SwipeRefreshLayout.setOnRefreshListener]. Only one channel
+ * can be used at a time.
  *
  * Example:
  *
@@ -93,14 +93,14 @@ fun SwipeRefreshLayout.refreshes(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnRefreshListener(listener(scope, ::offerElement))
+    setOnRefreshListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnRefreshListener(null) }
 }
 
 /**
  * Create a flow of refresh events on [SwipeRefreshLayout].
  *
- * *Warning:* The created flow uses [SwipeRefreshLayout.OnRefreshListener]. Only one flow can be
+ * *Warning:* The created flow uses [SwipeRefreshLayout.setOnRefreshListener]. Only one flow can be
  * used at a time.
  *
  * Example:

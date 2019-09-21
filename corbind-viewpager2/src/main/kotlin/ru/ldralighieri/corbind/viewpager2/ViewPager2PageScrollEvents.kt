@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class ViewPager2PageScrollEvent(
     val viewPager: ViewPager2,
@@ -93,7 +93,7 @@ fun ViewPager2.pageScrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewPager2PageScrollEvent> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, this@pageScrollEvents, ::offerElement)
+    val callback = callback(scope, this@pageScrollEvents, ::safeOffer)
     registerOnPageChangeCallback(callback)
     invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }

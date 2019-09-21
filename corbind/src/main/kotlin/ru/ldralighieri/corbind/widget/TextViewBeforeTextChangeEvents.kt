@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class TextViewBeforeTextChangeEvent(
     val view: TextView,
@@ -97,8 +97,8 @@ fun TextView.beforeTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewBeforeTextChangeEvent> = corbindReceiveChannel(capacity) {
-    offerElement(initialValue(this@beforeTextChangeEvents))
-    val listener = listener(scope, this@beforeTextChangeEvents, ::offerElement)
+    safeOffer(initialValue(this@beforeTextChangeEvents))
+    val listener = listener(scope, this@beforeTextChangeEvents, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }

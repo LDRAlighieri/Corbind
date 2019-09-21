@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [View] long click events.
@@ -103,7 +103,7 @@ fun View.longClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnLongClickListener(listener(scope, handled, ::offerElement))
+    setOnLongClickListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnLongClickListener(null) }
 }
 

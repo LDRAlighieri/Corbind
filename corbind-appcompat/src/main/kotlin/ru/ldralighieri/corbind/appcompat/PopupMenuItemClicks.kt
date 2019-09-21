@@ -30,12 +30,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on clicked item in [PopupMenu].
  *
- * *Warning:* The created actor uses [PopupMenu.OnMenuItemClickListener]. Only one actor can be
+ * *Warning:* The created actor uses [PopupMenu.setOnMenuItemClickListener]. Only one actor can be
  * used at a time.
  *
  * @param scope Root coroutine scope
@@ -58,7 +58,7 @@ fun PopupMenu.itemClicks(
 /**
  * Perform an action on clicked item in [PopupMenu], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [PopupMenu.OnMenuItemClickListener]. Only one actor can be
+ * *Warning:* The created actor uses [PopupMenu.setOnMenuItemClickListener]. Only one actor can be
  * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -74,7 +74,7 @@ suspend fun PopupMenu.itemClicks(
 /**
  * Create a channel which emits the clicked item in [PopupMenu].
  *
- * *Warning:* The created channel uses [PopupMenu.OnMenuItemClickListener]. Only one channel can
+ * *Warning:* The created channel uses [PopupMenu.setOnMenuItemClickListener]. Only one channel can
  * be used at a time.
  *
  * Example:
@@ -94,14 +94,14 @@ fun PopupMenu.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setOnMenuItemClickListener(listener(scope, ::offerElement))
+    setOnMenuItemClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
 /**
  * Create a flow which emits the clicked item in [PopupMenu].
  *
- * *Warning:* The created flow uses [PopupMenu.OnMenuItemClickListener]. Only one flow can be
+ * *Warning:* The created flow uses [PopupMenu.setOnMenuItemClickListener]. Only one flow can be
  * used at a time.
  *
  * Example:

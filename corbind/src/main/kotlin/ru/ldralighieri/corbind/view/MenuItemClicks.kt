@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [MenuItem] click events.
@@ -103,7 +103,7 @@ fun MenuItem.clicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItem) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setOnMenuItemClickListener(listener(scope, handled, ::offerElement))
+    setOnMenuItemClickListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 

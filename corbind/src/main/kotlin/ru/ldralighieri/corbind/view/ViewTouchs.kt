@@ -31,12 +31,13 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on touch events for [View].
  *
- * *Warning:* The created actor uses [View.OnTouchListener]. Only one actor can be used at a time.
+ * *Warning:* The created actor uses [View.setOnTouchListener]. Only one actor can be used at a
+ * time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -61,7 +62,8 @@ fun View.touches(
 /**
  * Perform an action on touch events for [View] inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.OnTouchListener]. Only one actor can be used at a time.
+ * *Warning:* The created actor uses [View.setOnTouchListener]. Only one actor can be used at a
+ * time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked with each value to determine the return value of the underlying
@@ -85,7 +87,7 @@ suspend fun View.touches(
 /**
  * Create a channel of touch events for [View].
  *
- * *Warning:* The created channel uses [View.OnTouchListener]. Only one channel can be used at a
+ * *Warning:* The created channel uses [View.setOnTouchListener]. Only one channel can be used at a
  * time.
  *
  * Example:
@@ -108,14 +110,14 @@ fun View.touches(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
-    setOnTouchListener(listener(scope, handled, ::offerElement))
+    setOnTouchListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setOnTouchListener(null) }
 }
 
 /**
  * Create a flow of touch events for [View].
  *
- * *Warning:* The created flow uses [View.OnTouchListener]. Only one flow can be used at a time.
+ * *Warning:* The created flow uses [View.setOnTouchListener]. Only one flow can be used at a time.
  *
  * Example:
  *

@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 sealed class ViewGroupHierarchyChangeEvent {
     abstract val view: ViewGroup
@@ -50,7 +50,7 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
 /**
  * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
  *
- * *Warning:* The created actor uses [ViewGroup.OnHierarchyChangeListener]. Only one actor can be
+ * *Warning:* The created actor uses [ViewGroup.setOnHierarchyChangeListener]. Only one actor can be
  * used at a time.
  *
  * @param scope Root coroutine scope
@@ -74,7 +74,7 @@ fun ViewGroup.changeEvents(
  * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup],
  * inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [ViewGroup.OnHierarchyChangeListener]. Only one actor can be
+ * *Warning:* The created actor uses [ViewGroup.setOnHierarchyChangeListener]. Only one actor can be
  * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -90,8 +90,8 @@ suspend fun ViewGroup.changeEvents(
 /**
  * Create a channel of [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
  *
- * *Warning:* The created channel uses [ViewGroup.OnHierarchyChangeListener]. Only one channel can
- * be used at a time.
+ * *Warning:* The created channel uses [ViewGroup.setOnHierarchyChangeListener]. Only one channel
+ * can be used at a time.
  *
  * Examples:
  *
@@ -123,15 +123,15 @@ fun ViewGroup.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel(capacity) {
-    setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::offerElement))
+    setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::safeOffer))
     invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
 /**
  * Create a flow of [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
  *
- * *Warning:* The created flow uses [ViewGroup.OnHierarchyChangeListener]. Only one flow can be used
- * at a time.
+ * *Warning:* The created flow uses [ViewGroup.setOnHierarchyChangeListener]. Only one flow can be
+ * used at a time.
  *
  * Examples:
  *

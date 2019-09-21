@@ -31,12 +31,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the selected position of [AdapterView].
  *
- * *Warning:* The created actor uses [AdapterView.OnItemSelectedListener]. Only one actor can be
+ * *Warning:* The created actor uses [AdapterView.setOnItemSelectedListener]. Only one actor can be
  * used at a time.
  *
  * @param scope Root coroutine scope
@@ -60,7 +60,7 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
 /**
  * Perform an action on the selected position of [AdapterView], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [AdapterView.OnItemSelectedListener]. Only one actor can be
+ * *Warning:* The created actor uses [AdapterView.setOnItemSelectedListener]. Only one actor can be
  * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -77,8 +77,8 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
  * Create a channel of the selected position of [AdapterView]. If nothing is selected,
  * [AdapterView.INVALID_POSITION] will be emitted
  *
- * *Warning:* The created channel uses [AdapterView.OnItemSelectedListener]. Only one channel can be
- * used at a time.
+ * *Warning:* The created channel uses [AdapterView.setOnItemSelectedListener]. Only one channel can
+ * be used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -99,8 +99,8 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerElement(selectedItemPosition)
-    onItemSelectedListener = listener(scope, ::offerElement)
+    safeOffer(selectedItemPosition)
+    onItemSelectedListener = listener(scope, ::safeOffer)
     invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -108,8 +108,8 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
  * Create a flow of the selected position of [AdapterView]. If nothing is selected,
  * [AdapterView.INVALID_POSITION] will be emitted
  *
- * *Warning:* The created flow uses [AdapterView.OnItemSelectedListener]. Only one flow can be used
- * at a time.
+ * *Warning:* The created flow uses [AdapterView.setOnItemSelectedListener]. Only one flow can be
+ * used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -141,7 +141,10 @@ private fun listener(
     emitter: (Int) -> Boolean
 ) = object : AdapterView.OnItemSelectedListener {
 
-    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) { onEvent(position) }
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+        onEvent(position)
+    }
+
     override fun onNothingSelected(parent: AdapterView<*>) { onEvent(AdapterView.INVALID_POSITION) }
 
     private fun onEvent(position: Int) {

@@ -31,13 +31,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the position of item clicks for [AdapterView].
  *
- * *Warning:* The created actor uses [AdapterView.OnItemClickListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [AdapterView.setOnItemClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -59,8 +59,8 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
 /**
  * Perform an action on the position of item clicks for [AdapterView], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [AdapterView.OnItemClickListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [AdapterView.setOnItemClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -75,7 +75,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemClicks(
 /**
  * Create a channel of the position of item clicks for [AdapterView].
  *
- * *Warning:* The created channel uses [AdapterView.OnItemClickListener]. Only one channel can be
+ * *Warning:* The created channel uses [AdapterView.setOnItemClickListener]. Only one channel can be
  * used at a time.
  *
  * Example:
@@ -95,15 +95,15 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    onItemClickListener = listener(scope, ::offerElement)
+    onItemClickListener = listener(scope, ::safeOffer)
     invokeOnClose { onItemClickListener = null }
 }
 
 /**
  * Create a flow of the position of item clicks for [AdapterView].
  *
- * *Warning:* The created flow uses [AdapterView.OnItemClickListener]. Only one flow can be used at
- * a time.
+ * *Warning:* The created flow uses [AdapterView.setOnItemClickListener]. Only one flow can be used
+ * at a time.
  *
  * Example:
  *

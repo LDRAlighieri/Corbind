@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 sealed class SearchBarSearchQueryEvent {
     abstract val view: SearchBar
@@ -54,8 +54,8 @@ data class SearchBarSearchQuerySubmittedEvent(
 /**
  * Perform an action on [search query events][SearchBarSearchQueryEvent] on [SearchBar].
  *
- * *Warning:* The created actor uses [SearchBar.SearchBarListener]. Only one actor can be used at a
- * time.
+ * *Warning:* The created actor uses [SearchBar.setSearchBarListener]. Only one actor can be used at
+ * a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -78,8 +78,8 @@ fun SearchBar.searchQueryChangeEvents(
  * Perform an action on [search query events][SearchBarSearchQueryEvent] on [SearchBar], inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [SearchBar.SearchBarListener]. Only one actor can be used at a
- * time.
+ * *Warning:* The created actor uses [SearchBar.setSearchBarListener]. Only one actor can be used at
+ * a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -94,8 +94,8 @@ suspend fun SearchBar.searchQueryChangeEvents(
 /**
  * Create a channel of [search query events][SearchBarSearchQueryEvent] on [SearchBar].
  *
- * *Warning:* The created channel uses [SearchBar.SearchBarListener]. Only one channel can be used
- * at a time.
+ * *Warning:* The created channel uses [SearchBar.setSearchBarListener]. Only one channel can be
+ * used at a time.
  *
  * Examples:
  *
@@ -130,14 +130,14 @@ fun SearchBar.searchQueryChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel(capacity) {
-    setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::offerElement))
+    setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::safeOffer))
     invokeOnClose { setSearchBarListener(null) }
 }
 
 /**
  * Create a flow of [search query events][SearchBarSearchQueryEvent] on [SearchBar].
  *
- * *Warning:* The created flow uses [SearchBar.SearchBarListener]. Only one flow can be used at a
+ * *Warning:* The created flow uses [SearchBar.setSearchBarListener]. Only one flow can be used at a
  * time.
  *
  * Examples:

@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the selected item in [BottomNavigationView].
@@ -97,8 +97,8 @@ fun BottomNavigationView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@itemSelections, ::offerElement)
-    setOnNavigationItemSelectedListener(listener(scope, ::offerElement))
+    setInitialValue(this@itemSelections, ::safeOffer)
+    setOnNavigationItemSelectedListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnNavigationItemSelectedListener(null) }
 }
 

@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 sealed class AdapterViewSelectionEvent {
     abstract val view: AdapterView<*>
@@ -51,7 +51,7 @@ data class AdapterViewNothingSelectionEvent(
 /**
  * Perform an action on [selection events][AdapterViewSelectionEvent] for [AdapterView].
  *
- * *Warning:* The created actor uses [AdapterView.OnItemSelectedListener]. Only one actor can be
+ * *Warning:* The created actor uses [AdapterView.setOnItemSelectedListener]. Only one actor can be
  * used at a time.
  *
  * @param scope Root coroutine scope
@@ -76,7 +76,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  * Perform an action on [selection events][AdapterViewSelectionEvent] for [AdapterView], inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [AdapterView.OnItemSelectedListener]. Only one actor can be
+ * *Warning:* The created actor uses [AdapterView.setOnItemSelectedListener]. Only one actor can be
  * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -92,8 +92,8 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 /**
  * Create a channel of [selection events][AdapterViewSelectionEvent] for [AdapterView].
  *
- * *Warning:* The created channel uses [AdapterView.OnItemSelectedListener]. Only one channel can be
- * used at a time.
+ * *Warning:* The created channel uses [AdapterView.setOnItemSelectedListener]. Only one channel can
+ * be used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -127,16 +127,16 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(capacity) {
-    offerElement(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(scope, ::offerElement)
+    safeOffer(initialValue(this@selectionEvents))
+    onItemSelectedListener = listener(scope, ::safeOffer)
     invokeOnClose { onItemSelectedListener = null }
 }
 
 /**
  * Create a flow of [selection events][AdapterViewSelectionEvent] for [AdapterView].
  *
- * *Warning:* The created flow uses [AdapterView.OnItemSelectedListener]. Only one flow can be used
- * at a time.
+ * *Warning:* The created flow uses [AdapterView.setOnItemSelectedListener]. Only one flow can be
+ * used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *

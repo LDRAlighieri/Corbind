@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior].
@@ -95,7 +95,7 @@ fun View.dragStateChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@dragStateChanges)
-    behavior.setListener(listener(scope, ::offerElement))
+    behavior.setListener(listener(scope, ::safeOffer))
     invokeOnClose { behavior.setListener(null) }
 }
 

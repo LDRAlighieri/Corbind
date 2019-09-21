@@ -29,12 +29,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [PopupMenu] dismiss events.
  *
- * *Warning:* The created actor uses [PopupMenu.OnDismissListener]. Only one actor can be used
+ * *Warning:* The created actor uses [PopupMenu.setOnDismissListener]. Only one actor can be used
  * at a time.
  *
  * @param scope Root coroutine scope
@@ -57,7 +57,7 @@ fun PopupMenu.dismisses(
 /**
  * Perform an action on [PopupMenu] dismiss events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [PopupMenu.OnDismissListener]. Only one actor can be used
+ * *Warning:* The created actor uses [PopupMenu.setOnDismissListener]. Only one actor can be used
  * for a view at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -73,7 +73,7 @@ suspend fun PopupMenu.dismisses(
 /**
  * Create a channel which emits on [PopupMenu] dismiss events.
  *
- * *Warning:* The created channel uses [PopupMenu.OnDismissListener]. Only one channel can be
+ * *Warning:* The created channel uses [PopupMenu.setOnDismissListener]. Only one channel can be
  * used at a time.
  *
  * Example:
@@ -93,14 +93,14 @@ fun PopupMenu.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnDismissListener(listener(scope, ::offerElement))
+    setOnDismissListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
 /**
  * Create a flow which emits on [PopupMenu] dismiss events.
  *
- * *Warning:* The created flow uses [PopupMenu.OnDismissListener]. Only one flow can be used at a
+ * *Warning:* The created flow uses [PopupMenu.setOnDismissListener]. Only one flow can be used at a
  * time.
  *
  * Example:

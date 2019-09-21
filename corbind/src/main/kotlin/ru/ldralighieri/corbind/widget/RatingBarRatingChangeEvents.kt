@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class RatingBarChangeEvent(
     val view: RatingBar,
@@ -40,7 +40,7 @@ data class RatingBarChangeEvent(
 /**
  * Perform an action on [rating change events][RatingBarChangeEvent] on [RatingBar].
  *
- * *Warning:* The created actor uses [RatingBar.OnRatingBarChangeListener]. Only one actor can be
+ * *Warning:* The created actor uses [RatingBar.setOnRatingBarChangeListener]. Only one actor can be
  * used at a time.
  *
  * @param scope Root coroutine scope
@@ -65,7 +65,7 @@ fun RatingBar.ratingChangeEvents(
  * Perform an action on [rating change events][RatingBarChangeEvent] on [RatingBar], inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [RatingBar.OnRatingBarChangeListener]. Only one actor can be
+ * *Warning:* The created actor uses [RatingBar.setOnRatingBarChangeListener]. Only one actor can be
  * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -81,8 +81,8 @@ suspend fun RatingBar.ratingChangeEvents(
 /**
  * Create a channel of the [rating change events][RatingBarChangeEvent] on [RatingBar].
  *
- * *Warning:* The created channel uses [RatingBar.OnRatingBarChangeListener]. Only one channel can
- * be used at a time.
+ * *Warning:* The created channel uses [RatingBar.setOnRatingBarChangeListener]. Only one channel
+ * can be used at a time.
  *
  * Example:
  *
@@ -101,16 +101,16 @@ fun RatingBar.ratingChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel(capacity) {
-    offerElement(initialValue(this@ratingChangeEvents))
-    onRatingBarChangeListener = listener(scope, ::offerElement)
+    safeOffer(initialValue(this@ratingChangeEvents))
+    onRatingBarChangeListener = listener(scope, ::safeOffer)
     invokeOnClose { onRatingBarChangeListener = null }
 }
 
 /**
  * Create a flow of the [rating change events][RatingBarChangeEvent] on [RatingBar].
  *
- * *Warning:* The created flow uses [RatingBar.OnRatingBarChangeListener]. Only one flow can be used
- * at a time.
+ * *Warning:* The created flow uses [RatingBar.setOnRatingBarChangeListener]. Only one flow can be
+ * used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *

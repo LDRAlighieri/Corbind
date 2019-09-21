@@ -30,13 +30,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the clicked item in [Toolbar] menu.
  *
- * *Warning:* The created actor uses [Toolbar.OnMenuItemClickListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [Toolbar.setOnMenuItemClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,8 +58,8 @@ fun Toolbar.itemClicks(
 /**
  * Perform an action on the clicked item in [Toolbar] menu, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [Toolbar.OnMenuItemClickListener]. Only one actor can be used
- * at a time.
+ * *Warning:* The created actor uses [Toolbar.setOnMenuItemClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,7 +74,7 @@ suspend fun Toolbar.itemClicks(
 /**
  * Create a channel which emits the clicked item in [Toolbar] menu.
  *
- * *Warning:* The created channel uses [Toolbar.OnMenuItemClickListener]. Only one channel can be
+ * *Warning:* The created channel uses [Toolbar.setOnMenuItemClickListener]. Only one channel can be
  * used at a time.
  *
  * Example:
@@ -94,15 +94,15 @@ fun Toolbar.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setOnMenuItemClickListener(listener(scope, ::offerElement))
+    setOnMenuItemClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
 /**
  * Create a flow which emits the clicked item in [Toolbar] menu.
  *
- * *Warning:* The created flow uses [Toolbar.OnMenuItemClickListener]. Only one flow can be used at
- * a time.
+ * *Warning:* The created flow uses [Toolbar.setOnMenuItemClickListener]. Only one flow can be used
+ * at a time.
  *
  * Example:
  *

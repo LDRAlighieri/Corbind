@@ -29,13 +29,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the keyboard dismiss events from [SearchEditText].
  *
- * *Warning:* The created actor uses [SearchEditText.OnKeyboardDismissListener]. Only one actor can
- * be used at a time.
+ * *Warning:* The created actor uses [SearchEditText.setOnKeyboardDismissListener]. Only one actor
+ * can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,8 +58,8 @@ fun SearchEditText.keyboardDismisses(
  * Perform an action on the keyboard dismiss events from [SearchEditText], inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [SearchEditText.OnKeyboardDismissListener]. Only one actor can
- * be used at a time.
+ * *Warning:* The created actor uses [SearchEditText.setOnKeyboardDismissListener]. Only one actor
+ * can be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,8 +74,8 @@ suspend fun SearchEditText.keyboardDismisses(
 /**
  * Create a channel which emits the keyboard dismiss events from [SearchEditText].
  *
- * *Warning:* The created channel uses [SearchEditText.OnKeyboardDismissListener]. Only one channel
- * can be used at a time.
+ * *Warning:* The created channel uses [SearchEditText.setOnKeyboardDismissListener]. Only one
+ * channel can be used at a time.
  *
  * Example:
  *
@@ -94,15 +94,15 @@ fun SearchEditText.keyboardDismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnKeyboardDismissListener(listener(scope, ::offerElement))
+    setOnKeyboardDismissListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
 /**
  * Create a flow which emits the keyboard dismiss events from [SearchEditText].
  *
- * *Warning:* The created flow uses [SearchEditText.OnKeyboardDismissListener]. Only one flow can be
- * used at a time.
+ * *Warning:* The created flow uses [SearchEditText.setOnKeyboardDismissListener]. Only one flow can
+ * be used at a time.
  *
  * Example:
  *

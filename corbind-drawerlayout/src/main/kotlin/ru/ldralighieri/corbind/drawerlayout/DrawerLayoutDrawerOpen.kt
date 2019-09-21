@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the open state of the [DrawerLayout].
@@ -95,8 +95,8 @@ fun DrawerLayout.drawerOpens(
     capacity: Int = Channel.RENDEZVOUS,
     gravity: Int
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    offerElement(isDrawerOpen(gravity))
-    val listener = listener(scope, gravity, ::offerElement)
+    safeOffer(isDrawerOpen(gravity))
+    val listener = listener(scope, gravity, ::safeOffer)
     addDrawerListener(listener)
     invokeOnClose { removeDrawerListener(listener) }
 }

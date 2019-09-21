@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [MaterialCardView] check change.
@@ -96,8 +96,8 @@ fun MaterialCardView.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     checkCheckableState(this@checkedChanges)
-    offerElement(isChecked)
-    val listener = listener(scope, ::offerElement)
+    safeOffer(isChecked)
+    val listener = listener(scope, ::safeOffer)
     setOnCheckedChangeListener(listener)
     invokeOnClose { setOnCheckedChangeListener(listener) }
 }
