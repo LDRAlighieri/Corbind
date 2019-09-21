@@ -68,6 +68,15 @@ suspend fun Snackbar.dismisses(
 /**
  * Create a channel which emits the dismiss events from [Snackbar].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      snackbar.dismisses(scope)
+ *          .consumeEach { /* handle dismiss */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -83,6 +92,14 @@ fun Snackbar.dismisses(
 
 /**
  * Create a flow which emits the dismiss events from [Snackbar].
+ *
+ * Example:
+ *
+ * ```
+ * snackbar.dismisses()
+ *      .onEach { /* handle dismiss */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun Snackbar.dismisses(): Flow<Int> = channelFlow {

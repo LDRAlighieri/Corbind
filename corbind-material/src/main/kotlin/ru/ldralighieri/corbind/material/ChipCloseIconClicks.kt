@@ -35,8 +35,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [Chip] close icon click events.
  *
- * *Warning:* The created actor uses [Chip.setOnCloseIconClickListener] to emit clicks. Only one
- * actor can be used for a view at a time.
+ * *Warning:* The created actor uses [Chip.setOnCloseIconClickListener]. Only one actor can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,8 +58,8 @@ fun Chip.closeIconClicks(
 /**
  * Perform an action on [Chip] close icon click events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [Chip.setOnCloseIconClickListener] to emit clicks. Only one
- * actor can be used for a view at a time.
+ * *Warning:* The created actor uses [Chip.setOnCloseIconClickListener]. Only one actor can be used
+ * at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,8 +74,17 @@ suspend fun Chip.closeIconClicks(
 /**
  * Create a channel which emits on [Chip] close icon click events.
  *
- * *Warning:* The created channel uses [Chip.setOnCloseIconClickListener] to emit clicks. Only
- * one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [Chip.setOnCloseIconClickListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      chip.closeIconClicks(scope)
+ *          .consumeEach { /* handle close icon click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -92,8 +101,16 @@ fun Chip.closeIconClicks(
 /**
  * Create a flow which emits on [Chip] close icon click events.
  *
- * *Warning:* The created flow uses [Chip.setOnCloseIconClickListener] to emit clicks. Only one
- * flow can be used for a view at a time.
+ * *Warning:* The created flow uses [Chip.setOnCloseIconClickListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * chip.closeIconClicks()
+ *      .onEach { /* handle close icon click */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun Chip.closeIconClicks(): Flow<Unit> = channelFlow {

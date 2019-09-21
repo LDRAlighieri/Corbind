@@ -68,6 +68,15 @@ suspend fun AppBarLayout.offsetChanges(
 /**
  * Create a channel which emits the offset change in [AppBarLayout].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      appBarLayout.offsetChanges(scope)
+ *          .consumeEach { /* handle offset change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -83,6 +92,14 @@ fun AppBarLayout.offsetChanges(
 
 /**
  * Create a flow which emits the offset change in [AppBarLayout].
+ *
+ * Example:
+ *
+ * ```
+ * appBarLayout.offsetChanges()
+ *      .onEach { /* handle offset change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow {

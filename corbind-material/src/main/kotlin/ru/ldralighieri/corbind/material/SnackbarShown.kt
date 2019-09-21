@@ -68,6 +68,15 @@ suspend fun Snackbar.shown(
 /**
  * Create a channel which emits the show events from [Snackbar].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      snackbar.shown(scope)
+ *          .consumeEach { /* handle show */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -83,6 +92,14 @@ fun Snackbar.shown(
 
 /**
  * Create a flow which emits the show events from [Snackbar].
+ *
+ * Example:
+ *
+ * ```
+ * snackbar.shown()
+ *      .onEach { /* handle show */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun Snackbar.shown(): Flow<Snackbar> = channelFlow {

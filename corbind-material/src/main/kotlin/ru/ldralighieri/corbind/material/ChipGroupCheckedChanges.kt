@@ -35,9 +35,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on checked view ID changes in [ChipGroup].
  *
- * *Warning:* Only in single selection mode
- *
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ * *Warning:* The created actor uses [ChipGroup.setOnCheckedChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -61,9 +60,8 @@ fun ChipGroup.checkedChanges(
 /**
  * Perform an action on checked view ID changes in [ChipGroup], inside new [CoroutineScope].
  *
- * *Warning:* Only in single selection mode
- *
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ * *Warning:* The created actor uses [ChipGroup.setOnCheckedChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -78,9 +76,21 @@ suspend fun ChipGroup.checkedChanges(
 /**
  * Create a channel of the checked view ID changes in [ChipGroup].
  *
- * *Warning:* Only in single selection mode
+ * *Warning:* Only in single selection mode.
+ * *Warning:* The created channel uses [ChipGroup.setOnCheckedChangeListener]. Only one channel can
+ * be used at a time.
  *
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ * *Note:* A value will be emitted immediately.
+ * *Note:* When the selection is cleared, checkedId is [View.NO_ID].
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      chipGroup.checkedChanges(scope)
+ *          .consumeEach { /* handle checked view */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -99,10 +109,27 @@ fun ChipGroup.checkedChanges(
 /**
  * Create a flow of the checked view ID changes in [ChipGroup].
  *
- * *Warning:* Only in single selection mode
+ * *Warning:* Only in single selection mode.
+ * *Warning:* The created flow uses [ChipGroup.setOnCheckedChangeListener]. Only one flow can be
+ * used at a time.
  *
- * *Note:* A value will be emitted immediately on collect. When the selection is cleared, checkedId
- * is [View.NO_ID]
+ * *Note:* A value will be emitted immediately.
+ * *Note:* When the selection is cleared, checkedId is [View.NO_ID].
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * chipGroup.checkedChanges()
+ *      .onEach { /* handle checked view */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * chipGroup.checkedChanges()
+ *      .drop(1)
+ *      .onEach { /* handle checked view */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun ChipGroup.checkedChanges(): Flow<Int> = channelFlow {

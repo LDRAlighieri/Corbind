@@ -92,6 +92,31 @@ suspend fun TabLayout.selectionEvents(
  * Create a channel which emits selection, reselection, and unselection
  * [events][TabLayoutSelectionEvent] for the tabs in [TabLayout].
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * launch {
+ *      tabLayout.selectionEvents(scope)
+ *          .consumeEach { event ->
+ *              when (event) {
+ *                  is TabLayoutSelectionSelectedEvent -> { /* handle select event */ }
+ *                  is TabLayoutSelectionReselectedEvent -> { /* handle reselect event */ }
+ *                  is TabLayoutSelectionUnselectedEvent -> { /* handle unselect event */ }
+ *              }
+ *          }
+ * }
+ *
+ * // handle one event
+ * launch {
+ *      tabLayout.selectionEvents(scope)
+ *          .filterIsInstance<TabLayoutSelectionSelectedEvent>()
+ *          .consumeEach { /* handle event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -110,7 +135,34 @@ fun TabLayout.selectionEvents(
  * Create a flow which emits selection, reselection, and unselection
  * [events][TabLayoutSelectionEvent] for the tabs in [TabLayout].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * tabLayout.selectionEvents()
+ *      .onEach { event ->
+ *          when (event) {
+ *              is TabLayoutSelectionSelectedEvent -> { /* handle select event */ }
+ *              is TabLayoutSelectionReselectedEvent -> { /* handle reselect event */ }
+ *              is TabLayoutSelectionUnselectedEvent -> { /* handle unselect event */ }
+ *          }
+ *      }
+ *      .launchIn(scope)
+ *
+ * // handle one event
+ * tabLayout.selectionEvents()
+ *      .filterIsInstance<TabLayoutSelectionSelectedEvent>()
+ *      .onEach { /* handle select event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * tabLayout.selectionEvents()
+ *      .drop(1)
+ *      .onEach { /* handle event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TabLayout.selectionEvents(): Flow<TabLayoutSelectionEvent> = channelFlow {

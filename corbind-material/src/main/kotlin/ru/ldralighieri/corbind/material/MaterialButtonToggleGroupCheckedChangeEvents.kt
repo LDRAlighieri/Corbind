@@ -39,7 +39,8 @@ data class MaterialButtonCheckedChangeEvent(
 )
 
 /**
- * Perform an action on [MaterialButton] check state change in [MaterialButtonToggleGroup].
+ * Perform an action on [MaterialButton] [check change event][MaterialButtonCheckedChangeEvent] in
+ * [MaterialButtonToggleGroup].
  *
  * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead
  *
@@ -63,10 +64,10 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 }
 
 /**
- * Perform an action on [MaterialButton] check state change in [MaterialButtonToggleGroup], inside
- * new [CoroutineScope].
+ * Perform an action on [MaterialButton] [check change event][MaterialButtonCheckedChangeEvent] in
+ * [MaterialButtonToggleGroup], inside new [CoroutineScope].
  *
- * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead
+ * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -79,10 +80,19 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 }
 
 /**
- * Create a channel which emits on [MaterialButton] check state change in
- * [MaterialButtonToggleGroup]
+ * Create a channel which emits on [MaterialButton]
+ * [check change event][MaterialButtonCheckedChangeEvent] in [MaterialButtonToggleGroup]
  *
  * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      materialButtonToggleGroup.buttonCheckedChangeEvents(scope)
+ *          .consumeEach { /* handle check change event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -99,10 +109,18 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 }
 
 /**
- * Create a flow which emits on [MaterialButton] check state change in
- * [MaterialButtonToggleGroup]
+ * Create a flow which emits on [MaterialButton]
+ * [check change event][MaterialButtonCheckedChangeEvent] in [MaterialButtonToggleGroup]
  *
  * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
+ *
+ * Example:
+ *
+ * ```
+ * materialButtonToggleGroup.buttonCheckedChangeEvents()
+ *      .onEach { /* handle check change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(): Flow<MaterialButtonCheckedChangeEvent> =

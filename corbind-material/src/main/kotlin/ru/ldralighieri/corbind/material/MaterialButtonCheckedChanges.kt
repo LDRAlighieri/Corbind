@@ -76,6 +76,17 @@ suspend fun MaterialButton.checkedChanges(
  *
  * *Warning:* Emits only when the [MaterialButton] is in checkable state.
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      materialButton.checkedChanges(scope)
+ *          .consumeEach { /* handle check state change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -95,6 +106,23 @@ fun MaterialButton.checkedChanges(
  * Create a flow which emits on [MaterialButton] check state change.
  *
  * *Warning:* Emits only when the [MaterialButton] is in checkable state.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * materialButton.checkedChanges()
+ *      .onEach { /* handle check state change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * materialButton.checkedChanges()
+ *      .drop(1)
+ *      .onEach { /* handle check state change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun MaterialButton.checkedChanges(): Flow<Boolean> = channelFlow {

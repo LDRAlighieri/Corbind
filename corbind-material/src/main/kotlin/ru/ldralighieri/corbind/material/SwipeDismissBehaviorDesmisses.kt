@@ -36,6 +36,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior].
  *
+ * *Warning:* The created actor uses [SwipeDismissBehavior.setListener]. Only one actor can be used
+ * at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -58,6 +61,9 @@ fun View.dismisses(
  * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior], inside new
  * [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SwipeDismissBehavior.setListener]. Only one actor can be used
+ * at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -70,6 +76,16 @@ suspend fun View.dismisses(
 
 /**
  * Create a channel which emits the dismiss events from [View] on [SwipeDismissBehavior].
+ *
+ * *Warning:* The created channel uses [SwipeDismissBehavior.setListener]. Only one channel can be
+ * used at a time.
+ *
+ * ```
+ * launch {
+ *      swipeDismissBehavior.dismisses(scope)
+ *          .consumeEach { /* handle dismiss */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -86,6 +102,17 @@ fun View.dismisses(
 
 /**
  * Create a flow which emits the dismiss events from [View] on [SwipeDismissBehavior].
+ *
+ * *Warning:* The created flow uses [SwipeDismissBehavior.setListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * swipeDismissBehavior.dismisses()
+ *      .onEach { /* handle dismiss */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.dismisses(): Flow<View> = channelFlow {

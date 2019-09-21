@@ -71,6 +71,15 @@ suspend fun TextInputLayout.endIconChanges(
  * *Note:* Emitted value is the [TextInputLayout.EndIconMode] the [TextInputLayout] previously had
  * set
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textInputLayout.endIconChanges(scope)
+ *          .consumeEach { /* handle end icon mode change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -89,6 +98,14 @@ fun TextInputLayout.endIconChanges(
  *
  * *Note:* Emitted value is the [TextInputLayout.EndIconMode] the [TextInputLayout] previously had
  * set
+ *
+ * Example:
+ *
+ * ```
+ * textInputLayout.endIconChanges()
+ *      .onEach { /* handle end icon mode change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TextInputLayout.endIconChanges(): Flow<Int> = channelFlow {

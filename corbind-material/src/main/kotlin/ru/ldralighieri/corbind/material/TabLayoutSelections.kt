@@ -69,6 +69,17 @@ suspend fun TabLayout.selections(
 /**
  * Create a channel which emits the selected tab in [TabLayout].
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      tabLayout.selections(scope)
+ *          .consumeEach { /* handle selected tab */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -86,7 +97,22 @@ fun TabLayout.selections(
 /**
  * Create a flow which emits the selected tab in [TabLayout].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * tabLayout.selections()
+ *      .onEach { /* handle selected tab */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * tabLayout.selections()
+ *      .drop(1)
+ *      .onEach { /* handle selected tab */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {

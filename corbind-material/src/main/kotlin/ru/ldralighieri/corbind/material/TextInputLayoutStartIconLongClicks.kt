@@ -36,8 +36,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [TextInputLayout] start icon long click events.
  *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnLongClickListener] to emit long
- * clicks. Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [TextInputLayout.setStartIconOnLongClickListener]. Only one
+ * actor can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -62,8 +62,8 @@ fun TextInputLayout.startIconLongClicks(
 /**
  * Perform an action on [TextInputLayout] start icon long click events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnLongClickListener] to emit long
- * clicks. Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [TextInputLayout.setStartIconOnLongClickListener]. Only one
+ * actor can be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -81,8 +81,17 @@ suspend fun TextInputLayout.startIconLongClicks(
 /**
  * Create a channel which emits on [TextInputLayout] start icon long click events.
  *
- * *Warning:* The created channel uses [TextInputLayout.setStartIconOnLongClickListener] to emit
- * long clicks. Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [TextInputLayout.setStartIconOnLongClickListener]. Only one
+ * channel can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textInputLayout.startIconLongClicks(scope)
+ *          .consumeEach { /* handle start icon long click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -102,8 +111,16 @@ fun TextInputLayout.startIconLongClicks(
 /**
  * Create a flow which emits on [TextInputLayout] start icon long click events.
  *
- * *Warning:* The created flow uses [TextInputLayout.setStartIconOnLongClickListener] to emit long
- * clicks. Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [TextInputLayout.setStartIconOnLongClickListener]. Only one flow
+ * can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * textInputLayout.startIconLongClicks()
+ *      .onEach { /* handle start icon long click */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
  * [View.OnLongClickListener]
