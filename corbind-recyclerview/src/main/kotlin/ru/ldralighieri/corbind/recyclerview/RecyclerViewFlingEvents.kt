@@ -40,6 +40,9 @@ data class RecyclerViewFlingEvent(
 /**
  * Perform an action on [fling events][RecyclerViewFlingEvent] on [RecyclerView].
  *
+ * *Warning:* The created actor uses [RecyclerView.OnFlingListener]. Only one actor can be used at a
+ * time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -61,6 +64,9 @@ fun RecyclerView.flingEvents(
  * Perform an action on [fling events][RecyclerViewFlingEvent] on [RecyclerView], inside new
  * [CoroutineScope].
  *
+ * *Warning:* The created actor uses [RecyclerView.OnFlingListener]. Only one actor can be used at a
+ * time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -73,6 +79,18 @@ suspend fun RecyclerView.flingEvents(
 
 /**
  * Create a channel of [fling events][RecyclerViewFlingEvent] on [RecyclerView].
+ *
+ * *Warning:* The created channel uses [RecyclerView.OnFlingListener]. Only one channel can be used
+ * at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      recyclerView.flingEvents(scope)
+ *          .consumeEach { /* handle fling event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -88,6 +106,17 @@ fun RecyclerView.flingEvents(
 
 /**
  * Create a flow of [fling events][RecyclerViewFlingEvent] on [RecyclerView].
+ *
+ * *Warning:* The created flow uses [RecyclerView.OnFlingListener]. Only one flow can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * recyclerView.flingEvents()
+ *      .onEach { /* handle fling event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow {

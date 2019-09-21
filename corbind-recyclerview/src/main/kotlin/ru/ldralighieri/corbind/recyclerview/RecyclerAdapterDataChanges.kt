@@ -69,6 +69,17 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 /**
  * Create a channel of data change events for [RecyclerView.Adapter].
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      adapter.dataChanges(scope)
+ *          .consumeEach { /* handle data change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -86,7 +97,22 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
 /**
  * Create a flow of data change events for [RecyclerView.Adapter].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * adapter.dataChanges()
+ *      .onEach { /* handle data change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * adapter.dataChanges()
+ *      .drop(1)
+ *      .onEach { /* handle data change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): Flow<T> = channelFlow {

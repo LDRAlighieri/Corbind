@@ -34,6 +34,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on refresh events on [SwipeRefreshLayout].
  *
+ * *Warning:* The created actor uses [SwipeRefreshLayout.OnRefreshListener]. Only one actor can be
+ * used at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -54,6 +57,9 @@ fun SwipeRefreshLayout.refreshes(
 /**
  * Perform an action on refresh events on [SwipeRefreshLayout], inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SwipeRefreshLayout.OnRefreshListener]. Only one actor can be
+ * used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -66,6 +72,18 @@ suspend fun SwipeRefreshLayout.refreshes(
 
 /**
  * Create a channel of refresh events on [SwipeRefreshLayout].
+ *
+ * *Warning:* The created channel uses [SwipeRefreshLayout.OnRefreshListener]. Only one channel can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      swipeRefreshLayout.refreshes(scope)
+ *          .consumeEach { /* handle refresh */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -81,6 +99,17 @@ fun SwipeRefreshLayout.refreshes(
 
 /**
  * Create a flow of refresh events on [SwipeRefreshLayout].
+ *
+ * *Warning:* The created flow uses [SwipeRefreshLayout.OnRefreshListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * swipeRefreshLayout.refreshes()
+ *      .onEach { /* handle refresh */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun SwipeRefreshLayout.refreshes(): Flow<Unit> = channelFlow {

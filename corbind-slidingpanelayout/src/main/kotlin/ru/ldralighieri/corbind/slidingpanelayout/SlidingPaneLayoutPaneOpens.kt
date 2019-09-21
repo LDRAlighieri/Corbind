@@ -35,8 +35,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on the open state of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [SlidingPaneLayout.PanelSlideListener]. Only one actor can
+ * be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -60,8 +60,8 @@ fun SlidingPaneLayout.panelOpens(
  * Perform an action on the open state of the pane of [SlidingPaneLayout], inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [SlidingPaneLayout.PanelSlideListener]. Only one actor can
+ * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -76,8 +76,19 @@ suspend fun SlidingPaneLayout.panelOpens(
 /**
  * Create a channel of the open state of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [SlidingPaneLayout.PanelSlideListener]. Only one channel
+ * can be used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      slidingPaneLayout.panelOpens(scope)
+ *          .consumeEach { /* handle open state */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -95,10 +106,25 @@ fun SlidingPaneLayout.panelOpens(
 /**
  * Create a flow of the open state of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [SlidingPaneLayout.PanelSlideListener]. Only one flow can be
+ * used at a time.
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * slidingPaneLayout.panelOpens()
+ *      .onEach { /* handle open state */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * slidingPaneLayout.panelOpens()
+ *      .drop(1)
+ *      .onEach { /* handle open state */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun SlidingPaneLayout.panelOpens(): Flow<Boolean> = channelFlow {

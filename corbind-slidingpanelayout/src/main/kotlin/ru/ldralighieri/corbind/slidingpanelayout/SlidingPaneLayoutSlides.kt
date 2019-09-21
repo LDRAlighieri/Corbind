@@ -35,8 +35,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one actor can be used for a view at a time.
+ * *Warning:* The actor channel uses [SlidingPaneLayout.PanelSlideListener]. Only one actor can
+ * be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -59,8 +59,8 @@ fun SlidingPaneLayout.panelSlides(
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout], inside new
  * [CoroutineScope].
  *
- * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one actor can be used for a view at a time.
+ * *Warning:* The actor channel uses [SlidingPaneLayout.PanelSlideListener]. Only one actor can
+ * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -75,8 +75,17 @@ suspend fun SlidingPaneLayout.panelSlides(
 /**
  * Create a channel of the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [SlidingPaneLayout.PanelSlideListener]. Only one channel
+ * can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      slidingPaneLayout.panelSlides(scope)
+ *          .consumeEach { /* handle slide offset */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -93,8 +102,16 @@ fun SlidingPaneLayout.panelSlides(
 /**
  * Create a flow of the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [SlidingPaneLayout.PanelSlideListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * slidingPaneLayout.panelSlides()
+ *      .onEach { /* handle slide offset */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun SlidingPaneLayout.panelSlides(): Flow<Float> = channelFlow {

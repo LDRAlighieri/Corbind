@@ -68,6 +68,15 @@ suspend fun RecyclerView.scrollStateChanges(
 /**
  * Create a channel of scroll state changes on [RecyclerView].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      recyclerView.scrollStateChanges(scope)
+ *          .consumeEach { /* handle scroll state change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -83,6 +92,14 @@ fun RecyclerView.scrollStateChanges(
 
 /**
  * Create a flow of scroll state changes on [RecyclerView].
+ *
+ * Example:
+ *
+ * ```
+ * recyclerView.scrollStateChanges()
+ *      .onEach { /* handle scroll state change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun RecyclerView.scrollStateChanges(): Flow<Int> = channelFlow {

@@ -68,6 +68,15 @@ suspend fun ViewPager2.pageScrollStateChanges(
 /**
  * Create a channel of scroll state change events on [ViewPager2].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      viewPager.pageScrollStateChanges(scope)
+ *          .consumeEach { /* handle scroll state change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -83,6 +92,14 @@ fun ViewPager2.pageScrollStateChanges(
 
 /**
  * Create a flow of scroll state change events on [ViewPager2].
+ *
+ * Example:
+ *
+ * ```
+ * viewPager2.pageScrollStateChanges()
+ *      .onEach { /* handle scroll state change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun ViewPager2.pageScrollStateChanges(): Flow<Int> = channelFlow {

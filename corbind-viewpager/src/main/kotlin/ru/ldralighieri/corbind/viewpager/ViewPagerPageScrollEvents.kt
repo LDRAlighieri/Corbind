@@ -76,6 +76,15 @@ suspend fun ViewPager.pageScrollEvents(
 /**
  * Create a channel of [page scroll events][ViewPagerPageScrollEvent] on [ViewPager].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      viewPager.pageScrollEvents(scope)
+ *          .consumeEach { /* handle page scroll event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -91,6 +100,14 @@ fun ViewPager.pageScrollEvents(
 
 /**
  * Create a flow of [page scroll events][ViewPagerPageScrollEvent] on [ViewPager].
+ *
+ * Example:
+ *
+ * ```
+ * viewPager.pageScrollEvents()
+ *      .onEach { /* handle page scroll event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun ViewPager.pageScrollEvents(): Flow<ViewPagerPageScrollEvent> = channelFlow {
