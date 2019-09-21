@@ -68,6 +68,15 @@ suspend fun View.layoutChanges(
 /**
  * Create a channel which emits on [View] layout changes.
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.layoutChanges(scope)
+ *          .consumeEach { /* handle layout change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -83,6 +92,12 @@ fun View.layoutChanges(
 
 /**
  * Create a flow which emits on [View] layout changes.
+ *
+ * ```
+ * view.layoutChanges()
+ *      .onEach { /* handle layout change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.layoutChanges(): Flow<Unit> = channelFlow {

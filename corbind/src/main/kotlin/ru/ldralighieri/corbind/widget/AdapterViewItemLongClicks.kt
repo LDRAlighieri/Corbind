@@ -35,7 +35,10 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.offerElement
 
 /**
- * Perform an action on position of item long-clicks for [AdapterView].
+ * Perform an action on position of item long clicks for [AdapterView].
+ *
+ * *Warning:* The created actor uses [AdapterView.OnItemLongClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,7 +61,10 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 /**
- * Perform an action on position of item long-clicks for [AdapterView], inside new [CoroutineScope].
+ * Perform an action on position of item long clicks for [AdapterView], inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [AdapterView.OnItemLongClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked each occurrence to determine the return value of the underlying
@@ -74,7 +80,19 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 /**
- * Create a channel of the position of item long-clicks for [AdapterView].
+ * Create a channel of the position of item long clicks for [AdapterView].
+ *
+ * *Warning:* The created channel uses [AdapterView.OnItemLongClickListener]. Only one channel can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.hovers(scope)
+ *          .consumeEach { /* handle item long click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -92,7 +110,18 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 /**
- * Create a flow of the position of item long-clicks for [AdapterView].
+ * Create a flow of the position of item long clicks for [AdapterView].
+ *
+ * *Warning:* The created flow uses [AdapterView.OnItemLongClickListener]. Only one flow can be used
+ * at a time.
+ *
+ * Example:
+ *
+ * ```
+ * adapterView.itemLongClicks()
+ *      .onEach { /* handle item long click */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Function invoked each occurrence to determine the return value of the underlying
  * [AdapterView.OnItemLongClickListener]

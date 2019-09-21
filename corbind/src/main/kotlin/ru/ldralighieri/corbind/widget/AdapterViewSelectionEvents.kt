@@ -49,7 +49,10 @@ data class AdapterViewNothingSelectionEvent(
 ) : AdapterViewSelectionEvent()
 
 /**
- * Perform an action on selection events for [AdapterView].
+ * Perform an action on [selection events][AdapterViewSelectionEvent] for [AdapterView].
+ *
+ * *Warning:* The created actor uses [AdapterView.OnItemSelectedListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -70,7 +73,11 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 }
 
 /**
- * Perform an action on selection events for [AdapterView], inside new [CoroutineScope].
+ * Perform an action on [selection events][AdapterViewSelectionEvent] for [AdapterView], inside new
+ * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [AdapterView.OnItemSelectedListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -83,7 +90,34 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 }
 
 /**
- * Create a channel of selection events for [AdapterView].
+ * Create a channel of [selection events][AdapterViewSelectionEvent] for [AdapterView].
+ *
+ * *Warning:* The created channel uses [AdapterView.OnItemSelectedListener]. Only one channel can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * launch {
+ *      adapterView.selectionEvents(scope)
+ *          .consumeEach { event ->
+ *              when (event) {
+ *                  is AdapterViewItemSelectionEvent -> { /* handle item selection event */ }
+ *                  is AdapterViewNothingSelectionEvent -> { /* handle nothing selection event */ }
+ *              }
+ *          }
+ * }
+ *
+ * // handle one event
+ * launch {
+ *      adapterView.selectionEvents(scope)
+ *          .filterIsInstance<AdapterViewItemSelectionEvent>()
+ *          .consumeEach { /* handle item selection event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -99,9 +133,38 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 }
 
 /**
- * Create a flow of selection events for [AdapterView].
+ * Create a flow of [selection events][AdapterViewSelectionEvent] for [AdapterView].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* The created flow uses [AdapterView.OnItemSelectedListener]. Only one flow can be used
+ * at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * adapterView.selectionEvents()
+ *      .onEach { event ->
+ *          when (event) {
+ *              is AdapterViewItemSelectionEvent -> { /* handle item selection event */ }
+ *              is AdapterViewNothingSelectionEvent -> { /* handle nothing selection event */ }
+ *          }
+ *      }
+ *      .launchIn(scope)
+ *
+ * // handle one event
+ * adapterView.selectionEvents()
+ *      .filterIsInstance<AdapterViewItemSelectionEvent>()
+ *      .onEach { /* handle item selection event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * adapterView.selectionEvents()
+ *      .drop(1)
+ *      .onEach { /* handle selection event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(): Flow<AdapterViewSelectionEvent> = channelFlow {

@@ -34,6 +34,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [NumberPicker] scroll state change.
  *
+ * *Warning:* The created actor uses [NumberPicker.OnScrollListener]. Only one actor can be used at
+ * a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -54,6 +57,18 @@ fun NumberPicker.scrollStateChanges(
 /**
  * Perform an action on [NumberPicker] scroll state change, inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [NumberPicker.OnScrollListener]. Only one actor can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      numberPicker.scrollStateChanges(scope)
+ *          .consumeEach { /* handle scroll state change */ }
+ * }
+ * ```
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -66,6 +81,9 @@ suspend fun NumberPicker.scrollStateChanges(
 
 /**
  * Create a channel which emits on [NumberPicker] scroll state change.
+ *
+ * *Warning:* The created channel uses [NumberPicker.OnScrollListener]. Only one channel can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -81,6 +99,17 @@ fun NumberPicker.scrollStateChanges(
 
 /**
  * Create a flow which emits on [NumberPicker] scroll state change.
+ *
+ * *Warning:* The created flow uses [NumberPicker.OnScrollListener]. Only one flow can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * numberPicker.scrollStateChanges()
+ *      .onEach { /* handle scroll state change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun NumberPicker.scrollStateChanges(): Flow<Int> = channelFlow {

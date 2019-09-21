@@ -33,10 +33,10 @@ import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.offerElement
 
 /**
- * Perform an action on `view` long-click events.
+ * Perform an action on [View] long click events.
  *
- * *Warning:* The created actor uses [View.setOnLongClickListener] to emit long clicks. Only one
- * actor can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnLongClickListener]. Only one actor can be used at a
+ * time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -59,10 +59,10 @@ fun View.longClicks(
 }
 
 /**
- * Perform an action on `view` long-click events, inside new [CoroutineScope].
+ * Perform an action on [View] long click events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnLongClickListener] to emit long clicks. Only one
- * actor can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnLongClickListener]. Only one actor can be used at a
+ * time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -78,10 +78,19 @@ suspend fun View.longClicks(
 }
 
 /**
- * Create a channel which emits on `view` long-click events.
+ * Create a channel which emits on [View] long click events.
  *
- * *Warning:* The created channel uses [View.setOnLongClickListener] to emit long clicks. Only one
- * channel can be used for a view at a time.
+ * *Warning:* The created channel uses [View.setOnLongClickListener]. Only one channel can be used
+ * at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.longClicks(scope)
+ *          .consumeEach { /* handle long click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -99,10 +108,18 @@ fun View.longClicks(
 }
 
 /**
- * Create a flow which emits on `view` long-click events.
+ * Create a flow which emits on [View] long click events.
  *
- * *Warning:* The created flow uses [View.setOnLongClickListener] to emit long clicks. Only one
- * flow can be used for a view at a time.
+ * *Warning:* The created flow uses [View.setOnLongClickListener]. Only one flow can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * view.longClicks()
+ *      .onEach { /* handle long click */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
  * [View.OnLongClickListener]

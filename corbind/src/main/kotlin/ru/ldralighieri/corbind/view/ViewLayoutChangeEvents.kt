@@ -44,7 +44,7 @@ data class ViewLayoutChangeEvent(
 )
 
 /**
- * Perform an action on [layout-change events][ViewLayoutChangeEvent] for [View].
+ * Perform an action on [layout change events][ViewLayoutChangeEvent] for [View].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -65,7 +65,7 @@ fun View.layoutChangeEvents(
 }
 
 /**
- * Perform an action on [layout-change events][ViewLayoutChangeEvent] for [View], inside new
+ * Perform an action on [layout change events][ViewLayoutChangeEvent] for [View], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -79,7 +79,16 @@ suspend fun View.layoutChangeEvents(
 }
 
 /**
- * Create a channel of [layout-change events][ViewLayoutChangeEvent] for [View].
+ * Create a channel of [layout change events][ViewLayoutChangeEvent] for [View].
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.layoutChangeEvents(scope)
+ *          .consumeEach { /* handle layout change event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -95,7 +104,15 @@ fun View.layoutChangeEvents(
 }
 
 /**
- * Create a flow of [layout-change events][ViewLayoutChangeEvent] for [View].
+ * Create a flow of [layout change events][ViewLayoutChangeEvent] for [View].
+ *
+ * Example:
+ *
+ * ```
+ * view.layoutChangeEvents()
+ *      .onEach { /* handle layout change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {

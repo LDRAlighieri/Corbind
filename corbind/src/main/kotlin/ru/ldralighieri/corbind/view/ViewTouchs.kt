@@ -36,6 +36,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on touch events for [View].
  *
+ * *Warning:* The created actor uses [View.OnTouchListener]. Only one actor can be used at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked with each value to determine the return value of the underlying
@@ -59,6 +61,8 @@ fun View.touches(
 /**
  * Perform an action on touch events for [View] inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [View.OnTouchListener]. Only one actor can be used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked with each value to determine the return value of the underlying
  * [View.OnTouchListener]
@@ -81,6 +85,18 @@ suspend fun View.touches(
 /**
  * Create a channel of touch events for [View].
  *
+ * *Warning:* The created channel uses [View.OnTouchListener]. Only one channel can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.touches(scope)
+ *          .consumeEach { /* handle touch */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked with each value to determine the return value of the underlying
@@ -98,6 +114,16 @@ fun View.touches(
 
 /**
  * Create a flow of touch events for [View].
+ *
+ * *Warning:* The created flow uses [View.OnTouchListener]. Only one flow can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * view.touches()
+ *      .onEach { /* handle touch */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying
  * [View.OnTouchListener]

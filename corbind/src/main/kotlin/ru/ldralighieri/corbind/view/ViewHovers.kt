@@ -36,8 +36,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on hover events for [View].
  *
- * *Warning:* The created actor uses [View.setOnHoverListener] to emit touches. Only one actor
- * can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnHoverListener]. Only one actor can be used at a
+ * time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -62,8 +62,8 @@ fun View.hovers(
 /**
  * Perform an action on hover events for [View], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnHoverListener] to emit touches. Only one actor
- * can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnHoverListener]. Only one actor can be used at a
+ * time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked with each value to determine the return value of the underlying
@@ -81,8 +81,17 @@ suspend fun View.hovers(
 /**
  * Create a channel of hover events for [View].
  *
- * *Warning:* The created channel uses [View.setOnHoverListener] to emit touches. Only one
- * channel can be used for a view at a time.
+ * *Warning:* The created channel uses [View.setOnHoverListener]. Only one channel can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.hovers(scope)
+ *          .consumeEach { /* handle hover */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -102,8 +111,15 @@ fun View.hovers(
 /**
  * Create a flow of hover events for [View].
  *
- * *Warning:* The created flow uses [View.setOnHoverListener] to emit touches. Only one flow can
- * be used for a view at a time.
+ * *Warning:* The created flow uses [View.setOnHoverListener]. Only one flow can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * view.hovers()
+ *      .onEach { /* handle hover */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying
  * [View.OnHoverListener]

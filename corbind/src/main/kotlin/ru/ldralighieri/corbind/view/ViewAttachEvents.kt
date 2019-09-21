@@ -81,6 +81,28 @@ suspend fun View.attachEvents(
 /**
  * Create a channel of [attach and detach events][ViewAttachEvent] on [View].
  *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * launch {
+ *      view.attachEvents(scope)
+ *          .consumeEach { event ->
+ *              when (event) {
+ *                  is ViewAttachAttachedEvent -> { /* handle attach event */ }
+ *                  is ViewAttachDetachedEvent -> { /* handle detach event */ }
+ *              }
+ *          }
+ * }
+ *
+ * // handle one event
+ * launch {
+ *      view.attachEvents(scope)
+ *          .filterIsInstance<ViewAttachAttachedEvent>()
+ *          .consumeEach { /* handle attach event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -96,6 +118,26 @@ fun View.attachEvents(
 
 /**
  * Create a flow of [attach and detach events][ViewAttachEvent] on [View].
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * view.attachEvents()
+ *      .onEach { event ->
+ *          when (event) {
+ *              is ViewAttachAttachedEvent -> { /* handle attach event */ }
+ *              is ViewAttachDetachedEvent -> { /* handle detach event */ }
+ *          }
+ *      }
+ *      .launchIn(scope)
+ *
+ * // handle one event
+ * view.attachEvents()
+ *      .filterIsInstance<ViewAttachAttachedEvent>()
+ *      .onEach { /* handle attach event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {

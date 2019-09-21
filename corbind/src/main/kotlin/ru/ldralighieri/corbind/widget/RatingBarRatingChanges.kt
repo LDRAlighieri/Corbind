@@ -34,6 +34,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on rating changes on [RatingBar].
  *
+ * *Warning:* The created actor uses [RatingBar.OnRatingBarChangeListener]. Only one actor can be
+ * used at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -55,6 +58,9 @@ fun RatingBar.ratingChanges(
 /**
  * Perform an action on rating changes on [RatingBar], inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [RatingBar.OnRatingBarChangeListener]. Only one actor can be
+ * used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -67,6 +73,20 @@ suspend fun RatingBar.ratingChanges(
 
 /**
  * Create a change of the rating changes on [RatingBar].
+ *
+ * *Warning:* The created channel uses [RatingBar.OnRatingBarChangeListener]. Only one channel can
+ * be used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      ratingBar.ratingChanges(scope)
+ *          .consumeEach { /* handle rating change */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -84,7 +104,25 @@ fun RatingBar.ratingChanges(
 /**
  * Create a flow of the rating changes on [RatingBar].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* The created flow uses [RatingBar.OnRatingBarChangeListener]. Only one flow can be used
+ * at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * ratingBar.ratingChanges()
+ *      .onEach { /* handle rating change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * ratingBar.ratingChanges()
+ *      .drop(1)
+ *      .onEach { /* handle rating change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun RatingBar.ratingChanges(): Flow<Float> = channelFlow {

@@ -77,6 +77,17 @@ suspend fun TextView.afterTextChangeEvents(
 /**
  * Create a channel of [after text change events][TextViewAfterTextChangeEvent] for [TextView].
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textView.afterTextChangeEvents(scope)
+ *          .consumeEach { /* handle after text change event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -94,7 +105,22 @@ fun TextView.afterTextChangeEvents(
 /**
  * Create a flow of [after text change events][TextViewAfterTextChangeEvent] for [TextView].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * textView.afterTextChangeEvents()
+ *      .onEach { /* handle after text change event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * textView.afterTextChangeEvents()
+ *      .drop(1)
+ *      .onEach { /* handle after text change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TextView.afterTextChangeEvents(): Flow<TextViewAfterTextChangeEvent> = channelFlow {

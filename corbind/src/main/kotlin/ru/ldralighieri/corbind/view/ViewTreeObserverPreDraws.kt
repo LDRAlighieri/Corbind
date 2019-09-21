@@ -73,6 +73,15 @@ suspend fun View.preDraws(
 /**
  * Create a channel for pre-draws on [View].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.preDraws(scope)
+ *          .consumeEach { /* handle pre-draws */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param proceedDrawingPass Let drawing process proceed
@@ -90,6 +99,14 @@ fun View.preDraws(
 
 /**
  * Create a flow for pre-draws on [View].
+ *
+ * Example:
+ *
+ * ```
+ * view.preDraws()
+ *      .onEach { /* handle pre-draws */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param proceedDrawingPass Let drawing process proceed
  */

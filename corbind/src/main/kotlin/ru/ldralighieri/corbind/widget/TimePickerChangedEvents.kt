@@ -40,7 +40,10 @@ data class TimeChangedEvent(
 )
 
 /**
- * Perform an action on [TimePicker] time changed events.
+ * Perform an action on [TimePicker] [time changed events][TimeChangedEvent].
+ *
+ * *Warning:* The created actor uses [TimePicker.OnTimeChangedListener]. Only one actor can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -62,7 +65,11 @@ fun TimePicker.timeChangeEvents(
 }
 
 /**
- * Perform an action on [TimePicker] time changed events, inside new [CoroutineScope].
+ * Perform an action on [TimePicker] [time changed events][TimeChangedEvent], inside new
+ * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [TimePicker.OnTimeChangedListener]. Only one actor can be used
+ * at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -76,7 +83,21 @@ suspend fun TimePicker.timeChangeEvents(
 }
 
 /**
- * Create a channel which emits on [TimePicker] time changed events.
+ * Create a channel which emits on [TimePicker] [time changed events][TimeChangedEvent].
+ *
+ * *Warning:* The created channel uses [TimePicker.OnTimeChangedListener]. Only one channel can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      timePicker.timeChangeEvents(scope)
+ *          .consumeEach { /* handle time changed event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -93,7 +114,27 @@ fun TimePicker.timeChangeEvents(
 }
 
 /**
- * Create a flow which emits on [TimePicker] time changed events.
+ * Create a flow which emits on [TimePicker] [time changed events][TimeChangedEvent].
+ *
+ * *Warning:* The created flow uses [TimePicker.OnTimeChangedListener]. Only one flow can be used at
+ * a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * timePicker.timeChangeEvents()
+ *      .onEach { /* handle time changed event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * timePicker.timeChangeEvents()
+ *      .drop(1)
+ *      .onEach { /* handle time changed event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult

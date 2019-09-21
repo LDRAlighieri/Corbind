@@ -36,8 +36,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [DragEvent] for [View].
  *
- * *Warning:* The created actor uses [View.setOnDragListener] to emit drags. Only one actor can
- * be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnDragListener]. Only one actor can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -62,8 +61,7 @@ fun View.drags(
 /**
  * Perform an action on [DragEvent] for [View], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnDragListener] to emit drags. Only one actor can
- * be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnDragListener]. Only one actor can be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked with each value to determine the return value of the underlying
@@ -81,8 +79,17 @@ suspend fun View.drags(
 /**
  * Create a channel of [DragEvent] for [View].
  *
- * *Warning:* The created channel uses [View.setOnDragListener] to emit drags. Only one channel
- * can be used for a view at a time.
+ * *Warning:* The created channel uses [View.setOnDragListener]. Only one channel can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.drags(scope)
+ *          .consumeEach { /* handle drag */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -102,8 +109,15 @@ fun View.drags(
 /**
  * Create a flow of [DragEvent] for [View].
  *
- * *Warning:* The created flow uses [View.setOnDragListener] to emit drags. Only one flow can be
- * used for a view at a time.
+ * *Warning:* The created flow uses [View.setOnDragListener]. Only one flow can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * view.drags()
+ *      .onEach { /* handle drag */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying
  * [View.OnDragListener]

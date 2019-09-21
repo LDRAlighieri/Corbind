@@ -37,6 +37,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on the clicked item in [Toolbar] menu.
  *
+ * *Warning:* The created actor uses [Toolbar.OnMenuItemClickListener]. Only one actor can be used
+ * at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -58,6 +61,9 @@ fun Toolbar.itemClicks(
 /**
  * Perform an action on the clicked item in [Toolbar] menu, inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [Toolbar.OnMenuItemClickListener]. Only one actor can be used
+ * at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -71,6 +77,18 @@ suspend fun Toolbar.itemClicks(
 
 /**
  * Create a channel which emits the clicked item in [Toolbar] menu.
+ *
+ * *Warning:* The created channel uses [Toolbar.OnMenuItemClickListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      toolbar.itemClicks(scope)
+ *          .consumeEach { /* handle clicked item */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -87,6 +105,17 @@ fun Toolbar.itemClicks(
 
 /**
  * Create a flow which emits the clicked item in [Toolbar] menu.
+ *
+ * *Warning:* The created flow uses [Toolbar.OnMenuItemClickListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * toolbar.itemClicks()
+ *      .onEach { /* handle clicked item */ }
+ *      .launchIn(scope)
+ * ```
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult

@@ -43,6 +43,9 @@ data class AdapterViewItemClickEvent(
 /**
  * Perform an action on the [item click events][AdapterViewItemClickEvent] for [AdapterView].
  *
+ * *Warning:* The created actor uses [AdapterView.OnItemClickListener]. Only one actor can be used
+ * at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -64,6 +67,9 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
  * Perform an action on the [item click events][AdapterViewItemClickEvent] for [AdapterView], inside
  * new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [AdapterView.OnItemClickListener]. Only one actor can be used
+ * at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -76,6 +82,18 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
 
 /**
  * Create a channel of the [item click events][AdapterViewItemClickEvent] for [AdapterView].
+ *
+ * *Warning:* The created channel uses [AdapterView.OnItemClickListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      adapterView.itemClickEvents(scope)
+ *          .consumeEach { /* handle item click event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -91,6 +109,17 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 
 /**
  * Create a flow of the [item click events][AdapterViewItemClickEvent] for [AdapterView].
+ *
+ * *Warning:* The created flow uses [AdapterView.OnItemClickListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * adapterView.itemClickEvents()
+ *      .onEach { /* handle item click event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {

@@ -42,7 +42,10 @@ data class ViewScrollChangeEvent(
 )
 
 /**
- * Perform an action on [scroll-change events][ViewScrollChangeEvent] for [View].
+ * Perform an action on [scroll change events][ViewScrollChangeEvent] for [View].
+ *
+ * *Warning:* The created actor uses [View.setOnLongClickListener]. Only one actor can be used at a
+ * time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -63,8 +66,11 @@ fun View.scrollChangeEvents(
 }
 
 /**
- * Perform an action on [scroll-change events][ViewScrollChangeEvent] for [View], inside new
+ * Perform an action on [scroll change events][ViewScrollChangeEvent] for [View], inside new
  * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [View.setOnLongClickListener]. Only one actor can be used at a
+ * time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -78,7 +84,19 @@ suspend fun View.scrollChangeEvents(
 }
 
 /**
- * Create a channel of [scroll-change events][ViewScrollChangeEvent] for [View].
+ * Create a channel of [scroll change events][ViewScrollChangeEvent] for [View].
+ *
+ * *Warning:* The created channel uses [View.OnScrollChangeListener]. Only one channel can be used
+ * at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.scrollChangeEvents(scope)
+ *          .consumeEach { /* handle scroll change event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -94,7 +112,18 @@ fun View.scrollChangeEvents(
 }
 
 /**
- * Create a flow of [scroll-change events][ViewScrollChangeEvent] for [View].
+ * Create a flow of [scroll change events][ViewScrollChangeEvent] for [View].
+ *
+ * *Warning:* The created flow uses [View.OnScrollChangeListener]. Only one flow can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * view.scrollChangeEvents()
+ *      .onEach { /* handle scroll change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult

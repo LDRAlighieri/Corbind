@@ -35,8 +35,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on editor actions on [TextView].
  *
- * *Warning:* The created actor uses [TextView.OnEditorActionListener] to emit actions. Only one
- * actor can be used for a view at a time.
+ * *Warning:* The created actor uses [TextView.OnEditorActionListener]. Only one actor can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -61,8 +61,8 @@ fun TextView.editorActions(
 /**
  * Perform an action on editor actions on [TextView], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [TextView.OnEditorActionListener] to emit actions. Only one
- * actor can be used for a view at a time.
+ * *Warning:* The created actor uses [TextView.OnEditorActionListener]. Only one actor can be used
+ * at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -80,8 +80,17 @@ suspend fun TextView.editorActions(
 /**
  * Create a channel of editor actions on [TextView].
  *
- * *Warning:* The created channel uses [TextView.OnEditorActionListener] to emit actions. Only
- * one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [TextView.OnEditorActionListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.hovers(scope)
+ *          .consumeEach { /* handle action */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -101,8 +110,16 @@ fun TextView.editorActions(
 /**
  * Create a flow of editor actions on [TextView].
  *
- * *Warning:* The created flow uses [TextView.OnEditorActionListener] to emit actions. Only one
- * flow can be used for a view at a time.
+ * *Warning:* The created flow uses [TextView.OnEditorActionListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * textView.editorActions()
+ *      .onEach { /* handle action */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
  * [TextView.OnEditorActionListener].

@@ -36,6 +36,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView].
  *
+ * *Warning:* The created actor uses [AdapterView.OnItemClickListener]. Only one actor can be used
+ * at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -57,6 +60,9 @@ fun AutoCompleteTextView.itemClickEvents(
  * Perform an action on [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView],
  * inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [AdapterView.OnItemClickListener]. Only one actor can be used
+ * at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -69,6 +75,18 @@ suspend fun AutoCompleteTextView.itemClickEvents(
 
 /**
  * Create a channel of [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView].
+ *
+ * *Warning:* The created channel uses [AdapterView.OnItemClickListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      autoCompleteTextView.itemClickEvents(scope)
+ *          .consumeEach { /* handle item click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -84,6 +102,17 @@ fun AutoCompleteTextView.itemClickEvents(
 
 /**
  * Create a flow of [item click events][AdapterViewItemClickEvent] on [AutoCompleteTextView].
+ *
+ * *Warning:* The created flow uses [AdapterView.OnItemClickListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * autoCompleteTextView.itemClickEvents()
+ *      .onEach { /* handle item click */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun AutoCompleteTextView.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {

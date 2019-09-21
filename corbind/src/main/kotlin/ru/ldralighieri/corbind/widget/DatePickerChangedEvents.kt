@@ -41,7 +41,10 @@ data class DateChangedEvent(
 )
 
 /**
- * Perform an action on [DatePicker] date changed events.
+ * Perform an action on [DatePicker] [date changed events][DateChangedEvent].
+ *
+ * *Warning:* The created actor uses [DatePicker.OnDateChangedListener]. Only one actor can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -63,7 +66,11 @@ fun DatePicker.dateChangeEvents(
 }
 
 /**
- * Perform an action on [DatePicker] date changed events, inside new [CoroutineScope].
+ * Perform an action on [DatePicker] [date changed events][DateChangedEvent], inside new
+ * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [DatePicker.OnDateChangedListener]. Only one actor can be used
+ * at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -77,7 +84,21 @@ suspend fun DatePicker.dateChangeEvents(
 }
 
 /**
- * Create a channel which emits on [DatePicker] date changed events.
+ * Create a channel which emits on [DatePicker] [date changed events][DateChangedEvent].
+ *
+ * *Warning:* The created channel uses [DatePicker.OnDateChangedListener]. Only one channel can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      datePicker.dateChangeEvents(scope)
+ *          .consumeEach { /* handle date changed event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -94,7 +115,27 @@ fun DatePicker.dateChangeEvents(
 }
 
 /**
- * Create a flow which emits on [DatePicker] date changed events.
+ * Create a flow which emits on [DatePicker] [date changed events][DateChangedEvent].
+ *
+ * *Warning:* The created flow uses [DatePicker.OnDateChangedListener]. Only one flow can be used
+ * at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * datePicker.dateChangeEvents()
+ *      .onEach { /* handle date changed event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * datePicker.dateChangeEvents()
+ *      .drop(1)
+ *      .onEach { /* handle date changed event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult

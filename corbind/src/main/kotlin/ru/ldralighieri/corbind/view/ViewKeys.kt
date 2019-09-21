@@ -36,8 +36,7 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on key events for [View].
  *
- * *Warning:* The created actor uses [View.setOnKeyListener] to emit key events. Only one actor
- * can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnKeyListener]. Only one actor can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -62,8 +61,7 @@ fun View.keys(
 /**
  * Perform an action on key events for [View], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnKeyListener] to emit key events. Only one actor
- * can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnKeyListener]. Only one actor can be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -81,8 +79,17 @@ suspend fun View.keys(
 /**
  * Create a channel of key events for [View].
  *
- * *Warning:* The created channel uses [View.setOnKeyListener] to emit key events. Only one
- * channel can be used for a view at a time.
+ * *Warning:* The created channel uses [View.setOnKeyListener]. Only one channel can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.keys(scope)
+ *          .consumeEach { /* handle key */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -102,8 +109,15 @@ fun View.keys(
 /**
  * Create a flow of key events for [View].
  *
- * *Warning:* The created flow uses [View.setOnKeyListener] to emit key events. Only one flow
- * can be used for a view at a time.
+ * *Warning:* The created flow uses [View.setOnKeyListener]. Only one flow can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * view.keys()
+ *      .onEach { /* handle key */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
  * [View.OnKeyListener]

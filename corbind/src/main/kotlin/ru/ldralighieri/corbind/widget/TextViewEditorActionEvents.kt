@@ -42,6 +42,9 @@ data class TextViewEditorActionEvent(
 /**
  * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView].
  *
+ * *Warning:* The created actor uses [TextView.OnEditorActionListener]. Only one actor can be used
+ * at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -66,6 +69,9 @@ fun TextView.editorActionEvents(
  * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView], inside new
  * [CoroutineScope].
  *
+ * *Warning:* The created actor uses [TextView.OnEditorActionListener]. Only one actor can be used
+ * at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
  * [TextView.OnEditorActionListener].
@@ -81,6 +87,18 @@ suspend fun TextView.editorActionEvents(
 
 /**
  * Create a channel of [editor action events][TextViewEditorActionEvent] on [TextView].
+ *
+ * *Warning:* The created channel uses [TextView.OnEditorActionListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textView.editorActionEvents(scope)
+ *          .consumeEach { /* handle editor action event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -99,6 +117,17 @@ fun TextView.editorActionEvents(
 
 /**
  * Create a flow of [editor action events][TextViewEditorActionEvent] on [TextView].
+ *
+ * *Warning:* The created flow uses [TextView.OnEditorActionListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * textView.editorActionEvents()
+ *      .onEach { /* handle editor action event */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
  * [TextView.OnEditorActionListener].

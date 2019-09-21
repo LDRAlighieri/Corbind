@@ -42,7 +42,10 @@ data class AdapterViewItemLongClickEvent(
 )
 
 /**
- * Perform an action on [item long-click events][AdapterViewItemLongClickEvent] for [AdapterView].
+ * Perform an action on [item long click events][AdapterViewItemLongClickEvent] for [AdapterView].
+ *
+ * *Warning:* The created actor uses [AdapterView.OnItemLongClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -65,8 +68,11 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 /**
- * Perform an action on [item long-click events][AdapterViewItemLongClickEvent] for [AdapterView],
+ * Perform an action on [item long click events][AdapterViewItemLongClickEvent] for [AdapterView],
  * inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [AdapterView.OnItemLongClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -82,8 +88,20 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 /**
- * Create a channel of the [item long-click events][AdapterViewItemLongClickEvent] for
+ * Create a channel of the [item long click events][AdapterViewItemLongClickEvent] for
  * [AdapterView].
+ *
+ * *Warning:* The created channel uses [AdapterView.OnItemLongClickListener]. Only one channel can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      adapterView.itemLongClickEvents(scope)
+ *          .consumeEach { /* handle item long click event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -101,7 +119,18 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 /**
- * Create a flow of the [item long-click events][AdapterViewItemLongClickEvent] for [AdapterView].
+ * Create a flow of the [item long click events][AdapterViewItemLongClickEvent] for [AdapterView].
+ *
+ * *Warning:* The created flow uses [AdapterView.OnItemLongClickListener]. Only one flow can be used
+ * at a time.
+ *
+ * Example:
+ *
+ * ```
+ * adapterView.itemLongClickEvents()
+ *      .onEach { /* handle item long click event */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
  * [AdapterView.OnItemLongClickListener]

@@ -34,8 +34,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [PopupMenu] dismiss events.
  *
- * *Warning:* The created actor uses [PopupMenu.setOnDismissListener] to emit dismiss change.
- * Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [PopupMenu.setOnDismissListener]. Only one actor can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -57,8 +57,8 @@ fun PopupMenu.dismisses(
 /**
  * Perform an action on [PopupMenu] dismiss events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [PopupMenu.setOnDismissListener] to emit dismiss change.
- * Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [PopupMenu.setOnDismissListener]. Only one actor can be used
+ * at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -73,8 +73,17 @@ suspend fun PopupMenu.dismisses(
 /**
  * Create a channel which emits on [PopupMenu] dismiss events
  *
- * *Warning:* The created channel uses [PopupMenu.setOnDismissListener] to emit dismiss change.
- * Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [PopupMenu.setOnDismissListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      popupMenu.dismisses(scope)
+ *          .consumeEach { /* handle dismiss */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -91,8 +100,16 @@ fun PopupMenu.dismisses(
 /**
  * Create a flow which emits on [PopupMenu] dismiss events
  *
- * *Warning:* The created flow uses [PopupMenu.setOnDismissListener] to emit dismiss change.
- * Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [PopupMenu.setOnDismissListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * popupMenu.dismisses()
+ *      .onEach { /* handle dismiss */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun PopupMenu.dismisses(): Flow<Unit> = channelFlow {

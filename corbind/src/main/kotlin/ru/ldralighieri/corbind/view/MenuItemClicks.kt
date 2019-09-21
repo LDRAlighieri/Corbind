@@ -35,8 +35,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [MenuItem] click events.
  *
- * *Warning:* The created actor uses [MenuItem.setOnMenuItemClickListener] to emit clicks. Only
- * one actor can be used for a menu item at a time.
+ * *Warning:* The created actor uses [MenuItem.setOnMenuItemClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -61,8 +61,8 @@ fun MenuItem.clicks(
 /**
  * Perform an action on [MenuItem] click events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [MenuItem.setOnMenuItemClickListener] to emit clicks. Only
- * one actor can be used for a menu item at a time.
+ * *Warning:* The created actor uses [MenuItem.setOnMenuItemClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -80,8 +80,17 @@ suspend fun MenuItem.clicks(
 /**
  * Create a channel which emits on [MenuItem] click events.
  *
- * *Warning:* The created channel uses [MenuItem.setOnMenuItemClickListener] to emit clicks.
- * Only one channel can be used for a menu item at a time.
+ * *Warning:* The created channel uses [MenuItem.setOnMenuItemClickListener]. Only one channel can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      datePickerDialog.dateSetEvents(scope)
+ *          .consumeEach { /* handle click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -101,8 +110,16 @@ fun MenuItem.clicks(
 /**
  * Create a flow which emits on [MenuItem] click events.
  *
- * *Warning:* The created flow uses [MenuItem.setOnMenuItemClickListener] to emit clicks. Only
- * one flow can be used for a menu item at a time.
+ * *Warning:* The created flow uses [MenuItem.setOnMenuItemClickListener]. Only one flow can be used
+ * at a time.
+ *
+ * Example:
+ *
+ * ```
+ * menuItem.clicks()
+ *      .onEach { /* handle click */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
  * [MenuItem.OnMenuItemClickListener]

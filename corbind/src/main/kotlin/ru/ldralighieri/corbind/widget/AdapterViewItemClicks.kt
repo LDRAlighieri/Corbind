@@ -36,6 +36,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on the position of item clicks for [AdapterView].
  *
+ * *Warning:* The created actor uses [AdapterView.OnItemClickListener]. Only one actor can be used
+ * at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -56,6 +59,9 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
 /**
  * Perform an action on the position of item clicks for [AdapterView], inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [AdapterView.OnItemClickListener]. Only one actor can be used
+ * at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -68,6 +74,18 @@ suspend fun <T : Adapter> AdapterView<T>.itemClicks(
 
 /**
  * Create a channel of the position of item clicks for [AdapterView].
+ *
+ * *Warning:* The created channel uses [AdapterView.OnItemClickListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      adapterView.itemClicks(scope)
+ *          .consumeEach { /* handle item click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -83,6 +101,17 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
 
 /**
  * Create a flow of the position of item clicks for [AdapterView].
+ *
+ * *Warning:* The created flow uses [AdapterView.OnItemClickListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * adapterView.itemClicks()
+ *      .onEach { /* handle item click */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow {

@@ -73,6 +73,15 @@ suspend fun View.draws(
 /**
  * Create a channel for draws on [View].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.draws(scope)
+ *          .consumeEach { /* handle draw */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -89,6 +98,14 @@ fun View.draws(
 
 /**
  * Create a flow for draws on [View].
+ *
+ * Example:
+ *
+ * ```
+ * view.draws()
+ *      .onEach { /* handle draw */ }
+ *      .launchIn(scope)
+ * ```
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
