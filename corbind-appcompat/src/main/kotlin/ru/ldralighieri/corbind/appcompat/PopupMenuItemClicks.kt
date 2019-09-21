@@ -35,8 +35,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on clicked item in [PopupMenu].
  *
- * *Warning:* The created actor uses [PopupMenu.setOnMenuItemClickListener] to emit dismiss
- * change. Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [PopupMenu.OnMenuItemClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,8 +58,8 @@ fun PopupMenu.itemClicks(
 /**
  * Perform an action on clicked item in [PopupMenu], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [PopupMenu.setOnMenuItemClickListener] to emit dismiss
- * change. Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [PopupMenu.OnMenuItemClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,8 +74,17 @@ suspend fun PopupMenu.itemClicks(
 /**
  * Create a channel which emits the clicked item in [PopupMenu].
  *
- * *Warning:* The created channel uses [PopupMenu.setOnMenuItemClickListener] to emit dismiss
- * change. Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [PopupMenu.OnMenuItemClickListener]. Only one channel can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      popupMenu.itemClicks(scope)
+ *          .consumeEach { /* handle menu item */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -92,8 +101,16 @@ fun PopupMenu.itemClicks(
 /**
  * Create a flow which emits the clicked item in [PopupMenu].
  *
- * *Warning:* The created flow uses [PopupMenu.setOnMenuItemClickListener] to emit dismiss
- * change. Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [PopupMenu.OnMenuItemClickListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * popupMenu.itemClicks()
+ *      .onEach { /* handle menu item */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun PopupMenu.itemClicks(): Flow<MenuItem> = channelFlow {

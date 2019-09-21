@@ -35,8 +35,8 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on [Toolbar] navigation click events.
  *
- * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener] to emit clicks. Only
- * one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [View.OnClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,8 +58,8 @@ fun Toolbar.navigationClicks(
 /**
  * Perform an action on [Toolbar] navigation click events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener] to emit clicks. Only
- * one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [View.OnClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,8 +74,17 @@ suspend fun Toolbar.navigationClicks(
 /**
  * Create a channel which emits on [Toolbar] navigation click events.
  *
- * *Warning:* The created channel uses [Toolbar.setNavigationOnClickListener] to emit clicks.
- * Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [View.OnClickListener]. Only one channel can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      toolbar.navigationClicks(scope)
+ *          .consumeEach { /* handle navigation click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -92,8 +101,16 @@ fun Toolbar.navigationClicks(
 /**
  * Create a flow which emits on [Toolbar] navigation click events.
  *
- * *Warning:* The created flow uses [Toolbar.setNavigationOnClickListener] to emit clicks. Only
- * one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [View.OnClickListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * toolbar.navigationClicks()
+ *      .onEach { /* handle navigation click */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun Toolbar.navigationClicks(): Flow<Unit> = channelFlow {

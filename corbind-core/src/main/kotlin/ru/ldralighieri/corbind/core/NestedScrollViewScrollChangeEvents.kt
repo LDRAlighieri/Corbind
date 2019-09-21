@@ -33,7 +33,10 @@ import ru.ldralighieri.corbind.offerElement
 import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
 
 /**
- * Perform an action on scroll-change events for [NestedScrollView].
+ * Perform an action on scroll change events for [NestedScrollView].
+ *
+ * *Warning:* The created actor uses [NestedScrollView.OnScrollChangeListener]. Only one actor can
+ * be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -55,7 +58,10 @@ fun NestedScrollView.scrollChangeEvents(
 }
 
 /**
- * Perform an action on scroll-change events for [NestedScrollView], inside new [CoroutineScope].
+ * Perform an action on scroll change events for [NestedScrollView], inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [NestedScrollView.OnScrollChangeListener]. Only one actor can
+ * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -68,7 +74,19 @@ suspend fun NestedScrollView.scrollChangeEvents(
 }
 
 /**
- * Create a channel of scroll-change events for [NestedScrollView].
+ * Create a channel of scroll change events for [NestedScrollView].
+ *
+ * *Warning:* The created channel uses [NestedScrollView.OnScrollChangeListener]. Only one channel
+ * can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      nestedScrollView.scrollChangeEvents(scope)
+ *          .consumeEach { /* handle scroll change */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -83,7 +101,18 @@ fun NestedScrollView.scrollChangeEvents(
 }
 
 /**
- * Create a flow of scroll-change events for [NestedScrollView].
+ * Create a flow of scroll change events for [NestedScrollView].
+ *
+ * *Warning:* The created flow uses [NestedScrollView.OnScrollChangeListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * nestedScrollView.scrollChangeEvents()
+ *      .onEach { /* handle scroll change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {

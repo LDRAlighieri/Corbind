@@ -34,6 +34,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on the keyboard dismiss events from [SearchEditText].
  *
+ * *Warning:* The created actor uses [SearchEditText.OnKeyboardDismissListener]. Only one actor can
+ * be used at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -55,6 +58,9 @@ fun SearchEditText.keyboardDismisses(
  * Perform an action on the keyboard dismiss events from [SearchEditText], inside new
  * [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SearchEditText.OnKeyboardDismissListener]. Only one actor can
+ * be used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -67,6 +73,18 @@ suspend fun SearchEditText.keyboardDismisses(
 
 /**
  * Create a channel which emits the keyboard dismiss events from [SearchEditText].
+ *
+ * *Warning:* The created channel uses [SearchEditText.OnKeyboardDismissListener]. Only one channel
+ * can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      searchEditText.keyboardDismisses(scope)
+ *          .consumeEach { /* handle keyboard dismiss */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -82,6 +100,17 @@ fun SearchEditText.keyboardDismisses(
 
 /**
  * Create a flow which emits the keyboard dismiss events from [SearchEditText].
+ *
+ * *Warning:* The created flow uses [SearchEditText.OnKeyboardDismissListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * searchEditText.keyboardDismisses()
+ *      .onEach { /* handle keyboard dismiss */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun SearchEditText.keyboardDismisses(): Flow<Unit> = channelFlow {

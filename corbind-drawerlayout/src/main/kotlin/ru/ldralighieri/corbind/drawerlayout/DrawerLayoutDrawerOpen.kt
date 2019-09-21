@@ -33,7 +33,7 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.offerElement
 
 /**
- * Perform an action on the open state of the drawer of [DrawerLayout].
+ * Perform an action on the open state of the [DrawerLayout].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -57,7 +57,7 @@ fun DrawerLayout.drawerOpens(
 }
 
 /**
- * Perform an action on the open state of the drawer of [DrawerLayout], inside new [CoroutineScope].
+ * Perform an action on the open state of the [DrawerLayout], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param gravity Gravity of the drawer to check
@@ -72,7 +72,18 @@ suspend fun DrawerLayout.drawerOpens(
 }
 
 /**
- * Create a channel of the open state of the drawer of [DrawerLayout].
+ * Create a channel of the open state of the [DrawerLayout].
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      drawerLayout.drawerOpens(scope)
+ *          .consumeEach { /* handle open state */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -91,7 +102,24 @@ fun DrawerLayout.drawerOpens(
 }
 
 /**
- * Create a flow of the open state of the drawer of [DrawerLayout].
+ * Create a flow of the open state of the [DrawerLayout].
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * drawerLayout.drawerOpens()
+ *      .onEach { /* handle open state */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * adapter.dataChanges()
+ *      .drop(1)
+ *      .onEach { /* handle open state */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param gravity Gravity of the drawer to check
  */

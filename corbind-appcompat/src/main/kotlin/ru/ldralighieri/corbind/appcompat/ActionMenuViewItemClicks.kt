@@ -35,6 +35,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on clicked menu item in [ActionMenuView].
  *
+ * *Warning:* The created actor uses [ActionMenuView.OnMenuItemClickListener]. Only one actor can be
+ * used at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -55,6 +58,9 @@ fun ActionMenuView.itemClicks(
 /**
  * Perform an action on clicked menu item in [ActionMenuView], inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [ActionMenuView.OnMenuItemClickListener]. Only one actor can be
+ * used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -67,6 +73,18 @@ suspend fun ActionMenuView.itemClicks(
 
 /**
  * Create a channel which emits the clicked menu item in [ActionMenuView].
+ *
+ * *Warning:* The created channel uses [ActionMenuView.OnMenuItemClickListener]. Only one channel
+ * can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      actionMenuView.itemClicks(scope)
+ *          .consumeEach { /* handle menu item */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -82,6 +100,17 @@ fun ActionMenuView.itemClicks(
 
 /**
  * Create a flow which emits the clicked menu item in [ActionMenuView].
+ *
+ * *Warning:* The created flow uses [ActionMenuView.OnMenuItemClickListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * actionMenuView.itemClicks()
+ *      .onEach { /* handle menu item */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun ActionMenuView.itemClicks(): Flow<MenuItem> = channelFlow {

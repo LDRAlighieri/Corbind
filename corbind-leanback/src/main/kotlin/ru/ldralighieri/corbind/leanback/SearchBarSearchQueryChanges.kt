@@ -34,6 +34,9 @@ import ru.ldralighieri.corbind.offerElement
 /**
  * Perform an action on String values for search query changes on [SearchBar].
  *
+ * *Warning:* The created actor uses [SearchBar.SearchBarListener]. Only one actor can be used at a
+ * time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -55,6 +58,9 @@ fun SearchBar.searchQueryChanges(
  * Perform an action on String values for search query changes on [SearchBar], inside new
  * [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SearchBar.SearchBarListener]. Only one actor can be used at a
+ * time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -67,6 +73,18 @@ suspend fun SearchBar.searchQueryChanges(
 
 /**
  * Create a channel of String values for search query changes on [SearchBar].
+ *
+ * *Warning:* The created channel uses [SearchBar.SearchBarListener]. Only one channel can be used
+ * at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      absListView.scrollEvents(scope)
+ *          .consumeEach { /* handle query change */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -82,6 +100,17 @@ fun SearchBar.searchQueryChanges(
 
 /**
  * Create a flow of String values for search query changes on [SearchBar].
+ *
+ * *Warning:* The created flow uses [SearchBar.SearchBarListener]. Only one flow can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * searchBar.searchQueryChanges()
+ *      .onEach { /* handle query change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun SearchBar.searchQueryChanges(): Flow<String> = channelFlow {
