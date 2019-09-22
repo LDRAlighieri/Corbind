@@ -41,7 +41,7 @@ data class DatePickerDialogSetEvent(
 )
 
 /**
- * Perform an action on [DatePickerDialog] [date set events][DatePickerDialogSetEvent].
+ * Perform an action on [date set events][DatePickerDialogSetEvent] on [DatePickerDialog].
  *
  * *Warning:* The created actor uses [DatePickerDialog.setOnDateSetListener]. Only one actor can be
  * used at a time.
@@ -65,8 +65,8 @@ fun DatePickerDialog.dateSetEvents(
 }
 
 /**
- * Perform an action on [DatePickerDialog] [date set events][DatePickerDialogSetEvent], inside new
- * [CoroutineScope].
+ * Perform an action on [date set events][DatePickerDialogSetEvent] on [DatePickerDialog], inside
+ * new [CoroutineScope].
  *
  * *Warning:* The created actor uses [DatePickerDialog.setOnDateSetListener]. Only one actor can be
  * used at a time.
@@ -83,7 +83,8 @@ suspend fun DatePickerDialog.dateSetEvents(
 }
 
 /**
- * Create a channel which emits on [DatePickerDialog] [date set events][DatePickerDialogSetEvent].
+ * Create a channel which emits on [date set events][DatePickerDialogSetEvent] on
+ * [DatePickerDialog].
  *
  * *Warning:* The created channel uses [DatePickerDialog.setOnDateSetListener]. Only one channel can
  * be used at a time.
@@ -111,7 +112,7 @@ fun DatePickerDialog.dateSetEvents(
 }
 
 /**
- * Create a flow which emits on [DatePickerDialog] [date set events][DatePickerDialogSetEvent].
+ * Create a flow which emits on [date set events][DatePickerDialogSetEvent] on [DatePickerDialog].
  *
  * *Warning:* The created flow uses [DatePickerDialog.setOnDateSetListener]. Only one flow can be
  * used at a time.

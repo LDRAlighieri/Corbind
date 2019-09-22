@@ -40,7 +40,7 @@ data class CalendarViewDateChangeEvent(
 )
 
 /**
- * Perform an action on [CalendarView] [date change events][CalendarViewDateChangeEvent].
+ * Perform an action on [date change events][CalendarViewDateChangeEvent] on [CalendarView].
  *
  * *Warning:* The created actor uses [CalendarView.setOnDateChangeListener]. Only one actor can be
  * used at a time.
@@ -64,8 +64,8 @@ fun CalendarView.dateChangeEvents(
 }
 
 /**
- * Perform an action on [CalendarView] [date change events][CalendarViewDateChangeEvent], inside new
- * [CoroutineScope].
+ * Perform an action on [date change events][CalendarViewDateChangeEvent] on [CalendarView], inside
+ * new [CoroutineScope].
  *
  * *Warning:* The created actor uses [CalendarView.setOnDateChangeListener]. Only one actor can be
  * used at a time.
@@ -81,7 +81,8 @@ suspend fun CalendarView.dateChangeEvents(
 }
 
 /**
- * Create a channel which emits on [CalendarView] [date change events][CalendarViewDateChangeEvent].
+ * Create a channel which emits on [date change events][CalendarViewDateChangeEvent] on
+ * [CalendarView].
  *
  * *Warning:* The created channel uses [CalendarView.setOnDateChangeListener]. Only one channel can
  * be used at a time.
@@ -111,7 +112,7 @@ fun CalendarView.dateChangeEvents(
 }
 
 /**
- * Create a flow which emits on [CalendarView] [date change events][CalendarViewDateChangeEvent].
+ * Create a flow which emits on [date change events][CalendarViewDateChangeEvent] on [CalendarView].
  *
  * *Warning:* The created flow uses [CalendarView.setOnDateChangeListener]. Only one flow can be
  * used at a time.

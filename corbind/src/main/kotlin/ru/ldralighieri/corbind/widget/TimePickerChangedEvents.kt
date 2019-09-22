@@ -40,7 +40,7 @@ data class TimeChangedEvent(
 )
 
 /**
- * Perform an action on [TimePicker] [time changed events][TimeChangedEvent].
+ * Perform an action on [time changed events][TimeChangedEvent] on [TimePicker].
  *
  * *Warning:* The created actor uses [TimePicker.setOnTimeChangedListener]. Only one actor can be
  * used at a time.
@@ -65,7 +65,7 @@ fun TimePicker.timeChangeEvents(
 }
 
 /**
- * Perform an action on [TimePicker] [time changed events][TimeChangedEvent], inside new
+ * Perform an action on [time changed events][TimeChangedEvent] on [TimePicker], inside new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [TimePicker.setOnTimeChangedListener]. Only one actor can be
@@ -83,7 +83,7 @@ suspend fun TimePicker.timeChangeEvents(
 }
 
 /**
- * Create a channel which emits on [TimePicker] [time changed events][TimeChangedEvent].
+ * Create a channel which emits on [time changed events][TimeChangedEvent] on [TimePicker].
  *
  * *Warning:* The created channel uses [TimePicker.setOnTimeChangedListener]. Only one channel can
  * be used at a time.
@@ -114,7 +114,7 @@ fun TimePicker.timeChangeEvents(
 }
 
 /**
- * Create a flow which emits on [TimePicker] [time changed events][TimeChangedEvent].
+ * Create a flow which emits on [time changed events][TimeChangedEvent] on [TimePicker].
  *
  * *Warning:* The created flow uses [TimePicker.setOnTimeChangedListener]. Only one flow can be used
  * at a time.

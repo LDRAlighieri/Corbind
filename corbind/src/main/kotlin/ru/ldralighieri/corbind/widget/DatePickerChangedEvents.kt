@@ -41,7 +41,7 @@ data class DateChangedEvent(
 )
 
 /**
- * Perform an action on [DatePicker] [date changed events][DateChangedEvent].
+ * Perform an action on [date changed events][DateChangedEvent] on [DatePicker].
  *
  * *Warning:* The created actor uses [DatePicker.setOnDateChangedListener]. Only one actor can be
  * used at a time.
@@ -66,7 +66,7 @@ fun DatePicker.dateChangeEvents(
 }
 
 /**
- * Perform an action on [DatePicker] [date changed events][DateChangedEvent], inside new
+ * Perform an action on [date changed events][DateChangedEvent] on [DatePicker], inside new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [DatePicker.setOnDateChangedListener]. Only one actor can be
@@ -84,7 +84,7 @@ suspend fun DatePicker.dateChangeEvents(
 }
 
 /**
- * Create a channel which emits on [DatePicker] [date changed events][DateChangedEvent].
+ * Create a channel which emits on [date changed events][DateChangedEvent] on [DatePicker].
  *
  * *Warning:* The created channel uses [DatePicker.setOnDateChangedListener]. Only one channel can
  * be used at a time.
@@ -115,7 +115,7 @@ fun DatePicker.dateChangeEvents(
 }
 
 /**
- * Create a flow which emits on [DatePicker] [date changed events][DateChangedEvent].
+ * Create a flow which emits on [date changed events][DateChangedEvent] on [DatePicker].
  *
  * *Warning:* The created flow uses [DatePicker.setOnDateChangedListener]. Only one flow can be used
  * at a time.

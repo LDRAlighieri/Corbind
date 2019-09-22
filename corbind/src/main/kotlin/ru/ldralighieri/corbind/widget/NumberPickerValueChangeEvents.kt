@@ -38,7 +38,7 @@ data class NumberPickerValueChangeEvent(
 )
 
 /**
- * Perform an action on [NumberPicker] [value change events][NumberPickerValueChangeEvent].
+ * Perform an action on [value change events][NumberPickerValueChangeEvent] on [NumberPicker].
  *
  * *Warning:* The created actor uses [NumberPicker.setOnValueChangedListener]. Only one actor can be
  * used at a time.
@@ -62,8 +62,8 @@ fun NumberPicker.valueChangeEvents(
 }
 
 /**
- * Perform an action on [NumberPicker] [value change events][NumberPickerValueChangeEvent], inside
- * new [CoroutineScope].
+ * Perform an action on [value change events][NumberPickerValueChangeEvent] on [NumberPicker],
+ * inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [NumberPicker.setOnValueChangedListener]. Only one actor can be
  * used at a time.
@@ -79,7 +79,8 @@ suspend fun NumberPicker.valueChangeEvents(
 }
 
 /**
- * Create a channel which emits on [NumberPicker] [value change events][NumberPickerValueChangeEvent].
+ * Create a channel which emits on [value change events][NumberPickerValueChangeEvent] on
+ * [NumberPicker].
  *
  * *Warning:* The created channel uses [NumberPicker.setOnValueChangedListener]. Only one channel
  * can be used at a time.
@@ -109,7 +110,8 @@ fun NumberPicker.valueChangeEvents(
 }
 
 /**
- * Create a flow which emits on [NumberPicker] [value change events][NumberPickerValueChangeEvent].
+ * Create a flow which emits on [value change events][NumberPickerValueChangeEvent] on
+ * [NumberPicker].
  *
  * *Warning:* The created flow uses [NumberPicker.setOnValueChangedListener]. Only one flow can be
  * used at a time.

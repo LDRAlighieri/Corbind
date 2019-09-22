@@ -39,8 +39,8 @@ data class MaterialButtonCheckedChangeEvent(
 )
 
 /**
- * Perform an action on [MaterialButton] [check change event][MaterialButtonCheckedChangeEvent] in
- * [MaterialButtonToggleGroup].
+ * Perform an action on [check change event][MaterialButtonCheckedChangeEvent] on [MaterialButton]
+ * in [MaterialButtonToggleGroup].
  *
  * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead
  *
@@ -64,8 +64,8 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 }
 
 /**
- * Perform an action on [MaterialButton] [check change event][MaterialButtonCheckedChangeEvent] in
- * [MaterialButtonToggleGroup], inside new [CoroutineScope].
+ * Perform an action on [check change event][MaterialButtonCheckedChangeEvent] on [MaterialButton]
+ * in [MaterialButtonToggleGroup], inside new [CoroutineScope].
  *
  * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
  *
@@ -80,8 +80,8 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 }
 
 /**
- * Create a channel which emits on [MaterialButton]
- * [check change event][MaterialButtonCheckedChangeEvent] in [MaterialButtonToggleGroup]
+ * Create a channel which emits on [check change event][MaterialButtonCheckedChangeEvent] on
+ * [MaterialButton] in [MaterialButtonToggleGroup]
  *
  * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
  *
@@ -109,8 +109,8 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 }
 
 /**
- * Create a flow which emits on [MaterialButton]
- * [check change event][MaterialButtonCheckedChangeEvent] in [MaterialButtonToggleGroup]
+ * Create a flow which emits on [check change event][MaterialButtonCheckedChangeEvent] on
+ * [MaterialButton] in [MaterialButtonToggleGroup]
  *
  * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
  *
