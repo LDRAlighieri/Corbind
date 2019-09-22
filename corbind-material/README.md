@@ -12,11 +12,16 @@ implementation 'ru.ldralighieri.corbind:corbind-material:1.1.2'
 Component | Extension | Description
 --|---|--
 **AppBarLayout** | `offsetChanges` | Called when the AppBarLayout's layout offset has been changed
-**BottomNavigationView** | `itemSelections` | Called when an item in the bottom navigation menu is selected.
+**BottomNavigationView** | `itemReselections` | Called when the currently selected item in the bottom navigation menu is selected again.
+                         | `itemSelections`| Called when an item in the bottom navigation menu is selected.
 **View**<br>(BottomSheetBehavior) | `slides` | Called when the bottom sheet is being dragged.
                                   | `stateChanges` | Called when the bottom sheet changes its state.
 **Chip** | `closeIconClicks` | Called when the chip’s close icon is clicked.
 **ChipGroup** | `checkedChanges` | Called when the checked chip has changed (only in single selection mode).
+**MaterialButton** | `checkedChanges` | Called when the checked state of a MaterialButton has changed.
+**MaterialButtonToggleGroup** | `buttonCheckedChangeEvents` | Called when a `MaterialButton` in this group is checked or unchecked (only *not* in single selection mode).
+                              | `buttonCheckedChanges` | Called when a `MaterialButton` in this group is checked (only in single selection mode).
+**MaterialCardView** | `checkedChanges` | Called when the card checked state changes.
 **NavigationView** | `itemSelections` | Called when an item in the navigation menu is selected.
 **Snackbar** | `dismisses` | Called when the given Snackbar has been dismissed, either through a time-out, having been manually dismissed, or an action being clicked.
              | `shown` | Called when the given Snackbar is visible.
@@ -24,6 +29,11 @@ Component | Extension | Description
              | `dragStateChanges` | Called when the drag state has changed.
 **TabLayout** | `selections` | Called when a tab enters the selected state.
               | `selectionEvents` | A more advanced version of the `selections`.
+**TextInputLayout** | `endIconChanges` | Called when the end icon changes.
+                    | `endIconClicks` | Called when the end icon is clicked.
+                    | `endIconLongClicks` | Called when the end icon is long clicked.
+                    | `startIconClicks` | Called when the start icon is clicked.
+                    | `startIconLongClicks` | Called when the start icon is long clicked.
 
 
 ## Example
