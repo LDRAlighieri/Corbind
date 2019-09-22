@@ -20,13 +20,16 @@ import android.widget.NumberPicker
 import androidx.annotation.CheckResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class NumberPickerValueChangeEvent(
     val picker: NumberPicker,
@@ -35,9 +38,10 @@ data class NumberPickerValueChangeEvent(
 )
 
 /**
- * Perform an action on [NumberPicker] value change events.
+ * Perform an action on [NumberPicker] [value change events][NumberPickerValueChangeEvent].
  *
- * *Note:* An action will be performed immediately.
+ * *Warning:* The created actor uses [NumberPicker.setOnValueChangedListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,9 +62,11 @@ fun NumberPicker.valueChangeEvents(
 }
 
 /**
- * Perform an action on [NumberPicker] value change events, inside new [CoroutineScope].
+ * Perform an action on [NumberPicker] [value change events][NumberPickerValueChangeEvent], inside
+ * new [CoroutineScope].
  *
- * *Note:* An action will be performed immediately.
+ * *Warning:* The created actor uses [NumberPicker.setOnValueChangedListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -73,9 +79,21 @@ suspend fun NumberPicker.valueChangeEvents(
 }
 
 /**
- * Create a channel which emits on [NumberPicker] value change events.
+ * Create a channel which emits on [NumberPicker] [value change events][NumberPickerValueChangeEvent].
  *
- * *Note:* A value will be emitted immediately on consume.
+ * *Warning:* The created channel uses [NumberPicker.setOnValueChangedListener]. Only one channel
+ * can be used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      numberPicker.valueChangeEvents(scope)
+ *          .consumeEach { /* handle value change event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -86,14 +104,32 @@ fun NumberPicker.valueChangeEvents(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<NumberPickerValueChangeEvent> = corbindReceiveChannel(capacity) {
     offer(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
-    setOnValueChangedListener(listener(scope, ::offerElement))
+    setOnValueChangedListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnValueChangedListener(null) }
 }
 
 /**
- * Create a flow which emits on [NumberPicker] value change events.
+ * Create a flow which emits on [NumberPicker] [value change events][NumberPickerValueChangeEvent].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* The created flow uses [NumberPicker.setOnValueChangedListener]. Only one flow can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * numberPicker.valueChangeEvents()
+ *      .onEach { /* handle value change event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * numberPicker.valueChangeEvents()
+ *      .drop(1)
+ *      .onEach { /* handle value change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun NumberPicker.valueChangeEvents(): Flow<NumberPickerValueChangeEvent> = channelFlow {

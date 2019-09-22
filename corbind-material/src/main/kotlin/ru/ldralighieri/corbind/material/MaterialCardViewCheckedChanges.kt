@@ -29,10 +29,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
- * Perform an action on [MaterialCardView] check state change.
+ * Perform an action on [MaterialCardView] check change.
  *
  * *Warning:* Perform only when the [MaterialCardView] is in checkable state.
  *
@@ -57,7 +57,7 @@ fun MaterialCardView.checkedChanges(
 }
 
 /**
- * Perform an action on [MaterialCardView] check state change, inside new [CoroutineScope].
+ * Perform an action on [MaterialCardView] check change, inside new [CoroutineScope].
  *
  * *Warning:* Perform only when the [MaterialCardView] is in checkable state.
  *
@@ -72,9 +72,20 @@ suspend fun MaterialCardView.checkedChanges(
 }
 
 /**
- * Create a channel which emits on [MaterialCardView] check state change.
+ * Create a channel which emits on [MaterialCardView] check change.
  *
  * *Warning:* Emits only when the [MaterialCardView] is in checkable state.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      materialCardView.checkedChanges(scope)
+ *          .consumeEach { /* handle check change */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -85,16 +96,33 @@ fun MaterialCardView.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     checkCheckableState(this@checkedChanges)
-    offerElement(isChecked)
-    val listener = listener(scope, ::offerElement)
+    safeOffer(isChecked)
+    val listener = listener(scope, ::safeOffer)
     setOnCheckedChangeListener(listener)
     invokeOnClose { setOnCheckedChangeListener(listener) }
 }
 
 /**
- * Create a flow which emits on [MaterialCardView] check state change.
+ * Create a flow which emits on [MaterialCardView] check change.
  *
  * *Warning:* Emits only when the [MaterialCardView] is in checkable state.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * materialCardView.checkedChanges()
+ *      .onEach { /* handle check change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * materialCardView.checkedChanges()
+ *      .drop(1)
+ *      .onEach { /* handle check change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun MaterialCardView.checkedChanges(): Flow<Boolean> = channelFlow {

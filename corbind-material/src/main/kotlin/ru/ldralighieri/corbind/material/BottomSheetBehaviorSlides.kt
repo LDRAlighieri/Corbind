@@ -31,10 +31,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the slide offset events from [View] on [BottomSheetBehavior].
+ *
+ * *Warning:* The created actor uses [BottomSheetBehavior.setBottomSheetCallback]. Only one actor
+ * can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -50,13 +53,16 @@ fun View.slides(
     }
 
     val behavior = getBehavior(this@slides)
-    behavior.setBottomSheetCallback(callback(scope, events::offer))
-    events.invokeOnClose { behavior.setBottomSheetCallback(null) }
+    behavior.bottomSheetCallback = callback(scope, events::offer)
+    events.invokeOnClose { behavior.bottomSheetCallback = null }
 }
 
 /**
  * Perform an action on the slide offset events from [View] on [BottomSheetBehavior], inside new
  * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [BottomSheetBehavior.setBottomSheetCallback]. Only one actor
+ * can be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -71,6 +77,18 @@ suspend fun View.slides(
 /**
  * Create a channel which emits the slide offset events from [View] on [BottomSheetBehavior].
  *
+ * *Warning:* The created channel uses [BottomSheetBehavior.setBottomSheetCallback]. Only one
+ * channel can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      bottomSheetBehavior.slides(scope)
+ *          .consumeEach { /* handle slide offset */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -80,17 +98,28 @@ fun View.slides(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@slides)
-    behavior.setBottomSheetCallback(callback(scope, ::offerElement))
-    invokeOnClose { behavior.setBottomSheetCallback(null) }
+    behavior.bottomSheetCallback = callback(scope, ::safeOffer)
+    invokeOnClose { behavior.bottomSheetCallback = null }
 }
 
 /**
  * Create a flow which emits the slide offset events from [View] on [BottomSheetBehavior].
+ *
+ * *Warning:* The created flow uses [BottomSheetBehavior.setBottomSheetCallback]. Only one flow can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * bottomSheetBehavior.slides()
+ *      .onEach { /* handle slide offset */ }
+ *      .launchIn(scope)
+ * ```
  */
 fun View.slides(): Flow<Float> = channelFlow {
     val behavior = getBehavior(this@slides)
-    behavior.setBottomSheetCallback(callback(this, ::offer))
-    awaitClose { behavior.setBottomSheetCallback(null) }
+    behavior.bottomSheetCallback = callback(this, ::offer)
+    awaitClose { behavior.bottomSheetCallback = null }
 }
 
 @CheckResult

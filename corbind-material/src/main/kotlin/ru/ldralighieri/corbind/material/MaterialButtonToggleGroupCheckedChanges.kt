@@ -31,10 +31,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
- * Perform an action on [MaterialButton] check state change in [MaterialButtonToggleGroup].
+ * Perform an action on [MaterialButton] check change in [MaterialButtonToggleGroup].
  *
  * *Warning:* Only in single selection mode, use `buttonCheckedChangeEvents` extension instead.
  *
@@ -61,8 +61,8 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
 }
 
 /**
- * Perform an action on [MaterialButton] check state change in [MaterialButtonToggleGroup], inside
- * new [CoroutineScope]
+ * Perform an action on [MaterialButton] check change in [MaterialButtonToggleGroup], inside new
+ * [CoroutineScope]
  *
  * *Warning:* Only in single selection mode, use `buttonCheckedChangeEvents` extension instead.
  *
@@ -79,13 +79,22 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChanges(
 }
 
 /**
- * Create a channel which emits on [MaterialButton] check state change in
- * [MaterialButtonToggleGroup]
+ * Create a channel which emits on [MaterialButton] check change in [MaterialButtonToggleGroup]
  *
  * *Warning:* Only in single selection mode, use `buttonCheckedChanges` extension instead.
  *
- * *Note:* Channel emits only on [MaterialButton] check events. When the selection is
- * cleared, [View.NO_ID] will be emitted.
+ * *Note:* Flow emits only on [MaterialButton] check events.
+ * *Note:* A value will be emitted immediately.
+ * *Note:* When the selection is cleared, [View.NO_ID] will be emitted.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      materialButtonToggleGroup.buttonCheckedChanges(scope)
+ *          .consumeEach { /* handle check change */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -96,20 +105,35 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@buttonCheckedChanges)
-    offerElement(checkedButtonId)
-    val listener = listener(scope, ::offerElement)
+    safeOffer(checkedButtonId)
+    val listener = listener(scope, ::safeOffer)
     addOnButtonCheckedListener(listener)
     invokeOnClose { removeOnButtonCheckedListener(listener) }
 }
 
 /**
- * Create a flow which emits on [MaterialButton] check state change in
- * [MaterialButtonToggleGroup]
+ * Create a flow which emits on [MaterialButton] check change in [MaterialButtonToggleGroup]
  *
  * *Warning:* Only in single selection mode, use `buttonCheckedChanges` extension instead.
  *
- * *Note:* Flow emits only on [MaterialButton] check events. When the selection is
- * cleared, [View.NO_ID] will be emitted.
+ * *Note:* Flow emits only on [MaterialButton] check events.
+ * *Note:* A value will be emitted immediately.
+ * *Note:* When the selection is cleared, [View.NO_ID] will be emitted.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * materialButtonToggleGroup.buttonCheckedChanges()
+ *      .onEach { /* handle check change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * materialButtonToggleGroup.buttonCheckedChanges()
+ *      .drop(1)
+ *      .onEach { /* handle check change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChanges(): Flow<Int> = channelFlow {

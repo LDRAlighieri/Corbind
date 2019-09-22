@@ -30,13 +30,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [TextInputLayout] end icon click events.
  *
- * *Warning:* The created actor uses [TextInputLayout.setEndIconOnClickListener] to emit clicks.
- * Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [TextInputLayout.setEndIconOnClickListener]. Only one actor
+ * can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,8 +58,8 @@ fun TextInputLayout.endIconClicks(
 /**
  * Perform an action on [TextInputLayout] end icon click events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [TextInputLayout.setEndIconOnClickListener] to emit clicks.
- * Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [TextInputLayout.setEndIconOnClickListener]. Only one actor can
+ * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,8 +74,17 @@ suspend fun TextInputLayout.endIconClicks(
 /**
  * Create a channel which emits on [TextInputLayout] end icon click events.
  *
- * *Warning:* The created channel uses [TextInputLayout.setEndIconOnClickListener] to emit clicks.
- * Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [TextInputLayout.setEndIconOnClickListener]. Only one channel
+ * can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textInputLayout.endIconClicks(scope)
+ *          .consumeEach { /* handle end icon click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -85,15 +94,23 @@ fun TextInputLayout.endIconClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setEndIconOnClickListener(listener(scope, ::offerElement))
+    setEndIconOnClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setEndIconOnClickListener(null) }
 }
 
 /**
  * Create a flow which emits [TextInputLayout] end icon click events.
  *
- * *Warning:* The created flow uses [TextInputLayout.setEndIconOnClickListener] to emit clicks.
- * Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [TextInputLayout.setEndIconOnClickListener]. Only one flow can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * textInputLayout.endIconClicks()
+ *      .onEach { /* handle end icon click */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TextInputLayout.endIconClicks(): Flow<Unit> = channelFlow {

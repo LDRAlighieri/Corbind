@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the selected tab in [TabLayout].
@@ -69,6 +69,17 @@ suspend fun TabLayout.selections(
 /**
  * Create a channel which emits the selected tab in [TabLayout].
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      tabLayout.selections(scope)
+ *          .consumeEach { /* handle selected tab */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -77,8 +88,8 @@ fun TabLayout.selections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@selections, ::offerElement)
-    val listener = listener(scope, ::offerElement)
+    setInitialValue(this@selections, ::safeOffer)
+    val listener = listener(scope, ::safeOffer)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -86,7 +97,22 @@ fun TabLayout.selections(
 /**
  * Create a flow which emits the selected tab in [TabLayout].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * tabLayout.selections()
+ *      .onEach { /* handle selected tab */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * tabLayout.selections()
+ *      .drop(1)
+ *      .onEach { /* handle selected tab */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {

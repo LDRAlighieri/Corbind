@@ -41,7 +41,10 @@ data class DatePickerDialogSetEvent(
 )
 
 /**
- * Perform an action on [DatePickerDialog] date set events.
+ * Perform an action on [DatePickerDialog] [date set events][DatePickerDialogSetEvent].
+ *
+ * *Warning:* The created actor uses [DatePickerDialog.setOnDateSetListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -62,7 +65,11 @@ fun DatePickerDialog.dateSetEvents(
 }
 
 /**
- * Perform an action on [DatePickerDialog] date set events, inside new [CoroutineScope].
+ * Perform an action on [DatePickerDialog] [date set events][DatePickerDialogSetEvent], inside new
+ * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [DatePickerDialog.setOnDateSetListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -76,7 +83,19 @@ suspend fun DatePickerDialog.dateSetEvents(
 }
 
 /**
- * Create a channel which emits on [DatePickerDialog] date set events.
+ * Create a channel which emits on [DatePickerDialog] [date set events][DatePickerDialogSetEvent].
+ *
+ * *Warning:* The created channel uses [DatePickerDialog.setOnDateSetListener]. Only one channel can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      datePickerDialog.dateSetEvents(scope)
+ *          .consumeEach { /* handle date set event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -92,7 +111,18 @@ fun DatePickerDialog.dateSetEvents(
 }
 
 /**
- * Create a flow which emits on [DatePickerDialog] date set events.
+ * Create a flow which emits on [DatePickerDialog] [date set events][DatePickerDialogSetEvent].
+ *
+ * *Warning:* The created flow uses [DatePickerDialog.setOnDateSetListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * datePickerDialog.dateSetEvents()
+ *      .onEach { /* handle date set event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @RequiresApi(Build.VERSION_CODES.N)
 @CheckResult

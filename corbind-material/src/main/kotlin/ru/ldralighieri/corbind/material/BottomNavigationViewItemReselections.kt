@@ -30,10 +30,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the reselected item in [BottomNavigationView].
+ *
+ * *Warning:* The created actor uses [BottomNavigationView.setOnNavigationItemReselectedListener].
+ * Only one actor can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -55,6 +58,9 @@ fun BottomNavigationView.itemReselections(
 /**
  * Perform an action on the reselected item in [BottomNavigationView], inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [BottomNavigationView.setOnNavigationItemReselectedListener].
+ * Only one actor can be used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -68,6 +74,18 @@ suspend fun BottomNavigationView.itemReselections(
 /**
  * Create a channel which emits the reselected item in [BottomNavigationView].
  *
+ * *Warning:* The created channel uses [BottomNavigationView.setOnNavigationItemReselectedListener].
+ * Only one channel can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      absListView.scrollEvents(scope)
+ *          .consumeEach { /* handle reselected item */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -76,14 +94,25 @@ fun BottomNavigationView.itemReselections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setOnNavigationItemReselectedListener(listener(scope, ::offerElement))
+    setOnNavigationItemReselectedListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnNavigationItemReselectedListener(null) }
 }
 
 /**
  * Create a flow which emits the reselected item in [BottomNavigationView].
  *
+ * *Warning:* The created flow uses [BottomNavigationView.setOnNavigationItemReselectedListener].
+ * Only one flow can be used at a time.
+ *
  * *Note:* A value will be emitted immediately on collect.
+ *
+ * Example:
+ *
+ * ```
+ * bottomNavigationView.itemReselections()
+ *      .onEach { /* handle reselected item */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun BottomNavigationView.itemReselections(): Flow<MenuItem> = channelFlow {

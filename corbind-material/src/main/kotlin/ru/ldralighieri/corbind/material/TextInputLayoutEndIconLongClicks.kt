@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [TextInputLayout] end icon long click events.
@@ -62,8 +62,8 @@ fun TextInputLayout.endIconLongClicks(
 /**
  * Perform an action on [TextInputLayout] end icon long click events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [TextInputLayout.setEndIconOnLongClickListener] to emit long
- * clicks. Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [TextInputLayout.setEndIconOnLongClickListener]. Only one actor
+ * can be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -81,8 +81,17 @@ suspend fun TextInputLayout.endIconLongClicks(
 /**
  * Create a channel which emits on [TextInputLayout] end icon long click events.
  *
- * *Warning:* The created channel uses [TextInputLayout.setEndIconOnLongClickListener] to emit
- * long clicks. Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [TextInputLayout.setEndIconOnLongClickListener]. Only one
+ * channel can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textInputLayout.endIconLongClicks(scope)
+ *          .consumeEach { /* handle end icon long click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -95,15 +104,23 @@ fun TextInputLayout.endIconLongClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setEndIconOnLongClickListener(listener(scope, handled, ::offerElement))
+    setEndIconOnLongClickListener(listener(scope, handled, ::safeOffer))
     invokeOnClose { setEndIconOnLongClickListener(null) }
 }
 
 /**
  * Create a flow which emits on [TextInputLayout] end icon long click events.
  *
- * *Warning:* The created flow uses [TextInputLayout.setEndIconOnLongClickListener] to emit long
- * clicks. Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [TextInputLayout.setEndIconOnLongClickListener]. Only one flow
+ * can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * textInputLayout.endIconLongClicks()
+ *      .onEach { /* handle end icon long click */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
  * [View.OnLongClickListener]

@@ -29,8 +29,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
-import java.util.Calendar
+import ru.ldralighieri.corbind.safeOffer
+import java.util.*
 
 data class CalendarViewDateChangeEvent(
     val view: CalendarView,
@@ -40,7 +40,10 @@ data class CalendarViewDateChangeEvent(
 )
 
 /**
- * Perform an action on [CalendarView] date change events.
+ * Perform an action on [CalendarView] [date change events][CalendarViewDateChangeEvent].
+ *
+ * *Warning:* The created actor uses [CalendarView.setOnDateChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -61,7 +64,11 @@ fun CalendarView.dateChangeEvents(
 }
 
 /**
- * Perform an action on [CalendarView] date change events, inside new [CoroutineScope].
+ * Perform an action on [CalendarView] [date change events][CalendarViewDateChangeEvent], inside new
+ * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [CalendarView.setOnDateChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,7 +81,21 @@ suspend fun CalendarView.dateChangeEvents(
 }
 
 /**
- * Create a channel which emits on [CalendarView] date change events.
+ * Create a channel which emits on [CalendarView] [date change events][CalendarViewDateChangeEvent].
+ *
+ * *Warning:* The created channel uses [CalendarView.setOnDateChangeListener]. Only one channel can
+ * be used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      calendarView.dateChangeEvents(scope)
+ *          .consumeEach { /* handle date change event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -84,13 +105,33 @@ fun CalendarView.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CalendarViewDateChangeEvent> = corbindReceiveChannel(capacity) {
-    offerElement(initialValue(this@dateChangeEvents))
-    setOnDateChangeListener(listener(scope, ::offerElement))
+    safeOffer(initialValue(this@dateChangeEvents))
+    setOnDateChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnDateChangeListener(null) }
 }
 
 /**
- * Create a flow which emits on [CalendarView] date change events.
+ * Create a flow which emits on [CalendarView] [date change events][CalendarViewDateChangeEvent].
+ *
+ * *Warning:* The created flow uses [CalendarView.setOnDateChangeListener]. Only one flow can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * calendarView.dateChangeEvents()
+ *      .onEach { /* handle date change event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * calendarView.dateChangeEvents()
+ *      .drop(1)
+ *      .onEach { /* handle date change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun CalendarView.dateChangeEvents(): Flow<CalendarViewDateChangeEvent> = channelFlow {

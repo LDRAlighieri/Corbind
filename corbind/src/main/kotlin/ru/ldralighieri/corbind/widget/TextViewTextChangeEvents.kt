@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class TextViewTextChangeEvent(
     val view: TextView,
@@ -80,6 +80,17 @@ suspend fun TextView.textChangeEvents(
 /**
  * Create a channel of [text change events][TextViewTextChangeEvent] for [TextView].
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textView.textChangeEvents(scope)
+ *          .consumeEach { /* handle text change event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -88,8 +99,8 @@ fun TextView.textChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewTextChangeEvent> = corbindReceiveChannel(capacity) {
-    offerElement(initialValue(this@textChangeEvents))
-    val listener = listener(scope, this@textChangeEvents, ::offerElement)
+    safeOffer(initialValue(this@textChangeEvents))
+    val listener = listener(scope, this@textChangeEvents, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -97,7 +108,22 @@ fun TextView.textChangeEvents(
 /**
  * Create a flow of [text change events][TextViewTextChangeEvent] for [TextView].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * textView.textChangeEvents()
+ *      .onEach { /* handle text change event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * textView.textChangeEvents()
+ *      .drop(1)
+ *      .onEach { /* handle text change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TextView.textChangeEvents(): Flow<TextViewTextChangeEvent> = channelFlow {

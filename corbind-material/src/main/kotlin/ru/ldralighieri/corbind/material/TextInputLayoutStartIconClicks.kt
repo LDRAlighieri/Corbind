@@ -30,13 +30,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [TextInputLayout] start icon click events.
  *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener] to emit clicks.
- * Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
+ * can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,8 +58,8 @@ fun TextInputLayout.startIconClicks(
 /**
  * Perform an action on [TextInputLayout] start icon click events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener] to emit clicks.
- * Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
+ * can be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,8 +74,17 @@ suspend fun TextInputLayout.startIconClicks(
 /**
  * Create a channel which emits on [TextInputLayout] start icon click events.
  *
- * *Warning:* The created channel uses [TextInputLayout.setStartIconOnClickListener] to emit clicks.
- * Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [TextInputLayout.setStartIconOnClickListener]. Only one
+ * channel can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textInputLayout.startIconClicks(scope)
+ *          .consumeEach { /* handle start icon click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -85,15 +94,23 @@ fun TextInputLayout.startIconClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setStartIconOnClickListener(listener(scope, ::offerElement))
+    setStartIconOnClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setStartIconOnClickListener(null) }
 }
 
 /**
  * Create a flow which emits [TextInputLayout] start icon click events.
  *
- * *Warning:* The created flow uses [TextInputLayout.setStartIconOnClickListener] to emit clicks.
- * Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [TextInputLayout.setStartIconOnClickListener]. Only one flow can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * textInputLayout.startIconClicks()
+ *      .onEach { /* handle start icon click */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TextInputLayout.startIconClicks(): Flow<Unit> = channelFlow {

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 sealed class SearchBarSearchQueryEvent {
     abstract val view: SearchBar
@@ -54,6 +54,9 @@ data class SearchBarSearchQuerySubmittedEvent(
 /**
  * Perform an action on [search query events][SearchBarSearchQueryEvent] on [SearchBar].
  *
+ * *Warning:* The created actor uses [SearchBar.setSearchBarListener]. Only one actor can be used at
+ * a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -75,6 +78,9 @@ fun SearchBar.searchQueryChangeEvents(
  * Perform an action on [search query events][SearchBarSearchQueryEvent] on [SearchBar], inside new
  * [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SearchBar.setSearchBarListener]. Only one actor can be used at
+ * a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -88,6 +94,34 @@ suspend fun SearchBar.searchQueryChangeEvents(
 /**
  * Create a channel of [search query events][SearchBarSearchQueryEvent] on [SearchBar].
  *
+ * *Warning:* The created channel uses [SearchBar.setSearchBarListener]. Only one channel can be
+ * used at a time.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * launch {
+ *      searchBar.searchQueryChangeEvents(scope)
+ *          .consumeEach { event ->
+ *              when (event) {
+ *                  is SearchBarSearchQueryChangedEvent -> { /* handle query change event */ }
+ *                  is SearchBarSearchQueryKeyboardDismissedEvent -> {
+ *                      /* handle Keyboard dismiss event */
+ *                  }
+ *                  is SearchBarSearchQuerySubmittedEvent -> { /* handle query submit event */ }
+ *              }
+ *          }
+ * }
+ *
+ * // handle one event
+ * launch {
+ *      searchBar.searchQueryChangeEvents(scope)
+ *          .filterIsInstance<SearchBarSearchQueryChangedEvent>()
+ *          .consumeEach { /* handle query change event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -96,12 +130,37 @@ fun SearchBar.searchQueryChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel(capacity) {
-    setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::offerElement))
+    setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::safeOffer))
     invokeOnClose { setSearchBarListener(null) }
 }
 
 /**
  * Create a flow of [search query events][SearchBarSearchQueryEvent] on [SearchBar].
+ *
+ * *Warning:* The created flow uses [SearchBar.setSearchBarListener]. Only one flow can be used at a
+ * time.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * searchBar.searchQueryChangeEvents()
+ *      .onEach { event ->
+ *          when (event) {
+ *              is SearchBarSearchQueryChangedEvent -> { /* handle query change event */ }
+ *              is SearchBarSearchQueryKeyboardDismissedEvent -> {
+ *                  /* handle Keyboard dismiss event */
+ *              }
+ *              is SearchBarSearchQuerySubmittedEvent -> { /* handle query submit event */ }
+ *          }
+ *      }
+ *      .launchIn(scope)
+ *
+ * // handle one event
+ * searchBar.searchQueryChangeEvents()
+ *      .filterIsInstance<SearchBarSearchQueryChangedEvent>()
+ *      .onEach { /* handle query change event */ }
+ *      .launchIn(scope)
  */
 @CheckResult
 fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> = channelFlow {
@@ -128,7 +187,7 @@ private fun listener(
         onEvent(SearchBarSearchQueryKeyboardDismissedEvent(searchBar, query))
     }
 
-    private fun onEvent(evennt: SearchBarSearchQueryEvent) {
-        if (scope.isActive) { emitter(evennt) }
+    private fun onEvent(event: SearchBarSearchQueryEvent) {
+        if (scope.isActive) { emitter(event) }
     }
 }

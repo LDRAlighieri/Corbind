@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 sealed class ViewAttachEvent {
     abstract val view: View
@@ -81,6 +81,28 @@ suspend fun View.attachEvents(
 /**
  * Create a channel of [attach and detach events][ViewAttachEvent] on [View].
  *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * launch {
+ *      view.attachEvents(scope)
+ *          .consumeEach { event ->
+ *              when (event) {
+ *                  is ViewAttachAttachedEvent -> { /* handle attach event */ }
+ *                  is ViewAttachDetachedEvent -> { /* handle detach event */ }
+ *              }
+ *          }
+ * }
+ *
+ * // handle one event
+ * launch {
+ *      view.attachEvents(scope)
+ *          .filterIsInstance<ViewAttachAttachedEvent>()
+ *          .consumeEach { /* handle attach event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -89,13 +111,33 @@ fun View.attachEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewAttachEvent> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerElement)
+    val listener = listener(scope, ::safeOffer)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
 /**
  * Create a flow of [attach and detach events][ViewAttachEvent] on [View].
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * view.attachEvents()
+ *      .onEach { event ->
+ *          when (event) {
+ *              is ViewAttachAttachedEvent -> { /* handle attach event */ }
+ *              is ViewAttachDetachedEvent -> { /* handle detach event */ }
+ *          }
+ *      }
+ *      .launchIn(scope)
+ *
+ * // handle one event
+ * view.attachEvents()
+ *      .filterIsInstance<ViewAttachAttachedEvent>()
+ *      .onEach { /* handle attach event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {

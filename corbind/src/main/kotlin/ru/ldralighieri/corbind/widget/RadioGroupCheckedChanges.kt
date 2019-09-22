@@ -30,12 +30,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on checked view ID changes in [RadioGroup].
  *
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ * *Warning:* The created actor uses [RadioGroup.setOnCheckedChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,7 +59,8 @@ fun RadioGroup.checkedChanges(
 /**
  * Perform an action on checked view ID changes in [RadioGroup], inside new [CoroutineScope].
  *
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ * *Warning:* The created actor uses [RadioGroup.setOnCheckedChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -73,7 +75,20 @@ suspend fun RadioGroup.checkedChanges(
 /**
  * Create a channel of the checked view ID changes in [RadioGroup].
  *
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID]
+ * *Warning:* The created channel uses [RadioGroup.setOnCheckedChangeListener]. Only one channel can
+ * be used at a time.
+ *
+ * *Note:* A value will be emitted immediately. When the selection is cleared, checkedId is
+ * [View.NO_ID]
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      radioGroup.checkedChanges(scope)
+ *          .consumeEach { /* handle checked change */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -83,16 +98,34 @@ fun RadioGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerElement(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, ::offerElement))
+    safeOffer(checkedRadioButtonId)
+    setOnCheckedChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
 /**
  * Create a flow of the checked view ID changes in [RadioGroup].
  *
- * *Note:* A value will be emitted immediately on collect. When the selection is cleared, checkedId
- * is [View.NO_ID]
+ * *Warning:* The created flow uses [RadioGroup.setOnCheckedChangeListener]. Only one flow can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately. When the selection is cleared, checkedId is
+ * [View.NO_ID]
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * radioGroup.checkedChanges()
+ *      .onEach { /* handle checked change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * radioGroup.checkedChanges()
+ *      .drop()
+ *      .onEach { /* handle checked change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {

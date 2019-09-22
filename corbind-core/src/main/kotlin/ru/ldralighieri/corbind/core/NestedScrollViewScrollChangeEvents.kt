@@ -29,11 +29,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
 
 /**
- * Perform an action on scroll-change events for [NestedScrollView].
+ * Perform an action on scroll change events for [NestedScrollView].
+ *
+ * *Warning:* The created actor uses [NestedScrollView.setOnScrollChangeListener]. Only one actor
+ * can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -55,7 +58,10 @@ fun NestedScrollView.scrollChangeEvents(
 }
 
 /**
- * Perform an action on scroll-change events for [NestedScrollView], inside new [CoroutineScope].
+ * Perform an action on scroll change events for [NestedScrollView], inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [NestedScrollView.setOnScrollChangeListener]. Only one actor
+ * can be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -68,7 +74,19 @@ suspend fun NestedScrollView.scrollChangeEvents(
 }
 
 /**
- * Create a channel of scroll-change events for [NestedScrollView].
+ * Create a channel of scroll change events for [NestedScrollView].
+ *
+ * *Warning:* The created channel uses [NestedScrollView.setOnScrollChangeListener]. Only one
+ * channel can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      nestedScrollView.scrollChangeEvents(scope)
+ *          .consumeEach { /* handle scroll change */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -78,12 +96,23 @@ fun NestedScrollView.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
-    setOnScrollChangeListener(listener(scope, ::offerElement))
+    setOnScrollChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
 
 /**
- * Create a flow of scroll-change events for [NestedScrollView].
+ * Create a flow of scroll change events for [NestedScrollView].
+ *
+ * *Warning:* The created flow uses [NestedScrollView.setOnScrollChangeListener]. Only one flow can
+ * be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * nestedScrollView.scrollChangeEvents()
+ *      .onEach { /* handle scroll change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {

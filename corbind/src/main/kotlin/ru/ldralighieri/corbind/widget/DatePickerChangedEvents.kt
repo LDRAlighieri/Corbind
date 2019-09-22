@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class DateChangedEvent(
     val view: DatePicker,
@@ -41,7 +41,10 @@ data class DateChangedEvent(
 )
 
 /**
- * Perform an action on [DatePicker] date changed events.
+ * Perform an action on [DatePicker] [date changed events][DateChangedEvent].
+ *
+ * *Warning:* The created actor uses [DatePicker.setOnDateChangedListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -63,7 +66,11 @@ fun DatePicker.dateChangeEvents(
 }
 
 /**
- * Perform an action on [DatePicker] date changed events, inside new [CoroutineScope].
+ * Perform an action on [DatePicker] [date changed events][DateChangedEvent], inside new
+ * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [DatePicker.setOnDateChangedListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -77,7 +84,21 @@ suspend fun DatePicker.dateChangeEvents(
 }
 
 /**
- * Create a channel which emits on [DatePicker] date changed events.
+ * Create a channel which emits on [DatePicker] [date changed events][DateChangedEvent].
+ *
+ * *Warning:* The created channel uses [DatePicker.setOnDateChangedListener]. Only one channel can
+ * be used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      datePicker.dateChangeEvents(scope)
+ *          .consumeEach { /* handle date changed event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -88,13 +109,33 @@ fun DatePicker.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<DateChangedEvent> = corbindReceiveChannel(capacity) {
-    offerElement(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
-    setOnDateChangedListener(listener(scope, ::offerElement))
+    safeOffer(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
+    setOnDateChangedListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnDateChangedListener(null) }
 }
 
 /**
- * Create a flow which emits on [DatePicker] date changed events.
+ * Create a flow which emits on [DatePicker] [date changed events][DateChangedEvent].
+ *
+ * *Warning:* The created flow uses [DatePicker.setOnDateChangedListener]. Only one flow can be used
+ * at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * datePicker.dateChangeEvents()
+ *      .onEach { /* handle date changed event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * datePicker.dateChangeEvents()
+ *      .drop(1)
+ *      .onEach { /* handle date changed event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult

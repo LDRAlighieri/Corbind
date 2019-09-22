@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class ViewPager2PageScrollEvent(
     val viewPager: ViewPager2,
@@ -76,6 +76,15 @@ suspend fun ViewPager2.pageScrollEvents(
 /**
  * Create a channel of [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      viewPager2.pageScrollEvents(scope)
+ *          .consumeEach { /* handle page scroll event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -84,13 +93,21 @@ fun ViewPager2.pageScrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewPager2PageScrollEvent> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, this@pageScrollEvents, ::offerElement)
+    val callback = callback(scope, this@pageScrollEvents, ::safeOffer)
     registerOnPageChangeCallback(callback)
     invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
 
 /**
  * Create a flow of [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2].
+ *
+ * Example:
+ *
+ * ```
+ * viewPager2.pageScrollEvents()
+ *      .onEach { /* handle page scroll event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = channelFlow {

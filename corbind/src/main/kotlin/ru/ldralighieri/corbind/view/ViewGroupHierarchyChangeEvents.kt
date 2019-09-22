@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 sealed class ViewGroupHierarchyChangeEvent {
     abstract val view: ViewGroup
@@ -49,6 +49,9 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
 
 /**
  * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
+ *
+ * *Warning:* The created actor uses [ViewGroup.setOnHierarchyChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -71,6 +74,9 @@ fun ViewGroup.changeEvents(
  * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup],
  * inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [ViewGroup.setOnHierarchyChangeListener]. Only one actor can be
+ * used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -84,6 +90,31 @@ suspend fun ViewGroup.changeEvents(
 /**
  * Create a channel of [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
  *
+ * *Warning:* The created channel uses [ViewGroup.setOnHierarchyChangeListener]. Only one channel
+ * can be used at a time.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * launch {
+ *      viewGroup.changeEvents(scope)
+ *          .consumeEach { event ->
+ *              when (event) {
+ *                  is ViewGroupHierarchyChildViewAddEvent -> { /* handle add event */ }
+ *                  is ViewGroupHierarchyChildViewRemoveEvent -> { /* handle remove event */ }
+ *              }
+ *          }
+ * }
+ *
+ * // handle one event
+ * launch {
+ *      viewGroup.changeEvents(scope)
+ *          .filterIsInstance<ViewGroupHierarchyChildViewAddEvent>()
+ *          .consumeEach { /* handle add event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -92,12 +123,35 @@ fun ViewGroup.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel(capacity) {
-    setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::offerElement))
+    setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::safeOffer))
     invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
 /**
  * Create a flow of [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
+ *
+ * *Warning:* The created flow uses [ViewGroup.setOnHierarchyChangeListener]. Only one flow can be
+ * used at a time.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle all events
+ * viewGroup.changeEvents()
+ *      .onEach { event ->
+ *          when (event) {
+ *              is ViewGroupHierarchyChildViewAddEvent -> { /* handle add event */ }
+ *              is ViewGroupHierarchyChildViewRemoveEvent -> { /* handle remove event */ }
+ *          }
+ *      }
+ *      .launchIn(scope)
+ *
+ * // handle one event
+ * viewGroup.changeEvents()
+ *      .filterIsInstance<ViewGroupHierarchyChildViewAddEvent>()
+ *      .onEach { /* handle add event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = channelFlow {

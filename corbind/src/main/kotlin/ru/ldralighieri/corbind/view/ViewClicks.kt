@@ -29,13 +29,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [View] click events.
  *
- * *Warning:* The created actor uses [View.setOnClickListener] to emit clicks. Only one actor
- * can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnClickListener]. Only one actor can be used at a
+ * time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -57,8 +57,8 @@ fun View.clicks(
 /**
  * Perform an action on [View] click events, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnClickListener] to emit clicks. Only one actor
- * can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnClickListener]. Only one actor can be used at a
+ * time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -71,10 +71,19 @@ suspend fun View.clicks(
 }
 
 /**
- * Create a channel which emits on [View] click events
+ * Create a channel which emits on [View] click events.
  *
- * *Warning:* The created channel uses [View.setOnClickListener] to emit clicks. Only one
- * channel can be used for a view at a time.
+ * *Warning:* The created channel uses [View.setOnClickListener]. Only one channel can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.clicks(scope)
+ *          .consumeEach { /* handle click */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -84,15 +93,22 @@ fun View.clicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnClickListener(listener(scope, ::offerElement))
+    setOnClickListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnClickListener(null) }
 }
 
 /**
- * Create a flow which emits on [View] click events
+ * Create a flow which emits on [View] click events.
  *
- * *Warning:* The created flow uses [View.setOnClickListener] to emit clicks. Only one flow can
- * be used for a view at a time.
+ * *Warning:* The created flow uses [View.setOnClickListener]. Only one flow can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * view.clicks()
+ *      .onEach { /* handle click */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.clicks(): Flow<Unit> = channelFlow {
