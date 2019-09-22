@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 private fun SeekBar.changes(
     scope: CoroutineScope,
@@ -60,8 +60,8 @@ private fun SeekBar.changes(
     capacity: Int,
     shouldBeFromUser: Boolean?
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerElement(progress)
-    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::offerElement))
+    safeOffer(progress)
+    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::safeOffer))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -77,6 +77,9 @@ private fun SeekBar.changes(
 /**
  * Perform an action on progress value changes on [SeekBar].
  *
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -90,6 +93,9 @@ fun SeekBar.changes(
 /**
  * Perform an action on progress value changes on [SeekBar] inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -101,6 +107,20 @@ suspend fun SeekBar.changes(
 /**
  * Create a channel of progress value changes on [SeekBar].
  *
+ * *Warning:* The created channel uses [SeekBar.setOnSeekBarChangeListener]. Only one channel can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      seekBar.changes(scope)
+ *          .consumeEach { /* handle progress value change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -108,18 +128,39 @@ suspend fun SeekBar.changes(
 fun SeekBar.changes(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-) = changes(scope, capacity, null)
+): ReceiveChannel<Int> = changes(scope, capacity, null)
 
 /**
  * Create a flow of progress value changes on [SeekBar].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* The created flow uses [SeekBar.setOnSeekBarChangeListener]. Only one flow can be used
+ * at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * seekBar.changes()
+ *      .onEach { /* handle progress value change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * seekBar.changes()
+ *      .drop(1)
+ *      .onEach { /* handle progress value change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
-fun SeekBar.changes() = changes(null)
+fun SeekBar.changes(): Flow<Int> = changes(null)
 
 /**
  * Perform an action on progress value changes on [SeekBar] that were made only from the user.
+ *
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -135,6 +176,9 @@ fun SeekBar.userChanges(
  * Perform an action on progress value changes on [SeekBar] that were made only from the user inside
  * new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -146,6 +190,20 @@ suspend fun SeekBar.userChanges(
 /**
  * Create a channel of progress value changes on [SeekBar] that were made only from the user.
  *
+ * *Warning:* The created channel uses [SeekBar.setOnSeekBarChangeListener]. Only one channel can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      seekBar.userChanges(scope)
+ *          .consumeEach { /* handle progress value change made from user */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -153,18 +211,39 @@ suspend fun SeekBar.userChanges(
 fun SeekBar.userChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-) = changes(scope, capacity, true)
+): ReceiveChannel<Int> = changes(scope, capacity, true)
 
 /**
  * Create a flow of progress value changes on [SeekBar] that were made only from the user.
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* The created flow uses [SeekBar.setOnSeekBarChangeListener]. Only one flow can be used
+ * at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * seekBar.userChanges()
+ *      .onEach { /* handle progress value change made from user */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * seekBar.userChanges()
+ *      .drop(1)
+ *      .onEach { /* handle progress value change made from user */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
-fun SeekBar.userChanges() = changes(true)
+fun SeekBar.userChanges(): Flow<Int> = changes(true)
 
 /**
  * Perform an action on progress value changes on [SeekBar] that were made only from the system.
+ *
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -180,6 +259,9 @@ fun SeekBar.systemChanges(
  * Perform an action on progress value changes on [SeekBar] that were made only from the system inside
  * new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
+ * used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -191,6 +273,20 @@ suspend fun SeekBar.systemChanges(
 /**
  * Create a channel of progress value changes on [SeekBar] that were made only from the system.
  *
+ * *Warning:* The created channel uses [SeekBar.setOnSeekBarChangeListener]. Only one channel can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      seekBar.systemChanges(scope)
+ *          .consumeEach { /* handle progress value change made from system */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -198,15 +294,33 @@ suspend fun SeekBar.systemChanges(
 fun SeekBar.systemChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-) = changes(scope, capacity, false)
+): ReceiveChannel<Int> = changes(scope, capacity, false)
 
 /**
  * Create a flow of progress value changes on [SeekBar] that were made only from the system.
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* The created flow uses [SeekBar.setOnSeekBarChangeListener]. Only one flow can be used
+ * at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * seekBar.systemChanges()
+ *      .onEach { /* handle progress value change made from system */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * seekBar.systemChanges()
+ *      .drop(1)
+ *      .onEach { /* handle progress value change made from system */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
-fun SeekBar.systemChanges() = changes(false)
+fun SeekBar.systemChanges(): Flow<Int> = changes(false)
 
 @CheckResult
 private fun listener(

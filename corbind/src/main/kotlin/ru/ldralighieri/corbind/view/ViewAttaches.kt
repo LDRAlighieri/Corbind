@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [View] attach events.
@@ -68,6 +68,15 @@ suspend fun View.attaches(
 /**
  * Create a channel which emits on [View] attach events.
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.attaches(scope)
+ *          .consumeEach { /* handle attach */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -76,13 +85,21 @@ fun View.attaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, true, ::offerElement)
+    val listener = listener(scope, true, ::safeOffer)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
 /**
  * Create a flow which emits on [View] attach events.
+ *
+ * Example:
+ *
+ * ```
+ * view.attaches()
+ *      .onEach { /* handle attach */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.attaches(): Flow<Unit> = channelFlow {
@@ -128,6 +145,15 @@ suspend fun View.detaches(
 /**
  * Create a channel which emits on [View] detach events.
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.detaches(scope)
+ *          .consumeEach { /* handle detach */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -136,13 +162,21 @@ fun View.detaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, false, ::offerElement)
+    val listener = listener(scope, false, ::safeOffer)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
 
 /**
  * Create a flow which emits on [View] detach events.
+ *
+ * Example:
+ *
+ * ```
+ * view.detaches()
+ *      .onEach { /* handle detach */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.detaches(): Flow<Unit> = channelFlow {

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class AbsListViewScrollEvent(
     val view: AbsListView,
@@ -42,8 +42,8 @@ data class AbsListViewScrollEvent(
 /**
  * Perform an action on [scroll events][AbsListViewScrollEvent] on [AbsListView].
  *
- * *Warning:* The created actor uses [AbsListView.setOnScrollListener] to emit scroll changes.
- * Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [AbsListView.setOnScrollListener]. Only one actor can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -66,8 +66,8 @@ fun AbsListView.scrollEvents(
  * Perform an action on [scroll events][AbsListViewScrollEvent] on [AbsListView], inside new
  * [CoroutineScope].
  *
- * *Warning:* The created actor uses [AbsListView.setOnScrollListener] to emit scroll changes.
- * Only one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [AbsListView.setOnScrollListener]. Only one actor can be used
+ * at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -82,8 +82,17 @@ suspend fun AbsListView.scrollEvents(
 /**
  * Create a channel of [scroll events][AbsListViewScrollEvent] on [AbsListView].
  *
- * *Warning:* The created channel uses [AbsListView.setOnScrollListener] to emit scroll changes.
- * Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [AbsListView.setOnScrollListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      absListView.scrollEvents(scope)
+ *          .consumeEach { /* handle list scroll event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -93,15 +102,23 @@ fun AbsListView.scrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AbsListViewScrollEvent> = corbindReceiveChannel(capacity) {
-    setOnScrollListener(listener(scope, ::offerElement))
+    setOnScrollListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnScrollListener(null) }
 }
 
 /**
  * Create a flow of [scroll events][AbsListViewScrollEvent] on [AbsListView].
  *
- * *Warning:* The created flow uses [AbsListView.setOnScrollListener] to emit scroll changes.
- * Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [AbsListView.setOnScrollListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * absListView.scrollEvents()
+ *      .onEach { /* handle list scroll event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {

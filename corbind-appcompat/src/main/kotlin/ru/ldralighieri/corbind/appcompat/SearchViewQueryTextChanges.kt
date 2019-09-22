@@ -29,10 +29,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on character sequences for query text changes on [SearchView].
+ *
+ * *Warning:* The created actor uses [SearchView.setOnQueryTextListener]. Only one actor can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -56,6 +59,9 @@ fun SearchView.queryTextChanges(
  * Perform an action on character sequences for query text changes on [SearchView], inside new
  * [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SearchView.setOnQueryTextListener]. Only one actor can be used
+ * at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -69,6 +75,20 @@ suspend fun SearchView.queryTextChanges(
 /**
  * Create a channel of character sequences for query text changes on [SearchView].
  *
+ * *Warning:* The created channel uses [SearchView.setOnQueryTextListener]. Only one channel can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      searchView.queryTextChanges(scope)
+ *          .consumeEach { /* handle query text change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -77,15 +97,33 @@ fun SearchView.queryTextChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
-    offerElement(query)
-    setOnQueryTextListener(listener(scope, ::offerElement))
+    safeOffer(query)
+    setOnQueryTextListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
 /**
  * Create a flow of character sequences for query text changes on [SearchView].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* The created flow uses [SearchView.setOnQueryTextListener]. Only one flow can be used
+ * at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * searchView.queryTextChanges()
+ *      .onEach { /* handle query text change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * searchView.queryTextChanges()
+ *      .drop(1)
+ *      .onEach { /* handle query text change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun SearchView.queryTextChanges(): Flow<CharSequence> = channelFlow {

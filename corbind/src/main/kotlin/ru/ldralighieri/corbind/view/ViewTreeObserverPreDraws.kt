@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on pre-draws on [View].
@@ -73,6 +73,15 @@ suspend fun View.preDraws(
 /**
  * Create a channel for pre-draws on [View].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.preDraws(scope)
+ *          .consumeEach { /* handle pre-draws */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param proceedDrawingPass Let drawing process proceed
@@ -83,13 +92,21 @@ fun View.preDraws(
     capacity: Int = Channel.RENDEZVOUS,
     proceedDrawingPass: () -> Boolean
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, proceedDrawingPass, ::offerElement)
+    val listener = listener(scope, proceedDrawingPass, ::safeOffer)
     viewTreeObserver.addOnPreDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
 /**
  * Create a flow for pre-draws on [View].
+ *
+ * Example:
+ *
+ * ```
+ * view.preDraws()
+ *      .onEach { /* handle pre-draws */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param proceedDrawingPass Let drawing process proceed
  */

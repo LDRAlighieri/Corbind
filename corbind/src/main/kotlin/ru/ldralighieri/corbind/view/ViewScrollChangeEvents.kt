@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class ViewScrollChangeEvent(
     val view: View,
@@ -42,7 +42,10 @@ data class ViewScrollChangeEvent(
 )
 
 /**
- * Perform an action on [scroll-change events][ViewScrollChangeEvent] for [View].
+ * Perform an action on [scroll change events][ViewScrollChangeEvent] for [View].
+ *
+ * *Warning:* The created actor uses [View.setOnScrollChangeListener]. Only one actor can be used at
+ * a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -63,8 +66,11 @@ fun View.scrollChangeEvents(
 }
 
 /**
- * Perform an action on [scroll-change events][ViewScrollChangeEvent] for [View], inside new
+ * Perform an action on [scroll change events][ViewScrollChangeEvent] for [View], inside new
  * [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [View.setOnScrollChangeListener]. Only one actor can be used at
+ * a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -78,7 +84,19 @@ suspend fun View.scrollChangeEvents(
 }
 
 /**
- * Create a channel of [scroll-change events][ViewScrollChangeEvent] for [View].
+ * Create a channel of [scroll change events][ViewScrollChangeEvent] for [View].
+ *
+ * *Warning:* The created channel uses [View.setOnScrollChangeListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.scrollChangeEvents(scope)
+ *          .consumeEach { /* handle scroll change event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -89,12 +107,23 @@ fun View.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
-    setOnScrollChangeListener(listener(scope, ::offerElement))
+    setOnScrollChangeListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnScrollChangeListener(null) }
 }
 
 /**
- * Create a flow of [scroll-change events][ViewScrollChangeEvent] for [View].
+ * Create a flow of [scroll change events][ViewScrollChangeEvent] for [View].
+ *
+ * *Warning:* The created flow uses [View.setOnScrollChangeListener]. Only one flow can be used at a
+ * time.
+ *
+ * Example:
+ *
+ * ```
+ * view.scrollChangeEvents()
+ *      .onEach { /* handle scroll change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult

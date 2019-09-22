@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class ViewLayoutChangeEvent(
     val view: View,
@@ -44,7 +44,7 @@ data class ViewLayoutChangeEvent(
 )
 
 /**
- * Perform an action on [layout-change events][ViewLayoutChangeEvent] for [View].
+ * Perform an action on [layout change events][ViewLayoutChangeEvent] for [View].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -65,7 +65,7 @@ fun View.layoutChangeEvents(
 }
 
 /**
- * Perform an action on [layout-change events][ViewLayoutChangeEvent] for [View], inside new
+ * Perform an action on [layout change events][ViewLayoutChangeEvent] for [View], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -79,7 +79,16 @@ suspend fun View.layoutChangeEvents(
 }
 
 /**
- * Create a channel of [layout-change events][ViewLayoutChangeEvent] for [View].
+ * Create a channel of [layout change events][ViewLayoutChangeEvent] for [View].
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.layoutChangeEvents(scope)
+ *          .consumeEach { /* handle layout change event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -89,13 +98,21 @@ fun View.layoutChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerElement)
+    val listener = listener(scope, ::safeOffer)
     addOnLayoutChangeListener(listener)
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
 /**
- * Create a flow of [layout-change events][ViewLayoutChangeEvent] for [View].
+ * Create a flow of [layout change events][ViewLayoutChangeEvent] for [View].
+ *
+ * Example:
+ *
+ * ```
+ * view.layoutChangeEvents()
+ *      .onEach { /* handle layout change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {

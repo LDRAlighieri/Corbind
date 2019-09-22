@@ -22,25 +22,25 @@ This library is for Android applications only. Help you to transform Android UI 
 
 Platform bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind:1.2.0-RC'
 ```
 
 AndroidX library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.1.2'
-implementation 'ru.ldralighieri.corbind:corbind-core:1.1.2'
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.1.2'
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.1.2'
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.1.2'
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.1.2'
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.1.2'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.1.2'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.2.0-RC'
 ```
 
 Google 'material' library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.2.0-RC'
 ```
 
 
@@ -104,6 +104,8 @@ combine(
     .onEach { bt_login.isEnabled = it }
     .launchIn(scope)
 ```
+
+More examples in module descriptions and in source code
 
 
 ## Missed or forgot something?

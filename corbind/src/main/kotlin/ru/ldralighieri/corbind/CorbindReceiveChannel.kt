@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind
 import androidx.annotation.RestrictTo
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 inline fun <T> corbindReceiveChannel(
@@ -31,6 +32,5 @@ inline fun <T> corbindReceiveChannel(
 }
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-fun <T> Channel<T>.offerElement(element: T): Boolean {
-    return if (!isClosedForSend) { offer(element) } else { false }
-}
+fun <T> SendChannel<T>.safeOffer(element: T) =
+        !isClosedForSend && try { offer(element) } catch (t: Throwable) { false }

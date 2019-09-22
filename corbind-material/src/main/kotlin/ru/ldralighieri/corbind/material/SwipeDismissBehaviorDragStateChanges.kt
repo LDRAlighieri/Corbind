@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior].
@@ -58,6 +58,9 @@ fun View.dragStateChanges(
  * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior], inside
  * new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SwipeDismissBehavior.setListener]. Only one actor can be used
+ * at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -71,6 +74,18 @@ suspend fun View.dragStateChanges(
 /**
  * Create a channel which emits the drag state change events from [View] on [SwipeDismissBehavior].
  *
+ * *Warning:* The created channel uses [SwipeDismissBehavior.setListener]. Only one channel can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      swipeDismissBehavior.dragStateChanges(scope)
+ *          .consumeEach { /* handle drag state change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -80,12 +95,23 @@ fun View.dragStateChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@dragStateChanges)
-    behavior.setListener(listener(scope, ::offerElement))
+    behavior.setListener(listener(scope, ::safeOffer))
     invokeOnClose { behavior.setListener(null) }
 }
 
 /**
  * Create a flow which emits the drag state change events from [View] on [SwipeDismissBehavior].
+ *
+ * *Warning:* The created flow uses [SwipeDismissBehavior.setListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * swipeDismissBehavior.dragStateChanges()
+ *      .onEach { /* handle drag state change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.dragStateChanges(): Flow<Int> = channelFlow {

@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class AdapterViewItemLongClickEvent(
     val view: AdapterView<*>,
@@ -42,7 +42,10 @@ data class AdapterViewItemLongClickEvent(
 )
 
 /**
- * Perform an action on [item long-click events][AdapterViewItemLongClickEvent] for [AdapterView].
+ * Perform an action on [item long click events][AdapterViewItemLongClickEvent] for [AdapterView].
+ *
+ * *Warning:* The created actor uses [AdapterView.setOnItemLongClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -65,8 +68,11 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 /**
- * Perform an action on [item long-click events][AdapterViewItemLongClickEvent] for [AdapterView],
+ * Perform an action on [item long click events][AdapterViewItemLongClickEvent] for [AdapterView],
  * inside new [CoroutineScope].
+ *
+ * *Warning:* The created actor uses [AdapterView.setOnItemLongClickListener]. Only one actor can be
+ * used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -82,8 +88,20 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 }
 
 /**
- * Create a channel of the [item long-click events][AdapterViewItemLongClickEvent] for
+ * Create a channel of the [item long click events][AdapterViewItemLongClickEvent] for
  * [AdapterView].
+ *
+ * *Warning:* The created channel uses [AdapterView.setOnItemLongClickListener]. Only one channel
+ * can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      adapterView.itemLongClickEvents(scope)
+ *          .consumeEach { /* handle item long click event */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -96,12 +114,23 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel(capacity) {
-    onItemLongClickListener = listener(scope, handled, ::offerElement)
+    onItemLongClickListener = listener(scope, handled, ::safeOffer)
     invokeOnClose { onItemLongClickListener = null }
 }
 
 /**
- * Create a flow of the [item long-click events][AdapterViewItemLongClickEvent] for [AdapterView].
+ * Create a flow of the [item long click events][AdapterViewItemLongClickEvent] for [AdapterView].
+ *
+ * *Warning:* The created flow uses [AdapterView.setOnItemLongClickListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * adapterView.itemLongClickEvents()
+ *      .onEach { /* handle item long click event */ }
+ *      .launchIn(scope)
+ * ```
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
  * [AdapterView.OnItemLongClickListener]

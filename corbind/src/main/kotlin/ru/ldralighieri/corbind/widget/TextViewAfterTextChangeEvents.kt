@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 data class TextViewAfterTextChangeEvent(
     val view: TextView,
@@ -77,6 +77,17 @@ suspend fun TextView.afterTextChangeEvents(
 /**
  * Create a channel of [after text change events][TextViewAfterTextChangeEvent] for [TextView].
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textView.afterTextChangeEvents(scope)
+ *          .consumeEach { /* handle after text change event */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -85,8 +96,8 @@ fun TextView.afterTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewAfterTextChangeEvent> = corbindReceiveChannel(capacity) {
-    offerElement(initialValue(this@afterTextChangeEvents))
-    val listener = listener(scope, this@afterTextChangeEvents, ::offerElement)
+    safeOffer(initialValue(this@afterTextChangeEvents))
+    val listener = listener(scope, this@afterTextChangeEvents, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -94,7 +105,22 @@ fun TextView.afterTextChangeEvents(
 /**
  * Create a flow of [after text change events][TextViewAfterTextChangeEvent] for [TextView].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * textView.afterTextChangeEvents()
+ *      .onEach { /* handle after text change event */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * textView.afterTextChangeEvents()
+ *      .drop(1)
+ *      .onEach { /* handle after text change event */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TextView.afterTextChangeEvents(): Flow<TextViewAfterTextChangeEvent> = channelFlow {

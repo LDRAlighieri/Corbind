@@ -30,13 +30,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one actor can be used for a view at a time.
+ * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener]. Only one actor can
+ * be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -59,8 +59,8 @@ fun SlidingPaneLayout.panelSlides(
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout], inside new
  * [CoroutineScope].
  *
- * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one actor can be used for a view at a time.
+ * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener]. Only one actor can
+ * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -75,8 +75,17 @@ suspend fun SlidingPaneLayout.panelSlides(
 /**
  * Create a channel of the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener]. Only one channel
+ * can be used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      slidingPaneLayout.panelSlides(scope)
+ *          .consumeEach { /* handle slide offset */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -86,15 +95,23 @@ fun SlidingPaneLayout.panelSlides(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
-    setPanelSlideListener(listener(scope, ::offerElement))
+    setPanelSlideListener(listener(scope, ::safeOffer))
     invokeOnClose { setPanelSlideListener(null) }
 }
 
 /**
  * Create a flow of the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener] to emit dismiss
- * change. Only one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener]. Only one flow can be
+ * used at a time.
+ *
+ * Example:
+ *
+ * ```
+ * slidingPaneLayout.panelSlides()
+ *      .onEach { /* handle slide offset */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun SlidingPaneLayout.panelSlides(): Flow<Float> = channelFlow {

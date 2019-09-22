@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the dismiss events from [Snackbar].
@@ -68,6 +68,15 @@ suspend fun Snackbar.dismisses(
 /**
  * Create a channel which emits the dismiss events from [Snackbar].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      snackbar.dismisses(scope)
+ *          .consumeEach { /* handle dismiss */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -76,13 +85,21 @@ fun Snackbar.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, ::offerElement)
+    val callback = callback(scope, ::safeOffer)
     addCallback(callback)
     invokeOnClose { removeCallback(callback) }
 }
 
 /**
  * Create a flow which emits the dismiss events from [Snackbar].
+ *
+ * Example:
+ *
+ * ```
+ * snackbar.dismisses()
+ *      .onEach { /* handle dismiss */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun Snackbar.dismisses(): Flow<Int> = channelFlow {

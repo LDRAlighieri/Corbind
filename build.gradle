@@ -31,8 +31,8 @@ buildscript {
                         'slidingpane_layout' : '1.0.0',
                         'swiperefresh_layout' : '1.0.0',
                         'viewpager' : '1.0.0',
-                        'viewpager2' : '1.0.0-beta03',
-                        'material' : '1.0.0'
+                        'viewpager2' : '1.0.0-beta04',
+                        'material' : '1.1.0-alpha10'
                 ],
                 'ktlint': '0.33.0',
                 'dokka': '0.9.18'

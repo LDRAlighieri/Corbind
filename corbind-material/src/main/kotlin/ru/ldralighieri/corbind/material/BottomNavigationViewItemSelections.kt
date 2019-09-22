@@ -30,10 +30,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the selected item in [BottomNavigationView].
+ *
+ * *Warning:* The created actor uses [BottomNavigationView.setOnNavigationItemSelectedListener].
+ * Only one actor can be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -56,6 +59,9 @@ fun BottomNavigationView.itemSelections(
 /**
  * Perform an action on the selected item in [BottomNavigationView], inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [BottomNavigationView.setOnNavigationItemSelectedListener].
+ * Only one actor can be used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -69,6 +75,20 @@ suspend fun BottomNavigationView.itemSelections(
 /**
  * Create a channel which emits the selected item in [BottomNavigationView].
  *
+ * *Warning:* The created channel uses [BottomNavigationView.setOnNavigationItemSelectedListener].
+ * Only one channel can be used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      bottomNavigationView.itemSelections(scope)
+ *          .consumeEach { /* handle selected item */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -77,15 +97,33 @@ fun BottomNavigationView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@itemSelections, ::offerElement)
-    setOnNavigationItemSelectedListener(listener(scope, ::offerElement))
+    setInitialValue(this@itemSelections, ::safeOffer)
+    setOnNavigationItemSelectedListener(listener(scope, ::safeOffer))
     invokeOnClose { setOnNavigationItemSelectedListener(null) }
 }
 
 /**
  * Create a flow which emits the selected item in [BottomNavigationView].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* The created flow uses [BottomNavigationView.setOnNavigationItemSelectedListener]. Only
+ * one flow can be used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * bottomNavigationView.itemSelections()
+ *      .onEach { /* handle selected item */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * bottomNavigationView.itemSelections()
+ *      .drop(1)
+ *      .onEach { /* handle selected item */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun BottomNavigationView.itemSelections(): Flow<MenuItem> = channelFlow {

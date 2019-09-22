@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on character sequences for text changes on [TextView].
@@ -72,6 +72,17 @@ suspend fun TextView.textChanges(
 /**
  * Create a channel of character sequences for text changes on [TextView].
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      textView.textChanges(scope)
+ *          .consumeEach { /* handle text changes */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -80,8 +91,8 @@ fun TextView.textChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
-    offerElement(text)
-    val listener = listener(scope, ::offerElement)
+    safeOffer(text)
+    val listener = listener(scope, ::safeOffer)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -89,7 +100,22 @@ fun TextView.textChanges(
 /**
  * Create a flow of character sequences for text changes on [TextView].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * textView.textChanges()
+ *      .onEach { /* handle text changes */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * textView.textChanges()
+ *      .drop(1)
+ *      .onEach { /* handle text changes */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun TextView.textChanges(): Flow<CharSequence> = channelFlow {

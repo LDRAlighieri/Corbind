@@ -31,10 +31,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior].
+ *
+ * *Warning:* The created actor uses [SwipeDismissBehavior.setListener]. Only one actor can be used
+ * at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,6 +61,9 @@ fun View.dismisses(
  * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior], inside new
  * [CoroutineScope].
  *
+ * *Warning:* The created actor uses [SwipeDismissBehavior.setListener]. Only one actor can be used
+ * at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -71,6 +77,16 @@ suspend fun View.dismisses(
 /**
  * Create a channel which emits the dismiss events from [View] on [SwipeDismissBehavior].
  *
+ * *Warning:* The created channel uses [SwipeDismissBehavior.setListener]. Only one channel can be
+ * used at a time.
+ *
+ * ```
+ * launch {
+ *      swipeDismissBehavior.dismisses(scope)
+ *          .consumeEach { /* handle dismiss */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -80,12 +96,23 @@ fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<View> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@dismisses)
-    behavior.setListener(listener(scope, ::offerElement))
+    behavior.setListener(listener(scope, ::safeOffer))
     invokeOnClose { behavior.setListener(null) }
 }
 
 /**
  * Create a flow which emits the dismiss events from [View] on [SwipeDismissBehavior].
+ *
+ * *Warning:* The created flow uses [SwipeDismissBehavior.setListener]. Only one flow can be used at
+ * a time.
+ *
+ * Example:
+ *
+ * ```
+ * swipeDismissBehavior.dismisses()
+ *      .onEach { /* handle dismiss */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.dismisses(): Flow<View> = channelFlow {

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [View] layout changes.
@@ -68,6 +68,15 @@ suspend fun View.layoutChanges(
 /**
  * Create a channel which emits on [View] layout changes.
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.layoutChanges(scope)
+ *          .consumeEach { /* handle layout change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -76,13 +85,19 @@ fun View.layoutChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerElement)
+    val listener = listener(scope, ::safeOffer)
     addOnLayoutChangeListener(listener)
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
 
 /**
  * Create a flow which emits on [View] layout changes.
+ *
+ * ```
+ * view.layoutChanges()
+ *      .onEach { /* handle layout change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.layoutChanges(): Flow<Unit> = channelFlow {

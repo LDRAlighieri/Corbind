@@ -4,10 +4,15 @@
 To add platform bindings, import `corbind` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind:1.2.0-RC'
 ```
 
 ## List of extensions
+
+### app
+Component | Extension | Description
+--|---|--
+**DatePickerDialog** | `dateSetEvents` | Called when the user sets the date
 
 ### view
 
@@ -32,7 +37,6 @@ Component | Extension | Description
 **ViewGroup** | `changeEvents` | Called when the hierarchy within this view changed. The hierarchy changes whenever a child is added to or removed from this view.
 **MenuItem** | `actionViewEvents` | Called when a menu item is collapsed or collapsed.
              | `clicks` | Called when a menu item has been invoked.
-**AbsListView** | `scrollEvents` | Called when the list or grid has been scrolled.
 
 ### widget
 
@@ -47,7 +51,11 @@ Component | Extension | Description
             | `itemSelections` | Called when an item in this view has been selected.
             | `selectionEvents` | A more advanced version of the `itemSelections`.
 **AutoCompleteTextView** | `itemClickEvents` | Called when an item in AdapterView has been clicked.
+**CalendarView** | `dateChangeEvents` | Called upon change of the selected day.
 **CompoundButton** | `checkedChanges` | Called when the checked state of a compound button has changed.
+**DatePicker** | `dateChangeEvents` | Called upon a date change.
+**NumberPicker** | `scrollStateChanges` | Called when number picker scroll state has changed.
+                 | `valueChangeEvents` | Called upon a change of the current value.
 **PopupMenu** | `dismisses` | Called when the associated menu has been dismissed.
               | `itemClicks` | Called when a menu item is clicked if the item itself did not already handle the event.
 **RadioGroup** | `checkedChanges` | Called when the checked radio button has changed.
@@ -65,6 +73,7 @@ Component | Extension | Description
              | `beforeTextChangeEvents` | Called before text has been changed.
              | `editorActions` | Called when an action is performed on the editor.
              | `editorActionEvents` | A more advanced version of the `editorActions`.
+**TimePicker** | `timeChangeEvents` | Called when time has been adjusted.
 **Toolbar**  | `itemClicks` | Called when a menu item is clicked if the item itself did not already handle the event.
              | `navigationClicks` | Called whenever the user clicks the navigation button at the start of the toolbar.
 
@@ -99,3 +108,5 @@ flowOf(
   .onEach { /* handle an authorization event */}
   .launchIn(scope)
 ```
+
+More examples in source code

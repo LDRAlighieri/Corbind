@@ -4,7 +4,7 @@
 To add androidx appcompat bindings, import `corbind-appcompat` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.2.0-RC'
 ```
 
 ## List of extensions
@@ -27,3 +27,5 @@ toolbar.itemClicks() // Flow<MenuItem>
     .onEach { /* handle menu item clicks events */ }
     .launchIn(scope)
 ```
+
+More examples in source code

@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on page selected events on [ViewPager].
@@ -69,6 +69,17 @@ suspend fun ViewPager.pageSelections(
 /**
  * Create a channel of page selected events on [ViewPager].
  *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      viewPager.pageSelections(scope)
+ *          .consumeEach { /* handle selected page */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
 ==
@@ -78,8 +89,8 @@ fun ViewPager.pageSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerElement(currentItem)
-    val listener = listener(scope, ::offerElement)
+    safeOffer(currentItem)
+    val listener = listener(scope, ::safeOffer)
     addOnPageChangeListener(listener)
     invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -87,7 +98,22 @@ fun ViewPager.pageSelections(
 /**
  * Create a flow of page selected events on [ViewPager].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * viewPager.pageSelections()
+ *      .onEach { /* handle selected page */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * viewPager.pageSelections()
+ *      .drop(1)
+ *      .onEach { /* handle selected page */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun ViewPager.pageSelections(): Flow<Int> = channelFlow {

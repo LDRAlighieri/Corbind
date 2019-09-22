@@ -29,13 +29,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on [View] focus change.
  *
- * *Warning:* The created actor uses [View.setOnFocusChangeListener] to emit focus change. Only
- * one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnFocusChangeListener]. Only one actor can be used at
+ * a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -58,8 +58,8 @@ fun View.focusChanges(
 /**
  * Perform an action on [View] focus change, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [View.setOnFocusChangeListener] to emit focus change. Only
- * one actor can be used for a view at a time.
+ * *Warning:* The created actor uses [View.setOnFocusChangeListener]. Only one actor can be used at
+ * a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -74,8 +74,19 @@ suspend fun View.focusChanges(
 /**
  * Create a channel of booleans representing the focus of [View].
  *
- * *Warning:* The created channel uses [View.setOnFocusChangeListener] to emit focus change.
- * Only one channel can be used for a view at a time.
+ * *Warning:* The created channel uses [View.setOnFocusChangeListener]. Only one channel can be used
+ * at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      datePickerDialog.dateSetEvents(scope)
+ *          .consumeEach { /* handle focus change */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -85,18 +96,33 @@ fun View.focusChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    offerElement(hasFocus())
-    onFocusChangeListener = listener(scope, ::offerElement)
+    safeOffer(hasFocus())
+    onFocusChangeListener = listener(scope, ::safeOffer)
     invokeOnClose { onFocusChangeListener = null }
 }
 
 /**
  * Create a flow of booleans representing the focus of [View].
  *
- * *Warning:* The created flow uses [View.setOnFocusChangeListener] to emit focus change. Only
- * one flow can be used for a view at a time.
+ * *Warning:* The created flow uses [View.setOnFocusChangeListener]. Only one flow can be used at a
+ * time.
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * view.focusChanges()
+ *      .onEach { /* handle focus change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * view.focusChanges()
+ *      .drop(1)
+ *      .onEach { /* handle focus change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.focusChanges(): Flow<Boolean> = channelFlow {

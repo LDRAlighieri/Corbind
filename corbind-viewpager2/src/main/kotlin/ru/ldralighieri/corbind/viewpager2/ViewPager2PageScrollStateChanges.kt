@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on scroll state change events on [ViewPager2].
@@ -68,6 +68,15 @@ suspend fun ViewPager2.pageScrollStateChanges(
 /**
  * Create a channel of scroll state change events on [ViewPager2].
  *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      viewPager.pageScrollStateChanges(scope)
+ *          .consumeEach { /* handle scroll state change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -76,13 +85,21 @@ fun ViewPager2.pageScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, ::offerElement)
+    val callback = callback(scope, ::safeOffer)
     registerOnPageChangeCallback(callback)
     invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
 
 /**
  * Create a flow of scroll state change events on [ViewPager2].
+ *
+ * Example:
+ *
+ * ```
+ * viewPager2.pageScrollStateChanges()
+ *      .onEach { /* handle scroll state change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun ViewPager2.pageScrollStateChanges(): Flow<Int> = channelFlow {

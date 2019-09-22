@@ -30,10 +30,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
- * Perform an action on [View] globalLayout events.
+ * Perform an action on [View] global layout events.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -57,7 +57,7 @@ fun View.globalLayouts(
 }
 
 /**
- * Perform an action on [View] globalLayout events, inside new [CoroutineScope].
+ * Perform an action on [View] global layout events, inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -70,7 +70,16 @@ suspend fun View.globalLayouts(
 }
 
 /**
- * Create a channel which emits on [View] globalLayout events.
+ * Create a channel which emits on [View] global layout events.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      view.globalLayouts(scope)
+ *          .consumeEach { /* handle global layout */ }
+ * }
+ * ```
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -80,7 +89,7 @@ fun View.globalLayouts(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerElement)
+    val listener = listener(scope, ::safeOffer)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     invokeOnClose {
         @Suppress("DEPRECATION") // Correct when minSdk 16
@@ -89,7 +98,15 @@ fun View.globalLayouts(
 }
 
 /**
- * Create a flow which emits on [View] globalLayout events.
+ * Create a flow which emits on [View] global layout events.
+ *
+ * Example:
+ *
+ * ```
+ * view.globalLayouts()
+ *      .onEach { /* handle global layout */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun View.globalLayouts(): Flow<Unit> = channelFlow {

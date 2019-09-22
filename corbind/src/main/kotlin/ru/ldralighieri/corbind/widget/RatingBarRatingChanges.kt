@@ -29,10 +29,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.offerElement
+import ru.ldralighieri.corbind.safeOffer
 
 /**
  * Perform an action on rating changes on [RatingBar].
+ *
+ * *Warning:* The created actor uses [RatingBar.setOnRatingBarChangeListener]. Only one actor can be
+ * used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -55,6 +58,9 @@ fun RatingBar.ratingChanges(
 /**
  * Perform an action on rating changes on [RatingBar], inside new [CoroutineScope].
  *
+ * *Warning:* The created actor uses [RatingBar.setOnRatingBarChangeListener]. Only one actor can be
+ * used at a time.
+ *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
@@ -68,6 +74,20 @@ suspend fun RatingBar.ratingChanges(
 /**
  * Create a change of the rating changes on [RatingBar].
  *
+ * *Warning:* The created channel uses [RatingBar.setOnRatingBarChangeListener]. Only one channel
+ * can be used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Example:
+ *
+ * ```
+ * launch {
+ *      ratingBar.ratingChanges(scope)
+ *          .consumeEach { /* handle rating change */ }
+ * }
+ * ```
+ *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
@@ -76,15 +96,33 @@ fun RatingBar.ratingChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
-    offerElement(rating)
-    onRatingBarChangeListener = listener(scope, ::offerElement)
+    safeOffer(rating)
+    onRatingBarChangeListener = listener(scope, ::safeOffer)
     invokeOnClose { onRatingBarChangeListener = null }
 }
 
 /**
  * Create a flow of the rating changes on [RatingBar].
  *
- * *Note:* A value will be emitted immediately on collect.
+ * *Warning:* The created flow uses [RatingBar.setOnRatingBarChangeListener]. Only one flow can be
+ * used at a time.
+ *
+ * *Note:* A value will be emitted immediately.
+ *
+ * Examples:
+ *
+ * ```
+ * // handle initial value
+ * ratingBar.ratingChanges()
+ *      .onEach { /* handle rating change */ }
+ *      .launchIn(scope)
+ *
+ * // drop initial value
+ * ratingBar.ratingChanges()
+ *      .drop(1)
+ *      .onEach { /* handle rating change */ }
+ *      .launchIn(scope)
+ * ```
  */
 @CheckResult
 fun RatingBar.ratingChanges(): Flow<Float> = channelFlow {
