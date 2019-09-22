@@ -10,36 +10,36 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 ## Version 1.2.0-RC
 
 * New: Bindings list:
-    * Platform bindings:
-        * `corbind`:
-            * `DatePickerDialog`:
-                * `dateSetEvents`
-            * `CalendarView`:
-      	        * `dateChangeEvents`
-            * `DatePicker`:
-                * `dateChangeEvents`
-            * `NumberPicker`:
-                * `scrollStateChanges`
-                * `valueChangeEvents`
-            * `TimePicker`:
-                * `timeChangeEvents`
-    * Google "material" library bindings:
-        * `corbind-material`:
-            * `BottomNavigationView`:
-                * `itemReselections`
-            * `MaterialButton`:
-                * `checkedChanges`
-            * `MaterialButtonToggleGroup`:
-        	    * `buttonCheckedChangeEvents` (only *not* in single selection mode)
-        	    * `buttonCheckedChanges` (only in single selection mode)
-            * `MaterialCardView`:
-        	    * `checkedChanges`
-            * `TextInputLayout`:
-        	    * `endIconChanges`
-        	    * `endIconClicks`
-        	    * `endIconLongClicks`
-        	    * `startIconClicks`
-        	    * `startIconLongClicks`
+  * Platform bindings:
+    * `corbind`:
+      * `DatePickerDialog`:
+        * `dateSetEvents`
+      * `CalendarView`:
+      	* `dateChangeEvents`
+      * `DatePicker`:
+        * `dateChangeEvents`
+      * `NumberPicker`:
+        * `scrollStateChanges`
+        * `valueChangeEvents`
+      * `TimePicker`:
+        * `timeChangeEvents`
+  * Google "material" library bindings:
+    * `corbind-material`:
+        * `BottomNavigationView`:
+          * `itemReselections`
+        * `MaterialButton`:
+          * `checkedChanges`
+        * `MaterialButtonToggleGroup`:
+        	* `buttonCheckedChangeEvents` (only *not* in single selection mode)
+        	* `buttonCheckedChanges` (only in single selection mode)
+        * `MaterialCardView`:
+        	* `checkedChanges`
+        * `TextInputLayout`:
+        	* `endIconChanges`
+        	* `endIconClicks`
+        	* `endIconLongClicks`
+        	* `startIconClicks`
+        	* `startIconLongClicks`
 * Update: Material components dependency to v1.1.0-alpha10
 * Update: ViewPager2 dependency to v1.0.0-beta04
 
@@ -72,7 +72,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 	        * `Snackbar`:
 	            * `shown`
 	        * `SwipeDismissBehavior`:
-	            * 'dragStateChanges`
+	            * `dragStateChanges`
 * Fix: Fixed sources jars generation (#6)
 
 
