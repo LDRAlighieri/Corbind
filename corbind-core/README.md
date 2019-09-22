@@ -4,7 +4,7 @@
 To add androidx core bindings, import `corbind-core` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-core:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.2.0-RC'
 ```
 
 ## List of extensions
@@ -21,3 +21,5 @@ scrollView.scrollChangeEvents() // Flow<ViewScrollChangeEvent>
     .onEach { /* handle scroll change events */ }
     .launchIn(scope)
 ```
+
+More examples in source code
