@@ -30,16 +30,16 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
         * `MaterialButton`:
           * `checkedChanges`
         * `MaterialButtonToggleGroup`:
-        	* `buttonCheckedChangeEvents` (only *not* in single selection mode)
-        	* `buttonCheckedChanges` (only in single selection mode)
+          * `buttonCheckedChangeEvents` (only *not* in single selection mode)
+          * `buttonCheckedChanges` (only in single selection mode)
         * `MaterialCardView`:
-        	* `checkedChanges`
+          * `checkedChanges`
         * `TextInputLayout`:
-        	* `endIconChanges`
-        	* `endIconClicks`
-        	* `endIconLongClicks`
-        	* `startIconClicks`
-        	* `startIconLongClicks`
+          * `endIconChanges`
+          * `endIconClicks`
+          * `endIconLongClicks`
+          * `startIconClicks`
+          * `startIconLongClicks`
 * Update: Material components dependency to v1.1.0-alpha10
 * Update: ViewPager2 dependency to v1.0.0-beta04
 
