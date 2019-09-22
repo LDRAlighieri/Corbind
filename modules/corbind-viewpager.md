@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx viewpager bindings, import `corbind-viewpager` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.2.0-RC'
 ```
 
 ## List of extensions
@@ -38,3 +38,7 @@ vp_slides.pageSelections() // Flow<Int>
     .onEach { tv_message = "Page #$it selected" }
     .launchIn(scope)
 ```
+
+More examples in [source code][source]
+
+[source]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-viewpager

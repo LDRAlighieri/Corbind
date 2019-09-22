@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx recyclerview bindings, import `corbind-recyclerview` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.2.0-RC'
 ```
 
 ## List of extensions
@@ -40,3 +40,7 @@ rv.scrollStateChanges() // Flow<Int>
     .onEach { /* handle RecyclerView scroll state change events */ }
     .launchIn(scope)
 ```
+
+More examples in [source code][source]
+
+[source]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-recyclerview

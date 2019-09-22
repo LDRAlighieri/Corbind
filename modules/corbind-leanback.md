@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx leanback bindings, import `corbind-leanback` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.2.0-RC'
 ```
 
 ## List of extensions
@@ -39,3 +39,7 @@ search.searchQueryChanges() // Flow<String>
     .onEach { query -> filter.updateItems(query) }
     .launchIn(scope)
 ```
+
+More examples in [source code][source]
+
+[source]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-leanback

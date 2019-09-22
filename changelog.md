@@ -7,6 +7,51 @@ description: Coroutines binding APIs for Android UI widgets from the platform an
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding,changelog]
 ---
 
+## Version 1.2.0-RC
+
+* New: Bindings list:
+    * Platform bindings:
+        * `corbind`:
+            * `DatePickerDialog`:
+                * `dateSetEvents`
+            * `CalendarView`:
+      	        * `dateChangeEvents`
+            * `DatePicker`:
+                * `dateChangeEvents`
+            * `NumberPicker`:
+                * `scrollStateChanges`
+                * `valueChangeEvents`
+            * `TimePicker`:
+                * `timeChangeEvents`
+    * Google "material" library bindings:
+        * `corbind-material`:
+            * `BottomNavigationView`:
+                * `itemReselections`
+            * `MaterialButton`:
+                * `checkedChanges`
+            * `MaterialButtonToggleGroup`:
+        	    * `buttonCheckedChangeEvents` (only *not* in single selection mode)
+        	    * `buttonCheckedChanges` (only in single selection mode)
+            * `MaterialCardView`:
+        	    * `checkedChanges`
+            * `TextInputLayout`:
+        	    * `endIconChanges`
+        	    * `endIconClicks`
+        	    * `endIconLongClicks`
+        	    * `startIconClicks`
+        	    * `startIconLongClicks`
+* Update: Material components dependency to v1.1.0-alpha10
+* Update: ViewPager2 dependency to v1.0.0-beta04
+
+
+## Version 1.1.2
+
+* Update: Kotlin coroutines modules dependency to v1.3.1
+* Update: Android sdk to v29
+* Update: Updated sample
+* Fix: Fixed various inaccuracies, refactoring
+
+
 ## Version 1.1.0
 
 * New: ViewPager2 module
@@ -28,19 +73,14 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 	            * `shown`
 	        * `SwipeDismissBehavior`:
 	            * 'dragStateChanges`
-* Fix: Fixed sources jars generation ([#6])
-
-[#6]: https://github.com/LDRAlighieri/Corbind/pull/6
+* Fix: Fixed sources jars generation (#6)
 
 
 ## Version 1.0.1
 
-* Fix: `TextView` `afterTextChangeEvents` access modifier changed ([#1]).
+* Fix: `TextView` `afterTextChangeEvents` access modifier changed (#1).
 * Fix: `SeekBar` `changeEvents` access modifier changed.
-* Fix: Fixed typo in RecyclerView artifact id ([#2]).
-
-[#1]: https://github.com/LDRAlighieri/Corbind/pull/1
-[#2]: https://github.com/LDRAlighieri/Corbind/pull/2
+* Fix: Fixed typo in RecyclerView artifact id (#2).
 
 
 ## Version 1.0.0
