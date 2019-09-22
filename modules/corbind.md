@@ -25,6 +25,7 @@ implementation 'ru.ldralighieri.corbind:corbind:1.2.0-RC'
 ## List of extensions
 
 ### app
+
 Component | Extension | Description
 --|---|--
 **DatePickerDialog** | `dateSetEvents` | Called when the user sets the date
