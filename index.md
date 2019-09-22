@@ -121,7 +121,7 @@ combine(
     .launchIn(scope)
 ```
 
-More examples in module descriptions and in source code
+More examples in module descriptions and in [source code][source].
 
 
 ## Missed or forgot something?
@@ -139,6 +139,8 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 [flow]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html
 [channel]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/index.html
 [actor]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
+
+[source]: https://github.com/LDRAlighieri/Corbind
 
 [corbind]: https://ldralighieri.github.io/Corbind/modules/corbind/
 [corbind-appcompat]: https://ldralighieri.github.io/Corbind/modules/corbind-appcompat
