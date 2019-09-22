@@ -4,7 +4,7 @@
 To add platform bindings, import `corbind` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind:1.2.0-RC'
 ```
 
 ## List of extensions
@@ -108,3 +108,5 @@ flowOf(
   .onEach { /* handle an authorization event */}
   .launchIn(scope)
 ```
+
+More examples in source code

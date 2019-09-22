@@ -4,7 +4,7 @@
 To add material bindings, import `corbind-material` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.1.2'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.2.0-RC'
 ```
 
 ## List of extensions
@@ -46,3 +46,5 @@ chipGroup.checkedChanges() // Flow<Int>
     }
     .launchIn(scope)
 ```
+
+More examples in source code
