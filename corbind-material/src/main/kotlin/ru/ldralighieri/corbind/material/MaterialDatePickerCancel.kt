@@ -16,9 +16,9 @@
 
 package ru.ldralighieri.corbind.material
 
-import android.view.View
+import android.content.DialogInterface
 import androidx.annotation.CheckResult
-import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -33,56 +33,60 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.safeOffer
 
 /**
- * Perform an action on [TextInputLayout] start icon click events.
+ * Perform an action when the user cancels the [MaterialDatePicker] via back button or a touch
+ * outside the view.
  *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
- * can be used at a time.
+ * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
+ * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun TextInputLayout.startIconClicks(
+fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (event in channel) action()
     }
 
-    setStartIconOnClickListener(listener(scope, events::offer))
-    events.invokeOnClose { setStartIconOnClickListener(null) }
+    val listener = listener(scope, events::offer)
+    addOnCancelListener(listener)
+    events.invokeOnClose { removeOnCancelListener(listener) }
 }
 
 /**
- * Perform an action on [TextInputLayout] start icon click events, inside new [CoroutineScope].
+ * Perform an action when the user cancels the [MaterialDatePicker] via back button or a touch
+ * outside the view, inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
- * can be used at a time.
+ * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
+ * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun TextInputLayout.startIconClicks(
+suspend fun <S> MaterialDatePicker<S>.cancels(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-    startIconClicks(this, capacity, action)
+    cancels(this, capacity, action)
 }
 
 /**
- * Create a channel which emits on [TextInputLayout] start icon click events.
+ * Create a channel which emits when the user cancels the [MaterialDatePicker] via back button or a
+ * touch outside the view.
  *
- * *Warning:* The created channel uses [TextInputLayout.setStartIconOnClickListener]. Only one
- * channel can be used at a time.
+ * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
+ * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
  * Example:
  *
  * ```
  * launch {
- *      textInputLayout.startIconClicks(scope)
- *          .consumeEach { /* handle start icon click */ }
+ *      materialDatePicker.cancels(scope)
+ *          .consumeEach { /* handle cancel event */ }
  * }
  * ```
  *
@@ -90,38 +94,41 @@ suspend fun TextInputLayout.startIconClicks(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun TextInputLayout.startIconClicks(
+fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setStartIconOnClickListener(listener(scope, ::safeOffer))
-    invokeOnClose { setStartIconOnClickListener(null) }
+    val listener = listener(scope, ::safeOffer)
+    addOnCancelListener(listener)
+    invokeOnClose { removeOnCancelListener(listener) }
 }
 
 /**
- * Create a flow which emits [TextInputLayout] start icon click events.
+ * Create a flow which emits when the user cancels the [MaterialDatePicker] via back button or a
+ * touch outside the view.
  *
- * *Warning:* The created flow uses [TextInputLayout.setStartIconOnClickListener]. Only one flow can
- * be used at a time.
+ * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
+ * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
  * Example:
  *
  * ```
- * textInputLayout.startIconClicks()
- *      .onEach { /* handle start icon click */ }
+ * materialDatePicker.cancels()
+ *      .onEach { /* handle cancel event */ }
  *      .launchIn(scope)
  * ```
  */
 @CheckResult
-fun TextInputLayout.startIconClicks(): Flow<Unit> = channelFlow {
-    setStartIconOnClickListener(listener(this, ::offer))
-    awaitClose { setStartIconOnClickListener(null) }
+fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = channelFlow {
+    val listener = listener(this, ::offer)
+    addOnCancelListener(listener)
+    awaitClose { removeOnCancelListener(listener) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
     emitter: (Unit) -> Boolean
-) = View.OnClickListener {
+) = DialogInterface.OnCancelListener {
     if (scope.isActive) { emitter(Unit) }
 }

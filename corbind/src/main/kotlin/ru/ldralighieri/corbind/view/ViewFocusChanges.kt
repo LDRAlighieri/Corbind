@@ -46,7 +46,7 @@ fun View.focusChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit
 ) {
-    val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (focus in channel) action(focus)
     }
 

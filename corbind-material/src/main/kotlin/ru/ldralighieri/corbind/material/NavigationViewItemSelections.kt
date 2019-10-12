@@ -47,7 +47,7 @@ fun NavigationView.itemSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit
 ) {
-    val events = scope.actor<MenuItem>(Dispatchers.Main, capacity) {
+    val events = scope.actor<MenuItem>(Dispatchers.Main.immediate, capacity) {
         for (item in channel) action(item)
     }
 

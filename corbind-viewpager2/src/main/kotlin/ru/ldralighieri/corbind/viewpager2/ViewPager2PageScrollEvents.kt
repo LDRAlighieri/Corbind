@@ -50,7 +50,7 @@ fun ViewPager2.pageScrollEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewPager2PageScrollEvent) -> Unit
 ) {
-    val events = scope.actor<ViewPager2PageScrollEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<ViewPager2PageScrollEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

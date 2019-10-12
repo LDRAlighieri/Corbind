@@ -46,7 +46,7 @@ fun SearchView.queryTextChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CharSequence) -> Unit
 ) {
-    val events = scope.actor<CharSequence>(Dispatchers.Main, capacity) {
+    val events = scope.actor<CharSequence>(Dispatchers.Main.immediate, capacity) {
         for (chars in channel) action(chars)
     }
 

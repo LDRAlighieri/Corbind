@@ -47,7 +47,7 @@ fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (checkedId in channel) action(checkedId)
     }
 

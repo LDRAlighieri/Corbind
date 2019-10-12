@@ -44,7 +44,7 @@ fun <T : Adapter> T.dataChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (T) -> Unit
 ) {
-    val events = scope.actor<T>(Dispatchers.Main, capacity) {
+    val events = scope.actor<T>(Dispatchers.Main.immediate, capacity) {
         for (adapter in channel) action(adapter)
     }
 

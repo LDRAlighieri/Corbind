@@ -18,7 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.View
 import androidx.annotation.CheckResult
-import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -33,16 +33,13 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.safeOffer
 
 /**
- * Perform an action on [TextInputLayout] start icon click events.
- *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
- * can be used at a time.
+ * Perform an action on [MaterialDatePicker] negative button click.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun TextInputLayout.startIconClicks(
+fun <S> MaterialDatePicker<S>.negativeClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
@@ -51,38 +48,33 @@ fun TextInputLayout.startIconClicks(
         for (unit in channel) action()
     }
 
-    setStartIconOnClickListener(listener(scope, events::offer))
-    events.invokeOnClose { setStartIconOnClickListener(null) }
+    val listener = listener(scope, events::offer)
+    addOnNegativeButtonClickListener(listener)
+    events.invokeOnClose { removeOnNegativeButtonClickListener(listener) }
 }
 
 /**
- * Perform an action on [TextInputLayout] start icon click events, inside new [CoroutineScope].
- *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
- * can be used at a time.
+ * Perform an action on [MaterialDatePicker] negative button click, inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun TextInputLayout.startIconClicks(
+suspend fun <S> MaterialDatePicker<S>.negativeClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-    startIconClicks(this, capacity, action)
+    negativeClicks(this, capacity, action)
 }
 
 /**
- * Create a channel which emits on [TextInputLayout] start icon click events.
- *
- * *Warning:* The created channel uses [TextInputLayout.setStartIconOnClickListener]. Only one
- * channel can be used at a time.
+ * Create a channel which emits on [MaterialDatePicker] negative button click.
  *
  * Example:
  *
  * ```
  * launch {
- *      textInputLayout.startIconClicks(scope)
- *          .consumeEach { /* handle start icon click */ }
+ *      materialDatePicker.negativeClicks(scope)
+ *          .consumeEach { /* handle negative button click */ }
  * }
  * ```
  *
@@ -90,32 +82,31 @@ suspend fun TextInputLayout.startIconClicks(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun TextInputLayout.startIconClicks(
+fun <S> MaterialDatePicker<S>.negativeClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setStartIconOnClickListener(listener(scope, ::safeOffer))
-    invokeOnClose { setStartIconOnClickListener(null) }
+    val listener = listener(scope, ::safeOffer)
+    addOnNegativeButtonClickListener(listener)
+    invokeOnClose { removeOnNegativeButtonClickListener(listener) }
 }
 
 /**
- * Create a flow which emits [TextInputLayout] start icon click events.
- *
- * *Warning:* The created flow uses [TextInputLayout.setStartIconOnClickListener]. Only one flow can
- * be used at a time.
+ * Create a flow which emits [MaterialDatePicker] negative button click.
  *
  * Example:
  *
  * ```
- * textInputLayout.startIconClicks()
- *      .onEach { /* handle start icon click */ }
+ * materialDatePicker.negativeClicks()
+ *      .onEach { /* handle negative button click */ }
  *      .launchIn(scope)
  * ```
  */
 @CheckResult
-fun TextInputLayout.startIconClicks(): Flow<Unit> = channelFlow {
-    setStartIconOnClickListener(listener(this, ::offer))
-    awaitClose { setStartIconOnClickListener(null) }
+fun <S> MaterialDatePicker<S>.negativeClicks(): Flow<Unit> = channelFlow {
+    val listener = listener(this, ::offer)
+    addOnNegativeButtonClickListener(listener)
+    awaitClose { removeOnNegativeButtonClickListener(listener) }
 }
 
 @CheckResult

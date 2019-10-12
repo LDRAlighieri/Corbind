@@ -60,7 +60,10 @@ fun RecyclerView.childAttachStateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit
 ) {
-    val events = scope.actor<RecyclerViewChildAttachStateChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<RecyclerViewChildAttachStateChangeEvent>(
+        Dispatchers.Main.immediate,
+        capacity
+    ) {
         for (event in channel) action(event)
     }
 

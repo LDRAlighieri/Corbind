@@ -64,7 +64,7 @@ fun SeekBar.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SeekBarChangeEvent) -> Unit
 ) {
-    val events = scope.actor<SeekBarChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<SeekBarChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

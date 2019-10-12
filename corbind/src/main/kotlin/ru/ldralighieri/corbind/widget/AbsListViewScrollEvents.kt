@@ -54,7 +54,7 @@ fun AbsListView.scrollEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AbsListViewScrollEvent) -> Unit
 ) {
-    val events = scope.actor<AbsListViewScrollEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<AbsListViewScrollEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

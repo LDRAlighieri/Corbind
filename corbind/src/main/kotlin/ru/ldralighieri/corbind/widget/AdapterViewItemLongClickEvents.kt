@@ -59,7 +59,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
     action: suspend (AdapterViewItemLongClickEvent) -> Unit
 ) {
-    val events = scope.actor<AdapterViewItemLongClickEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<AdapterViewItemLongClickEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

@@ -52,7 +52,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
     handled: () -> Boolean = AlwaysTrue,
     action: suspend (Int) -> Unit
 ) {
-    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (position in channel) action(position)
     }
 

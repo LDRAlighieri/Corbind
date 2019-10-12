@@ -17,7 +17,8 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
-import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -32,48 +33,48 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.safeOffer
 
 /**
- * Perform an action on the offset change in [AppBarLayout].
+ * Perform an action on [MaterialDatePicker] positive button click.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun AppBarLayout.offsetChanges(
+fun <S> MaterialDatePicker<S>.positiveClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (S) -> Unit
 ) {
-    val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
-        for (offset in channel) action(offset)
+    val events = scope.actor<S>(Dispatchers.Main.immediate, capacity) {
+        for (selection in channel) action(selection)
     }
 
     val listener = listener(scope, events::offer)
-    addOnOffsetChangedListener(listener)
-    events.invokeOnClose { removeOnOffsetChangedListener(listener) }
+    addOnPositiveButtonClickListener(listener)
+    events.invokeOnClose { removeOnPositiveButtonClickListener(listener) }
 }
 
 /**
- * Perform an action on the offset change in [AppBarLayout], inside new [CoroutineScope].
+ * Perform an action on [MaterialDatePicker] positive button click, inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun AppBarLayout.offsetChanges(
+suspend fun <S> MaterialDatePicker<S>.positiveClicks(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (S) -> Unit
 ) = coroutineScope {
-    offsetChanges(this, capacity, action)
+    positiveClicks(this, capacity, action)
 }
 
 /**
- * Create a channel which emits the offset change in [AppBarLayout].
+ * Create a channel which emits on [MaterialDatePicker] positive button click.
  *
  * Example:
  *
  * ```
  * launch {
- *      appBarLayout.offsetChanges(scope)
- *          .consumeEach { /* handle offset change */ }
+ *      materialDatePicker.positiveClicks(scope)
+ *          .consumeEach { /* handle positive button click */ }
  * }
  * ```
  *
@@ -81,37 +82,37 @@ suspend fun AppBarLayout.offsetChanges(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun AppBarLayout.offsetChanges(
+fun <S> MaterialDatePicker<S>.positiveClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<S> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::safeOffer)
-    addOnOffsetChangedListener(listener)
-    invokeOnClose { removeOnOffsetChangedListener(listener) }
+    addOnPositiveButtonClickListener(listener)
+    invokeOnClose { removeOnPositiveButtonClickListener(listener) }
 }
 
 /**
- * Create a flow which emits the offset change in [AppBarLayout].
+ * Create a flow which emits [MaterialDatePicker] positive button click.
  *
  * Example:
  *
  * ```
- * appBarLayout.offsetChanges()
- *      .onEach { /* handle offset change */ }
+ * materialDatePicker.positiveClicks()
+ *      .onEach { /* handle positive button click */ }
  *      .launchIn(scope)
  * ```
  */
 @CheckResult
-fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow {
+fun <S> MaterialDatePicker<S>.positiveClicks(): Flow<S> = channelFlow {
     val listener = listener(this, ::offer)
-    addOnOffsetChangedListener(listener)
-    awaitClose { removeOnOffsetChangedListener(listener) }
+    addOnPositiveButtonClickListener(listener)
+    awaitClose { removeOnPositiveButtonClickListener(listener) }
 }
 
 @CheckResult
-private fun listener(
+private fun <S> listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
-) = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-    if (scope.isActive) { emitter(verticalOffset) }
+    emitter: (S) -> Boolean
+) = MaterialPickerOnPositiveButtonClickListener<S> { selection ->
+    if (scope.isActive) { emitter(selection) }
 }

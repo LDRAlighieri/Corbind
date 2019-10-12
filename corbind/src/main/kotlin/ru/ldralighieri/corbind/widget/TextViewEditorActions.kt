@@ -50,7 +50,7 @@ fun TextView.editorActions(
     handled: (Int) -> Boolean = AlwaysTrue,
     action: suspend (Int) -> Unit
 ) {
-    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (actionId in channel) action(actionId)
     }
 

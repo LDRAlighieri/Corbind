@@ -46,7 +46,7 @@ fun View.systemUiVisibilityChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (visibility in channel) action(visibility)
     }
 

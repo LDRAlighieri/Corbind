@@ -56,7 +56,7 @@ fun DatePicker.dateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (DateChangedEvent) -> Unit
 ) {
-    val events = scope.actor<DateChangedEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<DateChangedEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

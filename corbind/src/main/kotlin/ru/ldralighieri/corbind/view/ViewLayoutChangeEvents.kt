@@ -55,7 +55,7 @@ fun View.layoutChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewLayoutChangeEvent) -> Unit
 ) {
-    val events = scope.actor<ViewLayoutChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<ViewLayoutChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

@@ -4,7 +4,7 @@
 To add platform bindings, import `corbind` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind:1.2.0'
 ```
 
 ## List of extensions

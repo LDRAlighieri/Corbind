@@ -53,7 +53,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MaterialButtonCheckedChangeEvent) -> Unit
 ) {
-    val events = scope.actor<MaterialButtonCheckedChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<MaterialButtonCheckedChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

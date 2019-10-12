@@ -47,7 +47,7 @@ fun SlidingPaneLayout.panelOpens(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit
 ) {
-    val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

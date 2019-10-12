@@ -46,7 +46,7 @@ fun DrawerLayout.drawerOpens(
     gravity: Int,
     action: suspend (Boolean) -> Unit
 ) {
-    val events = scope.actor<Boolean>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (open in channel) action(open)
     }
 
