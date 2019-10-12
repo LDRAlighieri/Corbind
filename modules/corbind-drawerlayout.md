@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx drawerlayout bindings, import `corbind-drawerlayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.2.0'
 ```
 
 ## List of extensions

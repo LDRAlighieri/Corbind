@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx swiperefreshlayout bindings, import `corbind-swiperefreshlayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.2.0-RC'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.2.0'
 ```
 
 ## List of extensions

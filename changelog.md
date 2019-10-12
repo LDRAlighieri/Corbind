@@ -7,6 +7,21 @@ description: Coroutines binding APIs for Android UI widgets from the platform an
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding,changelog]
 ---
 
+## Version 1.2.0
+
+* New: Bindings list:
+    * Google "material" library bindings:
+        * `corbind-material`:
+            * `MaterialDatePicker`:
+                * `cancels`
+                * `dismisses`
+                * `negativeClicks`
+                * `positiveClicks`
+* Update: Kotlin coroutines modules dependency to v1.3.2
+* Update: Material components dependency to v1.1.0-beta01
+* Update: Support registering multiple `BottomSheetCallbacks`
+
+
 ## Version 1.2.0-RC
 
 * New: Bindings list:
