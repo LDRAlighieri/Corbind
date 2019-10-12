@@ -51,7 +51,7 @@ fun View.hovers(
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
     action: suspend (MotionEvent) -> Unit
 ) {
-    val events = scope.actor<MotionEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<MotionEvent>(Dispatchers.Main.immediate, capacity) {
         for (motion in channel) action(motion)
     }
 

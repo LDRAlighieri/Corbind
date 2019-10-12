@@ -46,7 +46,7 @@ fun SearchBar.searchQueryChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (String) -> Unit
 ) {
-    val events = scope.actor<String>(Dispatchers.Main, capacity) {
+    val events = scope.actor<String>(Dispatchers.Main.immediate, capacity) {
         for (query in channel) action(query)
     }
 

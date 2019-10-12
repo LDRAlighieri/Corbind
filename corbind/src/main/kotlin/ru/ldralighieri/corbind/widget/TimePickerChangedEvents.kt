@@ -55,7 +55,7 @@ fun TimePicker.timeChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TimeChangedEvent) -> Unit
 ) {
-    val events = scope.actor<TimeChangedEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<TimeChangedEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

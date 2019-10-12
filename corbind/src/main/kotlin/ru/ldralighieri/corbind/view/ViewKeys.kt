@@ -50,7 +50,7 @@ fun View.keys(
     handled: (KeyEvent) -> Boolean = AlwaysTrue,
     action: suspend (KeyEvent) -> Unit
 ) {
-    val events = scope.actor<KeyEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<KeyEvent>(Dispatchers.Main.immediate, capacity) {
         for (key in channel) action(key)
     }
 

@@ -37,7 +37,7 @@ private fun SeekBar.changes(
     shouldBeFromUser: Boolean?,
     action: suspend (Int) -> Unit
 ) {
-    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (progress in channel) action(progress)
     }
 

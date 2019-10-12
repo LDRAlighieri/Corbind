@@ -55,7 +55,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AdapterViewItemClickEvent) -> Unit
 ) {
-    val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

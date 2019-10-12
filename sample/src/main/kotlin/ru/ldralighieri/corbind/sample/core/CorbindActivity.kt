@@ -30,7 +30,7 @@ abstract class CorbindActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var job: Job
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+        get() = Dispatchers.Main.immediate + job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

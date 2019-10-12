@@ -64,7 +64,7 @@ fun TabLayout.selectionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TabLayoutSelectionEvent) -> Unit
 ) {
-    val events = scope.actor<TabLayoutSelectionEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<TabLayoutSelectionEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

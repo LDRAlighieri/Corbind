@@ -16,9 +16,9 @@
 
 package ru.ldralighieri.corbind.material
 
-import android.view.View
+import android.content.DialogInterface
 import androidx.annotation.CheckResult
-import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -33,56 +33,50 @@ import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.safeOffer
 
 /**
- * Perform an action on [TextInputLayout] start icon click events.
- *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
- * can be used at a time.
+ * Perform an action whenever the [MaterialDatePicker] is dismissed, no matter how it is dismissed.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun TextInputLayout.startIconClicks(
+fun <S> MaterialDatePicker<S>.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (event in channel) action()
     }
 
-    setStartIconOnClickListener(listener(scope, events::offer))
-    events.invokeOnClose { setStartIconOnClickListener(null) }
+    val listener = listener(scope, events::offer)
+    addOnDismissListener(listener)
+    events.invokeOnClose { removeOnDismissListener(listener) }
 }
 
 /**
- * Perform an action on [TextInputLayout] start icon click events, inside new [CoroutineScope].
- *
- * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
- * can be used at a time.
+ * Perform an action whenever the [MaterialDatePicker] is dismissed, no matter how it is dismissed.
+ * Inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun TextInputLayout.startIconClicks(
+suspend fun <S> MaterialDatePicker<S>.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-    startIconClicks(this, capacity, action)
+    dismisses(this, capacity, action)
 }
 
 /**
- * Create a channel which emits on [TextInputLayout] start icon click events.
- *
- * *Warning:* The created channel uses [TextInputLayout.setStartIconOnClickListener]. Only one
- * channel can be used at a time.
+ * Create a channel which emits whenever the [MaterialDatePicker] is dismissed, no matter how it is
+ * dismissed.
  *
  * Example:
  *
  * ```
  * launch {
- *      textInputLayout.startIconClicks(scope)
- *          .consumeEach { /* handle start icon click */ }
+ *      materialDatePicker.dismisses(scope)
+ *          .consumeEach { /* handle dismiss */ }
  * }
  * ```
  *
@@ -90,38 +84,38 @@ suspend fun TextInputLayout.startIconClicks(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun TextInputLayout.startIconClicks(
+fun <S> MaterialDatePicker<S>.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setStartIconOnClickListener(listener(scope, ::safeOffer))
-    invokeOnClose { setStartIconOnClickListener(null) }
+    val listener = listener(scope, ::safeOffer)
+    addOnDismissListener(listener)
+    invokeOnClose { removeOnDismissListener(listener) }
 }
 
 /**
- * Create a flow which emits [TextInputLayout] start icon click events.
- *
- * *Warning:* The created flow uses [TextInputLayout.setStartIconOnClickListener]. Only one flow can
- * be used at a time.
+ * Create a flow which emits whenever the [MaterialDatePicker] is dismissed, no matter how it is
+ * dismissed.
  *
  * Example:
  *
  * ```
- * textInputLayout.startIconClicks()
- *      .onEach { /* handle start icon click */ }
+ * materialDatePicker.dismisses()
+ *      .onEach { /* handle dismiss */ }
  *      .launchIn(scope)
  * ```
  */
 @CheckResult
-fun TextInputLayout.startIconClicks(): Flow<Unit> = channelFlow {
-    setStartIconOnClickListener(listener(this, ::offer))
-    awaitClose { setStartIconOnClickListener(null) }
+fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = channelFlow {
+    val listener = listener(this, ::offer)
+    addOnDismissListener(listener)
+    awaitClose { removeOnDismissListener(listener) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
     emitter: (Unit) -> Boolean
-) = View.OnClickListener {
+) = DialogInterface.OnDismissListener {
     if (scope.isActive) { emitter(Unit) }
 }

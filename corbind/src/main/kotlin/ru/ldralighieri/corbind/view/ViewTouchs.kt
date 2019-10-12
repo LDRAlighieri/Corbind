@@ -51,7 +51,7 @@ fun View.touches(
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
     action: suspend (MotionEvent) -> Unit
 ) {
-    val events = scope.actor<MotionEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<MotionEvent>(Dispatchers.Main.immediate, capacity) {
         for (motion in channel) action(motion)
     }
 
@@ -76,7 +76,7 @@ suspend fun View.touches(
     action: suspend (MotionEvent) -> Unit
 ) = coroutineScope {
 
-    val events = actor<MotionEvent>(Dispatchers.Main, capacity) {
+    val events = actor<MotionEvent>(Dispatchers.Main.immediate, capacity) {
         for (motion in channel) action(motion)
     }
 

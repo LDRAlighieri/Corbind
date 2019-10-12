@@ -57,7 +57,7 @@ fun TextView.editorActionEvents(
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
     action: suspend (TextViewEditorActionEvent) -> Unit
 ) {
-    val events = scope.actor<TextViewEditorActionEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<TextViewEditorActionEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

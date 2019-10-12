@@ -36,9 +36,6 @@ import ru.ldralighieri.corbind.safeOffer
 /**
  * Perform an action on the state change events from [View] on [BottomSheetBehavior].
  *
- * *Warning:* The created actor uses [BottomSheetBehavior.setBottomSheetCallback]. Only one actor
- * can be used at a time.
- *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -48,22 +45,20 @@ fun View.stateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
     }
 
     val behavior = getBehavior(this@stateChanges)
     events.offer(behavior.state)
-    behavior.bottomSheetCallback = callback(scope, events::offer)
-    events.invokeOnClose { behavior.bottomSheetCallback = null }
+    val callback = callback(scope, events::offer)
+    behavior.addBottomSheetCallback(callback)
+    events.invokeOnClose { behavior.removeBottomSheetCallback(callback) }
 }
 
 /**
  * Perform an action on the state change events from [View] on [BottomSheetBehavior], inside new
  * [CoroutineScope].
- *
- * *Warning:* The created actor uses [BottomSheetBehavior.setBottomSheetCallback]. Only one actor
- * can be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -77,9 +72,6 @@ suspend fun View.stateChanges(
 
 /**
  * Create a channel which emits the state change events from [View] on [BottomSheetBehavior].
- *
- * *Warning:* The created channel uses [BottomSheetBehavior.setBottomSheetCallback]. Only one
- * channel can be used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -102,15 +94,13 @@ fun View.stateChanges(
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@stateChanges)
     safeOffer(behavior.state)
-    behavior.bottomSheetCallback = callback(scope, ::safeOffer)
-    invokeOnClose { behavior.bottomSheetCallback = null }
+    val callback = callback(scope, ::safeOffer)
+    behavior.addBottomSheetCallback(callback)
+    invokeOnClose { behavior.removeBottomSheetCallback(callback) }
 }
 
 /**
  * Create a flow which emits the state change events from [View] on [BottomSheetBehavior].
- *
- * *Warning:* The created flow uses [BottomSheetBehavior.setBottomSheetCallback]. Only one flow can
- * be used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -132,8 +122,9 @@ fun View.stateChanges(
 fun View.stateChanges(): Flow<Int> = channelFlow {
     val behavior = getBehavior(this@stateChanges)
     offer(behavior.state)
-    behavior.bottomSheetCallback = callback(this, ::offer)
-    awaitClose { behavior.bottomSheetCallback = null }
+    val callback = callback(this, ::offer)
+    behavior.addBottomSheetCallback(callback)
+    awaitClose { behavior.removeBottomSheetCallback(callback) }
 }
 
 @CheckResult

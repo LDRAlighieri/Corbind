@@ -62,7 +62,7 @@ fun ViewGroup.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
 ) {
-    val events = scope.actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
