@@ -53,7 +53,7 @@ fun TextView.beforeTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TextViewBeforeTextChangeEvent) -> Unit
 ) {
-    val events = scope.actor<TextViewBeforeTextChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<TextViewBeforeTextChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

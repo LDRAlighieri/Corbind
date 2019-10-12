@@ -50,7 +50,7 @@ fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue,
     action: suspend (DragEvent) -> Unit
 ) {
-    val events = scope.actor<DragEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<DragEvent>(Dispatchers.Main.immediate, capacity) {
         for (drag in channel) action(drag)
     }
 

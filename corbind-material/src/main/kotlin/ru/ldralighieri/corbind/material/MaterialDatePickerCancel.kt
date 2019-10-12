@@ -43,12 +43,12 @@ import ru.ldralighieri.corbind.safeOffer
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun <S> MaterialDatePicker<S>.cancel(
+fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action()
     }
 
@@ -67,11 +67,11 @@ fun <S> MaterialDatePicker<S>.cancel(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun <S> MaterialDatePicker<S>.cancel(
+suspend fun <S> MaterialDatePicker<S>.cancels(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-    cancel(this, capacity, action)
+    cancels(this, capacity, action)
 }
 
 /**
@@ -85,7 +85,7 @@ suspend fun <S> MaterialDatePicker<S>.cancel(
  *
  * ```
  * launch {
- *      materialDatePicker.cancel(scope)
+ *      materialDatePicker.cancels(scope)
  *          .consumeEach { /* handle cancel event */ }
  * }
  * ```
@@ -94,7 +94,7 @@ suspend fun <S> MaterialDatePicker<S>.cancel(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.cancel(
+fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
@@ -113,13 +113,13 @@ fun <S> MaterialDatePicker<S>.cancel(
  * Example:
  *
  * ```
- * materialDatePicker.cancel()
+ * materialDatePicker.cancels()
  *      .onEach { /* handle cancel event */ }
  *      .launchIn(scope)
  * ```
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.cancel(): Flow<Unit> = channelFlow {
+fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = channelFlow {
     val listener = listener(this, ::offer)
     addOnCancelListener(listener)
     awaitClose { removeOnCancelListener(listener) }

@@ -43,7 +43,7 @@ fun Snackbar.shown(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Snackbar) -> Unit
 ) {
-    val events = scope.actor<Snackbar>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Snackbar>(Dispatchers.Main.immediate, capacity) {
         for (snackbar in channel) action(snackbar)
     }
 

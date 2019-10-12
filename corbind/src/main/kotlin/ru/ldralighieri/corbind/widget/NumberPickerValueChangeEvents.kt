@@ -52,7 +52,7 @@ fun NumberPicker.valueChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (NumberPickerValueChangeEvent) -> Unit
 ) {
-    val events = scope.actor<NumberPickerValueChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<NumberPickerValueChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

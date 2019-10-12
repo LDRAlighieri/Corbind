@@ -44,7 +44,7 @@ fun <S> MaterialDatePicker<S>.positiveClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (S) -> Unit
 ) {
-    val events = scope.actor<S>(Dispatchers.Main, capacity) {
+    val events = scope.actor<S>(Dispatchers.Main.immediate, capacity) {
         for (selection in channel) action(selection)
     }
 

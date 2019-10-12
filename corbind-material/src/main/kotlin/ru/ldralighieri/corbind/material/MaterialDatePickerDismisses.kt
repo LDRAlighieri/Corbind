@@ -44,7 +44,7 @@ fun <S> MaterialDatePicker<S>.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action()
     }
 

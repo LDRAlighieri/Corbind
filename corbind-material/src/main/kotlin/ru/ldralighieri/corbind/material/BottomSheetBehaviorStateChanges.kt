@@ -48,7 +48,7 @@ fun View.stateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) {
-    val events = scope.actor<Int>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
     }
 

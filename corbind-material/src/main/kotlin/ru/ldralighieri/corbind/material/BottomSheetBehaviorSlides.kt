@@ -48,7 +48,7 @@ fun View.slides(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit
 ) {
-    val events = scope.actor<Float>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Float>(Dispatchers.Main.immediate, capacity) {
         for (offset in channel) action(offset)
     }
 

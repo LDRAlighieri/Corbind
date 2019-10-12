@@ -49,7 +49,7 @@ fun RecyclerView.scrollEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewScrollEvent) -> Unit
 ) {
-    val events = scope.actor<RecyclerViewScrollEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<RecyclerViewScrollEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

@@ -47,7 +47,7 @@ fun SlidingPaneLayout.panelSlides(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit
 ) {
-    val events = scope.actor<Float>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Float>(Dispatchers.Main.immediate, capacity) {
         for (slide in channel) action(slide)
     }
 

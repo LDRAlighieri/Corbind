@@ -50,7 +50,7 @@ fun View.longClicks(
     handled: () -> Boolean = AlwaysTrue,
     action: suspend () -> Unit
 ) {
-    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (unit in channel) action()
     }
 

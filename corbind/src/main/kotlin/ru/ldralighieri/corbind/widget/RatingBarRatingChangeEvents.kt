@@ -52,7 +52,7 @@ fun RatingBar.ratingChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RatingBarChangeEvent) -> Unit
 ) {
-    val events = scope.actor<RatingBarChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<RatingBarChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

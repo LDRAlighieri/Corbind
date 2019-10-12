@@ -55,7 +55,7 @@ fun View.attachEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewAttachEvent) -> Unit
 ) {
-    val events = scope.actor<ViewAttachEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<ViewAttachEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

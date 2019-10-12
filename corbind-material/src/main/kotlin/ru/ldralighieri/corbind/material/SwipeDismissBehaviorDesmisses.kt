@@ -48,7 +48,7 @@ fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (View) -> Unit
 ) {
-    val events = scope.actor<View>(Dispatchers.Main, capacity) {
+    val events = scope.actor<View>(Dispatchers.Main.immediate, capacity) {
         for (view in channel) action(view)
     }
 

@@ -54,7 +54,7 @@ fun CalendarView.dateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CalendarViewDateChangeEvent) -> Unit
 ) {
-    val events = scope.actor<CalendarViewDateChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<CalendarViewDateChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

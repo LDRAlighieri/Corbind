@@ -46,7 +46,7 @@ fun SwipeRefreshLayout.refreshes(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) {
-    val events = scope.actor<Unit>(Dispatchers.Main, capacity) {
+    val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (unit in channel) action()
     }
 

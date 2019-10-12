@@ -52,7 +52,7 @@ fun RecyclerView.flingEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewFlingEvent) -> Unit
 ) {
-    val events = scope.actor<RecyclerViewFlingEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<RecyclerViewFlingEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

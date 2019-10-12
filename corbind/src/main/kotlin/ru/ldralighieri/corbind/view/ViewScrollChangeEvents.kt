@@ -57,7 +57,7 @@ fun View.scrollChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewScrollChangeEvent) -> Unit
 ) {
-    val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

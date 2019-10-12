@@ -63,7 +63,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AdapterViewSelectionEvent) -> Unit
 ) {
-    val events = scope.actor<AdapterViewSelectionEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<AdapterViewSelectionEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

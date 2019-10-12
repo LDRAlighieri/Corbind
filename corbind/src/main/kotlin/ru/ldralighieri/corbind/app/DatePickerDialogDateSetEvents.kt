@@ -56,7 +56,7 @@ fun DatePickerDialog.dateSetEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (DatePickerDialogSetEvent) -> Unit
 ) {
-    val events = scope.actor<DatePickerDialogSetEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<DatePickerDialogSetEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

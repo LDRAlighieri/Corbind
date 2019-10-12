@@ -62,7 +62,7 @@ fun MenuItem.actionViewEvents(
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
     action: suspend (MenuItemActionViewEvent) -> Unit
 ) {
-    val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 

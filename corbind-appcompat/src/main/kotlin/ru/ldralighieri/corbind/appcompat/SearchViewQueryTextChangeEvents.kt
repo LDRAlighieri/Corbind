@@ -52,7 +52,7 @@ fun SearchView.queryTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SearchViewQueryTextEvent) -> Unit
 ) {
-    val events = scope.actor<SearchViewQueryTextEvent>(Dispatchers.Main, capacity) {
+    val events = scope.actor<SearchViewQueryTextEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
