@@ -122,7 +122,6 @@ fun NavController.destinationChangeEvents(): Flow<NavControllerOnDestinationChan
         awaitClose { removeOnDestinationChangedListener(listener) }
     }
 
-
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
