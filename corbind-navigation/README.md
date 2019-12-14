@@ -1,6 +1,12 @@
 ﻿
 # corbind-navigation
 
+To add androidx navigation bindings, import `corbind-navigation` module:
+
+```groovy
+implementation 'ru.ldralighieri.corbind:corbind-navigation:1.3.0'
+```
+
 ## List of extensions
 
 Component | Extension | Description

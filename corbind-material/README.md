@@ -4,7 +4,7 @@
 To add material bindings, import `corbind-material` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.2.0'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.3.0'
 ```
 
 ## List of extensions
