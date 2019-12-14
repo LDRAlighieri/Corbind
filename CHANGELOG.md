@@ -2,8 +2,20 @@
 # ChangeLog
 
 
-## Version 1.2.0
+## Version 1.3.0
 
+* New: Navigation module
+* New: Bindings list:
+	* AndroidX library bindings:
+		* `corbind-navigation`:
+      		* `NavController`:
+        		* `destinationChanges`
+        		* `destinationChangeEvents`
+* Update: Kotlin modules dependency to v1.3.61.
+* Update: Kotlin coroutines modules dependency to v1.3.3.
+
+
+## Version 1.2.0
 
 * New: Bindings list:
     * Google "material" library bindings:
@@ -13,9 +25,9 @@
                 * `dismisses`
                 * `negativeClicks`
                 * `positiveClicks`
-* Update: Kotlin coroutines modules dependency to v1.3.2
-* Update: Material components dependency to v1.1.0-beta01
-* Update: Support registering multiple `BottomSheetCallbacks`
+* Update: Kotlin coroutines modules dependency to v1.3.2.
+* Update: Material components dependency to v1.1.0-beta01.
+* Update: Support registering multiple `BottomSheetCallbacks`.
 
 
 ## Version 1.2.0-RC
@@ -51,16 +63,16 @@
         	    * `endIconLongClicks`
         	    * `startIconClicks`
         	    * `startIconLongClicks`
-* Update: Material components dependency to v1.1.0-alpha10
-* Update: ViewPager2 dependency to v1.0.0-beta04
+* Update: Material components dependency to v1.1.0-alpha10.
+* Update: ViewPager2 dependency to v1.0.0-beta04.
 
 
 ## Version 1.1.2
 
-* Update: Kotlin coroutines modules dependency to v1.3.1
-* Update: Android sdk to v29
-* Update: Updated sample
-* Fix: Fixed various inaccuracies, refactoring
+* Update: Kotlin coroutines modules dependency to v1.3.1.
+* Update: Android sdk to v29.
+* Update: Updated sample.
+* Fix: Fixed various inaccuracies, refactoring.
 
 
 ## Version 1.1.0
@@ -84,7 +96,7 @@
 	            * `shown`
 	        * `SwipeDismissBehavior`:
 	            * 'dragStateChanges`
-* Fix: Fixed sources jars generation (#6)
+* Fix: Fixed sources jars generation (#6).
 
 
 ## Version 1.0.1
@@ -237,5 +249,5 @@
 				* `selections`
 * Update: Kotlin modules dependency to v1.3.41.
 * Update: Kotlin coroutine modules dependency to v1.3.0-RC2.
-* Update: Minimum SDK version is now 14
-* Fix: Internal `corbindReceiveChannel` emission
+* Update: Minimum SDK version is now 14.
+* Fix: Internal `corbindReceiveChannel` emission.

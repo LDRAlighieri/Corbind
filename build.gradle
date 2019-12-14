@@ -18,21 +18,22 @@ buildscript {
 
     ext {
         versions = [
-                'kotlin' : '1.3.50',
-                'kotlin_coroutines' : '1.3.2',
-                'android_gradle' : '3.5.1',
-                'androidx' : [
-                        'core' : '1.1.0',
-                        'annotation' : '1.1.0',
-                        'appcompat' : '1.1.0',
-                        'drawerlayout' : '1.0.0',
-                        'leanback' : '1.0.0',
-                        'recycler_view' : '1.0.0',
-                        'slidingpane_layout' : '1.0.0',
-                        'swiperefresh_layout' : '1.0.0',
-                        'viewpager' : '1.0.0',
-                        'viewpager2' : '1.0.0-beta05',
-                        'material' : '1.1.0-beta01'
+                'kotlin': '1.3.61',
+                'kotlin_coroutines': '1.3.3',
+                'android_gradle': '3.5.3',
+                'androidx': [
+                        'core': '1.1.0',
+                        'annotation': '1.1.0',
+                        'appcompat': '1.1.0',
+                        'drawerlayout': '1.0.0',
+                        'leanback': '1.0.0',
+                        'navigation': '2.1.0',
+                        'recycler_view': '1.1.0',
+                        'slidingpane_layout': '1.0.0',
+                        'swiperefresh_layout': '1.0.0',
+                        'viewpager': '1.0.0',
+                        'viewpager2': '1.0.0',
+                        'material': '1.1.0-beta02'
                 ],
                 'ktlint': '0.33.0',
                 'dokka': '0.9.18'
@@ -56,6 +57,7 @@ buildscript {
                         'appCompat': "androidx.appcompat:appcompat:${versions.androidx.appcompat}",
                         'drawerLayout': "androidx.drawerlayout:drawerlayout:${versions.androidx.drawerlayout}",
                         'leanback': "androidx.leanback:leanback:${versions.androidx.leanback}",
+                        'navigation': "androidx.navigation:navigation-runtime:${versions.androidx.navigation}",
                         'recyclerView': "androidx.recyclerview:recyclerview:${versions.androidx.recycler_view}",
                         'slidingPaneLayout': "androidx.slidingpanelayout:slidingpanelayout:${versions.androidx.slidingpane_layout}",
                         'swipeRefreshLayout': "androidx.swiperefreshlayout:swiperefreshlayout:${versions.androidx.swiperefresh_layout}",
@@ -94,9 +96,9 @@ buildscript {
 
 
 plugins {
-    id "com.diffplug.gradle.spotless" version "3.25.0"
+    id "com.diffplug.gradle.spotless" version "3.26.1"
     id 'com.github.ben-manes.versions' version '0.25.0'
-    id "io.gitlab.arturbosch.detekt" version "1.1.1"
+    id "io.gitlab.arturbosch.detekt" version "1.2.2"
 }
 
 
@@ -147,7 +149,7 @@ subprojects {
 
 
 detekt {
-    toolVersion = "1.0.0"
+    toolVersion = "1.2.2"
 
     failFast = false
     buildUponDefaultConfig = true
@@ -160,6 +162,7 @@ detekt {
             "corbind-drawerlayout/src/main/kotlin",
             "corbind-leanback/src/main/kotlin",
             "corbind-material/src/main/kotlin",
+            "corbind-navigation/src/main/kotlin",
             "corbind-recyclerview/src/main/kotlin",
             "corbind-slidingpanelayout/src/main/kotlin",
             "corbind-swiperefreshlayout/src/main/kotlin",

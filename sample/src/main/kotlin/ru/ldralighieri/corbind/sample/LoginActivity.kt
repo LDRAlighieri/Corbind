@@ -21,13 +21,7 @@ import android.util.Patterns
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flattenMerge
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import ru.ldralighieri.corbind.sample.core.CorbindActivity
 import ru.ldralighieri.corbind.sample.core.extensions.hideSoftInput
 import ru.ldralighieri.corbind.swiperefreshlayout.refreshes
@@ -50,13 +44,14 @@ class LoginActivity : CorbindActivity() {
                 .map { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
 
             et_password.textChanges()
-                .map { it.length > 7 }
+                .map { it.length > 7 },
 
-        ) { email, password -> email && password }
+            transform = { email, password -> email && password }
+        )
             .onEach { bt_login.isEnabled = it }
             .launchIn(this)
 
-        flowOf(
+        merge(
             bt_login.clicks(),
 
             et_password.editorActionEvents()
@@ -64,7 +59,6 @@ class LoginActivity : CorbindActivity() {
                 .filter { bt_login.isEnabled }
                 .onEach { hideSoftInput() }
         )
-            .flattenMerge()
             .onEach { Toast.makeText(this, R.string.login_success_message, Toast.LENGTH_SHORT).show() }
             .launchIn(this)
 
