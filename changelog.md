@@ -7,6 +7,19 @@ description: Coroutines binding APIs for Android UI widgets from the platform an
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding,changelog]
 ---
 
+## Version 1.3.0
+
+* New: Navigation module
+* New: Bindings list:
+	* AndroidX library bindings:
+		* `corbind-navigation`:
+      		* `NavController`:
+        		* `destinationChanges`
+        		* `destinationChangeEvents`
+* Update: Kotlin modules dependency to v1.3.61.
+* Update: Kotlin coroutines modules dependency to v1.3.3.
+
+
 ## Version 1.2.0
 
 * New: Bindings list:

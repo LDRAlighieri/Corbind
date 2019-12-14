@@ -38,25 +38,26 @@ This library is for Android applications only. Help you to transform Android UI 
 
 Platform bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.2.0'
+implementation 'ru.ldralighieri.corbind:corbind:1.3.0'
 ```
 
 AndroidX library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.2.0'
-implementation 'ru.ldralighieri.corbind:corbind-core:1.2.0'
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.2.0'
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.2.0'
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.2.0'
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.2.0'
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.2.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.2.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.2.0'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-navigation:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.3.0'
 ```
 
 Google 'material' library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.2.0'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.3.0'
 ```
 
 
@@ -68,6 +69,7 @@ You can find a list of extensions in the description of each module:<br>
 [corbind-drawerlayout]<br>
 [corbind-leanback]<br>
 [corbind-material]<br>
+[corbind-navigation]<br>
 [corbind-recyclerview]<br>
 [corbind-slidingpanelayout]<br>
 [corbind-swiperefreshlayout]<br>
@@ -148,6 +150,7 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 [corbind-drawerlayout]: https://ldralighieri.github.io/Corbind/modules/corbind-drawerlayout
 [corbind-leanback]: https://ldralighieri.github.io/Corbind/modules/corbind-leanback
 [corbind-material]: https://ldralighieri.github.io/Corbind/modules/corbind-material
+[corbind-navigation]: https://ldralighieri.github.io/Corbind/modules/corbind-navigation
 [corbind-recyclerview]: https://ldralighieri.github.io/Corbind/modules/corbind-recyclerview
 [corbind-slidingpanelayout]: https://ldralighieri.github.io/Corbind/modules/corbind-slidingpanelayout
 [corbind-swiperefreshlayout]: https://ldralighieri.github.io/Corbind/modules/corbind-swiperefreshlayout

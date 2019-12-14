@@ -29,6 +29,7 @@ navbar-links:
     - corbind-drawerlayout: "modules/corbind-drawerlayout"
     - corbind-leanback: "modules/corbind-leanback"
     - corbind-material: "modules/corbind-material"
+    - corbind-navigation: "modules/corbind-navigation"
     - corbind-recyclerview: "modules/corbind-recyclerview"
     - corbind-slidingpanelayout: "modules/corbind-slidingpanelayout"
     - corbind-swiperefreshlayout: "modules/corbind-swiperefreshlayout"
