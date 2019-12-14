@@ -13,9 +13,9 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 * New: Bindings list:
 	* AndroidX library bindings:
 		* `corbind-navigation`:
-      		* `NavController`:
+			* `NavController`:
 				* `destinationChanges`
-        		* `destinationChangeEvents`
+				* `destinationChangeEvents`
 * Update: Kotlin modules dependency to v1.3.61.
 * Update: Kotlin coroutines modules dependency to v1.3.3.
 
