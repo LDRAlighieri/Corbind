@@ -18,9 +18,9 @@ buildscript {
 
     ext {
         versions = [
-                'kotlin': '1.3.60',
-                'kotlin_coroutines': '1.3.2',
-                'android_gradle': '3.5.2',
+                'kotlin': '1.3.61',
+                'kotlin_coroutines': '1.3.3',
+                'android_gradle': '3.5.3',
                 'androidx': [
                         'core': '1.1.0',
                         'annotation': '1.1.0',
@@ -96,9 +96,9 @@ buildscript {
 
 
 plugins {
-    id "com.diffplug.gradle.spotless" version "3.26.0"
+    id "com.diffplug.gradle.spotless" version "3.26.1"
     id 'com.github.ben-manes.versions' version '0.25.0'
-    id "io.gitlab.arturbosch.detekt" version "1.2.0"
+    id "io.gitlab.arturbosch.detekt" version "1.2.2"
 }
 
 
@@ -149,7 +149,7 @@ subprojects {
 
 
 detekt {
-    toolVersion = "1.2.0"
+    toolVersion = "1.2.2"
 
     failFast = false
     buildUponDefaultConfig = true
