@@ -52,8 +52,8 @@ You can find a list of extensions in the description of each module:
 [corbind-core]  
 [corbind-drawerlayout]  
 [corbind-leanback]  
-[corbind-navigation]  
 [corbind-material]  
+[corbind-navigation]  
 [corbind-recyclerview]  
 [corbind-slidingpanelayout]  
 [corbind-swiperefreshlayout]  
@@ -150,8 +150,8 @@ limitations under the License.
 [corbind-core]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-core
 [corbind-drawerlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-drawerlayout
 [corbind-leanback]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-leanback
-[corbind-navigation]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-navigation
 [corbind-material]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-material
+[corbind-navigation]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-navigation
 [corbind-recyclerview]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-recyclerview
 [corbind-slidingpanelayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-slidingpanelayout
 [corbind-swiperefreshlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-swiperefreshlayout
