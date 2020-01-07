@@ -75,13 +75,7 @@ suspend fun View.touches(
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
     action: suspend (MotionEvent) -> Unit
 ) = coroutineScope {
-
-    val events = actor<MotionEvent>(Dispatchers.Main.immediate, capacity) {
-        for (motion in channel) action(motion)
-    }
-
-    setOnTouchListener(listener(this, handled, events::offer))
-    events.invokeOnClose { setOnTouchListener(null) }
+    touches(this, capacity, handled, action)
 }
 
 /**

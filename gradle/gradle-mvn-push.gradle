@@ -119,38 +119,46 @@ afterEvaluate { project ->
         if (plugins.hasPlugin('kotlin-android')) {
             def dokkaOutput = "${project.docsDir}/dokka"
 
-            project.plugins.apply('org.jetbrains.dokka-android')
+            project.plugins.apply('org.jetbrains.dokka')
 
-            def path = new File(project.projectDir, "/src/main/kotlin")
+            def path = new File(project.projectDir, "")
             def relativePath = rootDir.toPath().relativize(path.toPath()).toString()
             project.dokka {
                 outputFormat = "html"
                 outputDirectory = dokkaOutput
 
-                jdkVersion = 8
-                reportUndocumented = false
-                skipDeprecated = true
+                configuration {
+                    reportUndocumented = false
+                    skipDeprecated = true
+                    skipEmptyPackages = true
 
-                externalDocumentationLink {
-                    url = new URL("https://developer.android.com/reference/androidx/")
-                }
+                    sourceLink {
+                        path = "src/main/kotlin"
+                        url = "https://github.com/LDRAlighieri/Corbind/blob/master/$relativePath"
+                        lineSuffix = "#L"
+                    }
 
-                externalDocumentationLink {
-                    url = new URL("https://developer.android.com/reference/com/google/android/material/")
-                }
+                    jdkVersion = 8
 
-                externalDocumentationLink {
-                    url = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-android/")
-                }
+                    externalDocumentationLink {
+                        url = new URL("https://developer.android.com/reference/")
+                        packageListUrl = new URL("https://developer.android.com/reference/androidx/package-list")
+                    }
 
-                externalDocumentationLink {
-                    url = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/")
-                }
+                    externalDocumentationLink {
+                        url = new URL("https://developer.android.com/reference/")
+                        packageListUrl = new URL("https://developer.android.com/reference/com/google/android/material/package-list")
+                    }
 
-                linkMapping {
-                    dir = "src/main/kotlin"
-                    url = "https://github.com/LDRAlighieri/Corbind/blob/master/$relativePath"
-                    suffix = "#L"
+                    externalDocumentationLink {
+                        url = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/")
+                        packageListUrl = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/package-list")
+                    }
+
+                    externalDocumentationLink {
+                        url = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-android/")
+                        packageListUrl = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-android/package-list")
+                    }
                 }
 
             }

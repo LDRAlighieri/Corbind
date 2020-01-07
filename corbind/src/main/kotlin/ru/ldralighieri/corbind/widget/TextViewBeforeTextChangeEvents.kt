@@ -127,6 +127,7 @@ fun TextView.beforeTextChangeEvents(
 fun TextView.beforeTextChangeEvents(): Flow<TextViewBeforeTextChangeEvent> = channelFlow {
     offer(initialValue(this@beforeTextChangeEvents))
     val listener = listener(this, this@beforeTextChangeEvents, ::offer)
+    addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }
 }
 
