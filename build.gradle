@@ -36,7 +36,7 @@ buildscript {
                         'material': '1.1.0-rc01'
                 ],
                 'ktlint': '0.33.0',
-                'dokka': '0.9.18'
+                'dokka': '0.10.0'
         ]
 
         deps = [
@@ -89,7 +89,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
 
         // Dokka
-        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:${versions.dokka}"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}"
     }
 
 }
