@@ -7,6 +7,12 @@ description: Coroutines binding APIs for Android UI widgets from the platform an
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding,changelog]
 ---
 
+## Version 1.3.1
+
+* Fix: Added call `addTextChangedListener` for `TextView` `afterTextChangeEvents` and `beforeTextChangeEvents` Flow extensions ([#10]).
+* Update: dokka, migrate to version 0.10.0.
+
+
 ## Version 1.3.0
 
 * New: Navigation module
@@ -101,14 +107,14 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 	            * `shown`
 	        * `SwipeDismissBehavior`:
 	            * `dragStateChanges`
-* Fix: Fixed sources jars generation (#6)
+* Fix: Fixed sources jars generation ([#6])
 
 
 ## Version 1.0.1
 
-* Fix: `TextView` `afterTextChangeEvents` access modifier changed (#1).
+* Fix: `TextView` `afterTextChangeEvents` access modifier changed ([#1]).
 * Fix: `SeekBar` `changeEvents` access modifier changed.
-* Fix: Fixed typo in RecyclerView artifact id (#2).
+* Fix: Fixed typo in RecyclerView artifact id ([#2]).
 
 
 ## Version 1.0.0
@@ -256,3 +262,9 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 * Update: Kotlin coroutine modules dependency to v1.3.0-RC2.
 * Update: Minimum SDK version is now 14
 * Fix: Internal `corbindReceiveChannel` emission
+
+
+[#1]: https://github.com/LDRAlighieri/Corbind/pull/1
+[#2]: https://github.com/LDRAlighieri/Corbind/issues/2
+[#6]: https://github.com/LDRAlighieri/Corbind/issues/6
+[#10]: https://github.com/LDRAlighieri/Corbind/pull/10
