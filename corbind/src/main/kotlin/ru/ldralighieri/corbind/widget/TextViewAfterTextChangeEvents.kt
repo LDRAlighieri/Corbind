@@ -126,6 +126,7 @@ fun TextView.afterTextChangeEvents(
 fun TextView.afterTextChangeEvents(): Flow<TextViewAfterTextChangeEvent> = channelFlow {
     offer(initialValue(this@afterTextChangeEvents))
     val listener = listener(this, this@afterTextChangeEvents, ::offer)
+    addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }
 }
 
