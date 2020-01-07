@@ -2,6 +2,12 @@
 # ChangeLog
 
 
+## Version 1.3.1
+
+* Fix: Added call `addTextChangedListener` for `TextView` `afterTextChangeEvents` and `beforeTextChangeEvents` Flow extensions (#10).
+* Update: dokka, migrate to version 0.10.0.
+
+
 ## Version 1.3.0
 
 * New: Navigation module

@@ -22,26 +22,26 @@ This library is for Android applications only. Help you to transform Android UI 
 
 Platform bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind:1.3.1'
 ```
 
 AndroidX library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.3.0'
-implementation 'ru.ldralighieri.corbind:corbind-core:1.3.0'
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.3.0'
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.3.0'
-implementation 'ru.ldralighieri.corbind:corbind-navigation:1.3.0'
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.3.0'
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.3.0'
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.3.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.3.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-navigation:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.3.1'
 ```
 
 Google 'material' library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.3.0'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.3.1'
 ```
 
 
