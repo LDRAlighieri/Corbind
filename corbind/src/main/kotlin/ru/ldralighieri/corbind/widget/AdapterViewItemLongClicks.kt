@@ -140,11 +140,9 @@ private fun listener(
     handled: () -> Boolean,
     emitter: (Int) -> Boolean
 ) = AdapterView.OnItemLongClickListener { _, _: View?, position, _ ->
-    if (scope.isActive) {
-        if (handled()) {
-            emitter(position)
-            return@OnItemLongClickListener true
-        }
+    if (scope.isActive && handled()) {
+        emitter(position)
+        return@OnItemLongClickListener true
     }
     return@OnItemLongClickListener false
 }

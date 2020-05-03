@@ -128,6 +128,6 @@ private fun listener(
         if (scope.isActive) { emitter(query) }
     }
 
-    override fun onSearchQuerySubmit(query: String) { }
-    override fun onKeyboardDismiss(query: String) { }
+    override fun onSearchQuerySubmit(query: String) = Unit
+    override fun onKeyboardDismiss(query: String) = Unit
 }

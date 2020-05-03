@@ -186,11 +186,9 @@ private fun listener(
     }
 
     private fun onEvent(event: MenuItemActionViewEvent): Boolean {
-        if (scope.isActive) {
-            if (handled(event)) {
-                emitter(event)
-                return true
-            }
+        if (scope.isActive && handled(event)) {
+            emitter(event)
+            return true
         }
         return false
     }

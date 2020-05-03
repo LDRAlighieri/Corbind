@@ -139,11 +139,9 @@ private fun listener(
     emitter: (MotionEvent) -> Boolean
 ) = View.OnTouchListener { _, motionEvent ->
 
-    if (scope.isActive) {
-        if (handled(motionEvent)) {
-            emitter(motionEvent)
-            return@OnTouchListener true
-        }
+    if (scope.isActive && handled(motionEvent)) {
+        emitter(motionEvent)
+        return@OnTouchListener true
     }
     return@OnTouchListener false
 }

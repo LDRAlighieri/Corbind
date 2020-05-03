@@ -134,7 +134,7 @@ private fun listener(
     emitter: (Int) -> Boolean
 ) = object : SwipeDismissBehavior.OnDismissListener {
 
-    override fun onDismiss(view: View) { }
+    override fun onDismiss(view: View) = Unit
 
     override fun onDragStateChanged(state: Int) {
         if (scope.isActive) { emitter(state) }

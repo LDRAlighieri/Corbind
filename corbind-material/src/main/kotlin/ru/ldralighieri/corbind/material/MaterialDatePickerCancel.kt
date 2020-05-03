@@ -49,7 +49,7 @@ fun <S> MaterialDatePicker<S>.cancels(
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (event in channel) action()
+        for (ignored in channel) action()
     }
 
     val listener = listener(scope, events::offer)

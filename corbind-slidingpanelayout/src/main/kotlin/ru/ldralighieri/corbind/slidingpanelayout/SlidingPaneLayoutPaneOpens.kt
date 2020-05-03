@@ -139,7 +139,7 @@ private fun listener(
     emitter: (Boolean) -> Boolean
 ) = object : SlidingPaneLayout.PanelSlideListener {
 
-    override fun onPanelSlide(panel: View, slideOffset: Float) { }
+    override fun onPanelSlide(panel: View, slideOffset: Float) = Unit
     override fun onPanelOpened(panel: View) { onEvent(true) }
     override fun onPanelClosed(panel: View) { onEvent(false) }
 

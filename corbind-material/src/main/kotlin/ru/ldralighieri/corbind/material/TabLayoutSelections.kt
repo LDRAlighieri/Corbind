@@ -140,6 +140,6 @@ private fun listener(
         if (scope.isActive) { emitter(tab) }
     }
 
-    override fun onTabReselected(tab: TabLayout.Tab) { }
-    override fun onTabUnselected(tab: TabLayout.Tab) { }
+    override fun onTabReselected(tab: TabLayout.Tab) = Unit
+    override fun onTabUnselected(tab: TabLayout.Tab) = Unit
 }

@@ -136,11 +136,9 @@ private fun listener(
     handled: (KeyEvent) -> Boolean,
     emitter: (KeyEvent) -> Boolean
 ) = View.OnKeyListener { _, _, keyEvent ->
-    if (scope.isActive) {
-        if (handled(keyEvent)) {
-            emitter(keyEvent)
-            return@OnKeyListener true
-        }
+    if (scope.isActive && handled(keyEvent)) {
+        emitter(keyEvent)
+        return@OnKeyListener true
     }
     return@OnKeyListener false
 }

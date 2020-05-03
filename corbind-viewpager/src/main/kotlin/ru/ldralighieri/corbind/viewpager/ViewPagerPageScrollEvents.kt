@@ -131,6 +131,6 @@ private fun listener(
         }
     }
 
-    override fun onPageSelected(position: Int) { }
-    override fun onPageScrollStateChanged(state: Int) { }
+    override fun onPageSelected(position: Int) = Unit
+    override fun onPageScrollStateChanged(state: Int) = Unit
 }

@@ -131,5 +131,5 @@ private fun callback(
         if (scope.isActive) { emitter(slideOffset) }
     }
 
-    override fun onStateChanged(bottomSheet: View, newState: Int) { }
+    override fun onStateChanged(bottomSheet: View, newState: Int) = Unit
 }
