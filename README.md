@@ -52,7 +52,7 @@ repositories {
 }
       
 dependencies {
-   implementation 'ru.ldralighieri.corbind:{module}:1.4.0-SNAPSHOT'
+   implementation 'ru.ldralighieri.corbind:{module}:1.3.3-SNAPSHOT'
 }
 ```
 
