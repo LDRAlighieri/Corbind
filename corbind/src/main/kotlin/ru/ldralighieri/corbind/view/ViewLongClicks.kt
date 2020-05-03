@@ -51,7 +51,7 @@ fun View.longClicks(
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (ignored in channel) action()
     }
 
     setOnLongClickListener(listener(scope, handled, events::offer))
@@ -138,11 +138,9 @@ private fun listener(
     handled: () -> Boolean,
     emitter: (Unit) -> Boolean
 ) = View.OnLongClickListener {
-    if (scope.isActive) {
-        if (handled()) {
-            emitter(Unit)
-            return@OnLongClickListener true
-        }
+    if (scope.isActive && handled()) {
+        emitter(Unit)
+        return@OnLongClickListener true
     }
     return@OnLongClickListener false
 }

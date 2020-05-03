@@ -48,7 +48,7 @@ fun TextInputLayout.startIconClicks(
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (ignored in channel) action()
     }
 
     setStartIconOnClickListener(listener(scope, events::offer))

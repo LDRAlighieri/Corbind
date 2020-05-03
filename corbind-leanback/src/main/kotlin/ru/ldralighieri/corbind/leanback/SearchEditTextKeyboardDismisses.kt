@@ -47,7 +47,7 @@ fun SearchEditText.keyboardDismisses(
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (ignored in channel) action()
     }
 
     setOnKeyboardDismissListener(listener(scope, events::offer))

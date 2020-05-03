@@ -47,7 +47,7 @@ fun SwipeRefreshLayout.refreshes(
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (ignored in channel) action()
     }
 
     setOnRefreshListener(listener(scope, events::offer))

@@ -138,11 +138,9 @@ private fun listener(
     handled: (MotionEvent) -> Boolean,
     emitter: (MotionEvent) -> Boolean
 ) = View.OnHoverListener { _, motionEvent ->
-    if (scope.isActive) {
-        if (handled(motionEvent)) {
-            emitter(motionEvent)
-            return@OnHoverListener true
-        }
+    if (scope.isActive && handled(motionEvent)) {
+        emitter(motionEvent)
+        return@OnHoverListener true
     }
     return@OnHoverListener false
 }

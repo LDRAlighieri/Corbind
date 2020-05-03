@@ -129,6 +129,6 @@ private fun listener(
         if (scope.isActive) { emitter(slideOffset) }
     }
 
-    override fun onPanelOpened(panel: View) { }
-    override fun onPanelClosed(panel: View) { }
+    override fun onPanelOpened(panel: View) = Unit
+    override fun onPanelClosed(panel: View) = Unit
 }

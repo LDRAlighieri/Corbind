@@ -129,11 +129,11 @@ private fun listener(
     emitter: (Int) -> Boolean
 ) = object : ViewPager.OnPageChangeListener {
 
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
 
     override fun onPageSelected(position: Int) {
         if (scope.isActive) { emitter(position) }
     }
 
-    override fun onPageScrollStateChanged(state: Int) { }
+    override fun onPageScrollStateChanged(state: Int) = Unit
 }

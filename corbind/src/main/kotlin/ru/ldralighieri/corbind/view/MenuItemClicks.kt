@@ -138,11 +138,9 @@ private fun listener(
     handled: (MenuItem) -> Boolean,
     emitter: (MenuItem) -> Boolean
 ) = MenuItem.OnMenuItemClickListener { item ->
-    if (scope.isActive) {
-        if (handled(item)) {
-            emitter(item)
-            return@OnMenuItemClickListener true
-        }
+    if (scope.isActive && handled(item)) {
+        emitter(item)
+        return@OnMenuItemClickListener true
     }
     return@OnMenuItemClickListener false
 }

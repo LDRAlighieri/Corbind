@@ -140,10 +140,10 @@ private fun listener(
     emitter: (Boolean) -> Boolean
 ) = object : DrawerLayout.DrawerListener {
 
-    override fun onDrawerSlide(drawerView: View, slideOffset: Float) { }
+    override fun onDrawerSlide(drawerView: View, slideOffset: Float) = Unit
     override fun onDrawerOpened(drawerView: View) { onEvent(drawerView, true) }
     override fun onDrawerClosed(drawerView: View) { onEvent(drawerView, false) }
-    override fun onDrawerStateChanged(newState: Int) { }
+    override fun onDrawerStateChanged(newState: Int) = Unit
 
     private fun onEvent(drawerView: View, opened: Boolean) {
         if (scope.isActive) {

@@ -139,5 +139,5 @@ private fun listener(
         if (scope.isActive) { emitter(view) }
     }
 
-    override fun onDragStateChanged(state: Int) { }
+    override fun onDragStateChanged(state: Int) = Unit
 }

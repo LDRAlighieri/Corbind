@@ -48,7 +48,7 @@ fun Chip.closeIconClicks(
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (ignored in channel) action()
     }
 
     setOnCloseIconClickListener(listener(scope, events::offer))
