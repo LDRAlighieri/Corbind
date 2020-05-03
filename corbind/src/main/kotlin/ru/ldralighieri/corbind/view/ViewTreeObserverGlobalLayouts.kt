@@ -45,7 +45,7 @@ fun View.globalLayouts(
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (ignored in channel) action()
     }
 
     val listener = listener(scope, events::offer)

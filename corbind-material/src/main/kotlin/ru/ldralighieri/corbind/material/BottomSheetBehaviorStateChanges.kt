@@ -141,7 +141,7 @@ private fun callback(
     emitter: (Int) -> Boolean
 ) = object : BottomSheetBehavior.BottomSheetCallback() {
 
-    override fun onSlide(bottomSheet: View, slideOffset: Float) { }
+    override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
 
     override fun onStateChanged(bottomSheet: View, newState: Int) {
         if (scope.isActive) { emitter(newState) }

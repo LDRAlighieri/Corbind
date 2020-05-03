@@ -2,6 +2,14 @@
 # ChangeLog
 
 
+## Version 1.3.2
+
+* Update: Kotlin modules dependency to v1.3.72.
+* Update: Kotlin coroutines modules dependency to v1.3.5.
+* Update: Material components dependency to v1.1.0.
+* Update: Detekt config, small improvements
+
+
 ## Version 1.3.1
 
 * Fix: Added call `addTextChangedListener` for `TextView` `afterTextChangeEvents` and `beforeTextChangeEvents` Flow extensions (#10).

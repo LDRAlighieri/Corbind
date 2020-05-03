@@ -136,11 +136,9 @@ private fun listener(
     handled: (DragEvent) -> Boolean,
     emitter: (DragEvent) -> Boolean
 ) = View.OnDragListener { _, dragEvent ->
-    if (scope.isActive) {
-        if (handled(dragEvent)) {
-            emitter(dragEvent)
-            return@OnDragListener true
-        }
+    if (scope.isActive && handled(dragEvent)) {
+        emitter(dragEvent)
+        return@OnDragListener true
     }
     return@OnDragListener false
 }

@@ -44,7 +44,7 @@ fun View.attaches(
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (ignored in channel) action()
     }
 
     val listener = listener(scope, true, events::offer)
@@ -121,7 +121,7 @@ fun View.detaches(
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (unit in channel) action()
+        for (ignored in channel) action()
     }
 
     val listener = listener(scope, false, events::offer)

@@ -4,7 +4,7 @@
 To add androidx drawerlayout bindings, import `corbind-drawerlayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.3.1'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.3.2'
 ```
 
 ## List of extensions

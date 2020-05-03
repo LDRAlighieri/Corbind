@@ -128,11 +128,11 @@ private fun callback(
     emitter: (Int) -> Boolean
 ) = object : ViewPager2.OnPageChangeCallback() {
 
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
 
     override fun onPageSelected(position: Int) {
         if (scope.isActive) { emitter(position) }
     }
 
-    override fun onPageScrollStateChanged(state: Int) { }
+    override fun onPageScrollStateChanged(state: Int) = Unit
 }
