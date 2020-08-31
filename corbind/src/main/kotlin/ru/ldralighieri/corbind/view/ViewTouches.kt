@@ -60,7 +60,7 @@ fun View.touches(
 }
 
 /**
- * Perform an action on touch events for [View] inside new [CoroutineScope].
+ * Perform an action on touch events for [View], inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnTouchListener]. Only one actor can be used at a
  * time.
