@@ -4,7 +4,7 @@
 To add androidx swiperefreshlayout bindings, import `corbind-swiperefreshlayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.3.2'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.4.0'
 ```
 
 ## List of extensions

@@ -84,6 +84,8 @@ suspend fun RatingBar.ratingChangeEvents(
  * *Warning:* The created channel uses [RatingBar.setOnRatingBarChangeListener]. Only one channel
  * can be used at a time.
  *
+ * *Note:* A value will be emitted immediately.
+ *
  * Example:
  *
  * ```
@@ -138,7 +140,7 @@ fun RatingBar.ratingChangeEvents(): Flow<RatingBarChangeEvent> = channelFlow {
 
 @CheckResult
 private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =
-        RatingBarChangeEvent(ratingBar, ratingBar.rating, false)
+    RatingBarChangeEvent(ratingBar, ratingBar.rating, false)
 
 @CheckResult
 private fun listener(

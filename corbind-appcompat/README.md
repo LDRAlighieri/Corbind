@@ -4,7 +4,7 @@
 To add androidx appcompat bindings, import `corbind-appcompat` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.3.2'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.4.0'
 ```
 
 ## List of extensions
