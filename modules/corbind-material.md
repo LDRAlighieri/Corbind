@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add material bindings, import `corbind-material` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.3.2'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.4.0'
 ```
 
 ## List of extensions
@@ -42,6 +42,12 @@ Component | Extension | Description
                        | `negativeClicks` | Called when the user clicks the cancel button.
                        | `positiveClicks` | Called when the user confirms a valid selection.
 **NavigationView** | `itemSelections` | Called when an item in the navigation menu is selected.
+**RangeSlider** | `touches` | Called when a range slider's touch event is being started/stopped.
+**RangeSlider** | `valuesChanges` | Called a range slider's value is changed. This is called for all existing values to check all the current values use.
+**RangeSlider** | `valuesChangeEvents` | A more advanced version of the `valuesChanges`.
+**Slider** | `touches` | Called when a slider's touch event is being started/stopped.
+**Slider** | `valueChanges` | Called a slider's value is changed.
+**Slider** | `valueChangeEvents` | A more advanced version of the `valuesChanges`.
 **Snackbar** | `dismisses` | Called when the given Snackbar has been dismissed, either through a time-out, having been manually dismissed, or an action being clicked.
              | `shown` | Called when the given Snackbar is visible.
 **View**<br>(SwipeDismissBehavior) | `dismisses` | Called when view has been dismissed via swiping.
