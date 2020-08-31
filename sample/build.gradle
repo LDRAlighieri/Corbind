@@ -85,6 +85,6 @@ dependencies {
 
     implementation deps.androidx.appCompat
     implementation deps.material
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
 
 }
