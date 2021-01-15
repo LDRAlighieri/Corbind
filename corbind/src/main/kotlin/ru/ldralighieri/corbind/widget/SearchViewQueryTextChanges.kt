@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on character sequences for query text changes on [SearchView].
@@ -97,8 +97,8 @@ fun SearchView.queryTextChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
-    safeOffer(query)
-    setOnQueryTextListener(listener(scope, ::safeOffer))
+    offerCatching(query)
+    setOnQueryTextListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
@@ -116,19 +116,19 @@ fun SearchView.queryTextChanges(
  * // handle initial value
  * searchView.queryTextChanges()
  *      .onEach { /* handle query text change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * searchView.queryTextChanges()
  *      .drop(1)
  *      .onEach { /* handle query text change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun SearchView.queryTextChanges(): Flow<CharSequence> = channelFlow {
     offer(query)
-    setOnQueryTextListener(listener(this, ::offer))
+    setOnQueryTextListener(listener(this, ::offerCatching))
     awaitClose { setOnQueryTextListener(null) }
 }
 

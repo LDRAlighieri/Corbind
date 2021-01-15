@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on data change events for [RecyclerView.Adapter].
@@ -88,8 +88,8 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
-    safeOffer(this@dataChanges)
-    val dataObserver = observer(scope, this@dataChanges, ::safeOffer)
+    offerCatching(this@dataChanges)
+    val dataObserver = observer(scope, this@dataChanges, ::offerCatching)
     registerAdapterDataObserver(dataObserver)
     invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
@@ -105,19 +105,19 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
  * // handle initial value
  * adapter.dataChanges()
  *      .onEach { /* handle data change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * adapter.dataChanges()
  *      .drop(1)
  *      .onEach { /* handle data change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): Flow<T> = channelFlow {
     offer(this@dataChanges)
-    val dataObserver = observer(this, this@dataChanges, ::offer)
+    val dataObserver = observer(this, this@dataChanges, ::offerCatching)
     registerAdapterDataObserver(dataObserver)
     awaitClose { unregisterAdapterDataObserver(dataObserver) }
 }

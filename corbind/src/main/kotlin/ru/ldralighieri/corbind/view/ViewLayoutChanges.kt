@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [View] layout changes.
@@ -85,7 +85,7 @@ fun View.layoutChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::safeOffer)
+    val listener = listener(scope, ::offerCatching)
     addOnLayoutChangeListener(listener)
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
@@ -96,12 +96,12 @@ fun View.layoutChanges(
  * ```
  * view.layoutChanges()
  *      .onEach { /* handle layout change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun View.layoutChanges(): Flow<Unit> = channelFlow {
-    val listener = listener(this, ::offer)
+    val listener = listener(this, ::offerCatching)
     addOnLayoutChangeListener(listener)
     awaitClose { removeOnLayoutChangeListener(listener) }
 }

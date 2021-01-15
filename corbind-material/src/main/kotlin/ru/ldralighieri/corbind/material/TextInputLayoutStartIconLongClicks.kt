@@ -29,9 +29,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [TextInputLayout] start icon long click events.
@@ -104,7 +104,7 @@ fun TextInputLayout.startIconLongClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setStartIconOnLongClickListener(listener(scope, handled, ::safeOffer))
+    setStartIconOnLongClickListener(listener(scope, handled, ::offerCatching))
     invokeOnClose { setStartIconOnLongClickListener(null) }
 }
 
@@ -119,7 +119,7 @@ fun TextInputLayout.startIconLongClicks(
  * ```
  * textInputLayout.startIconLongClicks()
  *      .onEach { /* handle start icon long click */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -129,7 +129,7 @@ fun TextInputLayout.startIconLongClicks(
 fun TextInputLayout.startIconLongClicks(
     handled: () -> Boolean = AlwaysTrue
 ): Flow<Unit> = channelFlow {
-    setStartIconOnLongClickListener(listener(this, handled, ::offer))
+    setStartIconOnLongClickListener(listener(this, handled, ::offerCatching))
     awaitClose { setStartIconOnLongClickListener(null) }
 }
 

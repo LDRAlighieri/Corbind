@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class SliderChangeEvent(
     val view: Slider,
@@ -54,7 +54,7 @@ fun Slider.valueChangeEvents(
         for (event in channel) action(event)
     }
 
-    val event  = initialValue(this@valueChangeEvents).also { events.offer(it) }
+    val event = initialValue(this@valueChangeEvents).also { events.offer(it) }
     val listener = listener(scope, events::offer).apply { previousValue = event.previousValue }
     addOnChangeListener(listener)
     events.invokeOnClose { removeOnChangeListener(listener) }
@@ -95,9 +95,9 @@ suspend fun Slider.valueChangeEvents(
 fun Slider.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-) : ReceiveChannel<SliderChangeEvent> = corbindReceiveChannel(capacity) {
-    val event  = initialValue(this@valueChangeEvents).also { safeOffer(it) }
-    val listener = listener(scope, ::safeOffer).apply { previousValue = event.previousValue }
+): ReceiveChannel<SliderChangeEvent> = corbindReceiveChannel(capacity) {
+    val event = initialValue(this@valueChangeEvents).also { offerCatching(it) }
+    val listener = listener(scope, ::offerCatching).apply { previousValue = event.previousValue }
     addOnChangeListener(listener)
     invokeOnClose { removeOnChangeListener(listener) }
 }
@@ -113,19 +113,19 @@ fun Slider.valueChangeEvents(
  * // handle initial value
  * slider.valueChangeEvents()
  *      .onEach { /* handle value change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * slider.valueChangeEvents()
  *      .drop(1)
  *      .onEach { /* handle value change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun Slider.valueChangeEvents(): Flow<SliderChangeEvent> = channelFlow {
-    val event  = initialValue(this@valueChangeEvents).also { offer(it) }
-    val listener = listener(this, ::offer).apply { previousValue = event.previousValue }
+    val event = initialValue(this@valueChangeEvents).also { offer(it) }
+    val listener = listener(this, ::offerCatching).apply { previousValue = event.previousValue }
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }
 }

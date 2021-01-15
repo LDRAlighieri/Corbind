@@ -29,8 +29,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action when the user cancels the [MaterialDatePicker] via back button or a touch
@@ -98,7 +98,7 @@ fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::safeOffer)
+    val listener = listener(scope, ::offerCatching)
     addOnCancelListener(listener)
     invokeOnClose { removeOnCancelListener(listener) }
 }
@@ -115,12 +115,12 @@ fun <S> MaterialDatePicker<S>.cancels(
  * ```
  * materialDatePicker.cancels()
  *      .onEach { /* handle cancel event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = channelFlow {
-    val listener = listener(this, ::offer)
+    val listener = listener(this, ::offerCatching)
     addOnCancelListener(listener)
     awaitClose { removeOnCancelListener(listener) }
 }

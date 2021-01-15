@@ -17,11 +17,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
-androidExtensions {
-    experimental = true
-}
-
 android {
 
     compileSdkVersion buildConfig.compileSdk
@@ -76,6 +71,7 @@ android {
         exclude 'META-INF/atomicfu.kotlin_module'
     }
 
+    buildFeatures { viewBinding true }
 }
 
 dependencies {
@@ -85,6 +81,7 @@ dependencies {
 
     implementation deps.androidx.appCompat
     implementation deps.material
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
 
 }

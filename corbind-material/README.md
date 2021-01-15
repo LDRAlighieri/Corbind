@@ -54,7 +54,7 @@ chipGroup.checkedChanges() // Flow<Int>
       tv_message =
         if (it != View.NO_ID) "Chip #$it selected" else "No one сhip selected"
     }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

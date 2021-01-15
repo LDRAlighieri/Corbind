@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 private fun SeekBar.changes(
     scope: CoroutineScope,
@@ -60,8 +60,8 @@ private fun SeekBar.changes(
     capacity: Int,
     shouldBeFromUser: Boolean?
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    safeOffer(progress)
-    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::safeOffer))
+    offerCatching(progress)
+    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::offerCatching))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -70,7 +70,7 @@ private fun SeekBar.changes(
     shouldBeFromUser: Boolean?
 ): Flow<Int> = channelFlow {
     offer(progress)
-    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offer))
+    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offerCatching))
     awaitClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -144,13 +144,13 @@ fun SeekBar.changes(
  * // handle initial value
  * seekBar.changes()
  *      .onEach { /* handle progress value change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * seekBar.changes()
  *      .drop(1)
  *      .onEach { /* handle progress value change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
@@ -227,13 +227,13 @@ fun SeekBar.userChanges(
  * // handle initial value
  * seekBar.userChanges()
  *      .onEach { /* handle progress value change made from user */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * seekBar.userChanges()
  *      .drop(1)
  *      .onEach { /* handle progress value change made from user */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
@@ -310,13 +310,13 @@ fun SeekBar.systemChanges(
  * // handle initial value
  * seekBar.systemChanges()
  *      .onEach { /* handle progress value change made from system */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * seekBar.systemChanges()
  *      .drop(1)
  *      .onEach { /* handle progress value change made from system */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

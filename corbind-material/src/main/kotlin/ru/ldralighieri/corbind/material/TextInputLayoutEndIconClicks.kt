@@ -29,8 +29,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [TextInputLayout] end icon click events.
@@ -94,7 +94,7 @@ fun TextInputLayout.endIconClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setEndIconOnClickListener(listener(scope, ::safeOffer))
+    setEndIconOnClickListener(listener(scope, ::offerCatching))
     invokeOnClose { setEndIconOnClickListener(null) }
 }
 
@@ -109,12 +109,12 @@ fun TextInputLayout.endIconClicks(
  * ```
  * textInputLayout.endIconClicks()
  *      .onEach { /* handle end icon click */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun TextInputLayout.endIconClicks(): Flow<Unit> = channelFlow {
-    setEndIconOnClickListener(listener(this, ::offer))
+    setEndIconOnClickListener(listener(this, ::offerCatching))
     awaitClose { setEndIconOnClickListener(null) }
 }
 

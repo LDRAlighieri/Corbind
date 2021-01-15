@@ -30,8 +30,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior].
@@ -96,7 +96,7 @@ fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<View> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@dismisses)
-    behavior.setListener(listener(scope, ::safeOffer))
+    behavior.setListener(listener(scope, ::offerCatching))
     invokeOnClose { behavior.setListener(null) }
 }
 
@@ -111,13 +111,13 @@ fun View.dismisses(
  * ```
  * swipeDismissBehavior.dismisses()
  *      .onEach { /* handle dismiss */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun View.dismisses(): Flow<View> = channelFlow {
     val behavior = getBehavior(this@dismisses)
-    behavior.setListener(listener(this, ::offer))
+    behavior.setListener(listener(this, ::offerCatching))
     awaitClose { behavior.setListener(null) }
 }
 

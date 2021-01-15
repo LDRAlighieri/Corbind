@@ -92,7 +92,7 @@ combine(
     transform = { email, password -> email && password }
 )
     .onEach { bt_login.isEnabled = it }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 Handle an authorization event, which can be started by pressing a button `bt_login` or by pressing an action `EditorInfo.IME_ACTION_DONE` on the keyboard:
@@ -106,7 +106,7 @@ flowOf(
 )
   .flattenMerge()
   .onEach { /* handle an authorization event */}
-  .launchIn(scope)
+  .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

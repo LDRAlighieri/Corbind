@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class RatingBarChangeEvent(
     val view: RatingBar,
@@ -103,8 +103,8 @@ fun RatingBar.ratingChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(initialValue(this@ratingChangeEvents))
-    onRatingBarChangeListener = listener(scope, ::safeOffer)
+    offerCatching(initialValue(this@ratingChangeEvents))
+    onRatingBarChangeListener = listener(scope, ::offerCatching)
     invokeOnClose { onRatingBarChangeListener = null }
 }
 
@@ -122,19 +122,19 @@ fun RatingBar.ratingChangeEvents(
  * // handle initial value
  * ratingBar.ratingChangeEvents()
  *      .onEach { /* handle rating change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * ratingBar.ratingChangeEvents()
  *      .drop(1)
  *      .onEach { /* handle rating change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun RatingBar.ratingChangeEvents(): Flow<RatingBarChangeEvent> = channelFlow {
     offer(initialValue(this@ratingChangeEvents))
-    onRatingBarChangeListener = listener(this, ::offer)
+    onRatingBarChangeListener = listener(this, ::offerCatching)
     awaitClose { onRatingBarChangeListener = null }
 }
 

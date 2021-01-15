@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the keyboard dismiss events from [SearchEditText].
@@ -94,7 +94,7 @@ fun SearchEditText.keyboardDismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnKeyboardDismissListener(listener(scope, ::safeOffer))
+    setOnKeyboardDismissListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
@@ -109,12 +109,12 @@ fun SearchEditText.keyboardDismisses(
  * ```
  * searchEditText.keyboardDismisses()
  *      .onEach { /* handle keyboard dismiss */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun SearchEditText.keyboardDismisses(): Flow<Unit> = channelFlow {
-    setOnKeyboardDismissListener(listener(this, ::offer))
+    setOnKeyboardDismissListener(listener(this, ::offerCatching))
     awaitClose { setOnKeyboardDismissListener(null) }
 }
 

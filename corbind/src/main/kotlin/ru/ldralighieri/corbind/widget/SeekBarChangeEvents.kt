@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class SeekBarChangeEvent {
     abstract val view: SeekBar
@@ -129,8 +129,8 @@ fun SeekBar.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(initialValue(this@changeEvents))
-    setOnSeekBarChangeListener(listener(scope, ::safeOffer))
+    offerCatching(initialValue(this@changeEvents))
+    setOnSeekBarChangeListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -154,25 +154,25 @@ fun SeekBar.changeEvents(
  *              is SeekBarStopChangeEvent -> { /* handle stop change event */ }
  *          }
  *      }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * seekBar.changeEvents()
  *      .filterIsInstance<SeekBarProgressChangeEvent>()
  *      .onEach { /* handle progress change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop one event
  * seekBar.changeEvents()
  *      .drop(1)
  *      .onEach { /* handle event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun SeekBar.changeEvents(): Flow<SeekBarChangeEvent> = channelFlow {
     offer(initialValue(this@changeEvents))
-    setOnSeekBarChangeListener(listener(this, ::offer))
+    setOnSeekBarChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnSeekBarChangeListener(null) }
 }
 

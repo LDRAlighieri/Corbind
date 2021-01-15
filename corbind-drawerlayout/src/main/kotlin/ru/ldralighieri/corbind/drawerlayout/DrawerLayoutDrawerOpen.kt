@@ -29,8 +29,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the open state of the [DrawerLayout].
@@ -95,8 +95,8 @@ fun DrawerLayout.drawerOpens(
     capacity: Int = Channel.RENDEZVOUS,
     gravity: Int
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    safeOffer(isDrawerOpen(gravity))
-    val listener = listener(scope, gravity, ::safeOffer)
+    offerCatching(isDrawerOpen(gravity))
+    val listener = listener(scope, gravity, ::offerCatching)
     addDrawerListener(listener)
     invokeOnClose { removeDrawerListener(listener) }
 }
@@ -112,13 +112,13 @@ fun DrawerLayout.drawerOpens(
  * // handle initial value
  * drawerLayout.drawerOpens()
  *      .onEach { /* handle open state */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * adapter.dataChanges()
  *      .drop(1)
  *      .onEach { /* handle open state */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param gravity Gravity of the drawer to check
@@ -128,7 +128,7 @@ fun DrawerLayout.drawerOpens(
     gravity: Int
 ): Flow<Boolean> = channelFlow {
     offer(isDrawerOpen(gravity))
-    val listener = listener(this, gravity, ::offer)
+    val listener = listener(this, gravity, ::offerCatching)
     addDrawerListener(listener)
     awaitClose { removeDrawerListener(listener) }
 }

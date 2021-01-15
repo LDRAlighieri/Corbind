@@ -19,7 +19,7 @@ Component | Extension | Description
 ```kotlin
 scrollView.scrollChangeEvents() // Flow<ViewScrollChangeEvent>
     .onEach { /* handle scroll change events */ }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

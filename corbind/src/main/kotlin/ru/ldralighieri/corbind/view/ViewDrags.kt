@@ -29,9 +29,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [DragEvent] for [View].
@@ -102,7 +102,7 @@ fun View.drags(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (DragEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<DragEvent> = corbindReceiveChannel(capacity) {
-    setOnDragListener(listener(scope, handled, ::safeOffer))
+    setOnDragListener(listener(scope, handled, ::offerCatching))
     invokeOnClose { setOnDragListener(null) }
 }
 
@@ -116,7 +116,7 @@ fun View.drags(
  * ```
  * view.drags()
  *      .onEach { /* handle drag */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying
@@ -126,7 +126,7 @@ fun View.drags(
 fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue
 ): Flow<DragEvent> = channelFlow {
-    setOnDragListener(listener(this, handled, ::offer))
+    setOnDragListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnDragListener(null) }
 }
 

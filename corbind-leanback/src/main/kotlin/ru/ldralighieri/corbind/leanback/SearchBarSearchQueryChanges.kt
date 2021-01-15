@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on String values for search query changes on [SearchBar].
@@ -94,7 +94,7 @@ fun SearchBar.searchQueryChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<String> = corbindReceiveChannel(capacity) {
-    setSearchBarListener(listener(scope, ::safeOffer))
+    setSearchBarListener(listener(scope, ::offerCatching))
     invokeOnClose { setSearchBarListener(null) }
 }
 
@@ -109,12 +109,12 @@ fun SearchBar.searchQueryChanges(
  * ```
  * searchBar.searchQueryChanges()
  *      .onEach { /* handle query change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun SearchBar.searchQueryChanges(): Flow<String> = channelFlow {
-    setSearchBarListener(listener(this, ::offer))
+    setSearchBarListener(listener(this, ::offerCatching))
     awaitClose { setSearchBarListener(null) }
 }
 

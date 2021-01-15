@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 import java.util.*
 
 data class CalendarViewDateChangeEvent(
@@ -106,8 +106,8 @@ fun CalendarView.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CalendarViewDateChangeEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(initialValue(this@dateChangeEvents))
-    setOnDateChangeListener(listener(scope, ::safeOffer))
+    offerCatching(initialValue(this@dateChangeEvents))
+    setOnDateChangeListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnDateChangeListener(null) }
 }
 
@@ -125,19 +125,19 @@ fun CalendarView.dateChangeEvents(
  * // handle initial value
  * calendarView.dateChangeEvents()
  *      .onEach { /* handle date change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * calendarView.dateChangeEvents()
  *      .drop(1)
  *      .onEach { /* handle date change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun CalendarView.dateChangeEvents(): Flow<CalendarViewDateChangeEvent> = channelFlow {
     offer(initialValue(this@dateChangeEvents))
-    setOnDateChangeListener(listener(this, ::offer))
+    setOnDateChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnDateChangeListener(null) }
 }
 

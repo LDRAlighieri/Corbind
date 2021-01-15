@@ -28,9 +28,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class MenuItemActionViewEvent {
     abstract val menuItem: MenuItem
@@ -129,7 +129,7 @@ fun MenuItem.actionViewEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel(capacity) {
-    setOnActionExpandListener(listener(scope, handled, ::safeOffer))
+    setOnActionExpandListener(listener(scope, handled, ::offerCatching))
     invokeOnClose { setOnActionExpandListener(null) }
 }
 
@@ -150,13 +150,13 @@ fun MenuItem.actionViewEvents(
  *              is MenuItemActionViewExpandEvent -> { /* handle expand event */ }
  *          }
  *      }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * menuItem.actionViewEvents()
  *      .filterIsInstance<MenuItemActionViewCollapseEvent>()
  *      .onEach { /* handle collapse event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -166,7 +166,7 @@ fun MenuItem.actionViewEvents(
 fun MenuItem.actionViewEvents(
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
 ): Flow<MenuItemActionViewEvent> = channelFlow {
-    setOnActionExpandListener(listener(this, handled, ::offer))
+    setOnActionExpandListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnActionExpandListener(null) }
 }
 

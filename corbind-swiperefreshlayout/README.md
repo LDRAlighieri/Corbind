@@ -19,7 +19,7 @@ Component | Extension | Description
 ```kotlin
 swipe.refreshes() // Flow<Unit>
     .onEach { /* handle refresh events */ }
-    .launchIn(this)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

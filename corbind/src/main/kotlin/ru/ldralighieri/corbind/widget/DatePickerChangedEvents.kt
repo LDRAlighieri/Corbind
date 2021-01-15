@@ -30,8 +30,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class DateChangedEvent(
     val view: DatePicker,
@@ -109,8 +109,8 @@ fun DatePicker.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<DateChangedEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
-    setOnDateChangedListener(listener(scope, ::safeOffer))
+    offerCatching(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
+    setOnDateChangedListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnDateChangedListener(null) }
 }
 
@@ -128,20 +128,20 @@ fun DatePicker.dateChangeEvents(
  * // handle initial value
  * datePicker.dateChangeEvents()
  *      .onEach { /* handle date changed event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * datePicker.dateChangeEvents()
  *      .drop(1)
  *      .onEach { /* handle date changed event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult
 fun DatePicker.dateChangeEvents(): Flow<DateChangedEvent> = channelFlow {
     offer(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
-    setOnDateChangedListener(listener(this, ::offer))
+    setOnDateChangedListener(listener(this, ::offerCatching))
     awaitClose { setOnDateChangedListener(null) }
 }
 

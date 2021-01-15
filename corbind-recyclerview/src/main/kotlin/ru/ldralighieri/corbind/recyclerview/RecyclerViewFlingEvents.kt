@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class RecyclerViewFlingEvent(
     val view: RecyclerView,
@@ -100,7 +100,7 @@ fun RecyclerView.flingEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel(capacity) {
-    onFlingListener = listener(scope, this@flingEvents, ::safeOffer)
+    onFlingListener = listener(scope, this@flingEvents, ::offerCatching)
     invokeOnClose { onFlingListener = null }
 }
 
@@ -115,12 +115,12 @@ fun RecyclerView.flingEvents(
  * ```
  * recyclerView.flingEvents()
  *      .onEach { /* handle fling event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow {
-    onFlingListener = listener(this, this@flingEvents, ::offer)
+    onFlingListener = listener(this, this@flingEvents, ::offerCatching)
     awaitClose { onFlingListener = null }
 }
 

@@ -30,8 +30,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class AdapterViewSelectionEvent {
     abstract val view: AdapterView<*>
@@ -127,8 +127,8 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(scope, ::safeOffer)
+    offerCatching(initialValue(this@selectionEvents))
+    onItemSelectedListener = listener(scope, ::offerCatching)
     invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -151,25 +151,25 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  *              is AdapterViewNothingSelectionEvent -> { /* handle nothing selection event */ }
  *          }
  *      }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * adapterView.selectionEvents()
  *      .filterIsInstance<AdapterViewItemSelectionEvent>()
  *      .onEach { /* handle item selection event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * adapterView.selectionEvents()
  *      .drop(1)
  *      .onEach { /* handle selection event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(): Flow<AdapterViewSelectionEvent> = channelFlow {
     offer(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(this, ::offer)
+    onItemSelectedListener = listener(this, ::offerCatching)
     awaitClose { onItemSelectedListener = null }
 }
 

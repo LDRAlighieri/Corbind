@@ -23,7 +23,7 @@ Component | Extension | Description
 ```kotlin
 rv.scrollStateChanges() // Flow<Int>
     .onEach { /* handle RecyclerView scroll state change events */ }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

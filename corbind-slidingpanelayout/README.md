@@ -22,7 +22,7 @@ slider.panelOpens() // Flow<Boolean>
     .onEach { isOpen ->
       tv_message = "Panel completely ${ if (isOpen) "open" else "close"}"
     }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

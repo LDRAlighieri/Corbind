@@ -80,7 +80,7 @@ If you need to get a text change events of EditText widget, simple use case with
 findViewById<EditText>(R.id.et_name)
     .textChanges() // Flow<CharSequence>
     .onEach { /* handle text change events */ }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 If you prefer hot [ReceiveChannel][channel] and you need to get a ViewPager page selection events, then the use case will transform in something like this:
@@ -116,7 +116,7 @@ combine(
     transform = { email, password -> email && password }
 )
     .onEach { bt_login.isEnabled = it }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in module descriptions and in source code

@@ -29,9 +29,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on key events for [View].
@@ -102,7 +102,7 @@ fun View.keys(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (KeyEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<KeyEvent> = corbindReceiveChannel(capacity) {
-    setOnKeyListener(listener(scope, handled, ::safeOffer))
+    setOnKeyListener(listener(scope, handled, ::offerCatching))
     invokeOnClose { setOnKeyListener(null) }
 }
 
@@ -116,7 +116,7 @@ fun View.keys(
  * ```
  * view.keys()
  *      .onEach { /* handle key */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -126,7 +126,7 @@ fun View.keys(
 fun View.keys(
     handled: (KeyEvent) -> Boolean = AlwaysTrue
 ): Flow<KeyEvent> = channelFlow {
-    setOnKeyListener(listener(this, handled, ::offer))
+    setOnKeyListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnKeyListener(null) }
 }
 

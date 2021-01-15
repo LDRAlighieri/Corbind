@@ -30,8 +30,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class TextViewAfterTextChangeEvent(
     val view: TextView,
@@ -96,8 +96,8 @@ fun TextView.afterTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewAfterTextChangeEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(initialValue(this@afterTextChangeEvents))
-    val listener = listener(scope, this@afterTextChangeEvents, ::safeOffer)
+    offerCatching(initialValue(this@afterTextChangeEvents))
+    val listener = listener(scope, this@afterTextChangeEvents, ::offerCatching)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -113,19 +113,19 @@ fun TextView.afterTextChangeEvents(
  * // handle initial value
  * textView.afterTextChangeEvents()
  *      .onEach { /* handle after text change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * textView.afterTextChangeEvents()
  *      .drop(1)
  *      .onEach { /* handle after text change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun TextView.afterTextChangeEvents(): Flow<TextViewAfterTextChangeEvent> = channelFlow {
     offer(initialValue(this@afterTextChangeEvents))
-    val listener = listener(this, this@afterTextChangeEvents, ::offer)
+    val listener = listener(this, this@afterTextChangeEvents, ::offerCatching)
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }
 }

@@ -29,8 +29,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on checked view ID changes in [ChipGroup].
@@ -101,8 +101,8 @@ fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@checkedChanges)
-    safeOffer(checkedChipId)
-    setOnCheckedChangeListener(listener(scope, ::safeOffer))
+    offerCatching(checkedChipId)
+    setOnCheckedChangeListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -122,20 +122,20 @@ fun ChipGroup.checkedChanges(
  * // handle initial value
  * chipGroup.checkedChanges()
  *      .onEach { /* handle checked view */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * chipGroup.checkedChanges()
  *      .drop(1)
  *      .onEach { /* handle checked view */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun ChipGroup.checkedChanges(): Flow<Int> = channelFlow {
     checkSelectionMode(this@checkedChanges)
     offer(checkedChipId)
-    setOnCheckedChangeListener(listener(this, ::offer))
+    setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }
 }
 

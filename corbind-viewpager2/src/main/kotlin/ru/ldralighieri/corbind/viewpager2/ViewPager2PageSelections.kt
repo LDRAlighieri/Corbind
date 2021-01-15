@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on page selected events on [ViewPager2].
@@ -88,8 +88,8 @@ fun ViewPager2.pageSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    safeOffer(currentItem)
-    val callback = callback(scope, ::safeOffer)
+    offerCatching(currentItem)
+    val callback = callback(scope, ::offerCatching)
     registerOnPageChangeCallback(callback)
     invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -105,19 +105,19 @@ fun ViewPager2.pageSelections(
  * // handle initial value
  * viewPager2.pageSelections()
  *      .onEach { /* handle selected page */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * viewPager2.pageSelections()
  *      .drop(1)
  *      .onEach { /* handle selected page */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun ViewPager2.pageSelections(): Flow<Int> = channelFlow {
     offer(currentItem)
-    val callback = callback(this, ::offer)
+    val callback = callback(this, ::offerCatching)
     registerOnPageChangeCallback(callback)
     awaitClose { unregisterOnPageChangeCallback(callback) }
 }

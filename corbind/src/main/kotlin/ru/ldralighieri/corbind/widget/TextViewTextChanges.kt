@@ -30,8 +30,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on character sequences for text changes on [TextView].
@@ -91,8 +91,8 @@ fun TextView.textChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
-    safeOffer(text)
-    val listener = listener(scope, ::safeOffer)
+    offerCatching(text)
+    val listener = listener(scope, ::offerCatching)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -108,19 +108,19 @@ fun TextView.textChanges(
  * // handle initial value
  * textView.textChanges()
  *      .onEach { /* handle text changes */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * textView.textChanges()
  *      .drop(1)
  *      .onEach { /* handle text changes */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun TextView.textChanges(): Flow<CharSequence> = channelFlow {
     offer(text)
-    val listener = listener(this, ::offer)
+    val listener = listener(this, ::offerCatching)
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }
 }

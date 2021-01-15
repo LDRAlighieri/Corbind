@@ -21,7 +21,7 @@ drawer.drawerOpens() // Flow<Boolean>
     .onEach { isOpen ->
       tv_message = "Drawer completely ${ if (isOpen) "open" else "close"}"
     }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [MaterialButton] check state change.
@@ -96,8 +96,8 @@ fun MaterialButton.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     checkCheckableState(this@checkedChanges)
-    safeOffer(isChecked)
-    val listener = listener(scope, ::safeOffer)
+    offerCatching(isChecked)
+    val listener = listener(scope, ::offerCatching)
     addOnCheckedChangeListener(listener)
     invokeOnClose { removeOnCheckedChangeListener(listener) }
 }
@@ -115,20 +115,20 @@ fun MaterialButton.checkedChanges(
  * // handle initial value
  * materialButton.checkedChanges()
  *      .onEach { /* handle check state change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * materialButton.checkedChanges()
  *      .drop(1)
  *      .onEach { /* handle check state change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun MaterialButton.checkedChanges(): Flow<Boolean> = channelFlow {
     checkCheckableState(this@checkedChanges)
     offer(isChecked)
-    val listener = listener(this, ::offer)
+    val listener = listener(this, ::offerCatching)
     addOnCheckedChangeListener(listener)
     awaitClose { removeOnCheckedChangeListener(listener) }
 }
