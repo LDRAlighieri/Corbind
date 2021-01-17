@@ -137,8 +137,10 @@ private fun listener(
     override fun onScrollStateChanged(absListView: AbsListView, scrollState: Int) {
         currentScrollState = scrollState
         if (scope.isActive) {
-            val event = AbsListViewScrollEvent(absListView, scrollState,
-                    absListView.firstVisiblePosition, absListView.childCount, absListView.count)
+            val event = AbsListViewScrollEvent(
+                absListView, scrollState,
+                absListView.firstVisiblePosition, absListView.childCount, absListView.count
+            )
             emitter(event)
         }
     }
@@ -150,8 +152,10 @@ private fun listener(
         totalItemCount: Int
     ) {
         if (scope.isActive) {
-            val event = AbsListViewScrollEvent(absListView, currentScrollState, firstVisibleItem,
-                    visibleItemCount, totalItemCount)
+            val event = AbsListViewScrollEvent(
+                absListView, currentScrollState, firstVisibleItem,
+                visibleItemCount, totalItemCount
+            )
             emitter(event)
         }
     }

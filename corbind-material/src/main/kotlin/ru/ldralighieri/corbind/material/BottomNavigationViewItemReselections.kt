@@ -104,8 +104,6 @@ fun BottomNavigationView.itemReselections(
  * *Warning:* The created flow uses [BottomNavigationView.setOnNavigationItemReselectedListener].
  * Only one flow can be used at a time.
  *
- * *Note:* A value will be emitted immediately on collect.
- *
  * Example:
  *
  * ```

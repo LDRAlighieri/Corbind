@@ -122,7 +122,7 @@ fun BottomNavigationView.itemSelections(
  * bottomNavigationView.itemSelections()
  *      .drop(1)
  *      .onEach { /* handle selected item */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult

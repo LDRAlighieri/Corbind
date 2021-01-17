@@ -25,9 +25,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -66,13 +67,10 @@ private fun SeekBar.changes(
 }
 
 @CheckResult
-private fun SeekBar.changes(
-    shouldBeFromUser: Boolean?
-): Flow<Int> = channelFlow {
-    offer(progress)
+private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> = channelFlow {
     setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offerCatching))
     awaitClose { setOnSeekBarChangeListener(null) }
-}
+}.asInitialValueFlow(progress)
 
 /**
  * Perform an action on progress value changes on [SeekBar].
@@ -148,13 +146,13 @@ fun SeekBar.changes(
  *
  * // drop initial value
  * seekBar.changes()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle progress value change */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun SeekBar.changes(): Flow<Int> = changes(null)
+fun SeekBar.changes(): InitialValueFlow<Int> = changes(null)
 
 /**
  * Perform an action on progress value changes on [SeekBar] that were made only from the user.
@@ -231,13 +229,13 @@ fun SeekBar.userChanges(
  *
  * // drop initial value
  * seekBar.userChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle progress value change made from user */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun SeekBar.userChanges(): Flow<Int> = changes(true)
+fun SeekBar.userChanges(): InitialValueFlow<Int> = changes(true)
 
 /**
  * Perform an action on progress value changes on [SeekBar] that were made only from the system.
@@ -314,13 +312,13 @@ fun SeekBar.systemChanges(
  *
  * // drop initial value
  * seekBar.systemChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle progress value change made from system */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun SeekBar.systemChanges(): Flow<Int> = changes(false)
+fun SeekBar.systemChanges(): InitialValueFlow<Int> = changes(false)
 
 @CheckResult
 private fun listener(

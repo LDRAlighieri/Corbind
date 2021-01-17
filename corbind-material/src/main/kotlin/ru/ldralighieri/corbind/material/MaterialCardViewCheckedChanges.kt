@@ -25,9 +25,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -119,18 +120,17 @@ fun MaterialCardView.checkedChanges(
  *
  * // drop initial value
  * materialCardView.checkedChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle check change */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun MaterialCardView.checkedChanges(): Flow<Boolean> = channelFlow {
+fun MaterialCardView.checkedChanges(): InitialValueFlow<Boolean> = channelFlow {
     checkCheckableState(this@checkedChanges)
-    offer(isChecked)
     setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }
-}
+}.asInitialValueFlow(isChecked)
 
 private fun checkCheckableState(card: MaterialCardView) {
     check(card.isCheckable) { "The MaterialCardView is not checkable." }

@@ -16,12 +16,18 @@
 
 package ru.ldralighieri.corbind.internal
 
-import androidx.annotation.RestrictTo
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-inline fun <T> corbindReceiveChannel(
-    capacity: Int = Channel.RENDEZVOUS,
-    block: Channel<T>.() -> Unit
-): ReceiveChannel<T> = Channel<T>(capacity).apply(block)
+class InitialValueFlow<T>(private val flow: Flow<T>) : Flow<T> by flow {
+    fun dropInitialValue(): Flow<T> = drop(1)
+    suspend fun asStateFlow(scope: CoroutineScope): StateFlow<T> = stateIn(scope = scope)
+}
+
+fun <T> Flow<T>.asInitialValueFlow(value: T): InitialValueFlow<T> = InitialValueFlow(
+    onStart { emit(value) }
+)

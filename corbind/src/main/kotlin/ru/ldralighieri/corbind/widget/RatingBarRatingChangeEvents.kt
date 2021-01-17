@@ -25,9 +25,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -126,17 +127,16 @@ fun RatingBar.ratingChangeEvents(
  *
  * // drop initial value
  * ratingBar.ratingChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle rating change event */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun RatingBar.ratingChangeEvents(): Flow<RatingBarChangeEvent> = channelFlow {
-    offer(initialValue(this@ratingChangeEvents))
+fun RatingBar.ratingChangeEvents(): InitialValueFlow<RatingBarChangeEvent> = channelFlow {
     onRatingBarChangeListener = listener(this, ::offerCatching)
     awaitClose { onRatingBarChangeListener = null }
-}
+}.asInitialValueFlow(initialValue(ratingBar = this))
 
 @CheckResult
 private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =

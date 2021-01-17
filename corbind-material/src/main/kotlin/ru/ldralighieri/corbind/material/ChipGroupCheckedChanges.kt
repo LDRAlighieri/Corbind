@@ -26,9 +26,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -126,18 +127,17 @@ fun ChipGroup.checkedChanges(
  *
  * // drop initial value
  * chipGroup.checkedChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle checked view */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun ChipGroup.checkedChanges(): Flow<Int> = channelFlow {
+fun ChipGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow {
     checkSelectionMode(this@checkedChanges)
-    offer(checkedChipId)
     setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }
-}
+}.asInitialValueFlow(checkedChipId)
 
 private fun checkSelectionMode(group: ChipGroup) {
     check(group.isSingleSelection) { "The ChipGroup is not in single selection mode." }

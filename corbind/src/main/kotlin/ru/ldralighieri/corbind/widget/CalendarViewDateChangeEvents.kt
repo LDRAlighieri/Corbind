@@ -25,12 +25,13 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
-import java.util.*
+import java.util.Calendar
 
 data class CalendarViewDateChangeEvent(
     val view: CalendarView,
@@ -129,17 +130,16 @@ fun CalendarView.dateChangeEvents(
  *
  * // drop initial value
  * calendarView.dateChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle date change event */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun CalendarView.dateChangeEvents(): Flow<CalendarViewDateChangeEvent> = channelFlow {
-    offer(initialValue(this@dateChangeEvents))
+fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> = channelFlow {
     setOnDateChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnDateChangeListener(null) }
-}
+}.asInitialValueFlow(initialValue(calendar = this))
 
 @CheckResult
 private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent =

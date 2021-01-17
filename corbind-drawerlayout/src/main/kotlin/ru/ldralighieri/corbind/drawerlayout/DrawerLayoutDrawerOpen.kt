@@ -26,9 +26,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -116,22 +117,19 @@ fun DrawerLayout.drawerOpens(
  *
  * // drop initial value
  * adapter.dataChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle open state */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  *
  * @param gravity Gravity of the drawer to check
  */
 @CheckResult
-fun DrawerLayout.drawerOpens(
-    gravity: Int
-): Flow<Boolean> = channelFlow {
-    offer(isDrawerOpen(gravity))
+fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = channelFlow {
     val listener = listener(this, gravity, ::offerCatching)
     addDrawerListener(listener)
     awaitClose { removeDrawerListener(listener) }
-}
+}.asInitialValueFlow(isDrawerOpen(gravity))
 
 @CheckResult
 private fun listener(

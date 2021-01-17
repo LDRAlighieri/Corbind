@@ -25,9 +25,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -104,7 +105,7 @@ fun NumberPicker.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<NumberPickerValueChangeEvent> = corbindReceiveChannel(capacity) {
-    offer(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
+    offerCatching(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
     setOnValueChangedListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnValueChangedListener(null) }
 }
@@ -128,17 +129,16 @@ fun NumberPicker.valueChangeEvents(
  *
  * // drop initial value
  * numberPicker.valueChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle value change event */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun NumberPicker.valueChangeEvents(): Flow<NumberPickerValueChangeEvent> = channelFlow {
-    offer(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
+fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEvent> = channelFlow {
     setOnValueChangedListener(listener(this, ::offerCatching))
     awaitClose { setOnValueChangedListener(null) }
-}
+}.asInitialValueFlow(NumberPickerValueChangeEvent(picker = this, value, value))
 
 @CheckResult
 private fun listener(

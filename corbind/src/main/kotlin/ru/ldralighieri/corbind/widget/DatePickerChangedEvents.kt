@@ -27,9 +27,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -132,18 +133,17 @@ fun DatePicker.dateChangeEvents(
  *
  * // drop initial value
  * datePicker.dateChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle date changed event */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult
-fun DatePicker.dateChangeEvents(): Flow<DateChangedEvent> = channelFlow {
-    offer(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
+fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> = channelFlow {
     setOnDateChangedListener(listener(this, ::offerCatching))
     awaitClose { setOnDateChangedListener(null) }
-}
+}.asInitialValueFlow(DateChangedEvent(view = this, year, month, dayOfMonth))
 
 @CheckResult
 private fun listener(

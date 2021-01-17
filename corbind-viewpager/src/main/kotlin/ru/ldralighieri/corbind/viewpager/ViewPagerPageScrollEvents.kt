@@ -125,8 +125,10 @@ private fun listener(
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
         if (scope.isActive) {
-            val event = ViewPagerPageScrollEvent(viewPager, position, positionOffset,
-                    positionOffsetPixels)
+            val event = ViewPagerPageScrollEvent(
+                viewPager, position, positionOffset,
+                positionOffsetPixels
+            )
             emitter(event)
         }
     }

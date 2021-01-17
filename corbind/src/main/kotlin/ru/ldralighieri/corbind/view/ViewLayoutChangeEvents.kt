@@ -127,8 +127,11 @@ private fun listener(
     emitter: (ViewLayoutChangeEvent) -> Boolean
 ) = View.OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
     if (scope.isActive) {
-        emitter(ViewLayoutChangeEvent(v, left, top, right, bottom, oldLeft, oldTop, oldRight,
-                oldBottom)
+        emitter(
+            ViewLayoutChangeEvent(
+                v, left, top, right, bottom, oldLeft, oldTop, oldRight,
+                oldBottom
+            )
         )
     }
 }

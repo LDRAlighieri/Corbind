@@ -24,8 +24,12 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.*
-import ru.ldralighieri.corbind.sample.core.CorbindActivity
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 import ru.ldralighieri.corbind.sample.core.extensions.hideSoftInput
 import ru.ldralighieri.corbind.sample.databinding.ActivityLoginBinding
 import ru.ldralighieri.corbind.swiperefreshlayout.refreshes

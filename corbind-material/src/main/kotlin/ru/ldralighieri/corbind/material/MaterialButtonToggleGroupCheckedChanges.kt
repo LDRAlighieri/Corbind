@@ -27,9 +27,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -130,23 +131,24 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
  *
  * // drop initial value
  * materialButtonToggleGroup.buttonCheckedChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle check change */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun MaterialButtonToggleGroup.buttonCheckedChanges(): Flow<Int> = channelFlow {
+fun MaterialButtonToggleGroup.buttonCheckedChanges(): InitialValueFlow<Int> = channelFlow {
     checkSelectionMode(this@buttonCheckedChanges)
-    offer(checkedButtonId)
     val listener = listener(this, ::offerCatching)
     addOnButtonCheckedListener(listener)
     awaitClose { removeOnButtonCheckedListener(listener) }
-}
+}.asInitialValueFlow(checkedButtonId)
 
 private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
-    check(group.isSingleSelection) { "The MaterialButtonToggleGroup is not in single selection mode. " +
-        "Use `buttonCheckedChangeEvents` extension instead" }
+    check(group.isSingleSelection) {
+        "The MaterialButtonToggleGroup is not in single selection mode. " +
+            "Use `buttonCheckedChangeEvents` extension instead"
+    }
 }
 
 @CheckResult

@@ -50,7 +50,8 @@ Component | Extension | Description
             | `itemLongClickEvents` | A more advanced version of the `itemLongClicks`.
             | `itemSelections` | Called when an item in this view has been selected.
             | `selectionEvents` | A more advanced version of the `itemSelections`.
-**AutoCompleteTextView** | `itemClickEvents` | Called when an item in AdapterView has been clicked.
+**AutoCompleteTextView** | `dismisses` | Called whenever the AutoCompleteTextView's list of completion options has been dismissed.
+                         | `itemClickEvents` | Called when an item in AdapterView has been clicked.
 **CalendarView** | `dateChangeEvents` | Called upon change of the selected day.
 **CompoundButton** | `checkedChanges` | Called when the checked state of a compound button has changed.
 **DatePicker** | `dateChangeEvents` | Called upon a date change.

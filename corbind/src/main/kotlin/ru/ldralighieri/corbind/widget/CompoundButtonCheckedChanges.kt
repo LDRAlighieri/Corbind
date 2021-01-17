@@ -25,9 +25,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -119,17 +120,16 @@ fun CompoundButton.checkedChanges(
  *
  * // drop initial value
  * compoundButton.checkedChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle checked change */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun CompoundButton.checkedChanges(): Flow<Boolean> = channelFlow {
-    offer(isChecked)
+fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow {
     setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }
-}
+}.asInitialValueFlow(isChecked)
 
 @CheckResult
 private fun listener(

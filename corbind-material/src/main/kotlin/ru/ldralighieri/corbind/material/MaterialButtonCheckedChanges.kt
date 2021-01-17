@@ -25,9 +25,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -119,19 +120,18 @@ fun MaterialButton.checkedChanges(
  *
  * // drop initial value
  * materialButton.checkedChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle check state change */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun MaterialButton.checkedChanges(): Flow<Boolean> = channelFlow {
+fun MaterialButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow {
     checkCheckableState(this@checkedChanges)
-    offer(isChecked)
     val listener = listener(this, ::offerCatching)
     addOnCheckedChangeListener(listener)
     awaitClose { removeOnCheckedChangeListener(listener) }
-}
+}.asInitialValueFlow(isChecked)
 
 private fun checkCheckableState(button: MaterialButton) {
     check(button.isCheckable) { "The MaterialButton is not in checkable state" }

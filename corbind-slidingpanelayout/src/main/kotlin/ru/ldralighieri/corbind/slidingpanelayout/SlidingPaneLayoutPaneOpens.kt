@@ -26,9 +26,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -121,17 +122,16 @@ fun SlidingPaneLayout.panelOpens(
  *
  * // drop initial value
  * slidingPaneLayout.panelOpens()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle open state */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun SlidingPaneLayout.panelOpens(): Flow<Boolean> = channelFlow {
-    offer(isOpen)
+fun SlidingPaneLayout.panelOpens(): InitialValueFlow<Boolean> = channelFlow {
     setPanelSlideListener(listener(this, ::offerCatching))
     awaitClose { setPanelSlideListener(null) }
-}
+}.asInitialValueFlow(isOpen)
 
 @CheckResult
 private fun listener(

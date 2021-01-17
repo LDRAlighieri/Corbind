@@ -132,8 +132,10 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(): Flow<MaterialButtonCh
     }
 
 private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
-    check(!group.isSingleSelection) { "The MaterialButtonToggleGroup is in single selection mode. " +
-        "Use `buttonCheckedChanges` extension instead" }
+    check(!group.isSingleSelection) {
+        "The MaterialButtonToggleGroup is in single selection mode. " +
+            "Use `buttonCheckedChanges` extension instead"
+    }
 }
 
 @CheckResult

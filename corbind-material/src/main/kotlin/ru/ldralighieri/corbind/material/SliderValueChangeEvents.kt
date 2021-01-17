@@ -25,9 +25,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -96,7 +97,7 @@ fun Slider.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SliderChangeEvent> = corbindReceiveChannel(capacity) {
-    val event = initialValue(this@valueChangeEvents).also { offerCatching(it) }
+    val event = initialValue(this@valueChangeEvents).also(::offerCatching)
     val listener = listener(scope, ::offerCatching).apply { previousValue = event.previousValue }
     addOnChangeListener(listener)
     invokeOnClose { removeOnChangeListener(listener) }
@@ -117,18 +118,17 @@ fun Slider.valueChangeEvents(
  *
  * // drop initial value
  * slider.valueChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle value change event */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun Slider.valueChangeEvents(): Flow<SliderChangeEvent> = channelFlow {
-    val event = initialValue(this@valueChangeEvents).also { offer(it) }
-    val listener = listener(this, ::offerCatching).apply { previousValue = event.previousValue }
+fun Slider.valueChangeEvents(): InitialValueFlow<SliderChangeEvent> = channelFlow {
+    val listener = listener(this, ::offerCatching).apply { previousValue = value }
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }
-}
+}.asInitialValueFlow(initialValue(slider = this))
 
 @CheckResult
 private fun initialValue(slider: Slider): SliderChangeEvent =

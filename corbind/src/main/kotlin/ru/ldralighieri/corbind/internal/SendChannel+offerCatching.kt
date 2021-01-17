@@ -17,11 +17,11 @@
 package ru.ldralighieri.corbind.internal
 
 import androidx.annotation.RestrictTo
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.SendChannel
 
+// Since offer() can throw when the channel is closed (channel can close before the block within
+// awaitClose), wrap `offer` calls inside `runCatching`.
+// See: https://github.com/Kotlin/kotlinx.coroutines/issues/974
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-inline fun <T> corbindReceiveChannel(
-    capacity: Int = Channel.RENDEZVOUS,
-    block: Channel<T>.() -> Unit
-): ReceiveChannel<T> = Channel<T>(capacity).apply(block)
+fun <T> SendChannel<T>.offerCatching(element: T): Boolean =
+    runCatching { offer(element) }.getOrDefault(false)

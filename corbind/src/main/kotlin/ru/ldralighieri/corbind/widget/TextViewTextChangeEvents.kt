@@ -27,9 +27,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -120,22 +121,21 @@ fun TextView.textChangeEvents(
  *
  * // drop initial value
  * textView.textChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle text change event */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun TextView.textChangeEvents(): Flow<TextViewTextChangeEvent> = channelFlow {
-    offer(initialValue(this@textChangeEvents))
+fun TextView.textChangeEvents(): InitialValueFlow<TextViewTextChangeEvent> = channelFlow {
     val listener = listener(this, this@textChangeEvents, ::offerCatching)
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }
-}
+}.asInitialValueFlow(initialValue(textView = this))
 
 @CheckResult
 private fun initialValue(textView: TextView): TextViewTextChangeEvent =
-        TextViewTextChangeEvent(textView, textView.editableText, 0, 0, 0)
+    TextViewTextChangeEvent(textView, textView.editableText, 0, 0, 0)
 
 @CheckResult
 private fun listener(

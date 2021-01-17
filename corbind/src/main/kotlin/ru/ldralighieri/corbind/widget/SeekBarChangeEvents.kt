@@ -25,9 +25,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -160,25 +161,24 @@ fun SeekBar.changeEvents(
  * seekBar.changeEvents()
  *      .filterIsInstance<SeekBarProgressChangeEvent>()
  *      .onEach { /* handle progress change event */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  *
  * // drop one event
  * seekBar.changeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle event */ }
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun SeekBar.changeEvents(): Flow<SeekBarChangeEvent> = channelFlow {
-    offer(initialValue(this@changeEvents))
+fun SeekBar.changeEvents(): InitialValueFlow<SeekBarChangeEvent> = channelFlow {
     setOnSeekBarChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnSeekBarChangeListener(null) }
-}
+}.asInitialValueFlow(initialValue(seekBar = this))
 
 @CheckResult
 private fun initialValue(seekBar: SeekBar): SeekBarChangeEvent =
-        SeekBarProgressChangeEvent(seekBar, seekBar.progress, false)
+    SeekBarProgressChangeEvent(seekBar, seekBar.progress, false)
 
 @CheckResult
 private fun listener(

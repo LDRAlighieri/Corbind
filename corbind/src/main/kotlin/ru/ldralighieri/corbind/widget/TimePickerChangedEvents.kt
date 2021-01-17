@@ -27,9 +27,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
@@ -131,18 +132,17 @@ fun TimePicker.timeChangeEvents(
  *
  * // drop initial value
  * timePicker.timeChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle time changed event */ }
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun TimePicker.timeChangeEvents(): Flow<TimeChangedEvent> = channelFlow {
-    offer(TimeChangedEvent(this@timeChangeEvents, hour, minute))
+fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = channelFlow {
     setOnTimeChangedListener(listener(this, ::offerCatching))
     awaitClose { setOnTimeChangedListener(null) }
-}
+}.asInitialValueFlow(TimeChangedEvent(view = this, hour, minute))
 
 @CheckResult
 private fun listener(
