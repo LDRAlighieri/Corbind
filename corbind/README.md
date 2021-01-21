@@ -14,6 +14,11 @@ Component | Extension | Description
 --|---|--
 **DatePickerDialog** | `dateSetEvents` | Called when the user sets the date
 
+### content
+Component | Extension | Description
+--|---|--
+**Context** | `receivesBroadcast` | Called with any broadcast Intent that matches filter
+
 ### view
 
 Component | Extension | Description
