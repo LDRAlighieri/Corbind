@@ -32,6 +32,7 @@ implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-core:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-leanback:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-lifecycle:1.5.0'
 implementation 'ru.ldralighieri.corbind:corbind-navigation:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.4.0'
@@ -64,7 +65,8 @@ You can find a list of extensions in the description of each module:
 [corbind-core]  
 [corbind-drawerlayout]  
 [corbind-leanback]  
-[corbind-material]  
+[corbind-lifecycle]
+[corbind-material]
 [corbind-navigation]  
 [corbind-recyclerview]  
 [corbind-slidingpanelayout]  
@@ -162,6 +164,7 @@ limitations under the License.
 [corbind-core]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-core
 [corbind-drawerlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-drawerlayout
 [corbind-leanback]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-leanback
+[corbind-lifecycle]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-lifecycle
 [corbind-material]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-material
 [corbind-navigation]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-navigation
 [corbind-recyclerview]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-recyclerview

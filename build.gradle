@@ -33,7 +33,8 @@ buildscript {
                         'swiperefresh_layout': '1.1.0',
                         'viewpager': '1.0.0',
                         'viewpager2': '1.0.0',
-                        'material': '1.3.0-rc01'
+                        'material': '1.3.0-rc01',
+                        'lifecycle': '2.2.0'
                 ],
                 'ktlint': '0.40.0',
                 'dokka': '0.10.1'
@@ -62,7 +63,8 @@ buildscript {
                         'slidingPaneLayout': "androidx.slidingpanelayout:slidingpanelayout:${versions.androidx.slidingpane_layout}",
                         'swipeRefreshLayout': "androidx.swiperefreshlayout:swiperefreshlayout:${versions.androidx.swiperefresh_layout}",
                         'viewPager': "androidx.viewpager:viewpager:${versions.androidx.viewpager}",
-                        'viewPager2': "androidx.viewpager2:viewpager2:${versions.androidx.viewpager2}"
+                        'viewPager2': "androidx.viewpager2:viewpager2:${versions.androidx.viewpager2}",
+                        'lifecycle': "androidx.lifecycle:lifecycle-runtime-ktx:${versions.androidx.lifecycle}"
                 ],
                 'material': "com.google.android.material:material:${versions.androidx.material}"
         ]
@@ -72,6 +74,7 @@ buildscript {
                 'minSdk': 14,
                 'targetSdk': 29
         ]
+        versions.kotlin = '1.4.21'
     }
 
     repositories {
@@ -160,6 +163,7 @@ detekt {
             "corbind-core/src/main/kotlin",
             "corbind-drawerlayout/src/main/kotlin",
             "corbind-leanback/src/main/kotlin",
+            "corbind-lifecycle/src/main/kotlin",
             "corbind-material/src/main/kotlin",
             "corbind-navigation/src/main/kotlin",
             "corbind-recyclerview/src/main/kotlin",
