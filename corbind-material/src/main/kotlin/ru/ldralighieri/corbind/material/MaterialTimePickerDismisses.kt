@@ -16,9 +16,9 @@
 
 package ru.ldralighieri.corbind.material
 
+import android.content.DialogInterface
 import androidx.annotation.CheckResult
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
+import com.google.android.material.timepicker.MaterialTimePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -33,48 +33,50 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
- * Perform an action on [MaterialDatePicker] positive button click.
+ * Perform an action whenever the [MaterialTimePicker] is dismissed, no matter how it is dismissed.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun <S> MaterialDatePicker<S>.positiveClicks(
+fun MaterialTimePicker.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (S) -> Unit
+    action: suspend () -> Unit
 ) {
-    val events = scope.actor<S>(Dispatchers.Main.immediate, capacity) {
-        for (selection in channel) action(selection)
+    val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
+        for (ignored in channel) action()
     }
 
     val listener = listener(scope, events::offer)
-    addOnPositiveButtonClickListener(listener)
-    events.invokeOnClose { removeOnPositiveButtonClickListener(listener) }
+    addOnDismissListener(listener)
+    events.invokeOnClose { removeOnDismissListener(listener) }
 }
 
 /**
- * Perform an action on [MaterialDatePicker] positive button click, inside new [CoroutineScope].
+ * Perform an action whenever the [MaterialTimePicker] is dismissed, no matter how it is dismissed.
+ * Inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun <S> MaterialDatePicker<S>.positiveClicks(
+suspend fun MaterialTimePicker.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (S) -> Unit
+    action: suspend () -> Unit
 ) = coroutineScope {
-    positiveClicks(this, capacity, action)
+    dismisses(this, capacity, action)
 }
 
 /**
- * Create a channel which emits on [MaterialDatePicker] positive button click.
+ * Create a channel which emits whenever the [MaterialTimePicker] is dismissed, no matter how it is
+ * dismissed.
  *
  * Example:
  *
  * ```
  * launch {
- *      materialDatePicker.positiveClicks(scope)
- *          .consumeEach { /* handle positive button click */ }
+ *      materialTimePicker.dismisses(scope)
+ *          .consumeEach { /* handle dismiss */ }
  * }
  * ```
  *
@@ -82,37 +84,38 @@ suspend fun <S> MaterialDatePicker<S>.positiveClicks(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.positiveClicks(
+fun MaterialTimePicker.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-): ReceiveChannel<S> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::offerCatching)
-    addOnPositiveButtonClickListener(listener)
-    invokeOnClose { removeOnPositiveButtonClickListener(listener) }
+    addOnDismissListener(listener)
+    invokeOnClose { removeOnDismissListener(listener) }
 }
 
 /**
- * Create a flow which emits on [MaterialDatePicker] positive button click.
+ * Create a flow which emits whenever the [MaterialTimePicker] is dismissed, no matter how it is
+ * dismissed.
  *
  * Example:
  *
  * ```
- * materialDatePicker.positiveClicks()
- *      .onEach { /* handle positive button click */ }
+ * materialTimePicker.dismisses()
+ *      .onEach { /* handle dismiss */ }
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.positiveClicks(): Flow<S> = channelFlow {
+fun MaterialTimePicker.dismisses(): Flow<Unit> = channelFlow {
     val listener = listener(this, ::offerCatching)
-    addOnPositiveButtonClickListener(listener)
-    awaitClose { removeOnPositiveButtonClickListener(listener) }
+    addOnDismissListener(listener)
+    awaitClose { removeOnDismissListener(listener) }
 }
 
 @CheckResult
-private fun <S> listener(
+private fun listener(
     scope: CoroutineScope,
-    emitter: (S) -> Boolean
-) = MaterialPickerOnPositiveButtonClickListener<S> { selection ->
-    if (scope.isActive) { emitter(selection) }
+    emitter: (Unit) -> Boolean
+) = DialogInterface.OnDismissListener {
+    if (scope.isActive) { emitter(Unit) }
 }

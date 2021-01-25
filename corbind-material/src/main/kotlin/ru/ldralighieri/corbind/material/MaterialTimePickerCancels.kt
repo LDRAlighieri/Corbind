@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Vladimir Raupov
+ * Copyright 2021 Vladimir Raupov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package ru.ldralighieri.corbind.material
 
-import android.view.View
+import android.content.DialogInterface
 import androidx.annotation.CheckResult
-import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -33,13 +33,17 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
- * Perform an action on [MaterialDatePicker] negative button click.
+ * Perform an action when the user cancels the [MaterialTimePicker] via back button or a touch
+ * outside the view.
+ *
+ * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
+ * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun <S> MaterialDatePicker<S>.negativeClicks(
+fun MaterialTimePicker.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
@@ -49,32 +53,40 @@ fun <S> MaterialDatePicker<S>.negativeClicks(
     }
 
     val listener = listener(scope, events::offer)
-    addOnNegativeButtonClickListener(listener)
-    events.invokeOnClose { removeOnNegativeButtonClickListener(listener) }
+    addOnCancelListener(listener)
+    events.invokeOnClose { removeOnCancelListener(listener) }
 }
 
 /**
- * Perform an action on [MaterialDatePicker] negative button click, inside new [CoroutineScope].
+ * Perform an action when the user cancels the [MaterialTimePicker] via back button or a touch
+ * outside the view, inside new [CoroutineScope].
+ *
+ * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
+ * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun <S> MaterialDatePicker<S>.negativeClicks(
+suspend fun MaterialTimePicker.cancels(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit
 ) = coroutineScope {
-    negativeClicks(this, capacity, action)
+    cancels(this, capacity, action)
 }
 
 /**
- * Create a channel which emits on [MaterialDatePicker] negative button click.
+ * Create a channel which emits when the user cancels the [MaterialTimePicker] via back button or a
+ * touch outside the view.
+ *
+ * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
+ * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
  * Example:
  *
  * ```
  * launch {
- *      materialDatePicker.negativeClicks(scope)
- *          .consumeEach { /* handle negative button click */ }
+ *      materialTimePicker.cancels(scope)
+ *          .consumeEach { /* handle cancel event */ }
  * }
  * ```
  *
@@ -82,37 +94,41 @@ suspend fun <S> MaterialDatePicker<S>.negativeClicks(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.negativeClicks(
+fun MaterialTimePicker.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::offerCatching)
-    addOnNegativeButtonClickListener(listener)
-    invokeOnClose { removeOnNegativeButtonClickListener(listener) }
+    addOnCancelListener(listener)
+    invokeOnClose { removeOnCancelListener(listener) }
 }
 
 /**
- * Create a flow which emits on [MaterialDatePicker] negative button click.
+ * Create a flow which emits when the user cancels the [MaterialTimePicker] via back button or a
+ * touch outside the view.
+ *
+ * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
+ * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
  * Example:
  *
  * ```
- * materialDatePicker.negativeClicks()
- *      .onEach { /* handle negative button click */ }
+ * materialTimePicker.cancels()
+ *      .onEach { /* handle cancel event */ }
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.negativeClicks(): Flow<Unit> = channelFlow {
+fun MaterialTimePicker.cancels(): Flow<Unit> = channelFlow {
     val listener = listener(this, ::offerCatching)
-    addOnNegativeButtonClickListener(listener)
-    awaitClose { removeOnNegativeButtonClickListener(listener) }
+    addOnCancelListener(listener)
+    awaitClose { removeOnCancelListener(listener) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
     emitter: (Unit) -> Boolean
-) = View.OnClickListener {
+) = DialogInterface.OnCancelListener {
     if (scope.isActive) { emitter(Unit) }
 }
