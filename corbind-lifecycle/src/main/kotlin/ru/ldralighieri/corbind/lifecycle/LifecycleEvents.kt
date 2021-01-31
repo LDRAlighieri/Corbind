@@ -54,7 +54,7 @@ fun Lifecycle.events(
 }
 
 /**
- * Perform an action on any [lifecycle][Lifecycle] event change. Inside new [CoroutineScope].
+ * Perform an action on any [lifecycle][Lifecycle] event change, inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform

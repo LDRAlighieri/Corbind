@@ -28,6 +28,7 @@ implementation 'ru.ldralighieri.corbind:corbind:1.4.0'
 
 AndroidX library bindings:
 ```groovy
+implementation 'ru.ldralighieri.corbind:corbind-activity:1.5.0'
 implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-core:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.4.0'
@@ -61,8 +62,9 @@ dependencies {
 ## List of extensions
 You can find a list of extensions in the description of each module:  
 [corbind]  
-[corbind-appcompat]  
-[corbind-core]  
+[corbind-activity]
+[corbind-appcompat]
+[corbind-core]
 [corbind-drawerlayout]  
 [corbind-leanback]  
 [corbind-lifecycle]
@@ -160,6 +162,7 @@ limitations under the License.
 [actor]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
 
 [corbind]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind
+[corbind-activity]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-activity
 [corbind-appcompat]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-appcompat
 [corbind-core]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-core
 [corbind-drawerlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-drawerlayout

@@ -17,6 +17,7 @@
 rootProject.name = 'Corbind'
 
 include ':corbind'
+include ':corbind-activity'
 include ':corbind-appcompat'
 include ':corbind-core'
 include ':corbind-drawerlayout'

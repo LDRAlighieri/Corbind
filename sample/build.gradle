@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
 
 android {
 
@@ -76,12 +78,11 @@ android {
 
 dependencies {
 
-    implementation project(":corbind")
     implementation project(":corbind-swiperefreshlayout")
 
     implementation deps.androidx.appCompat
+    implementation deps.androidx.lifecycle
     implementation deps.material
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
 
 }
