@@ -2,6 +2,41 @@
 # ChangeLog
 
 
+## Version 1.5.0
+
+* New: Activity module
+* New: Lifecycle module
+* New: Bindings list:
+    * Platform bindings:
+        * `corbind`:
+            * `Context`:
+                * `receivesBroadcast`
+            * `View`:
+                * `windowInsetsApplyEvents`
+            * `AutoCompleteTextView`:
+                * `dismisses`
+    * AndroidX library bindings:
+        * `corbind-activity`:
+            * `OnBackPressedDispatcher`:
+                * `backPresses`
+        * `corbind-lifecycle`:
+            * `Lifecycle`:
+                * `events`
+    * Google "material" library bindings:
+        * `corbind-material`:
+            * `MaterialTimePicker`:
+                * `cancels`
+                * `dismisses`
+                * `negativeClicks`
+                * `positiveClicks`
+* New: InitialValueFlow by analogy with the InitialValueObservable from RxBinding
+* Deprecated: View `systemUiVisibilityChanges` extension
+* Fix: Apache License Copyright year and owner (#13).
+* Update: Kotlin modules dependency to v1.4.30.
+* Update: Material components dependency to v1.3.0.
+* Update: Minor update of other libraries
+
+
 ## Version 1.4.0
 
 * New: Bindings list:
