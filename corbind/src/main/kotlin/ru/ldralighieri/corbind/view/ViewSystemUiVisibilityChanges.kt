@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION")
-
 package ru.ldralighieri.corbind.view
 
 import android.view.View
@@ -42,7 +40,19 @@ import ru.ldralighieri.corbind.internal.offerCatching
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
+ *
+ * @deprecated OnSystemUiVisibilityChangeListener is deprecated. Use
+ * {@link WindowInsets#isVisible(int)} to find out about system bar visibilities
  */
+@Suppress("DEPRECATION")
+@Deprecated(
+    message = "OnSystemUiVisibilityChangeListener is deprecated. Use " +
+        "{@link WindowInsets#isVisible(int)} to find out about system bar visibilities",
+    replaceWith = ReplaceWith(
+        expression = "windowInsetsApplyEvents(scope, capacity, action)",
+        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"]
+    )
+)
 fun View.systemUiVisibilityChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
@@ -64,7 +74,19 @@ fun View.systemUiVisibilityChanges(
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
+ *
+ * @deprecated OnSystemUiVisibilityChangeListener is deprecated. Use
+ * {@link WindowInsets#isVisible(int)} to find out about system bar visibilities
  */
+@Suppress("DEPRECATION")
+@Deprecated(
+    message = "OnSystemUiVisibilityChangeListener is deprecated. Use " +
+        "{@link WindowInsets#isVisible(int)} to find out about system bar visibilities",
+    replaceWith = ReplaceWith(
+        expression = "windowInsetsApplyEvents(capacity, action)",
+        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"]
+    )
+)
 suspend fun View.systemUiVisibilityChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
@@ -89,7 +111,19 @@ suspend fun View.systemUiVisibilityChanges(
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
+ *
+ * @deprecated OnSystemUiVisibilityChangeListener is deprecated. Use
+ * {@link WindowInsets#isVisible(int)} to find out about system bar visibilities
  */
+@Suppress("DEPRECATION")
+@Deprecated(
+    message = "OnSystemUiVisibilityChangeListener is deprecated. Use " +
+        "{@link WindowInsets#isVisible(int)} to find out about system bar visibilities",
+    replaceWith = ReplaceWith(
+        expression = "windowInsetsApplyEvents(scope, capacity)",
+        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"]
+    )
+)
 @CheckResult
 fun View.systemUiVisibilityChanges(
     scope: CoroutineScope,
@@ -112,13 +146,26 @@ fun View.systemUiVisibilityChanges(
  *      .onEach { /* handle system UI visibility */ }
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
+ *
+ * @deprecated OnSystemUiVisibilityChangeListener is deprecated. Use
+ * {@link WindowInsets#isVisible(int)} to find out about system bar visibilities
  */
+@Suppress("DEPRECATION")
+@Deprecated(
+    message = "OnSystemUiVisibilityChangeListener is deprecated. Use " +
+        "{@link WindowInsets#isVisible(int)} to find out about system bar visibilities",
+    replaceWith = ReplaceWith(
+        expression = "windowInsetsApplyEvents()",
+        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"]
+    )
+)
 @CheckResult
 fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow<Int> {
     setOnSystemUiVisibilityChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
+@Suppress("DEPRECATION")
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
