@@ -28,10 +28,12 @@ implementation 'ru.ldralighieri.corbind:corbind:1.4.0'
 
 AndroidX library bindings:
 ```groovy
+implementation 'ru.ldralighieri.corbind:corbind-activity:1.5.0'
 implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-core:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-leanback:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-lifecycle:1.5.0'
 implementation 'ru.ldralighieri.corbind:corbind-navigation:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.4.0'
 implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.4.0'
@@ -60,11 +62,13 @@ dependencies {
 ## List of extensions
 You can find a list of extensions in the description of each module:  
 [corbind]  
-[corbind-appcompat]  
-[corbind-core]  
+[corbind-activity]
+[corbind-appcompat]
+[corbind-core]
 [corbind-drawerlayout]  
 [corbind-leanback]  
-[corbind-material]  
+[corbind-lifecycle]
+[corbind-material]
 [corbind-navigation]  
 [corbind-recyclerview]  
 [corbind-slidingpanelayout]  
@@ -80,7 +84,7 @@ If you need to get a text change events of EditText widget, simple use case with
 findViewById<EditText>(R.id.et_name)
     .textChanges() // Flow<CharSequence>
     .onEach { /* handle text change events */ }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 If you prefer hot [ReceiveChannel][channel] and you need to get a ViewPager page selection events, then the use case will transform in something like this:
@@ -116,7 +120,7 @@ combine(
     transform = { email, password -> email && password }
 )
     .onEach { bt_login.isEnabled = it }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in module descriptions and in source code
@@ -158,10 +162,12 @@ limitations under the License.
 [actor]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
 
 [corbind]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind
+[corbind-activity]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-activity
 [corbind-appcompat]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-appcompat
 [corbind-core]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-core
 [corbind-drawerlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-drawerlayout
 [corbind-leanback]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-leanback
+[corbind-lifecycle]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-lifecycle
 [corbind-material]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-material
 [corbind-navigation]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-navigation
 [corbind-recyclerview]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-recyclerview

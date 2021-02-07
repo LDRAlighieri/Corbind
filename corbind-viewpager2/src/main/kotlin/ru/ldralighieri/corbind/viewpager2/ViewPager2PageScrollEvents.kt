@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class ViewPager2PageScrollEvent(
     val viewPager: ViewPager2,
@@ -93,7 +93,7 @@ fun ViewPager2.pageScrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewPager2PageScrollEvent> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, this@pageScrollEvents, ::safeOffer)
+    val callback = callback(scope, this@pageScrollEvents, ::offerCatching)
     registerOnPageChangeCallback(callback)
     invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -106,15 +106,16 @@ fun ViewPager2.pageScrollEvents(
  * ```
  * viewPager2.pageScrollEvents()
  *      .onEach { /* handle page scroll event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = channelFlow {
-    val callback = callback(this, this@pageScrollEvents, ::offer)
-    registerOnPageChangeCallback(callback)
-    awaitClose { unregisterOnPageChangeCallback(callback) }
-}
+fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> =
+    channelFlow<ViewPager2PageScrollEvent> {
+        val callback = callback(this, this@pageScrollEvents, ::offerCatching)
+        registerOnPageChangeCallback(callback)
+        awaitClose { unregisterOnPageChangeCallback(callback) }
+    }
 
 @CheckResult
 private fun callback(
@@ -125,8 +126,10 @@ private fun callback(
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
         if (scope.isActive) {
-            val event = ViewPager2PageScrollEvent(viewPager, position, positionOffset,
-                    positionOffsetPixels)
+            val event = ViewPager2PageScrollEvent(
+                viewPager, position, positionOffset,
+                positionOffsetPixels
+            )
             emitter(event)
         }
     }

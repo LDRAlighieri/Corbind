@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [TextInputLayout] end icon mode changes.
@@ -88,7 +88,7 @@ fun TextInputLayout.endIconChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::safeOffer)
+    val listener = listener(scope, ::offerCatching)
     addOnEndIconChangedListener(listener)
     invokeOnClose { removeOnEndIconChangedListener(listener) }
 }
@@ -104,12 +104,12 @@ fun TextInputLayout.endIconChanges(
  * ```
  * textInputLayout.endIconChanges()
  *      .onEach { /* handle end icon mode change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun TextInputLayout.endIconChanges(): Flow<Int> = channelFlow {
-    val listener = listener(this, ::offer)
+fun TextInputLayout.endIconChanges(): Flow<Int> = channelFlow<Int> {
+    val listener = listener(this, ::offerCatching)
     addOnEndIconChangedListener(listener)
     awaitClose { removeOnEndIconChangedListener(listener) }
 }

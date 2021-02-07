@@ -24,7 +24,7 @@ navController.destinationChanges() // Flow<NavDestination>
             hideSoftInput()
         }
     }
-    .launchIn(this)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

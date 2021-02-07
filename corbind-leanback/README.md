@@ -22,7 +22,7 @@ Component | Extension | Description
 search.searchQueryChanges() // Flow<String>
     .map { it.toLowerCase(Locale.getDefault()) }
     .onEach { query -> filter.updateItems(query) }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

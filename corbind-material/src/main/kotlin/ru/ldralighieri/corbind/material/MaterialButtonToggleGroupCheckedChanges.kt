@@ -27,11 +27,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [MaterialButton] check change in [MaterialButtonToggleGroup].
@@ -105,8 +106,8 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@buttonCheckedChanges)
-    safeOffer(checkedButtonId)
-    val listener = listener(scope, ::safeOffer)
+    offerCatching(checkedButtonId)
+    val listener = listener(scope, ::offerCatching)
     addOnButtonCheckedListener(listener)
     invokeOnClose { removeOnButtonCheckedListener(listener) }
 }
@@ -126,27 +127,28 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
  * // handle initial value
  * materialButtonToggleGroup.buttonCheckedChanges()
  *      .onEach { /* handle check change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * materialButtonToggleGroup.buttonCheckedChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle check change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun MaterialButtonToggleGroup.buttonCheckedChanges(): Flow<Int> = channelFlow {
+fun MaterialButtonToggleGroup.buttonCheckedChanges(): InitialValueFlow<Int> = channelFlow<Int> {
     checkSelectionMode(this@buttonCheckedChanges)
-    offer(checkedButtonId)
-    val listener = listener(this, ::offer)
+    val listener = listener(this, ::offerCatching)
     addOnButtonCheckedListener(listener)
     awaitClose { removeOnButtonCheckedListener(listener) }
-}
+}.asInitialValueFlow(checkedButtonId)
 
 private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
-    check(group.isSingleSelection) { "The MaterialButtonToggleGroup is not in single selection mode. " +
-        "Use `buttonCheckedChangeEvents` extension instead" }
+    check(group.isSingleSelection) {
+        "The MaterialButtonToggleGroup is not in single selection mode. " +
+            "Use `buttonCheckedChangeEvents` extension instead"
+    }
 }
 
 @CheckResult

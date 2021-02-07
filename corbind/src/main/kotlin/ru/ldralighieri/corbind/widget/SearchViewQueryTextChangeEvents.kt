@@ -25,11 +25,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class SearchViewQueryTextEvent(
     val view: SearchView,
@@ -103,8 +104,8 @@ fun SearchView.queryTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(initialValue(this@queryTextChangeEvents))
-    setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::safeOffer))
+    offerCatching(initialValue(this@queryTextChangeEvents))
+    setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::offerCatching))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
@@ -122,25 +123,25 @@ fun SearchView.queryTextChangeEvents(
  * // handle initial value
  * searchView.queryTextChangeEvents()
  *      .onEach { /* handle query text change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * searchView.queryTextChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle query text change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun SearchView.queryTextChangeEvents(): Flow<SearchViewQueryTextEvent> = channelFlow {
-    offer(initialValue(this@queryTextChangeEvents))
-    setOnQueryTextListener(listener(this, this@queryTextChangeEvents, ::offer))
-    awaitClose { setOnQueryTextListener(null) }
-}
+fun SearchView.queryTextChangeEvents(): InitialValueFlow<SearchViewQueryTextEvent> =
+    channelFlow<SearchViewQueryTextEvent> {
+        setOnQueryTextListener(listener(this, this@queryTextChangeEvents, ::offerCatching))
+        awaitClose { setOnQueryTextListener(null) }
+    }.asInitialValueFlow(initialValue(searchView = this))
 
 @CheckResult
 private fun initialValue(searchView: SearchView): SearchViewQueryTextEvent =
-        SearchViewQueryTextEvent(searchView, searchView.query, false)
+    SearchViewQueryTextEvent(searchView, searchView.query, false)
 
 @CheckResult
 private fun listener(

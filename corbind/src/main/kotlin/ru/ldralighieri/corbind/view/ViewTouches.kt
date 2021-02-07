@@ -16,6 +16,7 @@
 
 package ru.ldralighieri.corbind.view
 
+import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.CheckResult
@@ -29,9 +30,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on touch events for [View].
@@ -104,7 +105,7 @@ fun View.touches(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
-    setOnTouchListener(listener(scope, handled, ::safeOffer))
+    setOnTouchListener(listener(scope, handled, ::offerCatching))
     invokeOnClose { setOnTouchListener(null) }
 }
 
@@ -118,7 +119,7 @@ fun View.touches(
  * ```
  * view.touches()
  *      .onEach { /* handle touch */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying
@@ -127,11 +128,12 @@ fun View.touches(
 @CheckResult
 fun View.touches(
     handled: (MotionEvent) -> Boolean = AlwaysTrue
-): Flow<MotionEvent> = channelFlow {
-    setOnTouchListener(listener(this, handled, ::offer))
+): Flow<MotionEvent> = channelFlow<MotionEvent> {
+    setOnTouchListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnTouchListener(null) }
 }
 
+@SuppressLint("ClickableViewAccessibility")
 @CheckResult
 private fun listener(
     scope: CoroutineScope,

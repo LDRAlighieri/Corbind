@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the show events from [Snackbar].
@@ -85,7 +85,7 @@ fun Snackbar.shown(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Snackbar> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, ::safeOffer)
+    val callback = callback(scope, ::offerCatching)
     addCallback(callback)
     invokeOnClose { removeCallback(callback) }
 }
@@ -98,12 +98,12 @@ fun Snackbar.shown(
  * ```
  * snackbar.shown()
  *      .onEach { /* handle show */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun Snackbar.shown(): Flow<Snackbar> = channelFlow {
-    val callback = callback(this, ::offer)
+fun Snackbar.shown(): Flow<Snackbar> = channelFlow<Snackbar> {
+    val callback = callback(this, ::offerCatching)
     addCallback(callback)
     awaitClose { removeCallback(callback) }
 }

@@ -25,7 +25,7 @@ Component | Extension | Description
 ```kotlin
 toolbar.itemClicks() // Flow<MenuItem>
     .onEach { /* handle menu item clicks events */ }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

@@ -30,8 +30,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class ViewScrollChangeEvent(
     val view: View,
@@ -107,7 +107,7 @@ fun View.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
-    setOnScrollChangeListener(listener(scope, ::safeOffer))
+    setOnScrollChangeListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnScrollChangeListener(null) }
 }
 
@@ -122,13 +122,13 @@ fun View.scrollChangeEvents(
  * ```
  * view.scrollChangeEvents()
  *      .onEach { /* handle scroll change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
-    setOnScrollChangeListener(listener(this, ::offer))
+fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow<ViewScrollChangeEvent> {
+    setOnScrollChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnScrollChangeListener(null) }
 }
 

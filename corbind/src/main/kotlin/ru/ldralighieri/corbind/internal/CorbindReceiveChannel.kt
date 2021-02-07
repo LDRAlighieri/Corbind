@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Vladimir Raupov
+ * Copyright 2021 Vladimir Raupov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package ru.ldralighieri.corbind
+package ru.ldralighieri.corbind.internal
 
 import androidx.annotation.RestrictTo
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.SendChannel
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 inline fun <T> corbindReceiveChannel(
     capacity: Int = Channel.RENDEZVOUS,
     block: Channel<T>.() -> Unit
-): ReceiveChannel<T> {
-    val channel = Channel<T>(capacity)
-    channel.block()
-    return channel
-}
-
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-fun <T> SendChannel<T>.safeOffer(element: T) =
-        !isClosedForSend && try { offer(element) } catch (t: Throwable) { false }
+): ReceiveChannel<T> = Channel<T>(capacity).apply(block)

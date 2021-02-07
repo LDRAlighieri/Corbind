@@ -29,9 +29,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on hover events for [View].
@@ -104,7 +104,7 @@ fun View.hovers(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
-    setOnHoverListener(listener(scope, handled, ::safeOffer))
+    setOnHoverListener(listener(scope, handled, ::offerCatching))
     invokeOnClose { setOnHoverListener(null) }
 }
 
@@ -118,7 +118,7 @@ fun View.hovers(
  * ```
  * view.hovers()
  *      .onEach { /* handle hover */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying
@@ -127,8 +127,8 @@ fun View.hovers(
 @CheckResult
 fun View.hovers(
     handled: (MotionEvent) -> Boolean = AlwaysTrue
-): Flow<MotionEvent> = channelFlow {
-    setOnHoverListener(listener(this, handled, ::offer))
+): Flow<MotionEvent> = channelFlow<MotionEvent> {
+    setOnHoverListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnHoverListener(null) }
 }
 

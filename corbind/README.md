@@ -14,6 +14,11 @@ Component | Extension | Description
 --|---|--
 **DatePickerDialog** | `dateSetEvents` | Called when the user sets the date
 
+### content
+Component | Extension | Description
+--|---|--
+**Context** | `receivesBroadcast` | Called with any broadcast Intent that matches filter
+
 ### view
 
 Component | Extension | Description
@@ -29,11 +34,12 @@ Component | Extension | Description
          | `layoutChangeEvents` | A more advanced version of the `layoutChanges`.
          | `longClicks` | Called when a view has been clicked and held.
          | `scrollChangeEvents` | Called when the scroll position of a view changes.
-         | `systemUiVisibilityChanges` | Called when the status bar changes visibility because of a call to View#setSystemUiVisibility(int)
+         | `systemUiVisibilityChanges` | Called when the status bar changes visibility because of a call to View#setSystemUiVisibility(int). `Deprecated, use windowInsetsApplyEvents`.
          | `touches` | Called when a touch event is dispatched to a view.
          | `draws` | Called when the view tree is about to be drawn.
          | `globalLayouts` | Called when the global layout state or the visibility of views within the view tree changes.
          | `preDraws` | Callback method to be invoked when the view tree is about to be drawn.
+         | `windowInsetsApplyEvents` | Called when window insets applying on a view in a custom way.
 **ViewGroup** | `changeEvents` | Called when the hierarchy within this view changed. The hierarchy changes whenever a child is added to or removed from this view.
 **MenuItem** | `actionViewEvents` | Called when a menu item is collapsed or collapsed.
              | `clicks` | Called when a menu item has been invoked.
@@ -50,7 +56,8 @@ Component | Extension | Description
             | `itemLongClickEvents` | A more advanced version of the `itemLongClicks`.
             | `itemSelections` | Called when an item in this view has been selected.
             | `selectionEvents` | A more advanced version of the `itemSelections`.
-**AutoCompleteTextView** | `itemClickEvents` | Called when an item in AdapterView has been clicked.
+**AutoCompleteTextView** | `dismisses` | Called whenever the AutoCompleteTextView's list of completion options has been dismissed.
+                         | `itemClickEvents` | Called when an item in AdapterView has been clicked.
 **CalendarView** | `dateChangeEvents` | Called upon change of the selected day.
 **CompoundButton** | `checkedChanges` | Called when the checked state of a compound button has changed.
 **DatePicker** | `dateChangeEvents` | Called upon a date change.
@@ -92,7 +99,7 @@ combine(
     transform = { email, password -> email && password }
 )
     .onEach { bt_login.isEnabled = it }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 Handle an authorization event, which can be started by pressing a button `bt_login` or by pressing an action `EditorInfo.IME_ACTION_DONE` on the keyboard:
@@ -104,9 +111,34 @@ flowOf(
         .filter { it.actionId == EditorInfo.IME_ACTION_DONE }
         .filter { bt_login.isEnabled }
 )
-  .flattenMerge()
-  .onEach { /* handle an authorization event */}
-  .launchIn(scope)
+    .flattenMerge()
+    .onEach { /* handle an authorization event */}
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+```
+
+Handle nfc adapter state changed
+```kotlin
+context
+    .receivesBroadcast(
+        IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
+    )
+    .onEach { /* handle nfc adapter state changed */ }
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+```
+
+Handle status bars or navigation bars visibility
+```kotlin
+window.decorView.windowInsetsApplyEvents()
+    .map { event ->
+        with(event) {
+            view.onApplyWindowInsets(insets)
+        }
+    }
+    .map { insets ->
+        insets.isVisible(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+    }
+    .onEach { /* handle status bars or navigation bars visibility */ }
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

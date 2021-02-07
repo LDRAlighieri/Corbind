@@ -29,8 +29,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class RecyclerViewChildAttachStateChangeEvent {
     abstract val view: RecyclerView
@@ -120,7 +120,7 @@ fun RecyclerView.childAttachStateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, this@childAttachStateChangeEvents, ::safeOffer)
+    val listener = listener(scope, this@childAttachStateChangeEvents, ::offerCatching)
     addOnChildAttachStateChangeListener(listener)
     invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
 }
@@ -140,22 +140,22 @@ fun RecyclerView.childAttachStateChangeEvents(
  *              is RecyclerViewChildDetachEvent -> { /* handle child detach event */ }
  *          }
  *      }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * recyclerView.childAttachStateChangeEvents()
  *      .filterIsInstance<RecyclerViewChildAttachEvent>()
  *      .onEach { /* handle child attach event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachStateChangeEvent> =
-        channelFlow {
-            val listener = listener(this, this@childAttachStateChangeEvents, ::offer)
-            addOnChildAttachStateChangeListener(listener)
-            awaitClose { removeOnChildAttachStateChangeListener(listener) }
-        }
+    channelFlow<RecyclerViewChildAttachStateChangeEvent> {
+        val listener = listener(this, this@childAttachStateChangeEvents, ::offerCatching)
+        addOnChildAttachStateChangeListener(listener)
+        awaitClose { removeOnChildAttachStateChangeListener(listener) }
+    }
 
 @CheckResult
 private fun listener(

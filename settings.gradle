@@ -17,10 +17,12 @@
 rootProject.name = 'Corbind'
 
 include ':corbind'
+include ':corbind-activity'
 include ':corbind-appcompat'
 include ':corbind-core'
 include ':corbind-drawerlayout'
 include ':corbind-leanback'
+include ':corbind-lifecycle'
 include ':corbind-material'
 include ':corbind-navigation'
 include ':corbind-recyclerview'

@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the selected tab in [TabLayout].
@@ -88,8 +88,8 @@ fun TabLayout.selections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@selections, ::safeOffer)
-    val listener = listener(scope, ::safeOffer)
+    setInitialValue(this@selections, ::offerCatching)
+    val listener = listener(scope, ::offerCatching)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -105,19 +105,19 @@ fun TabLayout.selections(
  * // handle initial value
  * tabLayout.selections()
  *      .onEach { /* handle selected tab */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * tabLayout.selections()
  *      .drop(1)
  *      .onEach { /* handle selected tab */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
-    setInitialValue(this@selections, ::offer)
-    val listener = listener(this, ::offer)
+fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow<TabLayout.Tab> {
+    setInitialValue(this@selections, ::offerCatching)
+    val listener = listener(this, ::offerCatching)
     addOnTabSelectedListener(listener)
     awaitClose { removeOnTabSelectedListener(listener) }
 }

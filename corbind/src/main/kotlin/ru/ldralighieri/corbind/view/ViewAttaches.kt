@@ -28,8 +28,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [View] attach events.
@@ -85,7 +85,7 @@ fun View.attaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, true, ::safeOffer)
+    val listener = listener(scope, true, ::offerCatching)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -98,12 +98,12 @@ fun View.attaches(
  * ```
  * view.attaches()
  *      .onEach { /* handle attach */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun View.attaches(): Flow<Unit> = channelFlow {
-    val listener = listener(this, true, ::offer)
+fun View.attaches(): Flow<Unit> = channelFlow<Unit> {
+    val listener = listener(this, true, ::offerCatching)
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -162,7 +162,7 @@ fun View.detaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, false, ::safeOffer)
+    val listener = listener(scope, false, ::offerCatching)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -175,12 +175,12 @@ fun View.detaches(
  * ```
  * view.detaches()
  *      .onEach { /* handle detach */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun View.detaches(): Flow<Unit> = channelFlow {
-    val listener = listener(this, false, ::offer)
+fun View.detaches(): Flow<Unit> = channelFlow<Unit> {
+    val listener = listener(this, false, ::offerCatching)
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }

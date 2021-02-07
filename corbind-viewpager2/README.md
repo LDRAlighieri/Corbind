@@ -21,7 +21,7 @@ Component | Extension | Description
 ```kotlin
 vp_slides.pageSelections() // Flow<Int>
     .onEach { tv_message = "Page #$it selected" }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

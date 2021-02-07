@@ -31,7 +31,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class DatePickerDialogSetEvent(
     val view: DatePicker,
@@ -107,7 +108,7 @@ fun DatePickerDialog.dateSetEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<DatePickerDialogSetEvent> = corbindReceiveChannel(capacity) {
-    setOnDateSetListener(listener(scope, ::offer))
+    setOnDateSetListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnDateSetListener(null) }
 }
 
@@ -122,15 +123,16 @@ fun DatePickerDialog.dateSetEvents(
  * ```
  * datePickerDialog.dateSetEvents()
  *      .onEach { /* handle date set event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @RequiresApi(Build.VERSION_CODES.N)
 @CheckResult
-fun DatePickerDialog.dateSetEvents(): Flow<DatePickerDialogSetEvent> = channelFlow {
-    setOnDateSetListener(listener(this, ::offer))
-    awaitClose { setOnDateSetListener(null) }
-}
+fun DatePickerDialog.dateSetEvents(): Flow<DatePickerDialogSetEvent> =
+    channelFlow<DatePickerDialogSetEvent> {
+        setOnDateSetListener(listener(this, ::offerCatching))
+        awaitClose { setOnDateSetListener(null) }
+    }
 
 @CheckResult
 private fun listener(
