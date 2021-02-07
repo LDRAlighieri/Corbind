@@ -52,7 +52,7 @@ Snapshot build:
 repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
-      
+
 dependencies {
    implementation 'ru.ldralighieri.corbind:{module}:1.5.1-SNAPSHOT'
 }
@@ -62,13 +62,13 @@ dependencies {
 ## List of extensions
 You can find a list of extensions in the description of each module:  
 [corbind]  
-[corbind-activity]
-[corbind-appcompat]
-[corbind-core]
+[corbind-activity]  
+[corbind-appcompat]  
+[corbind-core]  
 [corbind-drawerlayout]  
 [corbind-leanback]  
-[corbind-lifecycle]
-[corbind-material]
+[corbind-lifecycle]  
+[corbind-material]  
 [corbind-navigation]  
 [corbind-recyclerview]  
 [corbind-slidingpanelayout]  
