@@ -118,7 +118,7 @@ fun AutoCompleteTextView.dismisses(
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @CheckResult
-fun AutoCompleteTextView.dismisses(): Flow<Unit> = channelFlow {
+fun AutoCompleteTextView.dismisses(): Flow<Unit> = channelFlow<Unit> {
     setOnDismissListener(listener(this, ::offerCatching))
     awaitClose { setOnDismissListener(null) }
 }

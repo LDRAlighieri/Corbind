@@ -112,7 +112,7 @@ fun SwipeRefreshLayout.refreshes(
  * ```
  */
 @CheckResult
-fun SwipeRefreshLayout.refreshes(): Flow<Unit> = channelFlow {
+fun SwipeRefreshLayout.refreshes(): Flow<Unit> = channelFlow<Unit> {
     setOnRefreshListener(listener(this, ::offerCatching))
     awaitClose { setOnRefreshListener(null) }
 }

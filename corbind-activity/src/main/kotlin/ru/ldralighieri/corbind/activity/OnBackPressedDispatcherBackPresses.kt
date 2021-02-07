@@ -110,7 +110,7 @@ fun OnBackPressedDispatcher.backPresses(
  *
  * @param owner The LifecycleOwner which controls when the callback should be invoked
  */
-fun OnBackPressedDispatcher.backPresses(owner: LifecycleOwner): Flow<Unit> = channelFlow {
+fun OnBackPressedDispatcher.backPresses(owner: LifecycleOwner): Flow<Unit> = channelFlow<Unit> {
     val callback = callback(this, ::offerCatching)
     addCallback(owner, callback)
     awaitClose { callback.remove() }

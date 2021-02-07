@@ -115,10 +115,11 @@ fun AutoCompleteTextView.itemClickEvents(
  * ```
  */
 @CheckResult
-fun AutoCompleteTextView.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {
-    onItemClickListener = listener(this, ::offerCatching)
-    awaitClose { onItemClickListener = null }
-}
+fun AutoCompleteTextView.itemClickEvents(): Flow<AdapterViewItemClickEvent> =
+    channelFlow<AdapterViewItemClickEvent> {
+        onItemClickListener = listener(this, ::offerCatching)
+        awaitClose { onItemClickListener = null }
+    }
 
 @CheckResult
 private fun listener(

@@ -127,7 +127,7 @@ fun View.hovers(
 @CheckResult
 fun View.hovers(
     handled: (MotionEvent) -> Boolean = AlwaysTrue
-): Flow<MotionEvent> = channelFlow {
+): Flow<MotionEvent> = channelFlow<MotionEvent> {
     setOnHoverListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnHoverListener(null) }
 }

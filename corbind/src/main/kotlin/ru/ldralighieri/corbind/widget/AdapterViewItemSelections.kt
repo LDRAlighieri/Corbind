@@ -130,7 +130,7 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
  * ```
  */
 @CheckResult
-fun <T : Adapter> AdapterView<T>.itemSelections(): InitialValueFlow<Int> = channelFlow {
+fun <T : Adapter> AdapterView<T>.itemSelections(): InitialValueFlow<Int> = channelFlow<Int> {
     onItemSelectedListener = listener(this, ::offerCatching)
     awaitClose { onItemSelectedListener = null }
 }.asInitialValueFlow(selectedItemPosition)

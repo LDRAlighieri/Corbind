@@ -120,7 +120,7 @@ fun Context.receivesBroadcast(
  *
  * @param intentFilter Selects the Intent broadcasts to be received
  */
-fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = channelFlow {
+fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = channelFlow<Intent> {
     val receiver = receiver(this, ::offerCatching)
     registerReceiver(receiver, intentFilter)
     awaitClose { unregisterReceiver(receiver) }

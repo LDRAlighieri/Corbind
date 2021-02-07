@@ -110,11 +110,12 @@ fun ViewPager.pageScrollEvents(
  * ```
  */
 @CheckResult
-fun ViewPager.pageScrollEvents(): Flow<ViewPagerPageScrollEvent> = channelFlow {
-    val listener = listener(this, this@pageScrollEvents, ::offerCatching)
-    addOnPageChangeListener(listener)
-    awaitClose { removeOnPageChangeListener(listener) }
-}
+fun ViewPager.pageScrollEvents(): Flow<ViewPagerPageScrollEvent> =
+    channelFlow<ViewPagerPageScrollEvent> {
+        val listener = listener(this, this@pageScrollEvents, ::offerCatching)
+        addOnPageChangeListener(listener)
+        awaitClose { removeOnPageChangeListener(listener) }
+    }
 
 @CheckResult
 private fun listener(

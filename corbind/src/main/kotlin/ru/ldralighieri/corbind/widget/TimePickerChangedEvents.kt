@@ -139,10 +139,11 @@ fun TimePicker.timeChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = channelFlow {
-    setOnTimeChangedListener(listener(this, ::offerCatching))
-    awaitClose { setOnTimeChangedListener(null) }
-}.asInitialValueFlow(TimeChangedEvent(view = this, hour, minute))
+fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> =
+    channelFlow<TimeChangedEvent> {
+        setOnTimeChangedListener(listener(this, ::offerCatching))
+        awaitClose { setOnTimeChangedListener(null) }
+    }.asInitialValueFlow(TimeChangedEvent(view = this, hour, minute))
 
 @CheckResult
 private fun listener(

@@ -117,7 +117,7 @@ fun ViewPager.pageSelections(
  * ```
  */
 @CheckResult
-fun ViewPager.pageSelections(): InitialValueFlow<Int> = channelFlow {
+fun ViewPager.pageSelections(): InitialValueFlow<Int> = channelFlow<Int> {
     val listener = listener(this, ::offerCatching)
     addOnPageChangeListener(listener)
     awaitClose { removeOnPageChangeListener(listener) }

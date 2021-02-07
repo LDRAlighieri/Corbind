@@ -119,7 +119,7 @@ fun Toolbar.navigationClicks(
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
-fun Toolbar.navigationClicks(): Flow<Unit> = channelFlow {
+fun Toolbar.navigationClicks(): Flow<Unit> = channelFlow<Unit> {
     setNavigationOnClickListener(listener(this, ::offerCatching))
     awaitClose { setNavigationOnClickListener(null) }
 }

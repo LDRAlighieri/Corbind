@@ -128,7 +128,7 @@ fun TextInputLayout.endIconLongClicks(
 @CheckResult
 fun TextInputLayout.endIconLongClicks(
     handled: () -> Boolean = AlwaysTrue
-): Flow<Unit> = channelFlow {
+): Flow<Unit> = channelFlow<Unit> {
     setEndIconOnLongClickListener(listener(this, handled, ::offerCatching))
     awaitClose { setEndIconOnLongClickListener(null) }
 }

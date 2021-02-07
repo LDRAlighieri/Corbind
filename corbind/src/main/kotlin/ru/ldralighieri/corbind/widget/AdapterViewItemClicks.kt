@@ -114,7 +114,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
  * ```
  */
 @CheckResult
-fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow {
+fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow<Int> {
     onItemClickListener = listener(this, ::offerCatching)
     awaitClose { onItemClickListener = null }
 }

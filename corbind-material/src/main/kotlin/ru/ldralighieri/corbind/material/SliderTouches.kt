@@ -102,7 +102,7 @@ fun Slider.touches(
  * ```
  */
 @CheckResult
-fun Slider.touches(): Flow<Boolean> = channelFlow {
+fun Slider.touches(): Flow<Boolean> = channelFlow<Boolean> {
     val listener = listener(this, ::offerCatching)
     addOnSliderTouchListener(listener)
     awaitClose { removeOnSliderTouchListener(listener) }

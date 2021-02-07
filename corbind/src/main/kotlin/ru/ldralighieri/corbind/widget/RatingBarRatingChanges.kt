@@ -126,7 +126,7 @@ fun RatingBar.ratingChanges(
  * ```
  */
 @CheckResult
-fun RatingBar.ratingChanges(): InitialValueFlow<Float> = channelFlow {
+fun RatingBar.ratingChanges(): InitialValueFlow<Float> = channelFlow<Float> {
     onRatingBarChangeListener = listener(this, ::offerCatching)
     awaitClose { onRatingBarChangeListener = null }
 }.asInitialValueFlow(rating)

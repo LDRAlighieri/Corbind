@@ -113,7 +113,7 @@ fun TextInputLayout.endIconClicks(
  * ```
  */
 @CheckResult
-fun TextInputLayout.endIconClicks(): Flow<Unit> = channelFlow {
+fun TextInputLayout.endIconClicks(): Flow<Unit> = channelFlow<Unit> {
     setEndIconOnClickListener(listener(this, ::offerCatching))
     awaitClose { setEndIconOnClickListener(null) }
 }

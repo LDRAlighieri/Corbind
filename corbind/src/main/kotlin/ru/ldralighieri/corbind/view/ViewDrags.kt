@@ -125,7 +125,7 @@ fun View.drags(
 @CheckResult
 fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue
-): Flow<DragEvent> = channelFlow {
+): Flow<DragEvent> = channelFlow<DragEvent> {
     setOnDragListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnDragListener(null) }
 }

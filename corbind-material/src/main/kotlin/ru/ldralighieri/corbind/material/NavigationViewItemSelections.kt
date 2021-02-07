@@ -126,7 +126,7 @@ fun NavigationView.itemSelections(
  * ```
  */
 @CheckResult
-fun NavigationView.itemSelections(): Flow<MenuItem> = channelFlow {
+fun NavigationView.itemSelections(): Flow<MenuItem> = channelFlow<MenuItem> {
     setInitialValue(this@itemSelections, ::offerCatching)
     setNavigationItemSelectedListener(listener(this, ::offerCatching))
     awaitClose { setNavigationItemSelectedListener(null) }

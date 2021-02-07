@@ -113,7 +113,7 @@ fun SearchEditText.keyboardDismisses(
  * ```
  */
 @CheckResult
-fun SearchEditText.keyboardDismisses(): Flow<Unit> = channelFlow {
+fun SearchEditText.keyboardDismisses(): Flow<Unit> = channelFlow<Unit> {
     setOnKeyboardDismissListener(listener(this, ::offerCatching))
     awaitClose { setOnKeyboardDismissListener(null) }
 }

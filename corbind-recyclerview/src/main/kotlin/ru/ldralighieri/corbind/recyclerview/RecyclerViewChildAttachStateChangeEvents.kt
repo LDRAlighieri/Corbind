@@ -151,7 +151,7 @@ fun RecyclerView.childAttachStateChangeEvents(
  */
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachStateChangeEvent> =
-    channelFlow {
+    channelFlow<RecyclerViewChildAttachStateChangeEvent> {
         val listener = listener(this, this@childAttachStateChangeEvents, ::offerCatching)
         addOnChildAttachStateChangeListener(listener)
         awaitClose { removeOnChildAttachStateChangeListener(listener) }

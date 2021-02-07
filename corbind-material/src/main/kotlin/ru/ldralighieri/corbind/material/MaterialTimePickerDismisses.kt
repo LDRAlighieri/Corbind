@@ -106,7 +106,7 @@ fun MaterialTimePicker.dismisses(
  * ```
  */
 @CheckResult
-fun MaterialTimePicker.dismisses(): Flow<Unit> = channelFlow {
+fun MaterialTimePicker.dismisses(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, ::offerCatching)
     addOnDismissListener(listener)
     awaitClose { removeOnDismissListener(listener) }

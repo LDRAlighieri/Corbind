@@ -129,7 +129,7 @@ fun RadioGroup.checkedChanges(
  * ```
  */
 @CheckResult
-fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow {
+fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow<Int> {
     setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }
 }.asInitialValueFlow(checkedRadioButtonId)

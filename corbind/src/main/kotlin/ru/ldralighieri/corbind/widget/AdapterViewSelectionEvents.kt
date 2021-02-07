@@ -169,7 +169,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(): InitialValueFlow<AdapterViewSelectionEvent> =
-    channelFlow {
+    channelFlow<AdapterViewSelectionEvent> {
         onItemSelectedListener = listener(this, ::offerCatching)
         awaitClose { onItemSelectedListener = null }
     }.asInitialValueFlow(initialValue(adapterView = this))

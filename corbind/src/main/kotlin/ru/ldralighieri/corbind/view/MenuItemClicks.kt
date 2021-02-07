@@ -127,7 +127,7 @@ fun MenuItem.clicks(
 @CheckResult
 fun MenuItem.clicks(
     handled: (MenuItem) -> Boolean = AlwaysTrue
-): Flow<MenuItem> = channelFlow {
+): Flow<MenuItem> = channelFlow<MenuItem> {
     setOnMenuItemClickListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnMenuItemClickListener(null) }
 }

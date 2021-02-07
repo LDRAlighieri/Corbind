@@ -110,11 +110,12 @@ fun ViewPager2.pageScrollEvents(
  * ```
  */
 @CheckResult
-fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = channelFlow {
-    val callback = callback(this, this@pageScrollEvents, ::offerCatching)
-    registerOnPageChangeCallback(callback)
-    awaitClose { unregisterOnPageChangeCallback(callback) }
-}
+fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> =
+    channelFlow<ViewPager2PageScrollEvent> {
+        val callback = callback(this, this@pageScrollEvents, ::offerCatching)
+        registerOnPageChangeCallback(callback)
+        awaitClose { unregisterOnPageChangeCallback(callback) }
+    }
 
 @CheckResult
 private fun callback(

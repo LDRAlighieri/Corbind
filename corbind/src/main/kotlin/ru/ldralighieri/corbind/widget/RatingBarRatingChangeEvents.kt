@@ -133,10 +133,11 @@ fun RatingBar.ratingChangeEvents(
  * ```
  */
 @CheckResult
-fun RatingBar.ratingChangeEvents(): InitialValueFlow<RatingBarChangeEvent> = channelFlow {
-    onRatingBarChangeListener = listener(this, ::offerCatching)
-    awaitClose { onRatingBarChangeListener = null }
-}.asInitialValueFlow(initialValue(ratingBar = this))
+fun RatingBar.ratingChangeEvents(): InitialValueFlow<RatingBarChangeEvent> =
+    channelFlow<RatingBarChangeEvent> {
+        onRatingBarChangeListener = listener(this, ::offerCatching)
+        awaitClose { onRatingBarChangeListener = null }
+    }.asInitialValueFlow(initialValue(ratingBar = this))
 
 @CheckResult
 private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =

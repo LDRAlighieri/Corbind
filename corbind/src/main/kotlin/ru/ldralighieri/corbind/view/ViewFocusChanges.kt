@@ -126,7 +126,7 @@ fun View.focusChanges(
  * ```
  */
 @CheckResult
-fun View.focusChanges(): InitialValueFlow<Boolean> = channelFlow {
+fun View.focusChanges(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
     onFocusChangeListener = listener(this, ::offerCatching)
     awaitClose { onFocusChangeListener = null }
 }.asInitialValueFlow(hasFocus())

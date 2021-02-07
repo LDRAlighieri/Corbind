@@ -163,10 +163,11 @@ fun SearchBar.searchQueryChangeEvents(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  */
 @CheckResult
-fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> = channelFlow {
-    setSearchBarListener(listener(this, this@searchQueryChangeEvents, ::offerCatching))
-    awaitClose { setSearchBarListener(null) }
-}
+fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> =
+    channelFlow<SearchBarSearchQueryEvent> {
+        setSearchBarListener(listener(this, this@searchQueryChangeEvents, ::offerCatching))
+        awaitClose { setSearchBarListener(null) }
+    }
 
 @CheckResult
 private fun listener(

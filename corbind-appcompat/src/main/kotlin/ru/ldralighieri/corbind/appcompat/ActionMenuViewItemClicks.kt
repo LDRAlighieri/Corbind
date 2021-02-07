@@ -113,7 +113,7 @@ fun ActionMenuView.itemClicks(
  * ```
  */
 @CheckResult
-fun ActionMenuView.itemClicks(): Flow<MenuItem> = channelFlow {
+fun ActionMenuView.itemClicks(): Flow<MenuItem> = channelFlow<MenuItem> {
     setOnMenuItemClickListener(listener(this, ::offerCatching))
     awaitClose { setOnMenuItemClickListener(null) }
 }

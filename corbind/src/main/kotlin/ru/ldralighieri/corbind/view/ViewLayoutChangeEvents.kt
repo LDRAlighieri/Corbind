@@ -115,7 +115,7 @@ fun View.layoutChangeEvents(
  * ```
  */
 @CheckResult
-fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
+fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow<ViewLayoutChangeEvent> {
     val listener = listener(this, ::offerCatching)
     addOnLayoutChangeListener(listener)
     awaitClose { removeOnLayoutChangeListener(listener) }

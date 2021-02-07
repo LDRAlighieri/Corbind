@@ -106,7 +106,7 @@ fun <S> MaterialDatePicker<S>.dismisses(
  * ```
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = channelFlow {
+fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, ::offerCatching)
     addOnDismissListener(listener)
     awaitClose { removeOnDismissListener(listener) }

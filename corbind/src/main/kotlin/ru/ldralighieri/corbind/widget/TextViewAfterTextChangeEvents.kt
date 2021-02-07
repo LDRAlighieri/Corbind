@@ -124,11 +124,12 @@ fun TextView.afterTextChangeEvents(
  * ```
  */
 @CheckResult
-fun TextView.afterTextChangeEvents(): InitialValueFlow<TextViewAfterTextChangeEvent> = channelFlow {
-    val listener = listener(this, this@afterTextChangeEvents, ::offerCatching)
-    addTextChangedListener(listener)
-    awaitClose { removeTextChangedListener(listener) }
-}.asInitialValueFlow(initialValue(textView = this))
+fun TextView.afterTextChangeEvents(): InitialValueFlow<TextViewAfterTextChangeEvent> =
+    channelFlow<TextViewAfterTextChangeEvent> {
+        val listener = listener(this, this@afterTextChangeEvents, ::offerCatching)
+        addTextChangedListener(listener)
+        awaitClose { removeTextChangedListener(listener) }
+    }.asInitialValueFlow(initialValue(textView = this))
 
 @CheckResult
 private fun initialValue(textView: TextView): TextViewAfterTextChangeEvent =

@@ -127,7 +127,7 @@ fun View.scrollChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
+fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow<ViewScrollChangeEvent> {
     setOnScrollChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnScrollChangeListener(null) }
 }

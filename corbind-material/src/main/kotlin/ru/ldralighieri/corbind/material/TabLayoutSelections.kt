@@ -115,7 +115,7 @@ fun TabLayout.selections(
  * ```
  */
 @CheckResult
-fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
+fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow<TabLayout.Tab> {
     setInitialValue(this@selections, ::offerCatching)
     val listener = listener(this, ::offerCatching)
     addOnTabSelectedListener(listener)

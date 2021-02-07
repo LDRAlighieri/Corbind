@@ -127,7 +127,7 @@ fun SearchView.queryTextChanges(
  * ```
  */
 @CheckResult
-fun SearchView.queryTextChanges(): InitialValueFlow<CharSequence> = channelFlow {
+fun SearchView.queryTextChanges(): InitialValueFlow<CharSequence> = channelFlow<CharSequence> {
     setOnQueryTextListener(listener(this, ::offerCatching))
     awaitClose { setOnQueryTextListener(null) }
 }.asInitialValueFlow(query)

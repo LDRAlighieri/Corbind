@@ -165,7 +165,7 @@ fun MenuItem.actionViewEvents(
 @CheckResult
 fun MenuItem.actionViewEvents(
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
-): Flow<MenuItemActionViewEvent> = channelFlow {
+): Flow<MenuItemActionViewEvent> = channelFlow<MenuItemActionViewEvent> {
     setOnActionExpandListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnActionExpandListener(null) }
 }

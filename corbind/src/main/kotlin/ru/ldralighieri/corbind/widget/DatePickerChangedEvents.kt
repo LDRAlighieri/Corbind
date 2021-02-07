@@ -140,10 +140,11 @@ fun DatePicker.dateChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult
-fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> = channelFlow {
-    setOnDateChangedListener(listener(this, ::offerCatching))
-    awaitClose { setOnDateChangedListener(null) }
-}.asInitialValueFlow(DateChangedEvent(view = this, year, month, dayOfMonth))
+fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> =
+    channelFlow<DateChangedEvent> {
+        setOnDateChangedListener(listener(this, ::offerCatching))
+        awaitClose { setOnDateChangedListener(null) }
+    }.asInitialValueFlow(DateChangedEvent(view = this, year, month, dayOfMonth))
 
 @CheckResult
 private fun listener(

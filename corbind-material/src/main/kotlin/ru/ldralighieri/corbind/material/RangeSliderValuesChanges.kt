@@ -116,7 +116,7 @@ fun RangeSlider.valuesChanges(
  * ```
  */
 @CheckResult
-fun RangeSlider.valuesChanges(): InitialValueFlow<List<Float>> = channelFlow {
+fun RangeSlider.valuesChanges(): InitialValueFlow<List<Float>> = channelFlow<List<Float>> {
     val listener = listener(this, ::offerCatching)
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }

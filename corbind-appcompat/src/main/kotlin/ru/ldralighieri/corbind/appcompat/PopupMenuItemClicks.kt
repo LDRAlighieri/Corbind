@@ -113,7 +113,7 @@ fun PopupMenu.itemClicks(
  * ```
  */
 @CheckResult
-fun PopupMenu.itemClicks(): Flow<MenuItem> = channelFlow {
+fun PopupMenu.itemClicks(): Flow<MenuItem> = channelFlow<MenuItem> {
     setOnMenuItemClickListener(listener(this, ::offerCatching))
     awaitClose { setOnMenuItemClickListener(null) }
 }

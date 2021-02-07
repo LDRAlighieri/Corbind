@@ -102,7 +102,7 @@ fun Lifecycle.events(
  * ```
  */
 @CheckResult
-fun Lifecycle.events(): Flow<Lifecycle.Event> = channelFlow {
+fun Lifecycle.events(): Flow<Lifecycle.Event> = channelFlow<Lifecycle.Event> {
     val observer = observer(this, ::offerCatching)
     addObserver(observer)
     awaitClose { removeObserver(observer) }

@@ -128,10 +128,11 @@ fun DatePickerDialog.dateSetEvents(
  */
 @RequiresApi(Build.VERSION_CODES.N)
 @CheckResult
-fun DatePickerDialog.dateSetEvents(): Flow<DatePickerDialogSetEvent> = channelFlow {
-    setOnDateSetListener(listener(this, ::offerCatching))
-    awaitClose { setOnDateSetListener(null) }
-}
+fun DatePickerDialog.dateSetEvents(): Flow<DatePickerDialogSetEvent> =
+    channelFlow<DatePickerDialogSetEvent> {
+        setOnDateSetListener(listener(this, ::offerCatching))
+        awaitClose { setOnDateSetListener(null) }
+    }
 
 @CheckResult
 private fun listener(

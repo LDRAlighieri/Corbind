@@ -114,7 +114,7 @@ fun SlidingPaneLayout.panelSlides(
  * ```
  */
 @CheckResult
-fun SlidingPaneLayout.panelSlides(): Flow<Float> = channelFlow {
+fun SlidingPaneLayout.panelSlides(): Flow<Float> = channelFlow<Float> {
     setPanelSlideListener(listener(this, ::offerCatching))
     awaitClose { setPanelSlideListener(null) }
 }

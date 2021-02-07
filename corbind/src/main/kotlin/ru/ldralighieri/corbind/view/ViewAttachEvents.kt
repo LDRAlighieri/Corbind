@@ -140,7 +140,7 @@ fun View.attachEvents(
  * ```
  */
 @CheckResult
-fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
+fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow<ViewAttachEvent> {
     val listener = listener(this, ::offerCatching)
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }

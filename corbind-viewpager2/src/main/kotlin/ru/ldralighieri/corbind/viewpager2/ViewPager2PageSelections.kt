@@ -116,7 +116,7 @@ fun ViewPager2.pageSelections(
  * ```
  */
 @CheckResult
-fun ViewPager2.pageSelections(): InitialValueFlow<Int> = channelFlow {
+fun ViewPager2.pageSelections(): InitialValueFlow<Int> = channelFlow<Int> {
     val callback = callback(this, ::offerCatching)
     registerOnPageChangeCallback(callback)
     awaitClose { unregisterOnPageChangeCallback(callback) }

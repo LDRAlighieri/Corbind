@@ -103,7 +103,7 @@ fun MaterialTimePicker.positiveClicks(
  * ```
  */
 @CheckResult
-fun MaterialTimePicker.positiveClicks(): Flow<Unit> = channelFlow {
+fun MaterialTimePicker.positiveClicks(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, ::offerCatching)
     addOnPositiveButtonClickListener(listener)
     awaitClose { removeOnPositiveButtonClickListener(listener) }

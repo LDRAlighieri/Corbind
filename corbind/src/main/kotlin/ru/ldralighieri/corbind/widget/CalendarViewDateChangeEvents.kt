@@ -136,10 +136,11 @@ fun CalendarView.dateChangeEvents(
  * ```
  */
 @CheckResult
-fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> = channelFlow {
-    setOnDateChangeListener(listener(this, ::offerCatching))
-    awaitClose { setOnDateChangeListener(null) }
-}.asInitialValueFlow(initialValue(calendar = this))
+fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> =
+    channelFlow<CalendarViewDateChangeEvent> {
+        setOnDateChangeListener(listener(this, ::offerCatching))
+        awaitClose { setOnDateChangeListener(null) }
+    }.asInitialValueFlow(initialValue(calendar = this))
 
 @CheckResult
 private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent =

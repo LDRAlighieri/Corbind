@@ -128,7 +128,7 @@ fun SlidingPaneLayout.panelOpens(
  * ```
  */
 @CheckResult
-fun SlidingPaneLayout.panelOpens(): InitialValueFlow<Boolean> = channelFlow {
+fun SlidingPaneLayout.panelOpens(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
     setPanelSlideListener(listener(this, ::offerCatching))
     awaitClose { setPanelSlideListener(null) }
 }.asInitialValueFlow(isOpen)

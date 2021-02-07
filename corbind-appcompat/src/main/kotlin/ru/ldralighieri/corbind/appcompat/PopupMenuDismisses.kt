@@ -112,7 +112,7 @@ fun PopupMenu.dismisses(
  * ```
  */
 @CheckResult
-fun PopupMenu.dismisses(): Flow<Unit> = channelFlow {
+fun PopupMenu.dismisses(): Flow<Unit> = channelFlow<Unit> {
     setOnDismissListener(listener(this, ::offerCatching))
     awaitClose { setOnMenuItemClickListener(null) }
 }

@@ -154,10 +154,11 @@ fun ViewGroup.changeEvents(
  * ```
  */
 @CheckResult
-fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = channelFlow {
-    setOnHierarchyChangeListener(listener(this, this@changeEvents, ::offerCatching))
-    awaitClose { setOnHierarchyChangeListener(null) }
-}
+fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> =
+    channelFlow<ViewGroupHierarchyChangeEvent> {
+        setOnHierarchyChangeListener(listener(this, this@changeEvents, ::offerCatching))
+        awaitClose { setOnHierarchyChangeListener(null) }
+    }
 
 @CheckResult
 private fun listener(

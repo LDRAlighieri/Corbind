@@ -125,7 +125,7 @@ fun DrawerLayout.drawerOpens(
  * @param gravity Gravity of the drawer to check
  */
 @CheckResult
-fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = channelFlow {
+fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = channelFlow<Boolean> {
     val listener = listener(this, gravity, ::offerCatching)
     addDrawerListener(listener)
     awaitClose { removeDrawerListener(listener) }

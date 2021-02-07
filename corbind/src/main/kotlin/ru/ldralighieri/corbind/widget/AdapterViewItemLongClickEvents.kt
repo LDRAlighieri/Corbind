@@ -138,7 +138,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
-): Flow<AdapterViewItemLongClickEvent> = channelFlow {
+): Flow<AdapterViewItemLongClickEvent> = channelFlow<AdapterViewItemLongClickEvent> {
     onItemLongClickListener = listener(this, handled, ::offerCatching)
     awaitClose { onItemLongClickListener = null }
 }

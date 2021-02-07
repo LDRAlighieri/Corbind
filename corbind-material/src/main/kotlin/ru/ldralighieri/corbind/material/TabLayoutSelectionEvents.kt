@@ -165,12 +165,13 @@ fun TabLayout.selectionEvents(
  * ```
  */
 @CheckResult
-fun TabLayout.selectionEvents(): Flow<TabLayoutSelectionEvent> = channelFlow {
-    setInitialValue(this@selectionEvents, ::offerCatching)
-    val listener = listener(this, this@selectionEvents, ::offerCatching)
-    addOnTabSelectedListener(listener)
-    awaitClose { removeOnTabSelectedListener(listener) }
-}
+fun TabLayout.selectionEvents(): Flow<TabLayoutSelectionEvent> =
+    channelFlow<TabLayoutSelectionEvent> {
+        setInitialValue(this@selectionEvents, ::offerCatching)
+        val listener = listener(this, this@selectionEvents, ::offerCatching)
+        addOnTabSelectedListener(listener)
+        awaitClose { removeOnTabSelectedListener(listener) }
+    }
 
 private fun setInitialValue(
     tabLayout: TabLayout,

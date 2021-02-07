@@ -53,7 +53,7 @@ fun View.dismisses(
     }
 
     val behavior = getBehavior(this)
-    behavior.setListener(listener(scope, events::offer))
+    behavior.listener = listener(scope, events::offer)
     events.invokeOnClose { behavior.setListener(null) }
 }
 
@@ -96,7 +96,7 @@ fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<View> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@dismisses)
-    behavior.setListener(listener(scope, ::offerCatching))
+    behavior.listener = listener(scope, ::offerCatching)
     invokeOnClose { behavior.setListener(null) }
 }
 
@@ -115,9 +115,9 @@ fun View.dismisses(
  * ```
  */
 @CheckResult
-fun View.dismisses(): Flow<View> = channelFlow {
+fun View.dismisses(): Flow<View> = channelFlow<View> {
     val behavior = getBehavior(this@dismisses)
-    behavior.setListener(listener(this, ::offerCatching))
+    behavior.listener = listener(this, ::offerCatching)
     awaitClose { behavior.setListener(null) }
 }
 

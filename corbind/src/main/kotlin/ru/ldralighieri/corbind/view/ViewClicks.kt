@@ -111,7 +111,7 @@ fun View.clicks(
  * ```
  */
 @CheckResult
-fun View.clicks(): Flow<Unit> = channelFlow {
+fun View.clicks(): Flow<Unit> = channelFlow<Unit> {
     setOnClickListener(listener(this, ::offerCatching))
     awaitClose { setOnClickListener(null) }
 }

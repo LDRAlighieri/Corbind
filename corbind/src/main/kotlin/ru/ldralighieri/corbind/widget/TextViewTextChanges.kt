@@ -119,7 +119,7 @@ fun TextView.textChanges(
  * ```
  */
 @CheckResult
-fun TextView.textChanges(): InitialValueFlow<CharSequence> = channelFlow {
+fun TextView.textChanges(): InitialValueFlow<CharSequence> = channelFlow<CharSequence> {
     val listener = listener(this, ::offerCatching)
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }

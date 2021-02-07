@@ -116,7 +116,7 @@ fun Slider.valueChanges(
  * ```
  */
 @CheckResult
-fun Slider.valueChanges(): InitialValueFlow<Float> = channelFlow {
+fun Slider.valueChanges(): InitialValueFlow<Float> = channelFlow<Float> {
     val listener = listener(this, ::offerCatching)
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }

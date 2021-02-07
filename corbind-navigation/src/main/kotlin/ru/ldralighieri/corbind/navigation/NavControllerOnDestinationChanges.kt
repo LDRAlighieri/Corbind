@@ -104,7 +104,7 @@ fun NavController.destinationChanges(
  */
 @CheckResult
 fun NavController.destinationChanges(): Flow<NavDestination> =
-    channelFlow {
+    channelFlow<NavDestination> {
         val listener = listener(this, ::offerCatching)
         addOnDestinationChangedListener(listener)
         awaitClose { removeOnDestinationChangedListener(listener) }

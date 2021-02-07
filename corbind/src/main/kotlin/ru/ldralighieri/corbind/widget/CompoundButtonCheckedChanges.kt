@@ -126,7 +126,7 @@ fun CompoundButton.checkedChanges(
  * ```
  */
 @CheckResult
-fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow {
+fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
     setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }
 }.asInitialValueFlow(isChecked)

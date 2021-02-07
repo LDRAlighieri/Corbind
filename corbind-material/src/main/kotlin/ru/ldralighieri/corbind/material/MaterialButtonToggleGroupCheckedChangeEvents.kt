@@ -124,7 +124,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  */
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(): Flow<MaterialButtonCheckedChangeEvent> =
-    channelFlow {
+    channelFlow<MaterialButtonCheckedChangeEvent> {
         checkSelectionMode(this@buttonCheckedChangeEvents)
         val listener = listener(this, ::offerCatching)
         addOnButtonCheckedListener(listener)

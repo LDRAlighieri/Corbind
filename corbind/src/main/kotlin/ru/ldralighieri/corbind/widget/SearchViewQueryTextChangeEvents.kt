@@ -133,10 +133,11 @@ fun SearchView.queryTextChangeEvents(
  * ```
  */
 @CheckResult
-fun SearchView.queryTextChangeEvents(): InitialValueFlow<SearchViewQueryTextEvent> = channelFlow {
-    setOnQueryTextListener(listener(this, this@queryTextChangeEvents, ::offerCatching))
-    awaitClose { setOnQueryTextListener(null) }
-}.asInitialValueFlow(initialValue(searchView = this))
+fun SearchView.queryTextChangeEvents(): InitialValueFlow<SearchViewQueryTextEvent> =
+    channelFlow<SearchViewQueryTextEvent> {
+        setOnQueryTextListener(listener(this, this@queryTextChangeEvents, ::offerCatching))
+        awaitClose { setOnQueryTextListener(null) }
+    }.asInitialValueFlow(initialValue(searchView = this))
 
 @CheckResult
 private fun initialValue(searchView: SearchView): SearchViewQueryTextEvent =

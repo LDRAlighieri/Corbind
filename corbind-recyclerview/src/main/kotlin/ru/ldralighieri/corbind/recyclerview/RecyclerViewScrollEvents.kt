@@ -109,11 +109,12 @@ fun RecyclerView.scrollEvents(
  * ```
  */
 @CheckResult
-fun RecyclerView.scrollEvents(): Flow<RecyclerViewScrollEvent> = channelFlow {
-    val scrollListener = listener(this, ::offerCatching)
-    addOnScrollListener(scrollListener)
-    awaitClose { removeOnScrollListener(scrollListener) }
-}
+fun RecyclerView.scrollEvents(): Flow<RecyclerViewScrollEvent> =
+    channelFlow<RecyclerViewScrollEvent> {
+        val scrollListener = listener(this, ::offerCatching)
+        addOnScrollListener(scrollListener)
+        awaitClose { removeOnScrollListener(scrollListener) }
+    }
 
 @CheckResult
 private fun listener(

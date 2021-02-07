@@ -113,7 +113,7 @@ fun BottomNavigationView.itemReselections(
  * ```
  */
 @CheckResult
-fun BottomNavigationView.itemReselections(): Flow<MenuItem> = channelFlow {
+fun BottomNavigationView.itemReselections(): Flow<MenuItem> = channelFlow<MenuItem> {
     setOnNavigationItemReselectedListener(listener(this, ::offerCatching))
     awaitClose { setOnNavigationItemReselectedListener(null) }
 }

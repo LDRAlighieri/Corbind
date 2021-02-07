@@ -133,7 +133,7 @@ fun ChipGroup.checkedChanges(
  * ```
  */
 @CheckResult
-fun ChipGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow {
+fun ChipGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow<Int> {
     checkSelectionMode(this@checkedChanges)
     setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }

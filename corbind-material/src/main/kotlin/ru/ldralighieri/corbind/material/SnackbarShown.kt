@@ -102,7 +102,7 @@ fun Snackbar.shown(
  * ```
  */
 @CheckResult
-fun Snackbar.shown(): Flow<Snackbar> = channelFlow {
+fun Snackbar.shown(): Flow<Snackbar> = channelFlow<Snackbar> {
     val callback = callback(this, ::offerCatching)
     addCallback(callback)
     awaitClose { removeCallback(callback) }

@@ -108,7 +108,7 @@ fun TextInputLayout.endIconChanges(
  * ```
  */
 @CheckResult
-fun TextInputLayout.endIconChanges(): Flow<Int> = channelFlow {
+fun TextInputLayout.endIconChanges(): Flow<Int> = channelFlow<Int> {
     val listener = listener(this, ::offerCatching)
     addOnEndIconChangedListener(listener)
     awaitClose { removeOnEndIconChangedListener(listener) }

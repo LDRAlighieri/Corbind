@@ -120,7 +120,7 @@ fun View.stateChanges(
  *      .launchIn(lifecycleScope)
  * ```
  */
-fun View.stateChanges(): InitialValueFlow<Int> = channelFlow {
+fun View.stateChanges(): InitialValueFlow<Int> = channelFlow<Int> {
     val behavior = getBehavior(this@stateChanges)
     val callback = callback(this, ::offerCatching)
     behavior.addBottomSheetCallback(callback)

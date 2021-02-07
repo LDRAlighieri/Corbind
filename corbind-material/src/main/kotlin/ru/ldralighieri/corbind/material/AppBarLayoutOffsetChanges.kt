@@ -102,7 +102,7 @@ fun AppBarLayout.offsetChanges(
  * ```
  */
 @CheckResult
-fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow {
+fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow<Int> {
     val listener = listener(this, ::offerCatching)
     addOnOffsetChangedListener(listener)
     awaitClose { removeOnOffsetChangedListener(listener) }

@@ -103,7 +103,7 @@ fun <S> MaterialDatePicker<S>.negativeClicks(
  * ```
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.negativeClicks(): Flow<Unit> = channelFlow {
+fun <S> MaterialDatePicker<S>.negativeClicks(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, ::offerCatching)
     addOnNegativeButtonClickListener(listener)
     awaitClose { removeOnNegativeButtonClickListener(listener) }

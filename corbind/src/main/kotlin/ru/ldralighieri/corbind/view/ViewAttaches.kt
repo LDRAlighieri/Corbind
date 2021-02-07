@@ -102,7 +102,7 @@ fun View.attaches(
  * ```
  */
 @CheckResult
-fun View.attaches(): Flow<Unit> = channelFlow {
+fun View.attaches(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, true, ::offerCatching)
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
@@ -179,7 +179,7 @@ fun View.detaches(
  * ```
  */
 @CheckResult
-fun View.detaches(): Flow<Unit> = channelFlow {
+fun View.detaches(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, false, ::offerCatching)
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }

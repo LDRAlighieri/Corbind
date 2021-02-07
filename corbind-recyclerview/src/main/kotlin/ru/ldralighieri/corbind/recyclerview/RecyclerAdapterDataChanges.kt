@@ -117,7 +117,7 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
  */
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): InitialValueFlow<T> =
-    channelFlow {
+    channelFlow<T> {
         val dataObserver = observer(this, this@dataChanges, ::offerCatching)
         registerAdapterDataObserver(dataObserver)
         awaitClose { unregisterAdapterDataObserver(dataObserver) }

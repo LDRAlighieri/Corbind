@@ -126,7 +126,7 @@ fun MaterialButton.checkedChanges(
  * ```
  */
 @CheckResult
-fun MaterialButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow {
+fun MaterialButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
     checkCheckableState(this@checkedChanges)
     val listener = listener(this, ::offerCatching)
     addOnCheckedChangeListener(listener)

@@ -121,7 +121,7 @@ fun AbsListView.scrollEvents(
  * ```
  */
 @CheckResult
-fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {
+fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow<AbsListViewScrollEvent> {
     setOnScrollListener(listener(this, ::offerCatching))
     awaitClose { setOnScrollListener(null) }
 }

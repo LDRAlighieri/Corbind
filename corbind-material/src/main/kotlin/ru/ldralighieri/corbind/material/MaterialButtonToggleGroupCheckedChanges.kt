@@ -137,7 +137,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
  * ```
  */
 @CheckResult
-fun MaterialButtonToggleGroup.buttonCheckedChanges(): InitialValueFlow<Int> = channelFlow {
+fun MaterialButtonToggleGroup.buttonCheckedChanges(): InitialValueFlow<Int> = channelFlow<Int> {
     checkSelectionMode(this@buttonCheckedChanges)
     val listener = listener(this, ::offerCatching)
     addOnButtonCheckedListener(listener)

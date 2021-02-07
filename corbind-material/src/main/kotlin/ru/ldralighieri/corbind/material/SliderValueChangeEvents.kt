@@ -124,11 +124,12 @@ fun Slider.valueChangeEvents(
  * ```
  */
 @CheckResult
-fun Slider.valueChangeEvents(): InitialValueFlow<SliderChangeEvent> = channelFlow {
-    val listener = listener(this, ::offerCatching).apply { previousValue = value }
-    addOnChangeListener(listener)
-    awaitClose { removeOnChangeListener(listener) }
-}.asInitialValueFlow(initialValue(slider = this))
+fun Slider.valueChangeEvents(): InitialValueFlow<SliderChangeEvent> =
+    channelFlow<SliderChangeEvent> {
+        val listener = listener(this, ::offerCatching).apply { previousValue = value }
+        addOnChangeListener(listener)
+        awaitClose { removeOnChangeListener(listener) }
+    }.asInitialValueFlow(initialValue(slider = this))
 
 @CheckResult
 private fun initialValue(slider: Slider): SliderChangeEvent =

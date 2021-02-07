@@ -67,7 +67,7 @@ private fun SeekBar.changes(
 }
 
 @CheckResult
-private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> = channelFlow {
+private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> = channelFlow<Int> {
     setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offerCatching))
     awaitClose { setOnSeekBarChangeListener(null) }
 }.asInitialValueFlow(progress)

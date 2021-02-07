@@ -113,7 +113,7 @@ fun Chip.closeIconClicks(
  * ```
  */
 @CheckResult
-fun Chip.closeIconClicks(): Flow<Unit> = channelFlow {
+fun Chip.closeIconClicks(): Flow<Unit> = channelFlow<Unit> {
     setOnCloseIconClickListener(listener(this, ::offerCatching))
     awaitClose { setOnClickListener(null) }
 }

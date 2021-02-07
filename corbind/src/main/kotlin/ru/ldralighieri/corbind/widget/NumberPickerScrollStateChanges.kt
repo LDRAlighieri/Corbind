@@ -112,7 +112,7 @@ fun NumberPicker.scrollStateChanges(
  * ```
  */
 @CheckResult
-fun NumberPicker.scrollStateChanges(): Flow<Int> = channelFlow {
+fun NumberPicker.scrollStateChanges(): Flow<Int> = channelFlow<Int> {
     setOnScrollListener(listener(this, ::offerCatching))
     awaitClose { setOnScrollListener(null) }
 }

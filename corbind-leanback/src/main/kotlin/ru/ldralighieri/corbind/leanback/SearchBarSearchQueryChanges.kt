@@ -113,7 +113,7 @@ fun SearchBar.searchQueryChanges(
  * ```
  */
 @CheckResult
-fun SearchBar.searchQueryChanges(): Flow<String> = channelFlow {
+fun SearchBar.searchQueryChanges(): Flow<String> = channelFlow<String> {
     setSearchBarListener(listener(this, ::offerCatching))
     awaitClose { setSearchBarListener(null) }
 }

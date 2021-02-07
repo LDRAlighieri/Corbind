@@ -117,7 +117,7 @@ fun <T : Adapter> T.dataChanges(
  * ```
  */
 @CheckResult
-fun <T : Adapter> T.dataChanges(): InitialValueFlow<T> = channelFlow {
+fun <T : Adapter> T.dataChanges(): InitialValueFlow<T> = channelFlow<T> {
     val dataSetObserver = observer(this, this@dataChanges, ::offerCatching)
     registerDataSetObserver(dataSetObserver)
     awaitClose { unregisterDataSetObserver(dataSetObserver) }

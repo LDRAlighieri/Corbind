@@ -113,7 +113,7 @@ fun Toolbar.itemClicks(
  * ```
  */
 @CheckResult
-fun Toolbar.itemClicks(): Flow<MenuItem> = channelFlow {
+fun Toolbar.itemClicks(): Flow<MenuItem> = channelFlow<MenuItem> {
     setOnMenuItemClickListener(listener(this, ::offerCatching))
     awaitClose { setOnMenuItemClickListener(null) }
 }

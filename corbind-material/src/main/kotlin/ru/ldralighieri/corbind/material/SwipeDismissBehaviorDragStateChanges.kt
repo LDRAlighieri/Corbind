@@ -50,7 +50,7 @@ fun View.dragStateChanges(
     }
 
     val behavior = getBehavior(this)
-    behavior.setListener(listener(scope, events::offer))
+    behavior.listener = listener(scope, events::offer)
     events.invokeOnClose { behavior.setListener(null) }
 }
 
@@ -95,7 +95,7 @@ fun View.dragStateChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@dragStateChanges)
-    behavior.setListener(listener(scope, ::offerCatching))
+    behavior.listener = listener(scope, ::offerCatching)
     invokeOnClose { behavior.setListener(null) }
 }
 
@@ -114,9 +114,9 @@ fun View.dragStateChanges(
  * ```
  */
 @CheckResult
-fun View.dragStateChanges(): Flow<Int> = channelFlow {
+fun View.dragStateChanges(): Flow<Int> = channelFlow<Int> {
     val behavior = getBehavior(this@dragStateChanges)
-    behavior.setListener(listener(this, ::offerCatching))
+    behavior.listener = listener(this, ::offerCatching)
     awaitClose { behavior.setListener(null) }
 }
 

@@ -102,7 +102,7 @@ fun RecyclerView.scrollStateChanges(
  * ```
  */
 @CheckResult
-fun RecyclerView.scrollStateChanges(): Flow<Int> = channelFlow {
+fun RecyclerView.scrollStateChanges(): Flow<Int> = channelFlow<Int> {
     val scrollListener = listener(this, ::offerCatching)
     addOnScrollListener(scrollListener)
     awaitClose { removeOnScrollListener(scrollListener) }

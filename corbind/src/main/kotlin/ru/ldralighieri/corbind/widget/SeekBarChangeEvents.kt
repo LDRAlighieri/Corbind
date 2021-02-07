@@ -171,7 +171,7 @@ fun SeekBar.changeEvents(
  * ```
  */
 @CheckResult
-fun SeekBar.changeEvents(): InitialValueFlow<SeekBarChangeEvent> = channelFlow {
+fun SeekBar.changeEvents(): InitialValueFlow<SeekBarChangeEvent> = channelFlow<SeekBarChangeEvent> {
     setOnSeekBarChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnSeekBarChangeListener(null) }
 }.asInitialValueFlow(initialValue(seekBar = this))

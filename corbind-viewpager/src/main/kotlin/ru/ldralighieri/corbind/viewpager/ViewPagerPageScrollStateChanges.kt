@@ -102,7 +102,7 @@ fun ViewPager.pageScrollStateChanges(
  * ```
  */
 @CheckResult
-fun ViewPager.pageScrollStateChanges(): Flow<Int> = channelFlow {
+fun ViewPager.pageScrollStateChanges(): Flow<Int> = channelFlow<Int> {
     val listener = listener(this, ::offerCatching)
     addOnPageChangeListener(listener)
     awaitClose { removeOnPageChangeListener(listener) }

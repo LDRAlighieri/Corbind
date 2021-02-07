@@ -119,7 +119,7 @@ fun RecyclerView.flingEvents(
  * ```
  */
 @CheckResult
-fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow {
+fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow<RecyclerViewFlingEvent> {
     onFlingListener = listener(this, this@flingEvents, ::offerCatching)
     awaitClose { onFlingListener = null }
 }

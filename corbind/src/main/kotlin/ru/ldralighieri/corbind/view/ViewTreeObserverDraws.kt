@@ -109,7 +109,7 @@ fun View.draws(
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
-fun View.draws(): Flow<Unit> = channelFlow {
+fun View.draws(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, ::offerCatching)
     viewTreeObserver.addOnDrawListener(listener)
     awaitClose { viewTreeObserver.removeOnDrawListener(listener) }

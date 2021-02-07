@@ -135,10 +135,11 @@ fun NumberPicker.valueChangeEvents(
  * ```
  */
 @CheckResult
-fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEvent> = channelFlow {
-    setOnValueChangedListener(listener(this, ::offerCatching))
-    awaitClose { setOnValueChangedListener(null) }
-}.asInitialValueFlow(NumberPickerValueChangeEvent(picker = this, value, value))
+fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEvent> =
+    channelFlow<NumberPickerValueChangeEvent> {
+        setOnValueChangedListener(listener(this, ::offerCatching))
+        awaitClose { setOnValueChangedListener(null) }
+    }.asInitialValueFlow(NumberPickerValueChangeEvent(picker = this, value, value))
 
 @CheckResult
 private fun listener(

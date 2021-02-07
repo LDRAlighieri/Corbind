@@ -127,7 +127,7 @@ fun TextView.editorActions(
 @CheckResult
 fun TextView.editorActions(
     handled: (Int) -> Boolean = AlwaysTrue
-): Flow<Int> = channelFlow {
+): Flow<Int> = channelFlow<Int> {
     setOnEditorActionListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnEditorActionListener(null) }
 }

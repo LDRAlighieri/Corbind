@@ -119,7 +119,7 @@ fun <S> MaterialDatePicker<S>.cancels(
  * ```
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = channelFlow {
+fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, ::offerCatching)
     addOnCancelListener(listener)
     awaitClose { removeOnCancelListener(listener) }

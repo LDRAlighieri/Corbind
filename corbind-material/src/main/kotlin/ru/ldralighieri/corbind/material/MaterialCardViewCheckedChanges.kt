@@ -126,7 +126,7 @@ fun MaterialCardView.checkedChanges(
  * ```
  */
 @CheckResult
-fun MaterialCardView.checkedChanges(): InitialValueFlow<Boolean> = channelFlow {
+fun MaterialCardView.checkedChanges(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
     checkCheckableState(this@checkedChanges)
     setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }

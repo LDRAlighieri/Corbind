@@ -126,7 +126,7 @@ fun TextView.beforeTextChangeEvents(
  */
 @CheckResult
 fun TextView.beforeTextChangeEvents(): InitialValueFlow<TextViewBeforeTextChangeEvent> =
-    channelFlow {
+    channelFlow<TextViewBeforeTextChangeEvent> {
         val listener = listener(this, this@beforeTextChangeEvents, ::offerCatching)
         addTextChangedListener(listener)
         awaitClose { removeTextChangedListener(listener) }

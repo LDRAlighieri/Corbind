@@ -126,7 +126,7 @@ fun BottomNavigationView.itemSelections(
  * ```
  */
 @CheckResult
-fun BottomNavigationView.itemSelections(): Flow<MenuItem> = channelFlow {
+fun BottomNavigationView.itemSelections(): Flow<MenuItem> = channelFlow<MenuItem> {
     setInitialValue(this@itemSelections, ::offerCatching)
     setOnNavigationItemSelectedListener(listener(this, ::offerCatching))
     awaitClose { setOnNavigationItemSelectedListener(null) }

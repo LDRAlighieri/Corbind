@@ -119,7 +119,7 @@ fun MaterialTimePicker.cancels(
  * ```
  */
 @CheckResult
-fun MaterialTimePicker.cancels(): Flow<Unit> = channelFlow {
+fun MaterialTimePicker.cancels(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, ::offerCatching)
     addOnCancelListener(listener)
     awaitClose { removeOnCancelListener(listener) }

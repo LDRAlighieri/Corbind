@@ -106,7 +106,7 @@ fun View.slides(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
-fun View.slides(): Flow<Float> = channelFlow {
+fun View.slides(): Flow<Float> = channelFlow<Float> {
     val behavior = getBehavior(this@slides)
     val callback = callback(this, ::offerCatching)
     behavior.addBottomSheetCallback(callback)

@@ -109,7 +109,7 @@ fun View.globalLayouts(
  * ```
  */
 @CheckResult
-fun View.globalLayouts(): Flow<Unit> = channelFlow {
+fun View.globalLayouts(): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, ::offerCatching)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     awaitClose {

@@ -113,7 +113,7 @@ fun View.preDraws(
 @CheckResult
 fun View.preDraws(
     proceedDrawingPass: () -> Boolean
-): Flow<Unit> = channelFlow {
+): Flow<Unit> = channelFlow<Unit> {
     val listener = listener(this, proceedDrawingPass, ::offerCatching)
     viewTreeObserver.addOnPreDrawListener(listener)
     awaitClose { viewTreeObserver.removeOnPreDrawListener(listener) }

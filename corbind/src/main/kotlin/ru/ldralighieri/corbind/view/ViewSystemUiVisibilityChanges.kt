@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package ru.ldralighieri.corbind.view
 
 import android.view.View
@@ -112,7 +114,7 @@ fun View.systemUiVisibilityChanges(
  * ```
  */
 @CheckResult
-fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
+fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow<Int> {
     setOnSystemUiVisibilityChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnSystemUiVisibilityChangeListener(null) }
 }

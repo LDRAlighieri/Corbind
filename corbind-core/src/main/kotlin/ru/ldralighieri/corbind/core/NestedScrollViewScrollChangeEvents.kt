@@ -115,10 +115,11 @@ fun NestedScrollView.scrollChangeEvents(
  * ```
  */
 @CheckResult
-fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
-    setOnScrollChangeListener(listener(this, ::offerCatching))
-    awaitClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
-}
+fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> =
+    channelFlow<ViewScrollChangeEvent> {
+        setOnScrollChangeListener(listener(this, ::offerCatching))
+        awaitClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
+    }
 
 @CheckResult
 private fun listener(

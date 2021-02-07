@@ -128,7 +128,7 @@ fun View.touches(
 @CheckResult
 fun View.touches(
     handled: (MotionEvent) -> Boolean = AlwaysTrue
-): Flow<MotionEvent> = channelFlow {
+): Flow<MotionEvent> = channelFlow<MotionEvent> {
     setOnTouchListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnTouchListener(null) }
 }

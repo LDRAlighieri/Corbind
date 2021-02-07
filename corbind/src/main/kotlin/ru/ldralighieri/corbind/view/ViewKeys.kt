@@ -125,7 +125,7 @@ fun View.keys(
 @CheckResult
 fun View.keys(
     handled: (KeyEvent) -> Boolean = AlwaysTrue
-): Flow<KeyEvent> = channelFlow {
+): Flow<KeyEvent> = channelFlow<KeyEvent> {
     setOnKeyListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnKeyListener(null) }
 }

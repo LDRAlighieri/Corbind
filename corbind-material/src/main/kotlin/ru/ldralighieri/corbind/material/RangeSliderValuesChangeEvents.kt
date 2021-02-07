@@ -127,11 +127,12 @@ fun RangeSlider.valuesChangeEvents(
  * ```
  */
 @CheckResult
-fun RangeSlider.valuesChangeEvents(): InitialValueFlow<RangeSliderChangeEvent> = channelFlow {
-    val listener = listener(this, ::offerCatching).apply { previousValues = values }
-    addOnChangeListener(listener)
-    awaitClose { removeOnChangeListener(listener) }
-}.asInitialValueFlow(initialValue(this))
+fun RangeSlider.valuesChangeEvents(): InitialValueFlow<RangeSliderChangeEvent> =
+    channelFlow<RangeSliderChangeEvent> {
+        val listener = listener(this, ::offerCatching).apply { previousValues = values }
+        addOnChangeListener(listener)
+        awaitClose { removeOnChangeListener(listener) }
+    }.asInitialValueFlow(initialValue(this))
 
 @CheckResult
 private fun initialValue(slider: RangeSlider): RangeSliderChangeEvent =

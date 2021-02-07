@@ -127,7 +127,7 @@ fun View.longClicks(
 @CheckResult
 fun View.longClicks(
     handled: () -> Boolean = AlwaysTrue
-): Flow<Unit> = channelFlow {
+): Flow<Unit> = channelFlow<Unit> {
     setOnLongClickListener(listener(this, handled, ::offerCatching))
     awaitClose { setOnLongClickListener(null) }
 }
