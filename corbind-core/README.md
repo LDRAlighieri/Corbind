@@ -4,7 +4,7 @@
 To add androidx core bindings, import `corbind-core` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-core:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.5.0'
 ```
 
 ## List of extensions
@@ -19,7 +19,7 @@ Component | Extension | Description
 ```kotlin
 scrollView.scrollChangeEvents() // Flow<ViewScrollChangeEvent>
     .onEach { /* handle scroll change events */ }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

@@ -30,9 +30,9 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.AlwaysTrue
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class AdapterViewItemLongClickEvent(
     val view: AdapterView<*>,
@@ -114,7 +114,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel(capacity) {
-    onItemLongClickListener = listener(scope, handled, ::safeOffer)
+    onItemLongClickListener = listener(scope, handled, ::offerCatching)
     invokeOnClose { onItemLongClickListener = null }
 }
 
@@ -129,7 +129,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
  * ```
  * adapterView.itemLongClickEvents()
  *      .onEach { /* handle item long click event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -138,8 +138,8 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
-): Flow<AdapterViewItemLongClickEvent> = channelFlow {
-    onItemLongClickListener = listener(this, handled, ::offer)
+): Flow<AdapterViewItemLongClickEvent> = channelFlow<AdapterViewItemLongClickEvent> {
+    onItemLongClickListener = listener(this, handled, ::offerCatching)
     awaitClose { onItemLongClickListener = null }
 }
 

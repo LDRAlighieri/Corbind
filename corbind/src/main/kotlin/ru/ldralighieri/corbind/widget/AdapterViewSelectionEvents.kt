@@ -27,11 +27,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class AdapterViewSelectionEvent {
     abstract val view: AdapterView<*>
@@ -127,8 +128,8 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(scope, ::safeOffer)
+    offerCatching(initialValue(this@selectionEvents))
+    onItemSelectedListener = listener(scope, ::offerCatching)
     invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -151,35 +152,37 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  *              is AdapterViewNothingSelectionEvent -> { /* handle nothing selection event */ }
  *          }
  *      }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * adapterView.selectionEvents()
  *      .filterIsInstance<AdapterViewItemSelectionEvent>()
  *      .onEach { /* handle item selection event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  *
  * // drop initial value
  * adapterView.selectionEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle selection event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun <T : Adapter> AdapterView<T>.selectionEvents(): Flow<AdapterViewSelectionEvent> = channelFlow {
-    offer(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(this, ::offer)
-    awaitClose { onItemSelectedListener = null }
-}
+fun <T : Adapter> AdapterView<T>.selectionEvents(): InitialValueFlow<AdapterViewSelectionEvent> =
+    channelFlow<AdapterViewSelectionEvent> {
+        onItemSelectedListener = listener(this, ::offerCatching)
+        awaitClose { onItemSelectedListener = null }
+    }.asInitialValueFlow(initialValue(adapterView = this))
 
 @CheckResult
 private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterViewSelectionEvent {
     return if (adapterView.selectedItemPosition == AdapterView.INVALID_POSITION) {
         AdapterViewNothingSelectionEvent(adapterView)
     } else {
-        AdapterViewItemSelectionEvent(adapterView, adapterView.selectedView,
-                adapterView.selectedItemPosition, adapterView.selectedItemId)
+        AdapterViewItemSelectionEvent(
+            adapterView, adapterView.selectedView,
+            adapterView.selectedItemPosition, adapterView.selectedItemId
+        )
     }
 }
 

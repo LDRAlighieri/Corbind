@@ -4,7 +4,7 @@
 To add androidx viewpager2 bindings, import `corbind-viewpager2` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.5.0'
 ```
 
 ## List of extensions
@@ -21,7 +21,7 @@ Component | Extension | Description
 ```kotlin
 vp_slides.pageSelections() // Flow<Int>
     .onEach { tv_message = "Page #$it selected" }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

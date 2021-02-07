@@ -25,11 +25,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [MaterialButton] check state change.
@@ -96,8 +97,8 @@ fun MaterialButton.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     checkCheckableState(this@checkedChanges)
-    safeOffer(isChecked)
-    val listener = listener(scope, ::safeOffer)
+    offerCatching(isChecked)
+    val listener = listener(scope, ::offerCatching)
     addOnCheckedChangeListener(listener)
     invokeOnClose { removeOnCheckedChangeListener(listener) }
 }
@@ -115,23 +116,22 @@ fun MaterialButton.checkedChanges(
  * // handle initial value
  * materialButton.checkedChanges()
  *      .onEach { /* handle check state change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * materialButton.checkedChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle check state change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun MaterialButton.checkedChanges(): Flow<Boolean> = channelFlow {
+fun MaterialButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
     checkCheckableState(this@checkedChanges)
-    offer(isChecked)
-    val listener = listener(this, ::offer)
+    val listener = listener(this, ::offerCatching)
     addOnCheckedChangeListener(listener)
     awaitClose { removeOnCheckedChangeListener(listener) }
-}
+}.asInitialValueFlow(isChecked)
 
 private fun checkCheckableState(button: MaterialButton) {
     check(button.isCheckable) { "The MaterialButton is not in checkable state" }

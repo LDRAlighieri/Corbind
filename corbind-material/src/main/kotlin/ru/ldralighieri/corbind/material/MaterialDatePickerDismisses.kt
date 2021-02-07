@@ -29,8 +29,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action whenever the [MaterialDatePicker] is dismissed, no matter how it is dismissed.
@@ -88,7 +88,7 @@ fun <S> MaterialDatePicker<S>.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::safeOffer)
+    val listener = listener(scope, ::offerCatching)
     addOnDismissListener(listener)
     invokeOnClose { removeOnDismissListener(listener) }
 }
@@ -102,12 +102,12 @@ fun <S> MaterialDatePicker<S>.dismisses(
  * ```
  * materialDatePicker.dismisses()
  *      .onEach { /* handle dismiss */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = channelFlow {
-    val listener = listener(this, ::offer)
+fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = channelFlow<Unit> {
+    val listener = listener(this, ::offerCatching)
     addOnDismissListener(listener)
     awaitClose { removeOnDismissListener(listener) }
 }

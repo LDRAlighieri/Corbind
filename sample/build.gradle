@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-androidExtensions {
-    experimental = true
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
 }
 
 android {
@@ -76,15 +73,16 @@ android {
         exclude 'META-INF/atomicfu.kotlin_module'
     }
 
+    buildFeatures { viewBinding true }
 }
 
 dependencies {
 
-    implementation project(":corbind")
     implementation project(":corbind-swiperefreshlayout")
 
     implementation deps.androidx.appCompat
+    implementation deps.androidx.lifecycle
     implementation deps.material
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
 }

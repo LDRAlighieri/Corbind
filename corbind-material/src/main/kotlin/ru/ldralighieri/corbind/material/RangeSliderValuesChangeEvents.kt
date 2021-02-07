@@ -25,11 +25,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 enum class RangeSliderSide { INIT, LEFT, RIGHT }
 
@@ -99,8 +100,8 @@ fun RangeSlider.valuesChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RangeSliderChangeEvent> = corbindReceiveChannel(capacity) {
-    val event = initialValue(this@valuesChangeEvents).also { safeOffer(it) }
-    val listener = listener(scope, ::safeOffer).apply { previousValues = event.previousValues }
+    val event = initialValue(this@valuesChangeEvents).also { offerCatching(it) }
+    val listener = listener(scope, ::offerCatching).apply { previousValues = event.previousValues }
     addOnChangeListener(listener)
     invokeOnClose { removeOnChangeListener(listener) }
 }
@@ -116,22 +117,22 @@ fun RangeSlider.valuesChangeEvents(
  * // handle initial values
  * rangeSlider.valuesChangeEvents()
  *      .onEach { /* handle values change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial values
  * rangeSlider.valuesChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle values change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun RangeSlider.valuesChangeEvents(): Flow<RangeSliderChangeEvent> = channelFlow {
-    val event = initialValue(this@valuesChangeEvents).also { offer(it) }
-    val listener = listener(this, ::offer).apply { previousValues = event.previousValues }
-    addOnChangeListener(listener)
-    awaitClose { removeOnChangeListener(listener) }
-}
+fun RangeSlider.valuesChangeEvents(): InitialValueFlow<RangeSliderChangeEvent> =
+    channelFlow<RangeSliderChangeEvent> {
+        val listener = listener(this, ::offerCatching).apply { previousValues = values }
+        addOnChangeListener(listener)
+        awaitClose { removeOnChangeListener(listener) }
+    }.asInitialValueFlow(initialValue(this))
 
 @CheckResult
 private fun initialValue(slider: RangeSlider): RangeSliderChangeEvent =

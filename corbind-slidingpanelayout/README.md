@@ -4,7 +4,7 @@
 To add androidx slidingpanelayout bindings, import `corbind-slidingpanelayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.5.0'
 ```
 
 ## List of extensions
@@ -22,7 +22,7 @@ slider.panelOpens() // Flow<Boolean>
     .onEach { isOpen ->
       tv_message = "Panel completely ${ if (isOpen) "open" else "close"}"
     }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

@@ -25,12 +25,13 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
-import java.util.*
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
+import java.util.Calendar
 
 data class CalendarViewDateChangeEvent(
     val view: CalendarView,
@@ -106,8 +107,8 @@ fun CalendarView.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CalendarViewDateChangeEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(initialValue(this@dateChangeEvents))
-    setOnDateChangeListener(listener(scope, ::safeOffer))
+    offerCatching(initialValue(this@dateChangeEvents))
+    setOnDateChangeListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnDateChangeListener(null) }
 }
 
@@ -125,21 +126,21 @@ fun CalendarView.dateChangeEvents(
  * // handle initial value
  * calendarView.dateChangeEvents()
  *      .onEach { /* handle date change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * calendarView.dateChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle date change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun CalendarView.dateChangeEvents(): Flow<CalendarViewDateChangeEvent> = channelFlow {
-    offer(initialValue(this@dateChangeEvents))
-    setOnDateChangeListener(listener(this, ::offer))
-    awaitClose { setOnDateChangeListener(null) }
-}
+fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> =
+    channelFlow<CalendarViewDateChangeEvent> {
+        setOnDateChangeListener(listener(this, ::offerCatching))
+        awaitClose { setOnDateChangeListener(null) }
+    }.asInitialValueFlow(initialValue(calendar = this))
 
 @CheckResult
 private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent =

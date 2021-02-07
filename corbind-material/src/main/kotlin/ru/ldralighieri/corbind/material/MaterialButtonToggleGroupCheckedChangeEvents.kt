@@ -30,8 +30,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class MaterialButtonCheckedChangeEvent(
     @IdRes val checkedId: Int,
@@ -103,7 +103,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MaterialButtonCheckedChangeEvent> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@buttonCheckedChangeEvents)
-    val listener = listener(scope, ::safeOffer)
+    val listener = listener(scope, ::offerCatching)
     addOnButtonCheckedListener(listener)
     invokeOnClose { removeOnButtonCheckedListener(listener) }
 }
@@ -119,21 +119,23 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  * ```
  * materialButtonToggleGroup.buttonCheckedChangeEvents()
  *      .onEach { /* handle check change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(): Flow<MaterialButtonCheckedChangeEvent> =
-    channelFlow {
+    channelFlow<MaterialButtonCheckedChangeEvent> {
         checkSelectionMode(this@buttonCheckedChangeEvents)
-        val listener = listener(this, ::offer)
+        val listener = listener(this, ::offerCatching)
         addOnButtonCheckedListener(listener)
         awaitClose { removeOnButtonCheckedListener(listener) }
     }
 
 private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
-    check(!group.isSingleSelection) { "The MaterialButtonToggleGroup is in single selection mode. " +
-        "Use `buttonCheckedChanges` extension instead" }
+    check(!group.isSingleSelection) {
+        "The MaterialButtonToggleGroup is in single selection mode. " +
+            "Use `buttonCheckedChanges` extension instead"
+    }
 }
 
 @CheckResult

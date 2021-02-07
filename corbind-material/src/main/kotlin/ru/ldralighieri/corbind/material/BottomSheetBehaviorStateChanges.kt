@@ -27,11 +27,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the state change events from [View] on [BottomSheetBehavior].
@@ -93,8 +94,8 @@ fun View.stateChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@stateChanges)
-    safeOffer(behavior.state)
-    val callback = callback(scope, ::safeOffer)
+    offerCatching(behavior.state)
+    val callback = callback(scope, ::offerCatching)
     behavior.addBottomSheetCallback(callback)
     invokeOnClose { behavior.removeBottomSheetCallback(callback) }
 }
@@ -110,22 +111,21 @@ fun View.stateChanges(
  * // handle initial value
  * bottomSheetBehavior.stateChanges()
  *      .onEach { /* handle state change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * bottomSheetBehavior.stateChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle state change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
-fun View.stateChanges(): Flow<Int> = channelFlow {
+fun View.stateChanges(): InitialValueFlow<Int> = channelFlow<Int> {
     val behavior = getBehavior(this@stateChanges)
-    offer(behavior.state)
-    val callback = callback(this, ::offer)
+    val callback = callback(this, ::offerCatching)
     behavior.addBottomSheetCallback(callback)
     awaitClose { behavior.removeBottomSheetCallback(callback) }
-}
+}.asInitialValueFlow(getBehavior(this@stateChanges).state)
 
 @CheckResult
 private fun getBehavior(view: View): BottomSheetBehavior<*> {

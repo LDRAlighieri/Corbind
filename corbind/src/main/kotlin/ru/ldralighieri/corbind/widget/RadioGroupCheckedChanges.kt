@@ -26,11 +26,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on checked view ID changes in [RadioGroup].
@@ -98,8 +99,8 @@ fun RadioGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    safeOffer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, ::safeOffer))
+    offerCatching(checkedRadioButtonId)
+    setOnCheckedChangeListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -118,21 +119,20 @@ fun RadioGroup.checkedChanges(
  * // handle initial value
  * radioGroup.checkedChanges()
  *      .onEach { /* handle checked change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * radioGroup.checkedChanges()
- *      .drop()
+ *      .dropInitialValue()
  *      .onEach { /* handle checked change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun RadioGroup.checkedChanges(): Flow<Int> = channelFlow {
-    offer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(this, ::offer))
+fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow<Int> {
+    setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }
-}
+}.asInitialValueFlow(checkedRadioButtonId)
 
 @CheckResult
 private fun listener(

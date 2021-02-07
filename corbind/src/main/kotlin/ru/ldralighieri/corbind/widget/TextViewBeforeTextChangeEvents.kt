@@ -27,11 +27,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class TextViewBeforeTextChangeEvent(
     val view: TextView,
@@ -97,8 +98,8 @@ fun TextView.beforeTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewBeforeTextChangeEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(initialValue(this@beforeTextChangeEvents))
-    val listener = listener(scope, this@beforeTextChangeEvents, ::safeOffer)
+    offerCatching(initialValue(this@beforeTextChangeEvents))
+    val listener = listener(scope, this@beforeTextChangeEvents, ::offerCatching)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -114,26 +115,26 @@ fun TextView.beforeTextChangeEvents(
  * // handle initial value
  * textView.beforeTextChangeEvents()
  *      .onEach { /* handle before text change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * textView.beforeTextChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle before text change event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun TextView.beforeTextChangeEvents(): Flow<TextViewBeforeTextChangeEvent> = channelFlow {
-    offer(initialValue(this@beforeTextChangeEvents))
-    val listener = listener(this, this@beforeTextChangeEvents, ::offer)
-    addTextChangedListener(listener)
-    awaitClose { removeTextChangedListener(listener) }
-}
+fun TextView.beforeTextChangeEvents(): InitialValueFlow<TextViewBeforeTextChangeEvent> =
+    channelFlow<TextViewBeforeTextChangeEvent> {
+        val listener = listener(this, this@beforeTextChangeEvents, ::offerCatching)
+        addTextChangedListener(listener)
+        awaitClose { removeTextChangedListener(listener) }
+    }.asInitialValueFlow(initialValue(textView = this))
 
 @CheckResult
 private fun initialValue(textView: TextView): TextViewBeforeTextChangeEvent =
-        TextViewBeforeTextChangeEvent(textView, textView.editableText, 0, 0, 0)
+    TextViewBeforeTextChangeEvent(textView, textView.editableText, 0, 0, 0)
 
 @CheckResult
 private fun listener(

@@ -16,60 +16,94 @@
 
 package ru.ldralighieri.corbind.sample
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.coroutines.flow.*
-import ru.ldralighieri.corbind.sample.core.CorbindActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 import ru.ldralighieri.corbind.sample.core.extensions.hideSoftInput
+import ru.ldralighieri.corbind.sample.databinding.ActivityLoginBinding
 import ru.ldralighieri.corbind.swiperefreshlayout.refreshes
 import ru.ldralighieri.corbind.view.clicks
 import ru.ldralighieri.corbind.widget.editorActionEvents
 import ru.ldralighieri.corbind.widget.textChanges
 
-class LoginActivity : CorbindActivity() {
+class LoginActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityLoginBinding
+
+    @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.JELLY_BEAN until Build.VERSION_CODES.R) {
+            val view = window.decorView
+            @Suppress("DEPRECATION")
+            view.systemUiVisibility = view.systemUiVisibility or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        }
+
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         bindViews()
     }
 
     private fun bindViews() {
+        with(binding) {
+            combine(
+                etEmail.textChanges()
+                    .map { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
 
-        combine(
-            et_email.textChanges()
-                .map { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
+                etPassword.textChanges()
+                    .map { it.length > 7 },
 
-            et_password.textChanges()
-                .map { it.length > 7 },
+                transform = { email, password -> email && password }
+            )
+                .onEach { btLogin.isEnabled = it }
+                .launchIn(lifecycleScope)
 
-            transform = { email, password -> email && password }
-        )
-            .onEach { bt_login.isEnabled = it }
-            .launchIn(this)
+            merge(
+                btLogin.clicks(),
 
-        merge(
-            bt_login.clicks(),
+                etPassword.editorActionEvents()
+                    .filter { it.actionId == EditorInfo.IME_ACTION_DONE }
+                    .filter { btLogin.isEnabled }
+                    .onEach { hideSoftInput() }
+            )
+                .onEach {
+                    Toast.makeText(
+                        this@LoginActivity,
+                        R.string.login_success_message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                .launchIn(lifecycleScope)
 
-            et_password.editorActionEvents()
-                .filter { it.actionId == EditorInfo.IME_ACTION_DONE }
-                .filter { bt_login.isEnabled }
-                .onEach { hideSoftInput() }
-        )
-            .onEach { Toast.makeText(this, R.string.login_success_message, Toast.LENGTH_SHORT).show() }
-            .launchIn(this)
-
-        swipe.refreshes()
-            .onEach {
-                et_email.text?.clear()
-                et_password.text?.clear()
-                swipe.isRefreshing = false
-                hideSoftInput()
-                Toast.makeText(this, R.string.login_swipe_message, Toast.LENGTH_SHORT).show()
-            }
-            .launchIn(this)
+            swipe.refreshes()
+                .onEach {
+                    etEmail.text?.clear()
+                    etPassword.text?.clear()
+                    swipe.isRefreshing = false
+                    hideSoftInput()
+                    Toast.makeText(
+                        this@LoginActivity,
+                        R.string.login_swipe_message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                .launchIn(lifecycleScope)
+        }
     }
 }

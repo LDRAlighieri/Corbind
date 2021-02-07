@@ -27,11 +27,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 data class TimeChangedEvent(
     val view: TimePicker,
@@ -108,8 +109,8 @@ fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TimeChangedEvent> = corbindReceiveChannel(capacity) {
-    safeOffer(TimeChangedEvent(this@timeChangeEvents, hour, minute))
-    setOnTimeChangedListener(listener(scope, ::safeOffer))
+    offerCatching(TimeChangedEvent(this@timeChangeEvents, hour, minute))
+    setOnTimeChangedListener(listener(scope, ::offerCatching))
     invokeOnClose { setOnTimeChangedListener(null) }
 }
 
@@ -127,22 +128,22 @@ fun TimePicker.timeChangeEvents(
  * // handle initial value
  * timePicker.timeChangeEvents()
  *      .onEach { /* handle time changed event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * timePicker.timeChangeEvents()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle time changed event */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun TimePicker.timeChangeEvents(): Flow<TimeChangedEvent> = channelFlow {
-    offer(TimeChangedEvent(this@timeChangeEvents, hour, minute))
-    setOnTimeChangedListener(listener(this, ::offer))
-    awaitClose { setOnTimeChangedListener(null) }
-}
+fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> =
+    channelFlow<TimeChangedEvent> {
+        setOnTimeChangedListener(listener(this, ::offerCatching))
+        awaitClose { setOnTimeChangedListener(null) }
+    }.asInitialValueFlow(TimeChangedEvent(view = this, hour, minute))
 
 @CheckResult
 private fun listener(

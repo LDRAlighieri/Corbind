@@ -25,11 +25,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on values changes on [RangeSlider].
@@ -88,8 +89,8 @@ fun RangeSlider.valuesChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<List<Float>> = corbindReceiveChannel(capacity) {
-    safeOffer(values)
-    val listener = listener(scope, ::safeOffer)
+    offerCatching(values)
+    val listener = listener(scope, ::offerCatching)
     addOnChangeListener(listener)
     invokeOnClose { removeOnChangeListener(listener) }
 }
@@ -105,22 +106,21 @@ fun RangeSlider.valuesChanges(
  * // handle initial values
  * slider.valuesChanges()
  *      .onEach { /* handle values change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial values
  * slider.valuesChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle values change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun RangeSlider.valuesChanges(): Flow<List<Float>> = channelFlow {
-    offer(values)
-    val listener = listener(this, ::offer)
+fun RangeSlider.valuesChanges(): InitialValueFlow<List<Float>> = channelFlow<List<Float>> {
+    val listener = listener(this, ::offerCatching)
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }
-}
+}.asInitialValueFlow(values)
 
 @CheckResult
 private fun listener(

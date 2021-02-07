@@ -25,11 +25,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on rating changes on [RatingBar].
@@ -96,8 +97,8 @@ fun RatingBar.ratingChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
-    safeOffer(rating)
-    onRatingBarChangeListener = listener(scope, ::safeOffer)
+    offerCatching(rating)
+    onRatingBarChangeListener = listener(scope, ::offerCatching)
     invokeOnClose { onRatingBarChangeListener = null }
 }
 
@@ -115,21 +116,20 @@ fun RatingBar.ratingChanges(
  * // handle initial value
  * ratingBar.ratingChanges()
  *      .onEach { /* handle rating change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * ratingBar.ratingChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle rating change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun RatingBar.ratingChanges(): Flow<Float> = channelFlow {
-    offer(rating)
-    onRatingBarChangeListener = listener(this, ::offer)
+fun RatingBar.ratingChanges(): InitialValueFlow<Float> = channelFlow<Float> {
+    onRatingBarChangeListener = listener(this, ::offerCatching)
     awaitClose { onRatingBarChangeListener = null }
-}
+}.asInitialValueFlow(rating)
 
 @CheckResult
 private fun listener(

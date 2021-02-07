@@ -4,7 +4,7 @@
 To add androidx appcompat bindings, import `corbind-appcompat` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.5.0'
 ```
 
 ## List of extensions
@@ -25,7 +25,7 @@ Component | Extension | Description
 ```kotlin
 toolbar.itemClicks() // Flow<MenuItem>
     .onEach { /* handle menu item clicks events */ }
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

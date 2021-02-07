@@ -25,11 +25,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.corbindReceiveChannel
-import ru.ldralighieri.corbind.safeOffer
+import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [MaterialCardView] check change.
@@ -96,8 +97,8 @@ fun MaterialCardView.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     checkCheckableState(this@checkedChanges)
-    safeOffer(isChecked)
-    val listener = listener(scope, ::safeOffer)
+    offerCatching(isChecked)
+    val listener = listener(scope, ::offerCatching)
     setOnCheckedChangeListener(listener)
     invokeOnClose { setOnCheckedChangeListener(listener) }
 }
@@ -115,22 +116,21 @@ fun MaterialCardView.checkedChanges(
  * // handle initial value
  * materialCardView.checkedChanges()
  *      .onEach { /* handle check change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * materialCardView.checkedChanges()
- *      .drop(1)
+ *      .dropInitialValue()
  *      .onEach { /* handle check change */ }
- *      .launchIn(scope)
+ *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun MaterialCardView.checkedChanges(): Flow<Boolean> = channelFlow {
+fun MaterialCardView.checkedChanges(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
     checkCheckableState(this@checkedChanges)
-    offer(isChecked)
-    setOnCheckedChangeListener(listener(this, ::offer))
+    setOnCheckedChangeListener(listener(this, ::offerCatching))
     awaitClose { setOnCheckedChangeListener(null) }
-}
+}.asInitialValueFlow(isChecked)
 
 private fun checkCheckableState(card: MaterialCardView) {
     check(card.isCheckable) { "The MaterialCardView is not checkable." }
