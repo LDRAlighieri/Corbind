@@ -2,7 +2,7 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
 [![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.4.30-blue.svg)](https://kotlinlang.org)
-[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.3.9-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
+[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.4.2-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://www.codacy.com/app/LDRAlighieri/Corbind?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LDRAlighieri/Corbind&amp;utm_campaign=Badge_Grade)
@@ -52,7 +52,7 @@ Snapshot build:
 repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
-      
+
 dependencies {
    implementation 'ru.ldralighieri.corbind:{module}:1.5.1-SNAPSHOT'
 }
@@ -62,13 +62,13 @@ dependencies {
 ## List of extensions
 You can find a list of extensions in the description of each module:  
 [corbind]  
-[corbind-activity]
-[corbind-appcompat]
-[corbind-core]
+[corbind-activity]  
+[corbind-appcompat]  
+[corbind-core]  
 [corbind-drawerlayout]  
 [corbind-leanback]  
-[corbind-lifecycle]
-[corbind-material]
+[corbind-lifecycle]  
+[corbind-material]  
 [corbind-navigation]  
 [corbind-recyclerview]  
 [corbind-slidingpanelayout]  
