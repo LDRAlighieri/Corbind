@@ -1,7 +1,7 @@
 ﻿[![Corbind](logo.svg)](https://ldralighieri.github.io/Corbind)
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.4.0-blue.svg)](https://kotlinlang.org)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.4.30-blue.svg)](https://kotlinlang.org)
 [![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.3.9-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -23,28 +23,28 @@ This library is for Android applications only. Help you to transform Android UI 
 
 Platform bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind:1.5.0'
 ```
 
 AndroidX library bindings:
 ```groovy
 implementation 'ru.ldralighieri.corbind:corbind-activity:1.5.0'
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-core:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.5.0'
 implementation 'ru.ldralighieri.corbind:corbind-lifecycle:1.5.0'
-implementation 'ru.ldralighieri.corbind:corbind-navigation:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-navigation:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.5.0'
 ```
 
 Google 'material' library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.5.0'
 ```
 
 Snapshot build:
@@ -54,7 +54,7 @@ repositories {
 }
       
 dependencies {
-   implementation 'ru.ldralighieri.corbind:{module}:1.4.1-SNAPSHOT'
+   implementation 'ru.ldralighieri.corbind:{module}:1.5.1-SNAPSHOT'
 }
 ```
 
