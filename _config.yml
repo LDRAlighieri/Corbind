@@ -24,10 +24,12 @@ description: Coroutine binding APIs for Android UI widgets from the platform and
 navbar-links:
   Modules:
     - corbind: "modules/corbind"
+    - corbind-activity: "modules/corbind-activity"
     - corbind-appcompat: "modules/corbind-appcompat"
     - corbind-core: "modules/corbind-core"
     - corbind-drawerlayout: "modules/corbind-drawerlayout"
     - corbind-leanback: "modules/corbind-leanback"
+    - corbind-lifecycle: "modules/corbind-lifecycle"
     - corbind-material: "modules/corbind-material"
     - corbind-navigation: "modules/corbind-navigation"
     - corbind-recyclerview: "modules/corbind-recyclerview"

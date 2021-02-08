@@ -17,8 +17,8 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 </div>
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.4.0-blue.svg)](https://kotlinlang.org)
-[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.3.9-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.4.30-blue.svg)](https://kotlinlang.org)
+[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.4.2-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://www.codacy.com/app/LDRAlighieri/Corbind?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LDRAlighieri/Corbind&amp;utm_campaign=Badge_Grade)
@@ -38,26 +38,26 @@ This library is for Android applications only. Help you to transform Android UI 
 
 Platform bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind:1.5.0'
 ```
 
 AndroidX library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-core:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-navigation:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.4.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-navigation:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.5.0'
 ```
 
 Google 'material' library bindings:
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.5.0'
 ```
 
 Snapshot build:
@@ -67,7 +67,7 @@ repositories {
 }
 
 dependencies {
-   implementation 'ru.ldralighieri.corbind:{module}:1.4.1-SNAPSHOT'
+   implementation 'ru.ldralighieri.corbind:{module}:1.5.1-SNAPSHOT'
 }
 ```
 
@@ -75,10 +75,12 @@ dependencies {
 ## List of extensions
 You can find a list of extensions in the description of each module:<br>
 [corbind]<br>
+[corbind-activity]<br>
 [corbind-appcompat]<br>
 [corbind-core]<br>
 [corbind-drawerlayout]<br>
 [corbind-leanback]<br>
+[corbind-lifecycle]<br>
 [corbind-material]<br>
 [corbind-navigation]<br>
 [corbind-recyclerview]<br>
@@ -156,10 +158,12 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 [source]: https://github.com/LDRAlighieri/Corbind
 
 [corbind]: https://ldralighieri.github.io/Corbind/modules/corbind/
+[corbind-activity]: https://ldralighieri.github.io/Corbind/modules/corbind-activity
 [corbind-appcompat]: https://ldralighieri.github.io/Corbind/modules/corbind-appcompat
 [corbind-core]: https://ldralighieri.github.io/Corbind/modules/corbind-core
 [corbind-drawerlayout]: https://ldralighieri.github.io/Corbind/modules/corbind-drawerlayout
 [corbind-leanback]: https://ldralighieri.github.io/Corbind/modules/corbind-leanback
+[corbind-lifecycle]: https://ldralighieri.github.io/Corbind/modules/corbind-lifecycle
 [corbind-material]: https://ldralighieri.github.io/Corbind/modules/corbind-material
 [corbind-navigation]: https://ldralighieri.github.io/Corbind/modules/corbind-navigation
 [corbind-recyclerview]: https://ldralighieri.github.io/Corbind/modules/corbind-recyclerview

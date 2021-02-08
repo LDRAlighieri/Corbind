@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: corbind-viewpager module
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Androidx viewpager bindings.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx viewpager bindings]
+tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx viewpager bindings,viewpager]
 ---
 
 <div style="text-align: center">
@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx viewpager bindings, import `corbind-viewpager` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.5.0'
 ```
 
 ## List of extensions

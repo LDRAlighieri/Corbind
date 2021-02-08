@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: corbind-navigation module
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Androidx leanback bindings.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx navigation bindings]
+tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx navigation bindings,navigation]
 ---
 
 <div style="text-align: center">
@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx navigation bindings, import `corbind-navigation` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-navigation:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-navigation:1.5.0'
 ```
 
 ## List of extensions

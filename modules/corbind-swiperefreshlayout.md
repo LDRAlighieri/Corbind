@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: corbind-swiperefreshlayout module
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Androidx swiperefreshlayout bindings.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx swiperefreshlayout bindings]
+tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx swiperefreshlayout bindings,swiperefreshlayout]
 ---
 
 <div style="text-align: center">
@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx swiperefreshlayout bindings, import `corbind-swiperefreshlayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.5.0'
 ```
 
 ## List of extensions

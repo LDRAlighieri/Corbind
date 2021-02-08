@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: corbind-recyclerview module
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Androidx recyclerview bindings.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx recyclerview bindings]
+tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx recyclerview bindings,recyclerview]
 ---
 
 <div style="text-align: center">
@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx recyclerview bindings, import `corbind-recyclerview` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.5.0'
 ```
 
 ## List of extensions

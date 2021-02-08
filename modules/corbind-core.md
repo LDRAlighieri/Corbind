@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx core bindings, import `corbind-core` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-core:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.5.0'
 ```
 
 ## List of extensions

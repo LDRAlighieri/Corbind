@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: corbind-appcompat module
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Androidx appcompat bindings.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx appcompat bindings]
+tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx appcompat bindings,appcompat]
 ---
 
 <div style="text-align: center">
@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx appcompat bindings, import `corbind-appcompat` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.4.0'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.5.0'
 ```
 
 ## List of extensions
