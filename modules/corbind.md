@@ -27,12 +27,15 @@ implementation 'ru.ldralighieri.corbind:corbind:1.5.0'
 ### app
 Component | Extension | Description
 --|---|--
-**DatePickerDialog** | `dateSetEvents` | Called when the user sets the date
+**DatePickerDialog** | `dateSetEvents` | Called when the user sets the date.
+
 
 ### content
 Component | Extension | Description
 --|---|--
-**Context** | `receivesBroadcast` | Called with any broadcast Intent that matches filter
+**Context** | `receivesBroadcast` | Called with any broadcast Intent that matches filter.
+
+
 ### view
 
 Component | Extension | Description
@@ -57,6 +60,7 @@ Component | Extension | Description
 **ViewGroup** | `changeEvents` | Called when the hierarchy within this view changed. The hierarchy changes whenever a child is added to or removed from this view.
 **MenuItem** | `actionViewEvents` | Called when a menu item is collapsed or collapsed.
              | `clicks` | Called when a menu item has been invoked.
+
 
 ### widget
 
