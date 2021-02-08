@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: corbind module
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Platform bindings.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,platform bindings]
+tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,platform bindings,platform]
 ---
 
 <div style="text-align: center">
@@ -33,7 +33,6 @@ Component | Extension | Description
 Component | Extension | Description
 --|---|--
 **Context** | `receivesBroadcast` | Called with any broadcast Intent that matches filter
-
 ### view
 
 Component | Extension | Description
