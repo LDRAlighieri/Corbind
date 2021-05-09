@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class ViewGroupHierarchyChangeEvent {
     abstract val view: ViewGroup
@@ -66,7 +65,7 @@ fun ViewGroup.changeEvents(
         for (event in channel) action(event)
     }
 
-    setOnHierarchyChangeListener(listener(scope, this, events::offer))
+    setOnHierarchyChangeListener(listener(scope, this, events::trySend))
     events.invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
@@ -123,7 +122,7 @@ fun ViewGroup.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel(capacity) {
-    setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::offerCatching))
+    setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::trySend))
     invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
@@ -154,17 +153,16 @@ fun ViewGroup.changeEvents(
  * ```
  */
 @CheckResult
-fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> =
-    channelFlow<ViewGroupHierarchyChangeEvent> {
-        setOnHierarchyChangeListener(listener(this, this@changeEvents, ::offerCatching))
-        awaitClose { setOnHierarchyChangeListener(null) }
-    }
+fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = channelFlow {
+    setOnHierarchyChangeListener(listener(this, this@changeEvents, ::trySend))
+    awaitClose { setOnHierarchyChangeListener(null) }
+}
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
     viewGroup: ViewGroup,
-    emitter: (ViewGroupHierarchyChangeEvent) -> Boolean
+    emitter: (ViewGroupHierarchyChangeEvent) -> Unit
 ) = object : ViewGroup.OnHierarchyChangeListener {
 
     override fun onChildViewAdded(parent: View, child: View) {

@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class SearchBarSearchQueryEvent {
     abstract val view: SearchBar
@@ -70,7 +69,7 @@ fun SearchBar.searchQueryChangeEvents(
         for (event in channel) action(event)
     }
 
-    setSearchBarListener(listener(scope, this, events::offer))
+    setSearchBarListener(listener(scope, this, events::trySend))
     events.invokeOnClose { setSearchBarListener(null) }
 }
 
@@ -130,7 +129,7 @@ fun SearchBar.searchQueryChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel(capacity) {
-    setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::offerCatching))
+    setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::trySend))
     invokeOnClose { setSearchBarListener(null) }
 }
 
@@ -163,17 +162,16 @@ fun SearchBar.searchQueryChangeEvents(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  */
 @CheckResult
-fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> =
-    channelFlow<SearchBarSearchQueryEvent> {
-        setSearchBarListener(listener(this, this@searchQueryChangeEvents, ::offerCatching))
-        awaitClose { setSearchBarListener(null) }
-    }
+fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> = channelFlow {
+    setSearchBarListener(listener(this, this@searchQueryChangeEvents, ::trySend))
+    awaitClose { setSearchBarListener(null) }
+}
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
     searchBar: SearchBar,
-    emitter: (SearchBarSearchQueryEvent) -> Boolean
+    emitter: (SearchBarSearchQueryEvent) -> Unit
 ) = object : SearchBar.SearchBarListener {
 
     override fun onSearchQueryChange(query: String) {

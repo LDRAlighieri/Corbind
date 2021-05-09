@@ -32,7 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class DateChangedEvent(
     val view: DatePicker,
@@ -61,8 +60,8 @@ fun DatePicker.dateChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(DateChangedEvent(this, year, month, dayOfMonth))
-    setOnDateChangedListener(listener(scope, events::offer))
+    events.trySend(DateChangedEvent(this, year, month, dayOfMonth))
+    setOnDateChangedListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnDateChangedListener(null) }
 }
 
@@ -110,8 +109,8 @@ fun DatePicker.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<DateChangedEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
-    setOnDateChangedListener(listener(scope, ::offerCatching))
+    trySend(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
+    setOnDateChangedListener(listener(scope, ::trySend))
     invokeOnClose { setOnDateChangedListener(null) }
 }
 
@@ -140,16 +139,15 @@ fun DatePicker.dateChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult
-fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> =
-    channelFlow<DateChangedEvent> {
-        setOnDateChangedListener(listener(this, ::offerCatching))
-        awaitClose { setOnDateChangedListener(null) }
-    }.asInitialValueFlow(DateChangedEvent(view = this, year, month, dayOfMonth))
+fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> = channelFlow {
+    setOnDateChangedListener(listener(this, ::trySend))
+    awaitClose { setOnDateChangedListener(null) }
+}.asInitialValueFlow(DateChangedEvent(view = this, year, month, dayOfMonth))
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (DateChangedEvent) -> Boolean
+    emitter: (DateChangedEvent) -> Unit
 ) = DatePicker.OnDateChangedListener { view, year, monthOfYear, dayOfMonth ->
     if (scope.isActive) { emitter(DateChangedEvent(view, year, monthOfYear, dayOfMonth)) }
 }

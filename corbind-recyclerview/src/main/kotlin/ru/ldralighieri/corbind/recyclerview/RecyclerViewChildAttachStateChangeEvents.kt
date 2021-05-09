@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class RecyclerViewChildAttachStateChangeEvent {
     abstract val view: RecyclerView
@@ -67,7 +66,7 @@ fun RecyclerView.childAttachStateChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, this, events::offer)
+    val listener = listener(scope, this, events::trySend)
     addOnChildAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
 }
@@ -120,7 +119,7 @@ fun RecyclerView.childAttachStateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, this@childAttachStateChangeEvents, ::offerCatching)
+    val listener = listener(scope, this@childAttachStateChangeEvents, ::trySend)
     addOnChildAttachStateChangeListener(listener)
     invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
 }
@@ -151,8 +150,8 @@ fun RecyclerView.childAttachStateChangeEvents(
  */
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachStateChangeEvent> =
-    channelFlow<RecyclerViewChildAttachStateChangeEvent> {
-        val listener = listener(this, this@childAttachStateChangeEvents, ::offerCatching)
+    channelFlow {
+        val listener = listener(this, this@childAttachStateChangeEvents, ::trySend)
         addOnChildAttachStateChangeListener(listener)
         awaitClose { removeOnChildAttachStateChangeListener(listener) }
     }
@@ -161,7 +160,7 @@ fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachSta
 private fun listener(
     scope: CoroutineScope,
     recyclerView: RecyclerView,
-    emitter: (RecyclerViewChildAttachStateChangeEvent) -> Boolean
+    emitter: (RecyclerViewChildAttachStateChangeEvent) -> Unit
 ) = object : RecyclerView.OnChildAttachStateChangeListener {
 
     override fun onChildViewAttachedToWindow(childView: View) {

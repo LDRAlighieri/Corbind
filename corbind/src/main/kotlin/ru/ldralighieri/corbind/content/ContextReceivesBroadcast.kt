@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action when the the Intent broadcasts by the selected filter.
@@ -52,7 +51,7 @@ fun Context.receivesBroadcast(
         for (intent in channel) action(intent)
     }
 
-    val receiver = receiver(scope, events::offer)
+    val receiver = receiver(scope, events::trySend)
     registerReceiver(receiver, intentFilter)
     events.invokeOnClose { unregisterReceiver(receiver) }
 }
@@ -99,7 +98,7 @@ fun Context.receivesBroadcast(
     intentFilter: IntentFilter,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Intent> = corbindReceiveChannel(capacity) {
-    val receiver = receiver(scope, ::offerCatching)
+    val receiver = receiver(scope, ::trySend)
     registerReceiver(receiver, intentFilter)
     invokeOnClose { unregisterReceiver(receiver) }
 }
@@ -120,8 +119,8 @@ fun Context.receivesBroadcast(
  *
  * @param intentFilter Selects the Intent broadcasts to be received
  */
-fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = channelFlow<Intent> {
-    val receiver = receiver(this, ::offerCatching)
+fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = channelFlow {
+    val receiver = receiver(this, ::trySend)
     registerReceiver(receiver, intentFilter)
     awaitClose { unregisterReceiver(receiver) }
 }
@@ -129,7 +128,7 @@ fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = channe
 @CheckResult
 private fun receiver(
     scope: CoroutineScope,
-    emitter: (Intent) -> Boolean
+    emitter: (Intent) -> Unit
 ) = object : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {

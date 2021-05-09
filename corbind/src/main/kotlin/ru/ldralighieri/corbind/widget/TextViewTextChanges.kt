@@ -32,7 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on character sequences for text changes on [TextView].
@@ -50,8 +49,8 @@ fun TextView.textChanges(
         for (chars in channel) action(chars)
     }
 
-    events.offer(text)
-    val listener = listener(scope, events::offer)
+    events.trySend(text)
+    val listener = listener(scope, events::trySend)
     addTextChangedListener(listener)
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -92,8 +91,8 @@ fun TextView.textChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
-    offerCatching(text)
-    val listener = listener(scope, ::offerCatching)
+    trySend(text)
+    val listener = listener(scope, ::trySend)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -119,8 +118,8 @@ fun TextView.textChanges(
  * ```
  */
 @CheckResult
-fun TextView.textChanges(): InitialValueFlow<CharSequence> = channelFlow<CharSequence> {
-    val listener = listener(this, ::offerCatching)
+fun TextView.textChanges(): InitialValueFlow<CharSequence> = channelFlow {
+    val listener = listener(this, ::trySend)
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }
 }.asInitialValueFlow(text)
@@ -128,7 +127,7 @@ fun TextView.textChanges(): InitialValueFlow<CharSequence> = channelFlow<CharSeq
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (CharSequence) -> Boolean
+    emitter: (CharSequence) -> Unit
 ) = object : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit

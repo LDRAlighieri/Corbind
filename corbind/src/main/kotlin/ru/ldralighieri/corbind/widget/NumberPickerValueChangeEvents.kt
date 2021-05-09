@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class NumberPickerValueChangeEvent(
     val picker: NumberPicker,
@@ -57,8 +56,8 @@ fun NumberPicker.valueChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(NumberPickerValueChangeEvent(this, value, value))
-    setOnValueChangedListener(listener(scope, events::offer))
+    events.trySend(NumberPickerValueChangeEvent(this, value, value))
+    setOnValueChangedListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnValueChangedListener(null) }
 }
 
@@ -105,8 +104,8 @@ fun NumberPicker.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<NumberPickerValueChangeEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
-    setOnValueChangedListener(listener(scope, ::offerCatching))
+    trySend(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
+    setOnValueChangedListener(listener(scope, ::trySend))
     invokeOnClose { setOnValueChangedListener(null) }
 }
 
@@ -135,16 +134,15 @@ fun NumberPicker.valueChangeEvents(
  * ```
  */
 @CheckResult
-fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEvent> =
-    channelFlow<NumberPickerValueChangeEvent> {
-        setOnValueChangedListener(listener(this, ::offerCatching))
-        awaitClose { setOnValueChangedListener(null) }
-    }.asInitialValueFlow(NumberPickerValueChangeEvent(picker = this, value, value))
+fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEvent> = channelFlow {
+    setOnValueChangedListener(listener(this, ::trySend))
+    awaitClose { setOnValueChangedListener(null) }
+}.asInitialValueFlow(NumberPickerValueChangeEvent(picker = this, value, value))
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (NumberPickerValueChangeEvent) -> Boolean
+    emitter: (NumberPickerValueChangeEvent) -> Unit
 ) = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
     if (scope.isActive) { emitter(NumberPickerValueChangeEvent(picker, oldVal, newVal)); }
 }

@@ -80,7 +80,7 @@ dependencies {
 
     implementation project(":corbind-swiperefreshlayout")
 
-    implementation deps.androidx.appCompat
+    implementation deps.androidx.appcompat
     implementation deps.androidx.lifecycle
     implementation deps.material
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'

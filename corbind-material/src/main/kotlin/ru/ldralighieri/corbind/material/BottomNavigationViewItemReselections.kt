@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the reselected item in [BottomNavigationView].
@@ -51,7 +50,7 @@ fun BottomNavigationView.itemReselections(
         for (item in channel) action(item)
     }
 
-    setOnNavigationItemReselectedListener(listener(scope, events::offer))
+    setOnNavigationItemReselectedListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnNavigationItemReselectedListener(null) }
 }
 
@@ -94,7 +93,7 @@ fun BottomNavigationView.itemReselections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setOnNavigationItemReselectedListener(listener(scope, ::offerCatching))
+    setOnNavigationItemReselectedListener(listener(scope, ::trySend))
     invokeOnClose { setOnNavigationItemReselectedListener(null) }
 }
 
@@ -113,15 +112,15 @@ fun BottomNavigationView.itemReselections(
  * ```
  */
 @CheckResult
-fun BottomNavigationView.itemReselections(): Flow<MenuItem> = channelFlow<MenuItem> {
-    setOnNavigationItemReselectedListener(listener(this, ::offerCatching))
+fun BottomNavigationView.itemReselections(): Flow<MenuItem> = channelFlow {
+    setOnNavigationItemReselectedListener(listener(this, ::trySend))
     awaitClose { setOnNavigationItemReselectedListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MenuItem) -> Boolean
+    emitter: (MenuItem) -> Unit
 ) = BottomNavigationView.OnNavigationItemReselectedListener {
     if (scope.isActive) { emitter(it) }
 }

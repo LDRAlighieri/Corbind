@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [View] long click events.
@@ -54,7 +53,7 @@ fun View.longClicks(
         for (ignored in channel) action()
     }
 
-    setOnLongClickListener(listener(scope, handled, events::offer))
+    setOnLongClickListener(listener(scope, handled, events::trySend))
     events.invokeOnClose { setOnLongClickListener(null) }
 }
 
@@ -103,7 +102,7 @@ fun View.longClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnLongClickListener(listener(scope, handled, ::offerCatching))
+    setOnLongClickListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnLongClickListener(null) }
 }
 
@@ -127,8 +126,8 @@ fun View.longClicks(
 @CheckResult
 fun View.longClicks(
     handled: () -> Boolean = AlwaysTrue
-): Flow<Unit> = channelFlow<Unit> {
-    setOnLongClickListener(listener(this, handled, ::offerCatching))
+): Flow<Unit> = channelFlow {
+    setOnLongClickListener(listener(this, handled, ::trySend))
     awaitClose { setOnLongClickListener(null) }
 }
 
@@ -136,7 +135,7 @@ fun View.longClicks(
 private fun listener(
     scope: CoroutineScope,
     handled: () -> Boolean,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = View.OnLongClickListener {
     if (scope.isActive && handled()) {
         emitter(Unit)

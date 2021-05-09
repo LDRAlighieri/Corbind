@@ -48,7 +48,7 @@ android {
 dependencies {
     api project(':corbind')
 
-    api deps.androidx.drawerLayout
+    api deps.androidx.drawerlayout
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

@@ -32,7 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class AdapterViewSelectionEvent {
     abstract val view: AdapterView<*>
@@ -68,8 +67,8 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(initialValue(this))
-    onItemSelectedListener = listener(scope, events::offer)
+    events.trySend(initialValue(this))
+    onItemSelectedListener = listener(scope, events::trySend)
     events.invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -128,8 +127,8 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(scope, ::offerCatching)
+    trySend(initialValue(this@selectionEvents))
+    onItemSelectedListener = listener(scope, ::trySend)
     invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -169,8 +168,8 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(): InitialValueFlow<AdapterViewSelectionEvent> =
-    channelFlow<AdapterViewSelectionEvent> {
-        onItemSelectedListener = listener(this, ::offerCatching)
+    channelFlow {
+        onItemSelectedListener = listener(this, ::trySend)
         awaitClose { onItemSelectedListener = null }
     }.asInitialValueFlow(initialValue(adapterView = this))
 
@@ -189,7 +188,7 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (AdapterViewSelectionEvent) -> Boolean
+    emitter: (AdapterViewSelectionEvent) -> Unit
 ) = object : AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {

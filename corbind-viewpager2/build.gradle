@@ -48,7 +48,7 @@ android {
 dependencies {
     api project(':corbind')
 
-    api deps.androidx.viewPager2
+    api deps.androidx.viewpager2
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

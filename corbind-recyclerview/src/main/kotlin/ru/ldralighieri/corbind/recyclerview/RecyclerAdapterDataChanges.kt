@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on data change events for [RecyclerView.Adapter].
@@ -48,8 +47,8 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
         for (adapter in channel) action(adapter)
     }
 
-    events.offer(this)
-    val dataObserver = observer(scope, this, events::offer)
+    events.trySend(this)
+    val dataObserver = observer(scope, this, events::trySend)
     registerAdapterDataObserver(dataObserver)
     events.invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
@@ -89,8 +88,8 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
-    offerCatching(this@dataChanges)
-    val dataObserver = observer(scope, this@dataChanges, ::offerCatching)
+    trySend(this@dataChanges)
+    val dataObserver = observer(scope, this@dataChanges, ::trySend)
     registerAdapterDataObserver(dataObserver)
     invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
@@ -117,8 +116,8 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
  */
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): InitialValueFlow<T> =
-    channelFlow<T> {
-        val dataObserver = observer(this, this@dataChanges, ::offerCatching)
+    channelFlow {
+        val dataObserver = observer(this, this@dataChanges, ::trySend)
         registerAdapterDataObserver(dataObserver)
         awaitClose { unregisterAdapterDataObserver(dataObserver) }
     }.asInitialValueFlow(this)
@@ -127,7 +126,7 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): Ini
 private fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> observer(
     scope: CoroutineScope,
     adapter: T,
-    emitter: (T) -> Boolean
+    emitter: (T) -> Unit
 ) = object : RecyclerView.AdapterDataObserver() {
 
     override fun onChanged() {

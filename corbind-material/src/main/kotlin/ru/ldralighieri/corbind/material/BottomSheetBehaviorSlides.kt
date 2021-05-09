@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the slide offset events from [View] on [BottomSheetBehavior].
@@ -50,7 +49,7 @@ fun View.slides(
     }
 
     val behavior = getBehavior(this@slides)
-    val callback = callback(scope, events::offer)
+    val callback = callback(scope, events::trySend)
     behavior.addBottomSheetCallback(callback)
     events.invokeOnClose { behavior.removeBottomSheetCallback(callback) }
 }
@@ -90,7 +89,7 @@ fun View.slides(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@slides)
-    val callback = callback(scope, ::offerCatching)
+    val callback = callback(scope, ::trySend)
     behavior.addBottomSheetCallback(callback)
     invokeOnClose { behavior.removeBottomSheetCallback(callback) }
 }
@@ -106,9 +105,9 @@ fun View.slides(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
-fun View.slides(): Flow<Float> = channelFlow<Float> {
+fun View.slides(): Flow<Float> = channelFlow {
     val behavior = getBehavior(this@slides)
-    val callback = callback(this, ::offerCatching)
+    val callback = callback(this, ::trySend)
     behavior.addBottomSheetCallback(callback)
     awaitClose { behavior.removeBottomSheetCallback(callback) }
 }
@@ -124,7 +123,7 @@ private fun getBehavior(view: View): BottomSheetBehavior<*> {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Float) -> Boolean
+    emitter: (Float) -> Unit
 ) = object : BottomSheetBehavior.BottomSheetCallback() {
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) {

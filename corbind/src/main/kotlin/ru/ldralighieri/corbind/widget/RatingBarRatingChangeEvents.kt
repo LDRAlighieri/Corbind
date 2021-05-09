@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class RatingBarChangeEvent(
     val view: RatingBar,
@@ -57,8 +56,8 @@ fun RatingBar.ratingChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(initialValue(this))
-    onRatingBarChangeListener = listener(scope, events::offer)
+    events.trySend(initialValue(this))
+    onRatingBarChangeListener = listener(scope, events::trySend)
     events.invokeOnClose { onRatingBarChangeListener = null }
 }
 
@@ -104,8 +103,8 @@ fun RatingBar.ratingChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(initialValue(this@ratingChangeEvents))
-    onRatingBarChangeListener = listener(scope, ::offerCatching)
+    trySend(initialValue(this@ratingChangeEvents))
+    onRatingBarChangeListener = listener(scope, ::trySend)
     invokeOnClose { onRatingBarChangeListener = null }
 }
 
@@ -133,11 +132,10 @@ fun RatingBar.ratingChangeEvents(
  * ```
  */
 @CheckResult
-fun RatingBar.ratingChangeEvents(): InitialValueFlow<RatingBarChangeEvent> =
-    channelFlow<RatingBarChangeEvent> {
-        onRatingBarChangeListener = listener(this, ::offerCatching)
-        awaitClose { onRatingBarChangeListener = null }
-    }.asInitialValueFlow(initialValue(ratingBar = this))
+fun RatingBar.ratingChangeEvents(): InitialValueFlow<RatingBarChangeEvent> = channelFlow {
+    onRatingBarChangeListener = listener(this, ::trySend)
+    awaitClose { onRatingBarChangeListener = null }
+}.asInitialValueFlow(initialValue(ratingBar = this))
 
 @CheckResult
 private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =
@@ -146,7 +144,7 @@ private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (RatingBarChangeEvent) -> Boolean
+    emitter: (RatingBarChangeEvent) -> Unit
 ) = RatingBar.OnRatingBarChangeListener { ratingBar, rating, fromUser ->
     if (scope.isActive) { emitter(RatingBarChangeEvent(ratingBar, rating, fromUser)) }
 }

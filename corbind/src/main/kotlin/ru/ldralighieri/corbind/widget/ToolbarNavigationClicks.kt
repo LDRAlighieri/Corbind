@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [Toolbar] navigation click events.
@@ -54,7 +53,7 @@ fun Toolbar.navigationClicks(
         for (ignored in channel) action()
     }
 
-    setNavigationOnClickListener(listener(scope, events::offer))
+    setNavigationOnClickListener(listener(scope, events::trySend))
     events.invokeOnClose { setNavigationOnClickListener(null) }
 }
 
@@ -99,7 +98,7 @@ fun Toolbar.navigationClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setNavigationOnClickListener(listener(scope, ::offerCatching))
+    setNavigationOnClickListener(listener(scope, ::trySend))
     invokeOnClose { setNavigationOnClickListener(null) }
 }
 
@@ -119,15 +118,15 @@ fun Toolbar.navigationClicks(
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
-fun Toolbar.navigationClicks(): Flow<Unit> = channelFlow<Unit> {
-    setNavigationOnClickListener(listener(this, ::offerCatching))
+fun Toolbar.navigationClicks(): Flow<Unit> = channelFlow {
+    setNavigationOnClickListener(listener(this, ::trySend))
     awaitClose { setNavigationOnClickListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = View.OnClickListener {
     if (scope.isActive) { emitter(Unit) }
 }

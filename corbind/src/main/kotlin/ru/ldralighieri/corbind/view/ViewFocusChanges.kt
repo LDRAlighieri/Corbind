@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [View] focus change.
@@ -51,8 +50,8 @@ fun View.focusChanges(
         for (focus in channel) action(focus)
     }
 
-    events.offer(hasFocus())
-    onFocusChangeListener = listener(scope, events::offer)
+    events.trySend(hasFocus())
+    onFocusChangeListener = listener(scope, events::trySend)
     events.invokeOnClose { onFocusChangeListener = null }
 }
 
@@ -97,8 +96,8 @@ fun View.focusChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    offerCatching(hasFocus())
-    onFocusChangeListener = listener(scope, ::offerCatching)
+    trySend(hasFocus())
+    onFocusChangeListener = listener(scope, ::trySend)
     invokeOnClose { onFocusChangeListener = null }
 }
 
@@ -126,15 +125,15 @@ fun View.focusChanges(
  * ```
  */
 @CheckResult
-fun View.focusChanges(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
-    onFocusChangeListener = listener(this, ::offerCatching)
+fun View.focusChanges(): InitialValueFlow<Boolean> = channelFlow {
+    onFocusChangeListener = listener(this, ::trySend)
     awaitClose { onFocusChangeListener = null }
 }.asInitialValueFlow(hasFocus())
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Boolean
+    emitter: (Boolean) -> Unit
 ) = View.OnFocusChangeListener { _, hasFocus ->
     if (scope.isActive) { emitter(hasFocus) }
 }

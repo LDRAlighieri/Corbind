@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class ViewScrollChangeEvent(
     val view: View,
@@ -61,7 +60,7 @@ fun View.scrollChangeEvents(
         for (event in channel) action(event)
     }
 
-    setOnScrollChangeListener(listener(scope, events::offer))
+    setOnScrollChangeListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnScrollChangeListener(null) }
 }
 
@@ -107,7 +106,7 @@ fun View.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
-    setOnScrollChangeListener(listener(scope, ::offerCatching))
+    setOnScrollChangeListener(listener(scope, ::trySend))
     invokeOnClose { setOnScrollChangeListener(null) }
 }
 
@@ -127,15 +126,15 @@ fun View.scrollChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow<ViewScrollChangeEvent> {
-    setOnScrollChangeListener(listener(this, ::offerCatching))
+fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
+    setOnScrollChangeListener(listener(this, ::trySend))
     awaitClose { setOnScrollChangeListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewScrollChangeEvent) -> Boolean
+    emitter: (ViewScrollChangeEvent) -> Unit
 ) = View.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
     if (scope.isActive) {
         emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))

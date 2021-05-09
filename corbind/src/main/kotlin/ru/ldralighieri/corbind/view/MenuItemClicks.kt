@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [MenuItem] click events.
@@ -54,7 +53,7 @@ fun MenuItem.clicks(
         for (item in channel) action(item)
     }
 
-    setOnMenuItemClickListener(listener(scope, handled, events::offer))
+    setOnMenuItemClickListener(listener(scope, handled, events::trySend))
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -103,7 +102,7 @@ fun MenuItem.clicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItem) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setOnMenuItemClickListener(listener(scope, handled, ::offerCatching))
+    setOnMenuItemClickListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -127,8 +126,8 @@ fun MenuItem.clicks(
 @CheckResult
 fun MenuItem.clicks(
     handled: (MenuItem) -> Boolean = AlwaysTrue
-): Flow<MenuItem> = channelFlow<MenuItem> {
-    setOnMenuItemClickListener(listener(this, handled, ::offerCatching))
+): Flow<MenuItem> = channelFlow {
+    setOnMenuItemClickListener(listener(this, handled, ::trySend))
     awaitClose { setOnMenuItemClickListener(null) }
 }
 
@@ -136,7 +135,7 @@ fun MenuItem.clicks(
 private fun listener(
     scope: CoroutineScope,
     handled: (MenuItem) -> Boolean,
-    emitter: (MenuItem) -> Boolean
+    emitter: (MenuItem) -> Unit
 ) = MenuItem.OnMenuItemClickListener { item ->
     if (scope.isActive && handled(item)) {
         emitter(item)

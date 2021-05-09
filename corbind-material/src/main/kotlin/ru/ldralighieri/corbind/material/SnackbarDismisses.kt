@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the dismiss events from [Snackbar].
@@ -47,7 +46,7 @@ fun Snackbar.dismisses(
         for (event in channel) action(event)
     }
 
-    val callback = callback(scope, events::offer)
+    val callback = callback(scope, events::trySend)
     addCallback(callback)
     events.invokeOnClose { removeCallback(callback) }
 }
@@ -85,7 +84,7 @@ fun Snackbar.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, ::offerCatching)
+    val callback = callback(scope, ::trySend)
     addCallback(callback)
     invokeOnClose { removeCallback(callback) }
 }
@@ -102,8 +101,8 @@ fun Snackbar.dismisses(
  * ```
  */
 @CheckResult
-fun Snackbar.dismisses(): Flow<Int> = channelFlow<Int> {
-    val callback = callback(this, ::offerCatching)
+fun Snackbar.dismisses(): Flow<Int> = channelFlow {
+    val callback = callback(this, ::trySend)
     addCallback(callback)
     awaitClose { removeCallback(callback) }
 }
@@ -111,7 +110,7 @@ fun Snackbar.dismisses(): Flow<Int> = channelFlow<Int> {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : Snackbar.Callback() {
     override fun onDismissed(transientBottomBar: Snackbar, event: Int) {
         if (scope.isActive) { emitter(event) }

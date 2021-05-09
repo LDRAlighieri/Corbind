@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the selected item in [NavigationView].
@@ -51,8 +50,8 @@ fun NavigationView.itemSelections(
         for (item in channel) action(item)
     }
 
-    setInitialValue(this, events::offer)
-    setNavigationItemSelectedListener(listener(scope, events::offer))
+    setInitialValue(this, events::trySend)
+    setNavigationItemSelectedListener(listener(scope, events::trySend))
     events.invokeOnClose { setNavigationItemSelectedListener(null) }
 }
 
@@ -97,8 +96,8 @@ fun NavigationView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@itemSelections, ::offerCatching)
-    setNavigationItemSelectedListener(listener(scope, ::offerCatching))
+    setInitialValue(this@itemSelections, ::trySend)
+    setNavigationItemSelectedListener(listener(scope, ::trySend))
     invokeOnClose { setNavigationItemSelectedListener(null) }
 }
 
@@ -126,15 +125,15 @@ fun NavigationView.itemSelections(
  * ```
  */
 @CheckResult
-fun NavigationView.itemSelections(): Flow<MenuItem> = channelFlow<MenuItem> {
-    setInitialValue(this@itemSelections, ::offerCatching)
-    setNavigationItemSelectedListener(listener(this, ::offerCatching))
+fun NavigationView.itemSelections(): Flow<MenuItem> = channelFlow {
+    setInitialValue(this@itemSelections, ::trySend)
+    setNavigationItemSelectedListener(listener(this, ::trySend))
     awaitClose { setNavigationItemSelectedListener(null) }
 }
 
 private fun setInitialValue(
     navigationView: NavigationView,
-    emitter: (MenuItem) -> Boolean
+    emitter: (MenuItem) -> Unit
 ) {
     val menu = navigationView.menu
     for (i in 0 until menu.size()) {
@@ -149,7 +148,7 @@ private fun setInitialValue(
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MenuItem) -> Boolean
+    emitter: (MenuItem) -> Unit
 ) = NavigationView.OnNavigationItemSelectedListener {
     if (scope.isActive) { emitter(it) }
     return@OnNavigationItemSelectedListener true

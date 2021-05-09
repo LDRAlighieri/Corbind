@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class SeekBarChangeEvent {
     abstract val view: SeekBar
@@ -69,8 +68,8 @@ fun SeekBar.changeEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(initialValue(this))
-    setOnSeekBarChangeListener(listener(scope, events::offer))
+    events.trySend(initialValue(this))
+    setOnSeekBarChangeListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -130,8 +129,8 @@ fun SeekBar.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(initialValue(this@changeEvents))
-    setOnSeekBarChangeListener(listener(scope, ::offerCatching))
+    trySend(initialValue(this@changeEvents))
+    setOnSeekBarChangeListener(listener(scope, ::trySend))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -171,8 +170,8 @@ fun SeekBar.changeEvents(
  * ```
  */
 @CheckResult
-fun SeekBar.changeEvents(): InitialValueFlow<SeekBarChangeEvent> = channelFlow<SeekBarChangeEvent> {
-    setOnSeekBarChangeListener(listener(this, ::offerCatching))
+fun SeekBar.changeEvents(): InitialValueFlow<SeekBarChangeEvent> = channelFlow {
+    setOnSeekBarChangeListener(listener(this, ::trySend))
     awaitClose { setOnSeekBarChangeListener(null) }
 }.asInitialValueFlow(initialValue(seekBar = this))
 
@@ -183,7 +182,7 @@ private fun initialValue(seekBar: SeekBar): SeekBarChangeEvent =
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (SeekBarChangeEvent) -> Boolean
+    emitter: (SeekBarChangeEvent) -> Unit
 ) = object : SeekBar.OnSeekBarChangeListener {
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
