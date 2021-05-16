@@ -4,7 +4,7 @@
 To add androidx lifecycle bindings, import `corbind-lifecycle` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-lifecycle:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-lifecycle:1.5.1'
 ```
 
 ## List of extensions
