@@ -2,6 +2,14 @@
 # ChangeLog
 
 
+## Version 1.5.1
+
+* Fix: Kotlin coroutines issue 974.
+* Update: Kotlin modules dependency to v1.5.0.
+* Update: Kotlin coroutines modules dependency to v1.5.0.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.5.0
 
 * New: Activity module
