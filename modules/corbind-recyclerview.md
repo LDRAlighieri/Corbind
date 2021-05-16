@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx recyclerview bindings, import `corbind-recyclerview` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.5.1'
 ```
 
 ## List of extensions

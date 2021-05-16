@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx appcompat bindings, import `corbind-appcompat` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.5.0'
+implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.5.1'
 ```
 
 ## List of extensions

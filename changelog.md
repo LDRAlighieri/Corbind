@@ -7,6 +7,14 @@ description: Coroutines binding APIs for Android UI widgets from the platform an
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding,changelog]
 ---
 
+## Version 1.5.1
+
+* Fix: Kotlin coroutines issue 974.
+* Update: Kotlin modules dependency to v1.5.0.
+* Update: Kotlin coroutines modules dependency to v1.5.0.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.5.0
 
 * New: Activity module
