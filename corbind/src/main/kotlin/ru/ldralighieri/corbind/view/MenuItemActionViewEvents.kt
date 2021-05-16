@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class MenuItemActionViewEvent {
     abstract val menuItem: MenuItem
@@ -66,7 +65,7 @@ fun MenuItem.actionViewEvents(
         for (event in channel) action(event)
     }
 
-    setOnActionExpandListener(listener(scope, handled, events::offer))
+    setOnActionExpandListener(listener(scope, handled, events::trySend))
     events.invokeOnClose { setOnActionExpandListener(null) }
 }
 
@@ -129,7 +128,7 @@ fun MenuItem.actionViewEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel(capacity) {
-    setOnActionExpandListener(listener(scope, handled, ::offerCatching))
+    setOnActionExpandListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnActionExpandListener(null) }
 }
 
@@ -165,8 +164,8 @@ fun MenuItem.actionViewEvents(
 @CheckResult
 fun MenuItem.actionViewEvents(
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
-): Flow<MenuItemActionViewEvent> = channelFlow<MenuItemActionViewEvent> {
-    setOnActionExpandListener(listener(this, handled, ::offerCatching))
+): Flow<MenuItemActionViewEvent> = channelFlow {
+    setOnActionExpandListener(listener(this, handled, ::trySend))
     awaitClose { setOnActionExpandListener(null) }
 }
 
@@ -174,7 +173,7 @@ fun MenuItem.actionViewEvents(
 private fun listener(
     scope: CoroutineScope,
     handled: (MenuItemActionViewEvent) -> Boolean,
-    emitter: (MenuItemActionViewEvent) -> Boolean
+    emitter: (MenuItemActionViewEvent) -> Unit
 ) = object : MenuItem.OnActionExpandListener {
 
     override fun onMenuItemActionExpand(item: MenuItem): Boolean {

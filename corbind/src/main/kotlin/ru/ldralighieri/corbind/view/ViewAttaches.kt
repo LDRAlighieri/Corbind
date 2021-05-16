@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [View] attach events.
@@ -47,7 +46,7 @@ fun View.attaches(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, true, events::offer)
+    val listener = listener(scope, true, events::trySend)
     addOnAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -85,7 +84,7 @@ fun View.attaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, true, ::offerCatching)
+    val listener = listener(scope, true, ::trySend)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -102,8 +101,8 @@ fun View.attaches(
  * ```
  */
 @CheckResult
-fun View.attaches(): Flow<Unit> = channelFlow<Unit> {
-    val listener = listener(this, true, ::offerCatching)
+fun View.attaches(): Flow<Unit> = channelFlow {
+    val listener = listener(this, true, ::trySend)
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -124,7 +123,7 @@ fun View.detaches(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, false, events::offer)
+    val listener = listener(scope, false, events::trySend)
     addOnAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -162,7 +161,7 @@ fun View.detaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, false, ::offerCatching)
+    val listener = listener(scope, false, ::trySend)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -179,8 +178,8 @@ fun View.detaches(
  * ```
  */
 @CheckResult
-fun View.detaches(): Flow<Unit> = channelFlow<Unit> {
-    val listener = listener(this, false, ::offerCatching)
+fun View.detaches(): Flow<Unit> = channelFlow {
+    val listener = listener(this, false, ::trySend)
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -189,7 +188,7 @@ fun View.detaches(): Flow<Unit> = channelFlow<Unit> {
 private fun listener(
     scope: CoroutineScope,
     callOnAttach: Boolean,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = object : View.OnAttachStateChangeListener {
 
     override fun onViewDetachedFromWindow(v: View) {

@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on rating changes on [RatingBar].
@@ -51,8 +50,8 @@ fun RatingBar.ratingChanges(
         for (rating in channel) action(rating)
     }
 
-    events.offer(rating)
-    onRatingBarChangeListener = listener(scope, events::offer)
+    events.trySend(rating)
+    onRatingBarChangeListener = listener(scope, events::trySend)
     events.invokeOnClose { onRatingBarChangeListener = null }
 }
 
@@ -97,8 +96,8 @@ fun RatingBar.ratingChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
-    offerCatching(rating)
-    onRatingBarChangeListener = listener(scope, ::offerCatching)
+    trySend(rating)
+    onRatingBarChangeListener = listener(scope, ::trySend)
     invokeOnClose { onRatingBarChangeListener = null }
 }
 
@@ -126,15 +125,15 @@ fun RatingBar.ratingChanges(
  * ```
  */
 @CheckResult
-fun RatingBar.ratingChanges(): InitialValueFlow<Float> = channelFlow<Float> {
-    onRatingBarChangeListener = listener(this, ::offerCatching)
+fun RatingBar.ratingChanges(): InitialValueFlow<Float> = channelFlow {
+    onRatingBarChangeListener = listener(this, ::trySend)
     awaitClose { onRatingBarChangeListener = null }
 }.asInitialValueFlow(rating)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Float) -> Boolean
+    emitter: (Float) -> Unit
 ) = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
     if (scope.isActive) { emitter(rating) }
 }

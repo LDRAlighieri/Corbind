@@ -48,7 +48,7 @@ android {
 dependencies {
     api project(':corbind')
 
-    api deps.androidx.recyclerView
+    api deps.androidx.recyclerview
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

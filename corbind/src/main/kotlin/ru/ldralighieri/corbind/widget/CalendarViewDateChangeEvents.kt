@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 import java.util.Calendar
 
 data class CalendarViewDateChangeEvent(
@@ -59,8 +58,8 @@ fun CalendarView.dateChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(initialValue(this))
-    setOnDateChangeListener(listener(scope, events::offer))
+    events.trySend(initialValue(this))
+    setOnDateChangeListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnDateChangeListener(null) }
 }
 
@@ -107,8 +106,8 @@ fun CalendarView.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CalendarViewDateChangeEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(initialValue(this@dateChangeEvents))
-    setOnDateChangeListener(listener(scope, ::offerCatching))
+    trySend(initialValue(this@dateChangeEvents))
+    setOnDateChangeListener(listener(scope, ::trySend))
     invokeOnClose { setOnDateChangeListener(null) }
 }
 
@@ -136,11 +135,10 @@ fun CalendarView.dateChangeEvents(
  * ```
  */
 @CheckResult
-fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> =
-    channelFlow<CalendarViewDateChangeEvent> {
-        setOnDateChangeListener(listener(this, ::offerCatching))
-        awaitClose { setOnDateChangeListener(null) }
-    }.asInitialValueFlow(initialValue(calendar = this))
+fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> = channelFlow {
+    setOnDateChangeListener(listener(this, ::trySend))
+    awaitClose { setOnDateChangeListener(null) }
+}.asInitialValueFlow(initialValue(calendar = this))
 
 @CheckResult
 private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent =
@@ -154,7 +152,7 @@ private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent =
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (CalendarViewDateChangeEvent) -> Boolean
+    emitter: (CalendarViewDateChangeEvent) -> Unit
 ) = CalendarView.OnDateChangeListener { view, year, month, dayOfMonth ->
     if (scope.isActive) { emitter(CalendarViewDateChangeEvent(view, year, month, dayOfMonth)) }
 }

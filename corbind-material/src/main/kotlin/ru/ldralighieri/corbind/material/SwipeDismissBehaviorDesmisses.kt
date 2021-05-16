@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior].
@@ -53,7 +52,7 @@ fun View.dismisses(
     }
 
     val behavior = getBehavior(this)
-    behavior.listener = listener(scope, events::offer)
+    behavior.listener = listener(scope, events::trySend)
     events.invokeOnClose { behavior.setListener(null) }
 }
 
@@ -96,7 +95,7 @@ fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<View> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@dismisses)
-    behavior.listener = listener(scope, ::offerCatching)
+    behavior.listener = listener(scope, ::trySend)
     invokeOnClose { behavior.setListener(null) }
 }
 
@@ -115,9 +114,9 @@ fun View.dismisses(
  * ```
  */
 @CheckResult
-fun View.dismisses(): Flow<View> = channelFlow<View> {
+fun View.dismisses(): Flow<View> = channelFlow {
     val behavior = getBehavior(this@dismisses)
-    behavior.listener = listener(this, ::offerCatching)
+    behavior.listener = listener(this, ::trySend)
     awaitClose { behavior.setListener(null) }
 }
 
@@ -132,7 +131,7 @@ private fun getBehavior(view: View): SwipeDismissBehavior<*> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (View) -> Boolean
+    emitter: (View) -> Unit
 ) = object : SwipeDismissBehavior.OnDismissListener {
 
     override fun onDismiss(view: View) {

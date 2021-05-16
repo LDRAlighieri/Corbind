@@ -32,7 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [MaterialButton] check change in [MaterialButtonToggleGroup].
@@ -55,8 +54,8 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
     }
 
     checkSelectionMode(this)
-    events.offer(checkedButtonId)
-    val listener = listener(scope, events::offer)
+    events.trySend(checkedButtonId)
+    val listener = listener(scope, events::trySend)
     addOnButtonCheckedListener(listener)
     events.invokeOnClose { removeOnButtonCheckedListener(listener) }
 }
@@ -106,8 +105,8 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@buttonCheckedChanges)
-    offerCatching(checkedButtonId)
-    val listener = listener(scope, ::offerCatching)
+    trySend(checkedButtonId)
+    val listener = listener(scope, ::trySend)
     addOnButtonCheckedListener(listener)
     invokeOnClose { removeOnButtonCheckedListener(listener) }
 }
@@ -137,9 +136,9 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
  * ```
  */
 @CheckResult
-fun MaterialButtonToggleGroup.buttonCheckedChanges(): InitialValueFlow<Int> = channelFlow<Int> {
+fun MaterialButtonToggleGroup.buttonCheckedChanges(): InitialValueFlow<Int> = channelFlow {
     checkSelectionMode(this@buttonCheckedChanges)
-    val listener = listener(this, ::offerCatching)
+    val listener = listener(this, ::trySend)
     addOnButtonCheckedListener(listener)
     awaitClose { removeOnButtonCheckedListener(listener) }
 }.asInitialValueFlow(checkedButtonId)
@@ -154,7 +153,7 @@ private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : MaterialButtonToggleGroup.OnButtonCheckedListener {
 
     private var lastChecked = View.NO_ID

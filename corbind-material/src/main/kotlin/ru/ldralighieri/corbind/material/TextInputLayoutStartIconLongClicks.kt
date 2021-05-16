@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [TextInputLayout] start icon long click events.
@@ -55,7 +54,7 @@ fun TextInputLayout.startIconLongClicks(
         for (ignored in channel) action()
     }
 
-    setStartIconOnLongClickListener(listener(scope, handled, events::offer))
+    setStartIconOnLongClickListener(listener(scope, handled, events::trySend))
     events.invokeOnClose { setStartIconOnLongClickListener(null) }
 }
 
@@ -104,7 +103,7 @@ fun TextInputLayout.startIconLongClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setStartIconOnLongClickListener(listener(scope, handled, ::offerCatching))
+    setStartIconOnLongClickListener(listener(scope, handled, ::trySend))
     invokeOnClose { setStartIconOnLongClickListener(null) }
 }
 
@@ -128,8 +127,8 @@ fun TextInputLayout.startIconLongClicks(
 @CheckResult
 fun TextInputLayout.startIconLongClicks(
     handled: () -> Boolean = AlwaysTrue
-): Flow<Unit> = channelFlow<Unit> {
-    setStartIconOnLongClickListener(listener(this, handled, ::offerCatching))
+): Flow<Unit> = channelFlow {
+    setStartIconOnLongClickListener(listener(this, handled, ::trySend))
     awaitClose { setStartIconOnLongClickListener(null) }
 }
 
@@ -137,7 +136,7 @@ fun TextInputLayout.startIconLongClicks(
 private fun listener(
     scope: CoroutineScope,
     handled: () -> Boolean,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = View.OnLongClickListener {
     if (scope.isActive && handled()) {
         emitter(Unit)

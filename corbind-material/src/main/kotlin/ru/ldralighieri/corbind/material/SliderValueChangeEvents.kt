@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class SliderChangeEvent(
     val view: Slider,
@@ -55,8 +54,8 @@ fun Slider.valueChangeEvents(
         for (event in channel) action(event)
     }
 
-    val event = initialValue(this@valueChangeEvents).also { events.offer(it) }
-    val listener = listener(scope, events::offer).apply { previousValue = event.previousValue }
+    val event = initialValue(this@valueChangeEvents).also { events.trySend(it) }
+    val listener = listener(scope, events::trySend).apply { previousValue = event.previousValue }
     addOnChangeListener(listener)
     events.invokeOnClose { removeOnChangeListener(listener) }
 }
@@ -97,8 +96,8 @@ fun Slider.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SliderChangeEvent> = corbindReceiveChannel(capacity) {
-    val event = initialValue(this@valueChangeEvents).also(::offerCatching)
-    val listener = listener(scope, ::offerCatching).apply { previousValue = event.previousValue }
+    val event = initialValue(this@valueChangeEvents).also(::trySend)
+    val listener = listener(scope, ::trySend).apply { previousValue = event.previousValue }
     addOnChangeListener(listener)
     invokeOnClose { removeOnChangeListener(listener) }
 }
@@ -124,12 +123,11 @@ fun Slider.valueChangeEvents(
  * ```
  */
 @CheckResult
-fun Slider.valueChangeEvents(): InitialValueFlow<SliderChangeEvent> =
-    channelFlow<SliderChangeEvent> {
-        val listener = listener(this, ::offerCatching).apply { previousValue = value }
-        addOnChangeListener(listener)
-        awaitClose { removeOnChangeListener(listener) }
-    }.asInitialValueFlow(initialValue(slider = this))
+fun Slider.valueChangeEvents(): InitialValueFlow<SliderChangeEvent> = channelFlow {
+    val listener = listener(this, ::trySend).apply { previousValue = value }
+    addOnChangeListener(listener)
+    awaitClose { removeOnChangeListener(listener) }
+}.asInitialValueFlow(initialValue(slider = this))
 
 @CheckResult
 private fun initialValue(slider: Slider): SliderChangeEvent =
@@ -138,7 +136,7 @@ private fun initialValue(slider: Slider): SliderChangeEvent =
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (SliderChangeEvent) -> Boolean
+    emitter: (SliderChangeEvent) -> Unit
 ) = object : Slider.OnChangeListener {
 
     var previousValue: Float = Float.NaN

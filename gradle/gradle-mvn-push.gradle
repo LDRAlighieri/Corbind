@@ -120,9 +120,7 @@ afterEvaluate { project ->
             def dokkaOutput = "${project.docsDir}/dokka"
 
             project.plugins.apply('org.jetbrains.dokka')
-
             def path = new File(project.projectDir, "")
-            def relativePath = rootDir.toPath().relativize(path.toPath()).toString()
             project.dokka {
                 outputFormat = "html"
                 outputDirectory = dokkaOutput
@@ -134,11 +132,16 @@ afterEvaluate { project ->
 
                     sourceLink {
                         path = "src/main/kotlin"
-                        url = "https://github.com/LDRAlighieri/Corbind/blob/master/$relativePath"
+                        url = "https://github.com/LDRAlighieri/Corbind/blob/master/"
                         lineSuffix = "#L"
                     }
 
                     jdkVersion = 8
+
+                    externalDocumentationLink {
+                        url = new URL("https://developer.android.com/reference/")
+                        packageListUrl = new URL("https://developer.android.com/reference/package-list")
+                    }
 
                     externalDocumentationLink {
                         url = new URL("https://developer.android.com/reference/")

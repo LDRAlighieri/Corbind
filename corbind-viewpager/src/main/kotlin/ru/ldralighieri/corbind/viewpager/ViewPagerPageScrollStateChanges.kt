@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on scroll state change events on [ViewPager].
@@ -47,7 +46,7 @@ fun ViewPager.pageScrollStateChanges(
         for (state in channel) action(state)
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     addOnPageChangeListener(listener)
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -85,7 +84,7 @@ fun ViewPager.pageScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     addOnPageChangeListener(listener)
     invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -102,8 +101,8 @@ fun ViewPager.pageScrollStateChanges(
  * ```
  */
 @CheckResult
-fun ViewPager.pageScrollStateChanges(): Flow<Int> = channelFlow<Int> {
-    val listener = listener(this, ::offerCatching)
+fun ViewPager.pageScrollStateChanges(): Flow<Int> = channelFlow {
+    val listener = listener(this, ::trySend)
     addOnPageChangeListener(listener)
     awaitClose { removeOnPageChangeListener(listener) }
 }
@@ -111,7 +110,7 @@ fun ViewPager.pageScrollStateChanges(): Flow<Int> = channelFlow<Int> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : ViewPager.OnPageChangeListener {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit

@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class TextViewEditorActionEvent(
     val view: TextView,
@@ -61,7 +60,7 @@ fun TextView.editorActionEvents(
         for (event in channel) action(event)
     }
 
-    setOnEditorActionListener(listener(scope, handled, events::offer))
+    setOnEditorActionListener(listener(scope, handled, events::trySend))
     events.invokeOnClose { setOnEditorActionListener(null) }
 }
 
@@ -111,7 +110,7 @@ fun TextView.editorActionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel(capacity) {
-    setOnEditorActionListener(listener(scope, handled, ::offerCatching))
+    setOnEditorActionListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnEditorActionListener(null) }
 }
 
@@ -135,8 +134,8 @@ fun TextView.editorActionEvents(
 @CheckResult
 fun TextView.editorActionEvents(
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
-): Flow<TextViewEditorActionEvent> = channelFlow<TextViewEditorActionEvent> {
-    setOnEditorActionListener(listener(this, handled, ::offerCatching))
+): Flow<TextViewEditorActionEvent> = channelFlow {
+    setOnEditorActionListener(listener(this, handled, ::trySend))
     awaitClose { setOnEditorActionListener(null) }
 }
 
@@ -144,7 +143,7 @@ fun TextView.editorActionEvents(
 private fun listener(
     scope: CoroutineScope,
     handled: (TextViewEditorActionEvent) -> Boolean,
-    emitter: (TextViewEditorActionEvent) -> Boolean
+    emitter: (TextViewEditorActionEvent) -> Unit
 ) = TextView.OnEditorActionListener { v, actionId, keyEvent ->
     if (scope.isActive) {
         val event = TextViewEditorActionEvent(v, actionId, keyEvent)

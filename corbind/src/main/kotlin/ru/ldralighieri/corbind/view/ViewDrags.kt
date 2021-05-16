@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [DragEvent] for [View].
@@ -54,7 +53,7 @@ fun View.drags(
         for (drag in channel) action(drag)
     }
 
-    setOnDragListener(listener(scope, handled, events::offer))
+    setOnDragListener(listener(scope, handled, events::trySend))
     events.invokeOnClose { setOnDragListener(null) }
 }
 
@@ -102,7 +101,7 @@ fun View.drags(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (DragEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<DragEvent> = corbindReceiveChannel(capacity) {
-    setOnDragListener(listener(scope, handled, ::offerCatching))
+    setOnDragListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnDragListener(null) }
 }
 
@@ -125,8 +124,8 @@ fun View.drags(
 @CheckResult
 fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue
-): Flow<DragEvent> = channelFlow<DragEvent> {
-    setOnDragListener(listener(this, handled, ::offerCatching))
+): Flow<DragEvent> = channelFlow {
+    setOnDragListener(listener(this, handled, ::trySend))
     awaitClose { setOnDragListener(null) }
 }
 
@@ -134,7 +133,7 @@ fun View.drags(
 private fun listener(
     scope: CoroutineScope,
     handled: (DragEvent) -> Boolean,
-    emitter: (DragEvent) -> Boolean
+    emitter: (DragEvent) -> Unit
 ) = View.OnDragListener { _, dragEvent ->
     if (scope.isActive && handled(dragEvent)) {
         emitter(dragEvent)

@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [MaterialTimePicker] positive button click.
@@ -48,7 +47,7 @@ fun MaterialTimePicker.positiveClicks(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     addOnPositiveButtonClickListener(listener)
     events.invokeOnClose { removeOnPositiveButtonClickListener(listener) }
 }
@@ -86,7 +85,7 @@ fun MaterialTimePicker.positiveClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     addOnPositiveButtonClickListener(listener)
     invokeOnClose { removeOnPositiveButtonClickListener(listener) }
 }
@@ -103,8 +102,8 @@ fun MaterialTimePicker.positiveClicks(
  * ```
  */
 @CheckResult
-fun MaterialTimePicker.positiveClicks(): Flow<Unit> = channelFlow<Unit> {
-    val listener = listener(this, ::offerCatching)
+fun MaterialTimePicker.positiveClicks(): Flow<Unit> = channelFlow {
+    val listener = listener(this, ::trySend)
     addOnPositiveButtonClickListener(listener)
     awaitClose { removeOnPositiveButtonClickListener(listener) }
 }
@@ -112,7 +111,7 @@ fun MaterialTimePicker.positiveClicks(): Flow<Unit> = channelFlow<Unit> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = View.OnClickListener {
     if (scope.isActive) { emitter(Unit) }
 }

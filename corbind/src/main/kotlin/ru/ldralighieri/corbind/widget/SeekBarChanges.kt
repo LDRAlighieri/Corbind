@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 private fun SeekBar.changes(
     scope: CoroutineScope,
@@ -42,8 +41,8 @@ private fun SeekBar.changes(
         for (progress in channel) action(progress)
     }
 
-    events.offer(progress)
-    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, events::offer))
+    events.trySend(progress)
+    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, events::trySend))
     events.invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -61,14 +60,14 @@ private fun SeekBar.changes(
     capacity: Int,
     shouldBeFromUser: Boolean?
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerCatching(progress)
-    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::offerCatching))
+    trySend(progress)
+    setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::trySend))
     invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
 @CheckResult
-private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> = channelFlow<Int> {
-    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::offerCatching))
+private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> = channelFlow {
+    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, ::trySend))
     awaitClose { setOnSeekBarChangeListener(null) }
 }.asInitialValueFlow(progress)
 
@@ -324,7 +323,7 @@ fun SeekBar.systemChanges(): InitialValueFlow<Int> = changes(false)
 private fun listener(
     scope: CoroutineScope,
     shouldBeFromUser: Boolean?,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : SeekBar.OnSeekBarChangeListener {
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {

@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class AdapterViewItemClickEvent(
     val view: AdapterView<*>,
@@ -59,7 +58,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
         for (event in channel) action(event)
     }
 
-    onItemClickListener = listener(scope, events::offer)
+    onItemClickListener = listener(scope, events::trySend)
     events.invokeOnClose { onItemClickListener = null }
 }
 
@@ -103,7 +102,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(capacity) {
-    onItemClickListener = listener(scope, ::offerCatching)
+    onItemClickListener = listener(scope, ::trySend)
     invokeOnClose { onItemClickListener = null }
 }
 
@@ -122,16 +121,15 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
  * ```
  */
 @CheckResult
-fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEvent> =
-    channelFlow<AdapterViewItemClickEvent> {
-        onItemClickListener = listener(this, ::offerCatching)
-        awaitClose { onItemClickListener = null }
-    }
+fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEvent> = channelFlow {
+    onItemClickListener = listener(this, ::trySend)
+    awaitClose { onItemClickListener = null }
+}
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (AdapterViewItemClickEvent) -> Boolean
+    emitter: (AdapterViewItemClickEvent) -> Unit
 ) = AdapterView.OnItemClickListener { parent, view: View?, position, id ->
     if (scope.isActive) {
         emitter(AdapterViewItemClickEvent(parent, view, position, id))

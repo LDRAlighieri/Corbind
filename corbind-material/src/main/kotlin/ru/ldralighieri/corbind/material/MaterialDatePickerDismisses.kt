@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action whenever the [MaterialDatePicker] is dismissed, no matter how it is dismissed.
@@ -48,7 +47,7 @@ fun <S> MaterialDatePicker<S>.dismisses(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     addOnDismissListener(listener)
     events.invokeOnClose { removeOnDismissListener(listener) }
 }
@@ -88,7 +87,7 @@ fun <S> MaterialDatePicker<S>.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     addOnDismissListener(listener)
     invokeOnClose { removeOnDismissListener(listener) }
 }
@@ -106,8 +105,8 @@ fun <S> MaterialDatePicker<S>.dismisses(
  * ```
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = channelFlow<Unit> {
-    val listener = listener(this, ::offerCatching)
+fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = channelFlow {
+    val listener = listener(this, ::trySend)
     addOnDismissListener(listener)
     awaitClose { removeOnDismissListener(listener) }
 }
@@ -115,7 +114,7 @@ fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = channelFlow<Unit> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = DialogInterface.OnDismissListener {
     if (scope.isActive) { emitter(Unit) }
 }

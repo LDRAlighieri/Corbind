@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on draws on [View].
@@ -51,7 +50,7 @@ fun View.draws(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     viewTreeObserver.addOnDrawListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -91,7 +90,7 @@ fun View.draws(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     viewTreeObserver.addOnDrawListener(listener)
     invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -109,8 +108,8 @@ fun View.draws(
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
-fun View.draws(): Flow<Unit> = channelFlow<Unit> {
-    val listener = listener(this, ::offerCatching)
+fun View.draws(): Flow<Unit> = channelFlow {
+    val listener = listener(this, ::trySend)
     viewTreeObserver.addOnDrawListener(listener)
     awaitClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -118,7 +117,7 @@ fun View.draws(): Flow<Unit> = channelFlow<Unit> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = ViewTreeObserver.OnDrawListener {
     if (scope.isActive) { emitter(Unit) }
 }

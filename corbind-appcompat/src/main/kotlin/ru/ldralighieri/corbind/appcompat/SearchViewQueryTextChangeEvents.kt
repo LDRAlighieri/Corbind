@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class SearchViewQueryTextEvent(
     val view: SearchView,
@@ -57,8 +56,8 @@ fun SearchView.queryTextChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(SearchViewQueryTextEvent(this, query, false))
-    setOnQueryTextListener(listener(scope, this, events::offer))
+    events.trySend(SearchViewQueryTextEvent(this, query, false))
+    setOnQueryTextListener(listener(scope, this, events::trySend))
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
@@ -104,8 +103,8 @@ fun SearchView.queryTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))
-    setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::offerCatching))
+    trySend(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))
+    setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::trySend))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
@@ -133,17 +132,16 @@ fun SearchView.queryTextChangeEvents(
  * ```
  */
 @CheckResult
-fun SearchView.queryTextChangeEvents(): InitialValueFlow<SearchViewQueryTextEvent> =
-    channelFlow<SearchViewQueryTextEvent> {
-        setOnQueryTextListener(listener(this, this@queryTextChangeEvents, ::offerCatching))
-        awaitClose { setOnQueryTextListener(null) }
-    }.asInitialValueFlow(SearchViewQueryTextEvent(view = this, query, false))
+fun SearchView.queryTextChangeEvents(): InitialValueFlow<SearchViewQueryTextEvent> = channelFlow {
+    setOnQueryTextListener(listener(this, this@queryTextChangeEvents, ::trySend))
+    awaitClose { setOnQueryTextListener(null) }
+}.asInitialValueFlow(SearchViewQueryTextEvent(view = this, query, false))
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
     searchView: SearchView,
-    emitter: (SearchViewQueryTextEvent) -> Boolean
+    emitter: (SearchViewQueryTextEvent) -> Unit
 ) = object : SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(s: String): Boolean {

@@ -32,7 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class TextViewTextChangeEvent(
     val view: TextView,
@@ -58,8 +57,8 @@ fun TextView.textChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(initialValue(this))
-    val listener = listener(scope, this, events::offer)
+    events.trySend(initialValue(this))
+    val listener = listener(scope, this, events::trySend)
     addTextChangedListener(listener)
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -100,8 +99,8 @@ fun TextView.textChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewTextChangeEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(initialValue(this@textChangeEvents))
-    val listener = listener(scope, this@textChangeEvents, ::offerCatching)
+    trySend(initialValue(this@textChangeEvents))
+    val listener = listener(scope, this@textChangeEvents, ::trySend)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -127,12 +126,11 @@ fun TextView.textChangeEvents(
  * ```
  */
 @CheckResult
-fun TextView.textChangeEvents(): InitialValueFlow<TextViewTextChangeEvent> =
-    channelFlow<TextViewTextChangeEvent> {
-        val listener = listener(this, this@textChangeEvents, ::offerCatching)
-        addTextChangedListener(listener)
-        awaitClose { removeTextChangedListener(listener) }
-    }.asInitialValueFlow(initialValue(textView = this))
+fun TextView.textChangeEvents(): InitialValueFlow<TextViewTextChangeEvent> = channelFlow {
+    val listener = listener(this, this@textChangeEvents, ::trySend)
+    addTextChangedListener(listener)
+    awaitClose { removeTextChangedListener(listener) }
+}.asInitialValueFlow(initialValue(textView = this))
 
 @CheckResult
 private fun initialValue(textView: TextView): TextViewTextChangeEvent =
@@ -142,7 +140,7 @@ private fun initialValue(textView: TextView): TextViewTextChangeEvent =
 private fun listener(
     scope: CoroutineScope,
     textView: TextView,
-    emitter: (TextViewTextChangeEvent) -> Boolean
+    emitter: (TextViewTextChangeEvent) -> Unit
 ) = object : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit

@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class WindowInsetsEvent(
     val view: View,
@@ -56,7 +55,7 @@ fun View.windowInsetsApplyEvents(
         for (insets in channel) action(insets)
     }
 
-    setOnApplyWindowInsetsListener(listener(scope, events::offer))
+    setOnApplyWindowInsetsListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnApplyWindowInsetsListener(null) }
 }
 
@@ -96,7 +95,7 @@ fun View.windowInsetsApplyEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<WindowInsetsEvent> = corbindReceiveChannel(capacity) {
-    setOnApplyWindowInsetsListener(listener(scope, ::offerCatching))
+    setOnApplyWindowInsetsListener(listener(scope, ::trySend))
     invokeOnClose { setOnApplyWindowInsetsListener(null) }
 }
 
@@ -127,8 +126,8 @@ fun View.windowInsetsApplyEvents(
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 @CheckResult
-fun View.windowInsetsApplyEvents(): Flow<WindowInsetsEvent> = channelFlow<WindowInsetsEvent> {
-    setOnApplyWindowInsetsListener(listener(this, ::offerCatching))
+fun View.windowInsetsApplyEvents(): Flow<WindowInsetsEvent> = channelFlow {
+    setOnApplyWindowInsetsListener(listener(this, ::trySend))
     awaitClose { setOnApplyWindowInsetsListener(null) }
 }
 
@@ -136,7 +135,7 @@ fun View.windowInsetsApplyEvents(): Flow<WindowInsetsEvent> = channelFlow<Window
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (WindowInsetsEvent) -> Boolean
+    emitter: (WindowInsetsEvent) -> Unit
 ) = View.OnApplyWindowInsetsListener { v, insets ->
     if (scope.isActive) { emitter(WindowInsetsEvent(v, insets)) }
     insets

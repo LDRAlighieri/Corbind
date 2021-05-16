@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class AbsListViewScrollEvent(
     val view: AbsListView,
@@ -58,7 +57,7 @@ fun AbsListView.scrollEvents(
         for (event in channel) action(event)
     }
 
-    setOnScrollListener(listener(scope, events::offer))
+    setOnScrollListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -102,7 +101,7 @@ fun AbsListView.scrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<AbsListViewScrollEvent> = corbindReceiveChannel(capacity) {
-    setOnScrollListener(listener(scope, ::offerCatching))
+    setOnScrollListener(listener(scope, ::trySend))
     invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -121,15 +120,15 @@ fun AbsListView.scrollEvents(
  * ```
  */
 @CheckResult
-fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow<AbsListViewScrollEvent> {
-    setOnScrollListener(listener(this, ::offerCatching))
+fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = channelFlow {
+    setOnScrollListener(listener(this, ::trySend))
     awaitClose { setOnScrollListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (AbsListViewScrollEvent) -> Boolean
+    emitter: (AbsListViewScrollEvent) -> Unit
 ) = object : AbsListView.OnScrollListener {
 
     private var currentScrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE

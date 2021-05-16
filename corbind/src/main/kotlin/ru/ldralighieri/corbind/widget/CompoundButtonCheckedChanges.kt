@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on checked state of [CompoundButton].
@@ -51,8 +50,8 @@ fun CompoundButton.checkedChanges(
         for (checked in channel) action(checked)
     }
 
-    events.offer(isChecked)
-    setOnCheckedChangeListener(listener(scope, events::offer))
+    events.trySend(isChecked)
+    setOnCheckedChangeListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -97,8 +96,8 @@ fun CompoundButton.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    offerCatching(isChecked)
-    setOnCheckedChangeListener(listener(scope, ::offerCatching))
+    trySend(isChecked)
+    setOnCheckedChangeListener(listener(scope, ::trySend))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -126,15 +125,15 @@ fun CompoundButton.checkedChanges(
  * ```
  */
 @CheckResult
-fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
-    setOnCheckedChangeListener(listener(this, ::offerCatching))
+fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow {
+    setOnCheckedChangeListener(listener(this, ::trySend))
     awaitClose { setOnCheckedChangeListener(null) }
 }.asInitialValueFlow(isChecked)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Boolean
+    emitter: (Boolean) -> Unit
 ) = CompoundButton.OnCheckedChangeListener { _, isChecked ->
     if (scope.isActive) { emitter(isChecked) }
 }

@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior].
@@ -50,7 +49,7 @@ fun View.dragStateChanges(
     }
 
     val behavior = getBehavior(this)
-    behavior.listener = listener(scope, events::offer)
+    behavior.listener = listener(scope, events::trySend)
     events.invokeOnClose { behavior.setListener(null) }
 }
 
@@ -95,7 +94,7 @@ fun View.dragStateChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@dragStateChanges)
-    behavior.listener = listener(scope, ::offerCatching)
+    behavior.listener = listener(scope, ::trySend)
     invokeOnClose { behavior.setListener(null) }
 }
 
@@ -114,9 +113,9 @@ fun View.dragStateChanges(
  * ```
  */
 @CheckResult
-fun View.dragStateChanges(): Flow<Int> = channelFlow<Int> {
+fun View.dragStateChanges(): Flow<Int> = channelFlow {
     val behavior = getBehavior(this@dragStateChanges)
-    behavior.listener = listener(this, ::offerCatching)
+    behavior.listener = listener(this, ::trySend)
     awaitClose { behavior.setListener(null) }
 }
 
@@ -131,7 +130,7 @@ private fun getBehavior(view: View): SwipeDismissBehavior<*> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : SwipeDismissBehavior.OnDismissListener {
 
     override fun onDismiss(view: View) = Unit

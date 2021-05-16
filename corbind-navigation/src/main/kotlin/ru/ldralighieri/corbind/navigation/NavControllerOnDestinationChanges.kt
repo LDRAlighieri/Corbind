@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on destination change on [NavController].
@@ -48,7 +47,7 @@ fun NavController.destinationChanges(
         for (destination in channel) action(destination)
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     addOnDestinationChangedListener(listener)
     events.invokeOnClose { removeOnDestinationChangedListener(listener) }
 }
@@ -86,7 +85,7 @@ fun NavController.destinationChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<NavDestination> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     addOnDestinationChangedListener(listener)
     invokeOnClose { removeOnDestinationChangedListener(listener) }
 }
@@ -103,17 +102,16 @@ fun NavController.destinationChanges(
  * ```
  */
 @CheckResult
-fun NavController.destinationChanges(): Flow<NavDestination> =
-    channelFlow<NavDestination> {
-        val listener = listener(this, ::offerCatching)
-        addOnDestinationChangedListener(listener)
-        awaitClose { removeOnDestinationChangedListener(listener) }
-    }
+fun NavController.destinationChanges(): Flow<NavDestination> = channelFlow {
+    val listener = listener(this, ::trySend)
+    addOnDestinationChangedListener(listener)
+    awaitClose { removeOnDestinationChangedListener(listener) }
+}
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (NavDestination) -> Boolean
+    emitter: (NavDestination) -> Unit
 ) = NavController.OnDestinationChangedListener { _, destination, _ ->
     if (scope.isActive) { emitter(destination) }
 }

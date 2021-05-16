@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the show events from [Snackbar].
@@ -47,7 +46,7 @@ fun Snackbar.shown(
         for (snackbar in channel) action(snackbar)
     }
 
-    val callback = callback(scope, events::offer)
+    val callback = callback(scope, events::trySend)
     addCallback(callback)
     events.invokeOnClose { removeCallback(callback) }
 }
@@ -85,7 +84,7 @@ fun Snackbar.shown(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Snackbar> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, ::offerCatching)
+    val callback = callback(scope, ::trySend)
     addCallback(callback)
     invokeOnClose { removeCallback(callback) }
 }
@@ -102,8 +101,8 @@ fun Snackbar.shown(
  * ```
  */
 @CheckResult
-fun Snackbar.shown(): Flow<Snackbar> = channelFlow<Snackbar> {
-    val callback = callback(this, ::offerCatching)
+fun Snackbar.shown(): Flow<Snackbar> = channelFlow {
+    val callback = callback(this, ::trySend)
     addCallback(callback)
     awaitClose { removeCallback(callback) }
 }
@@ -111,7 +110,7 @@ fun Snackbar.shown(): Flow<Snackbar> = channelFlow<Snackbar> {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Snackbar) -> Boolean
+    emitter: (Snackbar) -> Unit
 ) = object : Snackbar.Callback() {
     override fun onShown(sb: Snackbar) {
         if (scope.isActive) { emitter(sb) }

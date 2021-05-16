@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on character sequences for query text changes on [SearchView].
@@ -51,8 +50,8 @@ fun SearchView.queryTextChanges(
         for (chars in channel) action(chars)
     }
 
-    events.offer(query)
-    setOnQueryTextListener(listener(scope, events::offer))
+    events.trySend(query)
+    setOnQueryTextListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
@@ -98,8 +97,8 @@ fun SearchView.queryTextChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
-    offerCatching(query)
-    setOnQueryTextListener(listener(scope, ::offerCatching))
+    trySend(query)
+    setOnQueryTextListener(listener(scope, ::trySend))
     invokeOnClose { setOnQueryTextListener(null) }
 }
 
@@ -127,15 +126,15 @@ fun SearchView.queryTextChanges(
  * ```
  */
 @CheckResult
-fun SearchView.queryTextChanges(): InitialValueFlow<CharSequence> = channelFlow<CharSequence> {
-    setOnQueryTextListener(listener(this, ::offerCatching))
+fun SearchView.queryTextChanges(): InitialValueFlow<CharSequence> = channelFlow {
+    setOnQueryTextListener(listener(this, ::trySend))
     awaitClose { setOnQueryTextListener(null) }
 }.asInitialValueFlow(query)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (CharSequence) -> Boolean
+    emitter: (CharSequence) -> Unit
 ) = object : SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(s: String): Boolean {

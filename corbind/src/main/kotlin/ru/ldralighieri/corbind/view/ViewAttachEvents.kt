@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class ViewAttachEvent {
     abstract val view: View
@@ -59,7 +58,7 @@ fun View.attachEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     addOnAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -111,7 +110,7 @@ fun View.attachEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewAttachEvent> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     addOnAttachStateChangeListener(listener)
     invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -140,8 +139,8 @@ fun View.attachEvents(
  * ```
  */
 @CheckResult
-fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow<ViewAttachEvent> {
-    val listener = listener(this, ::offerCatching)
+fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
+    val listener = listener(this, ::trySend)
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -149,7 +148,7 @@ fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow<ViewAttachEvent> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewAttachEvent) -> Boolean
+    emitter: (ViewAttachEvent) -> Unit
 ) = object : View.OnAttachStateChangeListener {
 
     override fun onViewAttachedToWindow(v: View) { onEvent(ViewAttachAttachedEvent(v)) }

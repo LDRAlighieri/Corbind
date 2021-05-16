@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the offset change in [AppBarLayout].
@@ -47,7 +46,7 @@ fun AppBarLayout.offsetChanges(
         for (offset in channel) action(offset)
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     addOnOffsetChangedListener(listener)
     events.invokeOnClose { removeOnOffsetChangedListener(listener) }
 }
@@ -85,7 +84,7 @@ fun AppBarLayout.offsetChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     addOnOffsetChangedListener(listener)
     invokeOnClose { removeOnOffsetChangedListener(listener) }
 }
@@ -102,8 +101,8 @@ fun AppBarLayout.offsetChanges(
  * ```
  */
 @CheckResult
-fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow<Int> {
-    val listener = listener(this, ::offerCatching)
+fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow {
+    val listener = listener(this, ::trySend)
     addOnOffsetChangedListener(listener)
     awaitClose { removeOnOffsetChangedListener(listener) }
 }
@@ -111,7 +110,7 @@ fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow<Int> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
     if (scope.isActive) { emitter(verticalOffset) }
 }

@@ -31,7 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on data change events for [Adapter].
@@ -49,8 +48,8 @@ fun <T : Adapter> T.dataChanges(
         for (adapter in channel) action(adapter)
     }
 
-    events.offer(this)
-    val dataSetObserver = observer(scope, this, events::offer)
+    events.trySend(this)
+    val dataSetObserver = observer(scope, this, events::trySend)
     registerDataSetObserver(dataSetObserver)
     events.invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
 }
@@ -90,8 +89,8 @@ fun <T : Adapter> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
-    offerCatching(this@dataChanges)
-    val dataSetObserver = observer(scope, this@dataChanges, ::offerCatching)
+    trySend(this@dataChanges)
+    val dataSetObserver = observer(scope, this@dataChanges, ::trySend)
     registerDataSetObserver(dataSetObserver)
     invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
 }
@@ -117,8 +116,8 @@ fun <T : Adapter> T.dataChanges(
  * ```
  */
 @CheckResult
-fun <T : Adapter> T.dataChanges(): InitialValueFlow<T> = channelFlow<T> {
-    val dataSetObserver = observer(this, this@dataChanges, ::offerCatching)
+fun <T : Adapter> T.dataChanges(): InitialValueFlow<T> = channelFlow {
+    val dataSetObserver = observer(this, this@dataChanges, ::trySend)
     registerDataSetObserver(dataSetObserver)
     awaitClose { unregisterDataSetObserver(dataSetObserver) }
 }.asInitialValueFlow(this)
@@ -127,7 +126,7 @@ fun <T : Adapter> T.dataChanges(): InitialValueFlow<T> = channelFlow<T> {
 private fun <T : Adapter> observer(
     scope: CoroutineScope,
     adapter: T,
-    emitter: (T) -> Boolean
+    emitter: (T) -> Unit
 ) = object : DataSetObserver() {
 
     override fun onChanged() {

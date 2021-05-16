@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class ViewPager2PageScrollEvent(
     val viewPager: ViewPager2,
@@ -54,7 +53,7 @@ fun ViewPager2.pageScrollEvents(
         for (event in channel) action(event)
     }
 
-    val callback = callback(scope, this, events::offer)
+    val callback = callback(scope, this, events::trySend)
     registerOnPageChangeCallback(callback)
     events.invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -93,7 +92,7 @@ fun ViewPager2.pageScrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewPager2PageScrollEvent> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, this@pageScrollEvents, ::offerCatching)
+    val callback = callback(scope, this@pageScrollEvents, ::trySend)
     registerOnPageChangeCallback(callback)
     invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -110,18 +109,17 @@ fun ViewPager2.pageScrollEvents(
  * ```
  */
 @CheckResult
-fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> =
-    channelFlow<ViewPager2PageScrollEvent> {
-        val callback = callback(this, this@pageScrollEvents, ::offerCatching)
-        registerOnPageChangeCallback(callback)
-        awaitClose { unregisterOnPageChangeCallback(callback) }
-    }
+fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = channelFlow {
+    val callback = callback(this, this@pageScrollEvents, ::trySend)
+    registerOnPageChangeCallback(callback)
+    awaitClose { unregisterOnPageChangeCallback(callback) }
+}
 
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
     viewPager: ViewPager2,
-    emitter: (ViewPager2PageScrollEvent) -> Boolean
+    emitter: (ViewPager2PageScrollEvent) -> Unit
 ) = object : ViewPager2.OnPageChangeCallback() {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {

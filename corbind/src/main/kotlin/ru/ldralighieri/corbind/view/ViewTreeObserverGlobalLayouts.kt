@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [View] global layout events.
@@ -48,7 +47,7 @@ fun View.globalLayouts(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     events.invokeOnClose {
         @Suppress("DEPRECATION") // Correct when minSdk 16
@@ -89,7 +88,7 @@ fun View.globalLayouts(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     invokeOnClose {
         @Suppress("DEPRECATION") // Correct when minSdk 16
@@ -109,8 +108,8 @@ fun View.globalLayouts(
  * ```
  */
 @CheckResult
-fun View.globalLayouts(): Flow<Unit> = channelFlow<Unit> {
-    val listener = listener(this, ::offerCatching)
+fun View.globalLayouts(): Flow<Unit> = channelFlow {
+    val listener = listener(this, ::trySend)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
     awaitClose {
         @Suppress("DEPRECATION") // Correct when minSdk 16
@@ -121,7 +120,7 @@ fun View.globalLayouts(): Flow<Unit> = channelFlow<Unit> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = ViewTreeObserver.OnGlobalLayoutListener {
     if (scope.isActive) { emitter(Unit) }
 }

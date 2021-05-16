@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on touch events for [View].
@@ -56,7 +55,7 @@ fun View.touches(
         for (motion in channel) action(motion)
     }
 
-    setOnTouchListener(listener(scope, handled, events::offer))
+    setOnTouchListener(listener(scope, handled, events::trySend))
     events.invokeOnClose { setOnTouchListener(null) }
 }
 
@@ -105,7 +104,7 @@ fun View.touches(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
-    setOnTouchListener(listener(scope, handled, ::offerCatching))
+    setOnTouchListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnTouchListener(null) }
 }
 
@@ -128,8 +127,8 @@ fun View.touches(
 @CheckResult
 fun View.touches(
     handled: (MotionEvent) -> Boolean = AlwaysTrue
-): Flow<MotionEvent> = channelFlow<MotionEvent> {
-    setOnTouchListener(listener(this, handled, ::offerCatching))
+): Flow<MotionEvent> = channelFlow {
+    setOnTouchListener(listener(this, handled, ::trySend))
     awaitClose { setOnTouchListener(null) }
 }
 
@@ -138,7 +137,7 @@ fun View.touches(
 private fun listener(
     scope: CoroutineScope,
     handled: (MotionEvent) -> Boolean,
-    emitter: (MotionEvent) -> Boolean
+    emitter: (MotionEvent) -> Unit
 ) = View.OnTouchListener { _, motionEvent ->
 
     if (scope.isActive && handled(motionEvent)) {

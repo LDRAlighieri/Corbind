@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on scroll state changes on [RecyclerView].
@@ -47,7 +46,7 @@ fun RecyclerView.scrollStateChanges(
         for (state in channel) action(state)
     }
 
-    val scrollListener = listener(scope, events::offer)
+    val scrollListener = listener(scope, events::trySend)
     addOnScrollListener(scrollListener)
     events.invokeOnClose { removeOnScrollListener(scrollListener) }
 }
@@ -85,7 +84,7 @@ fun RecyclerView.scrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    val scrollListener = listener(scope, ::offerCatching)
+    val scrollListener = listener(scope, ::trySend)
     addOnScrollListener(scrollListener)
     invokeOnClose { removeOnScrollListener(scrollListener) }
 }
@@ -102,8 +101,8 @@ fun RecyclerView.scrollStateChanges(
  * ```
  */
 @CheckResult
-fun RecyclerView.scrollStateChanges(): Flow<Int> = channelFlow<Int> {
-    val scrollListener = listener(this, ::offerCatching)
+fun RecyclerView.scrollStateChanges(): Flow<Int> = channelFlow {
+    val scrollListener = listener(this, ::trySend)
     addOnScrollListener(scrollListener)
     awaitClose { removeOnScrollListener(scrollListener) }
 }
@@ -111,7 +110,7 @@ fun RecyclerView.scrollStateChanges(): Flow<Int> = channelFlow<Int> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : RecyclerView.OnScrollListener() {
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

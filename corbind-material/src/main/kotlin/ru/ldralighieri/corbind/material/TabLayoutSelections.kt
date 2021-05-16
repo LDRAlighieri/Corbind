@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the selected tab in [TabLayout].
@@ -47,8 +46,8 @@ fun TabLayout.selections(
         for (tab in channel) action(tab)
     }
 
-    setInitialValue(this, events::offer)
-    val listener = listener(scope, events::offer)
+    setInitialValue(this, events::trySend)
+    val listener = listener(scope, events::trySend)
     addOnTabSelectedListener(listener)
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -88,8 +87,8 @@ fun TabLayout.selections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@selections, ::offerCatching)
-    val listener = listener(scope, ::offerCatching)
+    setInitialValue(this@selections, ::trySend)
+    val listener = listener(scope, ::trySend)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -115,16 +114,16 @@ fun TabLayout.selections(
  * ```
  */
 @CheckResult
-fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow<TabLayout.Tab> {
-    setInitialValue(this@selections, ::offerCatching)
-    val listener = listener(this, ::offerCatching)
+fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
+    setInitialValue(this@selections, ::trySend)
+    val listener = listener(this, ::trySend)
     addOnTabSelectedListener(listener)
     awaitClose { removeOnTabSelectedListener(listener) }
 }
 
 private fun setInitialValue(
     tabLayout: TabLayout,
-    emitter: (TabLayout.Tab) -> Boolean
+    emitter: (TabLayout.Tab) -> Unit
 ) {
     val index = tabLayout.selectedTabPosition
     if (index != -1) { emitter(tabLayout.getTabAt(index)!!) }
@@ -133,7 +132,7 @@ private fun setInitialValue(
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (TabLayout.Tab) -> Boolean
+    emitter: (TabLayout.Tab) -> Unit
 ) = object : TabLayout.OnTabSelectedListener {
 
     override fun onTabSelected(tab: TabLayout.Tab) {

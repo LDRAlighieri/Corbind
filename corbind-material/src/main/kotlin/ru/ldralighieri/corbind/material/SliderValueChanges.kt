@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on value changes on [Slider].
@@ -48,8 +47,8 @@ fun Slider.valueChanges(
         for (value in channel) action(value)
     }
 
-    events.offer(value)
-    val listener = listener(scope, events::offer)
+    events.trySend(value)
+    val listener = listener(scope, events::trySend)
     addOnChangeListener(listener)
     events.invokeOnClose { removeOnChangeListener(listener) }
 }
@@ -89,8 +88,8 @@ fun Slider.valueChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
-    offerCatching(value)
-    val listener = listener(scope, ::offerCatching)
+    trySend(value)
+    val listener = listener(scope, ::trySend)
     addOnChangeListener(listener)
     invokeOnClose { removeOnChangeListener(listener) }
 }
@@ -116,8 +115,8 @@ fun Slider.valueChanges(
  * ```
  */
 @CheckResult
-fun Slider.valueChanges(): InitialValueFlow<Float> = channelFlow<Float> {
-    val listener = listener(this, ::offerCatching)
+fun Slider.valueChanges(): InitialValueFlow<Float> = channelFlow {
+    val listener = listener(this, ::trySend)
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }
 }.asInitialValueFlow(value)
@@ -125,7 +124,7 @@ fun Slider.valueChanges(): InitialValueFlow<Float> = channelFlow<Float> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Float) -> Boolean
+    emitter: (Float) -> Unit
 ) = Slider.OnChangeListener { _, value, _ ->
     if (scope.isActive) { emitter(value) }
 }
