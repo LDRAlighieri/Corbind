@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on a new system UI visibility for [View].
@@ -62,7 +61,7 @@ fun View.systemUiVisibilityChanges(
         for (visibility in channel) action(visibility)
     }
 
-    setOnSystemUiVisibilityChangeListener(listener(scope, events::offer))
+    setOnSystemUiVisibilityChangeListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -129,7 +128,7 @@ fun View.systemUiVisibilityChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    setOnSystemUiVisibilityChangeListener(listener(scope, ::offerCatching))
+    setOnSystemUiVisibilityChangeListener(listener(scope, ::trySend))
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -160,8 +159,8 @@ fun View.systemUiVisibilityChanges(
     )
 )
 @CheckResult
-fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow<Int> {
-    setOnSystemUiVisibilityChangeListener(listener(this, ::offerCatching))
+fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
+    setOnSystemUiVisibilityChangeListener(listener(this, ::trySend))
     awaitClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -169,7 +168,7 @@ fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow<Int> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = View.OnSystemUiVisibilityChangeListener {
     if (scope.isActive) { emitter(it) }
 }

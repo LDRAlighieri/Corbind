@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on position of item long clicks for [AdapterView].
@@ -56,7 +55,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
         for (position in channel) action(position)
     }
 
-    onItemLongClickListener = listener(scope, handled, events::offer)
+    onItemLongClickListener = listener(scope, handled, events::trySend)
     events.invokeOnClose { onItemLongClickListener = null }
 }
 
@@ -105,7 +104,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    onItemLongClickListener = listener(scope, handled, ::offerCatching)
+    onItemLongClickListener = listener(scope, handled, ::trySend)
     invokeOnClose { onItemLongClickListener = null }
 }
 
@@ -129,8 +128,8 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
     handled: () -> Boolean = AlwaysTrue
-): Flow<Int> = channelFlow<Int> {
-    onItemLongClickListener = listener(this, handled, ::offerCatching)
+): Flow<Int> = channelFlow {
+    onItemLongClickListener = listener(this, handled, ::trySend)
     awaitClose { onItemLongClickListener = null }
 }
 
@@ -138,7 +137,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 private fun listener(
     scope: CoroutineScope,
     handled: () -> Boolean,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = AdapterView.OnItemLongClickListener { _, _: View?, position, _ ->
     if (scope.isActive && handled()) {
         emitter(position)

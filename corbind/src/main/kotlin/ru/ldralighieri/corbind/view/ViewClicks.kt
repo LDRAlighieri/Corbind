@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [View] click events.
@@ -50,7 +49,7 @@ fun View.clicks(
         for (ignored in channel) action()
     }
 
-    setOnClickListener(listener(scope, events::offer))
+    setOnClickListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnClickListener(null) }
 }
 
@@ -93,7 +92,7 @@ fun View.clicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnClickListener(listener(scope, ::offerCatching))
+    setOnClickListener(listener(scope, ::trySend))
     invokeOnClose { setOnClickListener(null) }
 }
 
@@ -111,15 +110,15 @@ fun View.clicks(
  * ```
  */
 @CheckResult
-fun View.clicks(): Flow<Unit> = channelFlow<Unit> {
-    setOnClickListener(listener(this, ::offerCatching))
+fun View.clicks(): Flow<Unit> = channelFlow {
+    setOnClickListener(listener(this, ::trySend))
     awaitClose { setOnClickListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = View.OnClickListener {
     if (scope.isActive) { emitter(Unit) }
 }

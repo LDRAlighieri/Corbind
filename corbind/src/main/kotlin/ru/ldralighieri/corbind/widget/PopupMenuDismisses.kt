@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [PopupMenu] dismiss events.
@@ -50,7 +49,7 @@ fun PopupMenu.dismisses(
         for (ignored in channel) action()
     }
 
-    setOnDismissListener(listener(scope, events::offer))
+    setOnDismissListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnDismissListener(null) }
 }
 
@@ -93,7 +92,7 @@ fun PopupMenu.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnDismissListener(listener(scope, ::offerCatching))
+    setOnDismissListener(listener(scope, ::trySend))
     invokeOnClose { setOnDismissListener(null) }
 }
 
@@ -112,15 +111,15 @@ fun PopupMenu.dismisses(
  * ```
  */
 @CheckResult
-fun PopupMenu.dismisses(): Flow<Unit> = channelFlow<Unit> {
-    setOnDismissListener(listener(this, ::offerCatching))
+fun PopupMenu.dismisses(): Flow<Unit> = channelFlow {
+    setOnDismissListener(listener(this, ::trySend))
     awaitClose { setOnDismissListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = PopupMenu.OnDismissListener {
     if (scope.isActive) { emitter(Unit) }
 }

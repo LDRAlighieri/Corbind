@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on any [lifecycle][Lifecycle] event change.
@@ -48,7 +47,7 @@ fun Lifecycle.events(
         for (event in channel) action(event)
     }
 
-    val observer = observer(scope, events::offer)
+    val observer = observer(scope, events::trySend)
     addObserver(observer)
     events.invokeOnClose { removeObserver(observer) }
 }
@@ -85,7 +84,7 @@ fun Lifecycle.events(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Lifecycle.Event> = corbindReceiveChannel(capacity) {
-    val observer = observer(scope, ::offerCatching)
+    val observer = observer(scope, ::trySend)
     addObserver(observer)
     invokeOnClose { removeObserver(observer) }
 }
@@ -102,8 +101,8 @@ fun Lifecycle.events(
  * ```
  */
 @CheckResult
-fun Lifecycle.events(): Flow<Lifecycle.Event> = channelFlow<Lifecycle.Event> {
-    val observer = observer(this, ::offerCatching)
+fun Lifecycle.events(): Flow<Lifecycle.Event> = channelFlow {
+    val observer = observer(this, ::trySend)
     addObserver(observer)
     awaitClose { removeObserver(observer) }
 }
@@ -111,7 +110,7 @@ fun Lifecycle.events(): Flow<Lifecycle.Event> = channelFlow<Lifecycle.Event> {
 @CheckResult
 private fun observer(
     scope: CoroutineScope,
-    emitter: (Lifecycle.Event) -> Boolean
+    emitter: (Lifecycle.Event) -> Unit
 ) = LifecycleEventObserver { _, event ->
 
     if (scope.isActive) { emitter(event) }

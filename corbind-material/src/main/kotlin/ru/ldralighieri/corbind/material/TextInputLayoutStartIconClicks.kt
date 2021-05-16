@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [TextInputLayout] start icon click events.
@@ -51,7 +50,7 @@ fun TextInputLayout.startIconClicks(
         for (ignored in channel) action()
     }
 
-    setStartIconOnClickListener(listener(scope, events::offer))
+    setStartIconOnClickListener(listener(scope, events::trySend))
     events.invokeOnClose { setStartIconOnClickListener(null) }
 }
 
@@ -94,7 +93,7 @@ fun TextInputLayout.startIconClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setStartIconOnClickListener(listener(scope, ::offerCatching))
+    setStartIconOnClickListener(listener(scope, ::trySend))
     invokeOnClose { setStartIconOnClickListener(null) }
 }
 
@@ -113,15 +112,15 @@ fun TextInputLayout.startIconClicks(
  * ```
  */
 @CheckResult
-fun TextInputLayout.startIconClicks(): Flow<Unit> = channelFlow<Unit> {
-    setStartIconOnClickListener(listener(this, ::offerCatching))
+fun TextInputLayout.startIconClicks(): Flow<Unit> = channelFlow {
+    setStartIconOnClickListener(listener(this, ::trySend))
     awaitClose { setStartIconOnClickListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = View.OnClickListener {
     if (scope.isActive) { emitter(Unit) }
 }

@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the position of item clicks for [AdapterView].
@@ -52,7 +51,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
         for (position in channel) action(position)
     }
 
-    onItemClickListener = listener(scope, events::offer)
+    onItemClickListener = listener(scope, events::trySend)
     events.invokeOnClose { onItemClickListener = null }
 }
 
@@ -95,7 +94,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    onItemClickListener = listener(scope, ::offerCatching)
+    onItemClickListener = listener(scope, ::trySend)
     invokeOnClose { onItemClickListener = null }
 }
 
@@ -114,15 +113,15 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
  * ```
  */
 @CheckResult
-fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow<Int> {
-    onItemClickListener = listener(this, ::offerCatching)
+fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow {
+    onItemClickListener = listener(this, ::trySend)
     awaitClose { onItemClickListener = null }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = AdapterView.OnItemClickListener { _, _: View?, position, _ ->
     if (scope.isActive) { emitter(position) }
 }

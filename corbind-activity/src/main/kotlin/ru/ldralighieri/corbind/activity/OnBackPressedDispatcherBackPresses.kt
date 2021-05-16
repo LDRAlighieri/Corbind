@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [OnBackPressedDispatcher.onBackPressed] call.
@@ -51,7 +50,7 @@ fun OnBackPressedDispatcher.backPresses(
         for (ignored in channel) action()
     }
 
-    val callback = callback(scope, events::offer)
+    val callback = callback(scope, events::trySend)
     addCallback(owner, callback)
     events.invokeOnClose { callback.remove() }
 }
@@ -92,7 +91,7 @@ fun OnBackPressedDispatcher.backPresses(
     capacity: Int = Channel.RENDEZVOUS,
     owner: LifecycleOwner
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    val callback = callback(scope, ::offerCatching)
+    val callback = callback(scope, ::trySend)
     addCallback(owner, callback)
     invokeOnClose { callback.remove() }
 }
@@ -110,8 +109,8 @@ fun OnBackPressedDispatcher.backPresses(
  *
  * @param owner The LifecycleOwner which controls when the callback should be invoked
  */
-fun OnBackPressedDispatcher.backPresses(owner: LifecycleOwner): Flow<Unit> = channelFlow<Unit> {
-    val callback = callback(this, ::offerCatching)
+fun OnBackPressedDispatcher.backPresses(owner: LifecycleOwner): Flow<Unit> = channelFlow {
+    val callback = callback(this, ::trySend)
     addCallback(owner, callback)
     awaitClose { callback.remove() }
 }
@@ -119,7 +118,7 @@ fun OnBackPressedDispatcher.backPresses(owner: LifecycleOwner): Flow<Unit> = cha
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = object : OnBackPressedCallback(true) {
 
     override fun handleOnBackPressed() {

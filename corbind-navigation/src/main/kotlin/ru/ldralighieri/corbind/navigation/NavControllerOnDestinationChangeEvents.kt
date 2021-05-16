@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class NavControllerOnDestinationChangeEvent(
     val controller: NavController,
@@ -57,7 +56,7 @@ fun NavController.destinationChangeEvents(
             for (event in channel) action(event)
         }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     addOnDestinationChangedListener(listener)
     events.invokeOnClose { removeOnDestinationChangedListener(listener) }
 }
@@ -97,7 +96,7 @@ fun NavController.destinationChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<NavControllerOnDestinationChangeEvent> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     addOnDestinationChangedListener(listener)
     invokeOnClose { removeOnDestinationChangedListener(listener) }
 }
@@ -116,8 +115,8 @@ fun NavController.destinationChangeEvents(
  */
 @CheckResult
 fun NavController.destinationChangeEvents(): Flow<NavControllerOnDestinationChangeEvent> =
-    channelFlow<NavControllerOnDestinationChangeEvent> {
-        val listener = listener(this, ::offerCatching)
+    channelFlow {
+        val listener = listener(this, ::trySend)
         addOnDestinationChangedListener(listener)
         awaitClose { removeOnDestinationChangedListener(listener) }
     }
@@ -125,7 +124,7 @@ fun NavController.destinationChangeEvents(): Flow<NavControllerOnDestinationChan
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (NavControllerOnDestinationChangeEvent) -> Boolean
+    emitter: (NavControllerOnDestinationChangeEvent) -> Unit
 ) = NavController.OnDestinationChangedListener { controller, destination, arguments ->
     if (scope.isActive) {
         emitter(NavControllerOnDestinationChangeEvent(controller, destination, arguments))

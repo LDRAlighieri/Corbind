@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 sealed class TabLayoutSelectionEvent {
     abstract val view: TabLayout
@@ -68,8 +67,8 @@ fun TabLayout.selectionEvents(
         for (event in channel) action(event)
     }
 
-    setInitialValue(this, events::offer)
-    val listener = listener(scope, this, events::offer)
+    setInitialValue(this, events::trySend)
+    val listener = listener(scope, this, events::trySend)
     addOnTabSelectedListener(listener)
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -125,8 +124,8 @@ fun TabLayout.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TabLayoutSelectionEvent> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@selectionEvents, ::offerCatching)
-    val listener = listener(scope, this@selectionEvents, ::offerCatching)
+    setInitialValue(this@selectionEvents, ::trySend)
+    val listener = listener(scope, this@selectionEvents, ::trySend)
     addOnTabSelectedListener(listener)
     invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -165,17 +164,16 @@ fun TabLayout.selectionEvents(
  * ```
  */
 @CheckResult
-fun TabLayout.selectionEvents(): Flow<TabLayoutSelectionEvent> =
-    channelFlow<TabLayoutSelectionEvent> {
-        setInitialValue(this@selectionEvents, ::offerCatching)
-        val listener = listener(this, this@selectionEvents, ::offerCatching)
-        addOnTabSelectedListener(listener)
-        awaitClose { removeOnTabSelectedListener(listener) }
-    }
+fun TabLayout.selectionEvents(): Flow<TabLayoutSelectionEvent> = channelFlow {
+    setInitialValue(this@selectionEvents, ::trySend)
+    val listener = listener(this, this@selectionEvents, ::trySend)
+    addOnTabSelectedListener(listener)
+    awaitClose { removeOnTabSelectedListener(listener) }
+}
 
 private fun setInitialValue(
     tabLayout: TabLayout,
-    emitter: (TabLayoutSelectionEvent) -> Boolean
+    emitter: (TabLayoutSelectionEvent) -> Unit
 ) {
     val index = tabLayout.selectedTabPosition
     if (index != -1) {
@@ -187,7 +185,7 @@ private fun setInitialValue(
 private fun listener(
     scope: CoroutineScope,
     tabLayout: TabLayout,
-    emitter: (TabLayoutSelectionEvent) -> Boolean
+    emitter: (TabLayoutSelectionEvent) -> Unit
 ) = object : TabLayout.OnTabSelectedListener {
 
     override fun onTabSelected(tab: TabLayout.Tab) {

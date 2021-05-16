@@ -32,7 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the state change events from [View] on [BottomSheetBehavior].
@@ -51,8 +50,8 @@ fun View.stateChanges(
     }
 
     val behavior = getBehavior(this@stateChanges)
-    events.offer(behavior.state)
-    val callback = callback(scope, events::offer)
+    events.trySend(behavior.state)
+    val callback = callback(scope, events::trySend)
     behavior.addBottomSheetCallback(callback)
     events.invokeOnClose { behavior.removeBottomSheetCallback(callback) }
 }
@@ -94,8 +93,8 @@ fun View.stateChanges(
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@stateChanges)
-    offerCatching(behavior.state)
-    val callback = callback(scope, ::offerCatching)
+    trySend(behavior.state)
+    val callback = callback(scope, ::trySend)
     behavior.addBottomSheetCallback(callback)
     invokeOnClose { behavior.removeBottomSheetCallback(callback) }
 }
@@ -120,9 +119,9 @@ fun View.stateChanges(
  *      .launchIn(lifecycleScope)
  * ```
  */
-fun View.stateChanges(): InitialValueFlow<Int> = channelFlow<Int> {
+fun View.stateChanges(): InitialValueFlow<Int> = channelFlow {
     val behavior = getBehavior(this@stateChanges)
-    val callback = callback(this, ::offerCatching)
+    val callback = callback(this, ::trySend)
     behavior.addBottomSheetCallback(callback)
     awaitClose { behavior.removeBottomSheetCallback(callback) }
 }.asInitialValueFlow(getBehavior(this@stateChanges).state)
@@ -138,7 +137,7 @@ private fun getBehavior(view: View): BottomSheetBehavior<*> {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : BottomSheetBehavior.BottomSheetCallback() {
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit

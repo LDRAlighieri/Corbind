@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class RecyclerViewFlingEvent(
     val view: RecyclerView,
@@ -56,7 +55,7 @@ fun RecyclerView.flingEvents(
         for (event in channel) action(event)
     }
 
-    onFlingListener = listener(scope, this, events::offer)
+    onFlingListener = listener(scope, this, events::trySend)
     events.invokeOnClose { onFlingListener = null }
 }
 
@@ -100,7 +99,7 @@ fun RecyclerView.flingEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel(capacity) {
-    onFlingListener = listener(scope, this@flingEvents, ::offerCatching)
+    onFlingListener = listener(scope, this@flingEvents, ::trySend)
     invokeOnClose { onFlingListener = null }
 }
 
@@ -119,8 +118,8 @@ fun RecyclerView.flingEvents(
  * ```
  */
 @CheckResult
-fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow<RecyclerViewFlingEvent> {
-    onFlingListener = listener(this, this@flingEvents, ::offerCatching)
+fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow {
+    onFlingListener = listener(this, this@flingEvents, ::trySend)
     awaitClose { onFlingListener = null }
 }
 
@@ -128,7 +127,7 @@ fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow<Recyc
 private fun listener(
     scope: CoroutineScope,
     recyclerView: RecyclerView,
-    emitter: (RecyclerViewFlingEvent) -> Boolean
+    emitter: (RecyclerViewFlingEvent) -> Unit
 ) = object : RecyclerView.OnFlingListener() {
 
     override fun onFling(velocityX: Int, velocityY: Int): Boolean {

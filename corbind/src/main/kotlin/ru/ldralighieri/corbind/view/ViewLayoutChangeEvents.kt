@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class ViewLayoutChangeEvent(
     val view: View,
@@ -59,7 +58,7 @@ fun View.layoutChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     addOnLayoutChangeListener(listener)
     events.invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
@@ -98,7 +97,7 @@ fun View.layoutChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     addOnLayoutChangeListener(listener)
     invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
@@ -115,8 +114,8 @@ fun View.layoutChangeEvents(
  * ```
  */
 @CheckResult
-fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow<ViewLayoutChangeEvent> {
-    val listener = listener(this, ::offerCatching)
+fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
+    val listener = listener(this, ::trySend)
     addOnLayoutChangeListener(listener)
     awaitClose { removeOnLayoutChangeListener(listener) }
 }
@@ -124,7 +123,7 @@ fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow<ViewLay
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewLayoutChangeEvent) -> Boolean
+    emitter: (ViewLayoutChangeEvent) -> Unit
 ) = View.OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
     if (scope.isActive) {
         emitter(

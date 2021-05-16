@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the selected item in [BottomNavigationView].
@@ -51,8 +50,8 @@ fun BottomNavigationView.itemSelections(
         for (item in channel) action(item)
     }
 
-    setInitialValue(this, events::offer)
-    setOnNavigationItemSelectedListener(listener(scope, events::offer))
+    setInitialValue(this, events::trySend)
+    setOnNavigationItemSelectedListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnNavigationItemSelectedListener(null) }
 }
 
@@ -97,8 +96,8 @@ fun BottomNavigationView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
-    setInitialValue(this@itemSelections, ::offerCatching)
-    setOnNavigationItemSelectedListener(listener(scope, ::offerCatching))
+    setInitialValue(this@itemSelections, ::trySend)
+    setOnNavigationItemSelectedListener(listener(scope, ::trySend))
     invokeOnClose { setOnNavigationItemSelectedListener(null) }
 }
 
@@ -126,15 +125,15 @@ fun BottomNavigationView.itemSelections(
  * ```
  */
 @CheckResult
-fun BottomNavigationView.itemSelections(): Flow<MenuItem> = channelFlow<MenuItem> {
-    setInitialValue(this@itemSelections, ::offerCatching)
-    setOnNavigationItemSelectedListener(listener(this, ::offerCatching))
+fun BottomNavigationView.itemSelections(): Flow<MenuItem> = channelFlow {
+    setInitialValue(this@itemSelections, ::trySend)
+    setOnNavigationItemSelectedListener(listener(this, ::trySend))
     awaitClose { setOnNavigationItemSelectedListener(null) }
 }
 
 private fun setInitialValue(
     bottomNavigationView: BottomNavigationView,
-    emitter: (MenuItem) -> Boolean
+    emitter: (MenuItem) -> Unit
 ) {
     val menu = bottomNavigationView.menu
     for (i in 0 until menu.size()) {
@@ -149,7 +148,7 @@ private fun setInitialValue(
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MenuItem) -> Boolean
+    emitter: (MenuItem) -> Unit
 ) = BottomNavigationView.OnNavigationItemSelectedListener {
     if (scope.isActive) { emitter(it) }
     return@OnNavigationItemSelectedListener true

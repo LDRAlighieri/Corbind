@@ -30,7 +30,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on page selected events on [ViewPager2].
@@ -48,8 +47,8 @@ fun ViewPager2.pageSelections(
         for (position in channel) action(position)
     }
 
-    events.offer(currentItem)
-    val callback = callback(scope, events::offer)
+    events.trySend(currentItem)
+    val callback = callback(scope, events::trySend)
     registerOnPageChangeCallback(callback)
     events.invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -89,8 +88,8 @@ fun ViewPager2.pageSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerCatching(currentItem)
-    val callback = callback(scope, ::offerCatching)
+    trySend(currentItem)
+    val callback = callback(scope, ::trySend)
     registerOnPageChangeCallback(callback)
     invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -116,8 +115,8 @@ fun ViewPager2.pageSelections(
  * ```
  */
 @CheckResult
-fun ViewPager2.pageSelections(): InitialValueFlow<Int> = channelFlow<Int> {
-    val callback = callback(this, ::offerCatching)
+fun ViewPager2.pageSelections(): InitialValueFlow<Int> = channelFlow {
+    val callback = callback(this, ::trySend)
     registerOnPageChangeCallback(callback)
     awaitClose { unregisterOnPageChangeCallback(callback) }
 }.asInitialValueFlow(currentItem)
@@ -125,7 +124,7 @@ fun ViewPager2.pageSelections(): InitialValueFlow<Int> = channelFlow<Int> {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : ViewPager2.OnPageChangeCallback() {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit

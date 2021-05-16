@@ -32,7 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class TextViewBeforeTextChangeEvent(
     val view: TextView,
@@ -58,8 +57,8 @@ fun TextView.beforeTextChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(initialValue(this))
-    val listener = listener(scope, this, events::offer)
+    events.trySend(initialValue(this))
+    val listener = listener(scope, this, events::trySend)
     addTextChangedListener(listener)
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -98,8 +97,8 @@ fun TextView.beforeTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TextViewBeforeTextChangeEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(initialValue(this@beforeTextChangeEvents))
-    val listener = listener(scope, this@beforeTextChangeEvents, ::offerCatching)
+    trySend(initialValue(this@beforeTextChangeEvents))
+    val listener = listener(scope, this@beforeTextChangeEvents, ::trySend)
     addTextChangedListener(listener)
     invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -126,8 +125,8 @@ fun TextView.beforeTextChangeEvents(
  */
 @CheckResult
 fun TextView.beforeTextChangeEvents(): InitialValueFlow<TextViewBeforeTextChangeEvent> =
-    channelFlow<TextViewBeforeTextChangeEvent> {
-        val listener = listener(this, this@beforeTextChangeEvents, ::offerCatching)
+    channelFlow {
+        val listener = listener(this, this@beforeTextChangeEvents, ::trySend)
         addTextChangedListener(listener)
         awaitClose { removeTextChangedListener(listener) }
     }.asInitialValueFlow(initialValue(textView = this))
@@ -140,7 +139,7 @@ private fun initialValue(textView: TextView): TextViewBeforeTextChangeEvent =
 private fun listener(
     scope: CoroutineScope,
     textView: TextView,
-    emitter: (TextViewBeforeTextChangeEvent) -> Boolean
+    emitter: (TextViewBeforeTextChangeEvent) -> Unit
 ) = object : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {

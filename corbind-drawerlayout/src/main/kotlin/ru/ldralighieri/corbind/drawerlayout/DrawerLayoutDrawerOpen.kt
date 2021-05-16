@@ -31,7 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the open state of the [DrawerLayout].
@@ -51,8 +50,8 @@ fun DrawerLayout.drawerOpens(
         for (open in channel) action(open)
     }
 
-    events.offer(isDrawerOpen(gravity))
-    val listener = listener(scope, gravity, events::offer)
+    events.trySend(isDrawerOpen(gravity))
+    val listener = listener(scope, gravity, events::trySend)
     addDrawerListener(listener)
     events.invokeOnClose { removeDrawerListener(listener) }
 }
@@ -96,8 +95,8 @@ fun DrawerLayout.drawerOpens(
     capacity: Int = Channel.RENDEZVOUS,
     gravity: Int
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    offerCatching(isDrawerOpen(gravity))
-    val listener = listener(scope, gravity, ::offerCatching)
+    trySend(isDrawerOpen(gravity))
+    val listener = listener(scope, gravity, ::trySend)
     addDrawerListener(listener)
     invokeOnClose { removeDrawerListener(listener) }
 }
@@ -125,8 +124,8 @@ fun DrawerLayout.drawerOpens(
  * @param gravity Gravity of the drawer to check
  */
 @CheckResult
-fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = channelFlow<Boolean> {
-    val listener = listener(this, gravity, ::offerCatching)
+fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = channelFlow {
+    val listener = listener(this, gravity, ::trySend)
     addDrawerListener(listener)
     awaitClose { removeDrawerListener(listener) }
 }.asInitialValueFlow(isDrawerOpen(gravity))
@@ -135,7 +134,7 @@ fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = channelF
 private fun listener(
     scope: CoroutineScope,
     gravity: Int,
-    emitter: (Boolean) -> Boolean
+    emitter: (Boolean) -> Unit
 ) = object : DrawerLayout.DrawerListener {
 
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) = Unit

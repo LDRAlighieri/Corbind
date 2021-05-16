@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on touch tracking events for [RangeSlider].
@@ -47,7 +46,7 @@ fun RangeSlider.touches(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, events::offer)
+    val listener = listener(scope, events::trySend)
     addOnSliderTouchListener(listener)
     events.invokeOnClose { removeOnSliderTouchListener(listener) }
 }
@@ -85,7 +84,7 @@ fun RangeSlider.touches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    val listener = listener(scope, ::offerCatching)
+    val listener = listener(scope, ::trySend)
     addOnSliderTouchListener(listener)
     invokeOnClose { removeOnSliderTouchListener(listener) }
 }
@@ -102,8 +101,8 @@ fun RangeSlider.touches(
  * ```
  */
 @CheckResult
-fun RangeSlider.touches(): Flow<Boolean> = channelFlow<Boolean> {
-    val listener = listener(this, ::offerCatching)
+fun RangeSlider.touches(): Flow<Boolean> = channelFlow {
+    val listener = listener(this, ::trySend)
     addOnSliderTouchListener(listener)
     awaitClose { removeOnSliderTouchListener(listener) }
 }

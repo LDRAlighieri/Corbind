@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on key events for [View].
@@ -54,7 +53,7 @@ fun View.keys(
         for (key in channel) action(key)
     }
 
-    setOnKeyListener(listener(scope, handled, events::offer))
+    setOnKeyListener(listener(scope, handled, events::trySend))
     events.invokeOnClose { setOnKeyListener(null) }
 }
 
@@ -102,7 +101,7 @@ fun View.keys(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (KeyEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<KeyEvent> = corbindReceiveChannel(capacity) {
-    setOnKeyListener(listener(scope, handled, ::offerCatching))
+    setOnKeyListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnKeyListener(null) }
 }
 
@@ -123,10 +122,8 @@ fun View.keys(
  * [View.OnKeyListener]
  */
 @CheckResult
-fun View.keys(
-    handled: (KeyEvent) -> Boolean = AlwaysTrue
-): Flow<KeyEvent> = channelFlow<KeyEvent> {
-    setOnKeyListener(listener(this, handled, ::offerCatching))
+fun View.keys(handled: (KeyEvent) -> Boolean = AlwaysTrue): Flow<KeyEvent> = channelFlow {
+    setOnKeyListener(listener(this, handled, ::trySend))
     awaitClose { setOnKeyListener(null) }
 }
 
@@ -134,7 +131,7 @@ fun View.keys(
 private fun listener(
     scope: CoroutineScope,
     handled: (KeyEvent) -> Boolean,
-    emitter: (KeyEvent) -> Boolean
+    emitter: (KeyEvent) -> Unit
 ) = View.OnKeyListener { _, _, keyEvent ->
     if (scope.isActive && handled(keyEvent)) {
         emitter(keyEvent)

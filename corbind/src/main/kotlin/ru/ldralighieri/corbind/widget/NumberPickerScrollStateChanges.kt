@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [NumberPicker] scroll state change.
@@ -50,7 +49,7 @@ fun NumberPicker.scrollStateChanges(
         for (state in channel) action(state)
     }
 
-    setOnScrollListener(listener(scope, events::offer))
+    setOnScrollListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -93,7 +92,7 @@ fun NumberPicker.scrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    setOnScrollListener(listener(scope, ::offerCatching))
+    setOnScrollListener(listener(scope, ::trySend))
     invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -112,15 +111,15 @@ fun NumberPicker.scrollStateChanges(
  * ```
  */
 @CheckResult
-fun NumberPicker.scrollStateChanges(): Flow<Int> = channelFlow<Int> {
-    setOnScrollListener(listener(this, ::offerCatching))
+fun NumberPicker.scrollStateChanges(): Flow<Int> = channelFlow {
+    setOnScrollListener(listener(this, ::trySend))
     awaitClose { setOnScrollListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = NumberPicker.OnScrollListener { _, scrollState ->
     if (scope.isActive) { emitter(scrollState) }
 }

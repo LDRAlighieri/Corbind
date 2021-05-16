@@ -31,7 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on checked view ID changes in [RadioGroup].
@@ -52,8 +51,8 @@ fun RadioGroup.checkedChanges(
         for (checkedId in channel) action(checkedId)
     }
 
-    events.offer(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, events::offer))
+    events.trySend(checkedRadioButtonId)
+    setOnCheckedChangeListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -99,8 +98,8 @@ fun RadioGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerCatching(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, ::offerCatching))
+    trySend(checkedRadioButtonId)
+    setOnCheckedChangeListener(listener(scope, ::trySend))
     invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -129,15 +128,15 @@ fun RadioGroup.checkedChanges(
  * ```
  */
 @CheckResult
-fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow<Int> {
-    setOnCheckedChangeListener(listener(this, ::offerCatching))
+fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow {
+    setOnCheckedChangeListener(listener(this, ::trySend))
     awaitClose { setOnCheckedChangeListener(null) }
 }.asInitialValueFlow(checkedRadioButtonId)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : RadioGroup.OnCheckedChangeListener {
 
     private var lastChecked = View.NO_ID

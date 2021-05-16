@@ -31,7 +31,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the open state of the pane of [SlidingPaneLayout].
@@ -52,8 +51,8 @@ fun SlidingPaneLayout.panelOpens(
         for (event in channel) action(event)
     }
 
-    events.offer(isOpen)
-    setPanelSlideListener(listener(scope, events::offer))
+    events.trySend(isOpen)
+    setPanelSlideListener(listener(scope, events::trySend))
     events.invokeOnClose { setPanelSlideListener(null) }
 }
 
@@ -99,8 +98,8 @@ fun SlidingPaneLayout.panelOpens(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
-    offerCatching(isOpen)
-    setPanelSlideListener(listener(scope, ::offerCatching))
+    trySend(isOpen)
+    setPanelSlideListener(listener(scope, ::trySend))
     invokeOnClose { setPanelSlideListener(null) }
 }
 
@@ -128,15 +127,15 @@ fun SlidingPaneLayout.panelOpens(
  * ```
  */
 @CheckResult
-fun SlidingPaneLayout.panelOpens(): InitialValueFlow<Boolean> = channelFlow<Boolean> {
-    setPanelSlideListener(listener(this, ::offerCatching))
+fun SlidingPaneLayout.panelOpens(): InitialValueFlow<Boolean> = channelFlow {
+    setPanelSlideListener(listener(this, ::trySend))
     awaitClose { setPanelSlideListener(null) }
 }.asInitialValueFlow(isOpen)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Boolean
+    emitter: (Boolean) -> Unit
 ) = object : SlidingPaneLayout.PanelSlideListener {
 
     override fun onPanelSlide(panel: View, slideOffset: Float) = Unit

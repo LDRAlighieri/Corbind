@@ -48,7 +48,7 @@ android {
 dependencies {
     api project(':corbind')
 
-    api deps.androidx.swipeRefreshLayout
+    api deps.androidx.swiperefreshlayout
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

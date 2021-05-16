@@ -48,7 +48,7 @@ android {
 dependencies {
     api project(':corbind')
 
-    api deps.androidx.appCompat
+    api deps.androidx.appcompat
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

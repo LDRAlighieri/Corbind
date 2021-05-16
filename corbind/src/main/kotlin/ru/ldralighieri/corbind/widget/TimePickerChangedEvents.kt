@@ -32,7 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 data class TimeChangedEvent(
     val view: TimePicker,
@@ -60,8 +59,8 @@ fun TimePicker.timeChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.offer(TimeChangedEvent(this, hour, minute))
-    setOnTimeChangedListener(listener(scope, events::offer))
+    events.trySend(TimeChangedEvent(this, hour, minute))
+    setOnTimeChangedListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnTimeChangedListener(null) }
 }
 
@@ -109,8 +108,8 @@ fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<TimeChangedEvent> = corbindReceiveChannel(capacity) {
-    offerCatching(TimeChangedEvent(this@timeChangeEvents, hour, minute))
-    setOnTimeChangedListener(listener(scope, ::offerCatching))
+    trySend(TimeChangedEvent(this@timeChangeEvents, hour, minute))
+    setOnTimeChangedListener(listener(scope, ::trySend))
     invokeOnClose { setOnTimeChangedListener(null) }
 }
 
@@ -139,16 +138,15 @@ fun TimePicker.timeChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> =
-    channelFlow<TimeChangedEvent> {
-        setOnTimeChangedListener(listener(this, ::offerCatching))
-        awaitClose { setOnTimeChangedListener(null) }
-    }.asInitialValueFlow(TimeChangedEvent(view = this, hour, minute))
+fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = channelFlow {
+    setOnTimeChangedListener(listener(this, ::trySend))
+    awaitClose { setOnTimeChangedListener(null) }
+}.asInitialValueFlow(TimeChangedEvent(view = this, hour, minute))
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (TimeChangedEvent) -> Boolean
+    emitter: (TimeChangedEvent) -> Unit
 ) = TimePicker.OnTimeChangedListener { view, hourOfDay, minute ->
     if (scope.isActive) { emitter(TimeChangedEvent(view, hourOfDay, minute)) }
 }

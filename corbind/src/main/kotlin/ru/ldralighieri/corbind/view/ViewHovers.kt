@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on hover events for [View].
@@ -55,7 +54,7 @@ fun View.hovers(
         for (motion in channel) action(motion)
     }
 
-    setOnHoverListener(listener(scope, handled, events::offer))
+    setOnHoverListener(listener(scope, handled, events::trySend))
     events.invokeOnClose { setOnHoverListener(null) }
 }
 
@@ -104,7 +103,7 @@ fun View.hovers(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
-    setOnHoverListener(listener(scope, handled, ::offerCatching))
+    setOnHoverListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnHoverListener(null) }
 }
 
@@ -125,10 +124,8 @@ fun View.hovers(
  * [View.OnHoverListener]
  */
 @CheckResult
-fun View.hovers(
-    handled: (MotionEvent) -> Boolean = AlwaysTrue
-): Flow<MotionEvent> = channelFlow<MotionEvent> {
-    setOnHoverListener(listener(this, handled, ::offerCatching))
+fun View.hovers(handled: (MotionEvent) -> Boolean = AlwaysTrue): Flow<MotionEvent> = channelFlow {
+    setOnHoverListener(listener(this, handled, ::trySend))
     awaitClose { setOnHoverListener(null) }
 }
 
@@ -136,7 +133,7 @@ fun View.hovers(
 private fun listener(
     scope: CoroutineScope,
     handled: (MotionEvent) -> Boolean,
-    emitter: (MotionEvent) -> Boolean
+    emitter: (MotionEvent) -> Unit
 ) = View.OnHoverListener { _, motionEvent ->
     if (scope.isActive && handled(motionEvent)) {
         emitter(motionEvent)

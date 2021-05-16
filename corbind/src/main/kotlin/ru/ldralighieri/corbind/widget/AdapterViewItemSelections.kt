@@ -32,7 +32,6 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on the selected position of [AdapterView].
@@ -53,8 +52,8 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
         for (position in channel) action(position)
     }
 
-    events.offer(selectedItemPosition)
-    onItemSelectedListener = listener(scope, events::offer)
+    events.trySend(selectedItemPosition)
+    onItemSelectedListener = listener(scope, events::trySend)
     events.invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -100,8 +99,8 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    offerCatching(selectedItemPosition)
-    onItemSelectedListener = listener(scope, ::offerCatching)
+    trySend(selectedItemPosition)
+    onItemSelectedListener = listener(scope, ::trySend)
     invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -130,15 +129,15 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
  * ```
  */
 @CheckResult
-fun <T : Adapter> AdapterView<T>.itemSelections(): InitialValueFlow<Int> = channelFlow<Int> {
-    onItemSelectedListener = listener(this, ::offerCatching)
+fun <T : Adapter> AdapterView<T>.itemSelections(): InitialValueFlow<Int> = channelFlow {
+    onItemSelectedListener = listener(this, ::trySend)
     awaitClose { onItemSelectedListener = null }
 }.asInitialValueFlow(selectedItemPosition)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Boolean
+    emitter: (Int) -> Unit
 ) = object : AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {

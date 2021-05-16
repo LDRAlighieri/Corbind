@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
-import ru.ldralighieri.corbind.internal.offerCatching
 
 /**
  * Perform an action on [AutoCompleteTextView] dismiss events.
@@ -53,7 +52,7 @@ fun AutoCompleteTextView.dismisses(
         for (ignored in channel) action()
     }
 
-    setOnDismissListener(listener(scope, events::offer))
+    setOnDismissListener(listener(scope, events::trySend))
     events.invokeOnClose { setOnDismissListener(null) }
 }
 
@@ -98,7 +97,7 @@ fun AutoCompleteTextView.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
-    setOnDismissListener(listener(scope, ::offerCatching))
+    setOnDismissListener(listener(scope, ::trySend))
     invokeOnClose { setOnDismissListener(null) }
 }
 
@@ -118,15 +117,15 @@ fun AutoCompleteTextView.dismisses(
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @CheckResult
-fun AutoCompleteTextView.dismisses(): Flow<Unit> = channelFlow<Unit> {
-    setOnDismissListener(listener(this, ::offerCatching))
+fun AutoCompleteTextView.dismisses(): Flow<Unit> = channelFlow {
+    setOnDismissListener(listener(this, ::trySend))
     awaitClose { setOnDismissListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Boolean
+    emitter: (Unit) -> Unit
 ) = AutoCompleteTextView.OnDismissListener {
     if (scope.isActive) { emitter(Unit) }
 }
