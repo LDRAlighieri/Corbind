@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.material
 import android.view.MenuItem
 import androidx.annotation.CheckResult
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -32,16 +33,16 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
- * Perform an action on the selected item in [BottomNavigationView].
+ * Perform an action on the selected item in [NavigationBarView].
  *
- * *Warning:* The created actor uses [BottomNavigationView.setOnNavigationItemSelectedListener].
- * Only one actor can be used at a time.
+ * *Warning:* The created actor uses [NavigationBarView.setOnItemSelectedListener]. Only one actor can
+ * be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun BottomNavigationView.itemSelections(
+fun NavigationBarView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit
@@ -51,20 +52,20 @@ fun BottomNavigationView.itemSelections(
     }
 
     setInitialValue(this, events::trySend)
-    setOnNavigationItemSelectedListener(listener(scope, events::trySend))
-    events.invokeOnClose { setOnNavigationItemSelectedListener(null) }
+    setOnItemSelectedListener(listener(scope, events::trySend))
+    events.invokeOnClose { setOnItemSelectedListener(null) }
 }
 
 /**
- * Perform an action on the selected item in [BottomNavigationView], inside new [CoroutineScope].
+ * Perform an action on the selected item in [NavigationBarView], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [BottomNavigationView.setOnNavigationItemSelectedListener].
- * Only one actor can be used at a time.
+ * *Warning:* The created actor uses [NavigationBarView.setOnItemSelectedListener]. Only one actor can
+ * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun BottomNavigationView.itemSelections(
+suspend fun NavigationBarView.itemSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit
 ) = coroutineScope {
@@ -72,10 +73,10 @@ suspend fun BottomNavigationView.itemSelections(
 }
 
 /**
- * Create a channel which emits the selected item in [BottomNavigationView].
+ * Create a channel which emits the selected item in [NavigationBarView].
  *
- * *Warning:* The created channel uses [BottomNavigationView.setOnNavigationItemSelectedListener].
- * Only one channel can be used at a time.
+ * *Warning:* The created channel uses [NavigationBarView.setOnItemSelectedListener]. Only one
+ * channel can be used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -83,7 +84,7 @@ suspend fun BottomNavigationView.itemSelections(
  *
  * ```
  * launch {
- *      bottomNavigationView.itemSelections(scope)
+ *      anyNavigationBarView.itemSelections(scope)
  *          .consumeEach { /* handle selected item */ }
  * }
  * ```
@@ -92,20 +93,20 @@ suspend fun BottomNavigationView.itemSelections(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun BottomNavigationView.itemSelections(
+fun NavigationBarView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
     setInitialValue(this@itemSelections, ::trySend)
-    setOnNavigationItemSelectedListener(listener(scope, ::trySend))
-    invokeOnClose { setOnNavigationItemSelectedListener(null) }
+    setOnItemSelectedListener(listener(scope, ::trySend))
+    invokeOnClose { setOnItemSelectedListener(null) }
 }
 
 /**
- * Create a flow which emits the selected item in [BottomNavigationView].
+ * Create a flow which emits the selected item in [NavigationBarView].
  *
- * *Warning:* The created flow uses [BottomNavigationView.setOnNavigationItemSelectedListener]. Only
- * one flow can be used at a time.
+ * *Warning:* The created flow uses [NavigationBarView.setOnItemSelectedListener]. Only one flow can
+ * be used at a time.
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -113,29 +114,29 @@ fun BottomNavigationView.itemSelections(
  *
  * ```
  * // handle initial value
- * bottomNavigationView.itemSelections()
+ * anyNavigationBarView.itemSelections()
  *      .onEach { /* handle selected item */ }
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
- * bottomNavigationView.itemSelections()
+ * anyNavigationBarView.itemSelections()
  *      .drop(1)
  *      .onEach { /* handle selected item */ }
  *      .launchIn(lifecycleScope)
  * ```
  */
 @CheckResult
-fun BottomNavigationView.itemSelections(): Flow<MenuItem> = channelFlow {
+fun NavigationBarView.itemSelections(): Flow<MenuItem> = channelFlow {
     setInitialValue(this@itemSelections, ::trySend)
-    setOnNavigationItemSelectedListener(listener(this, ::trySend))
-    awaitClose { setOnNavigationItemSelectedListener(null) }
+    setOnItemSelectedListener(listener(this, ::trySend))
+    awaitClose { setOnItemSelectedListener(null) }
 }
 
 private fun setInitialValue(
-    bottomNavigationView: BottomNavigationView,
+    navigationBarView: NavigationBarView,
     emitter: (MenuItem) -> Unit
 ) {
-    val menu = bottomNavigationView.menu
+    val menu = navigationBarView.menu
     for (i in 0 until menu.size()) {
         val item = menu.getItem(i)
         if (item.isChecked) {
@@ -149,7 +150,7 @@ private fun setInitialValue(
 private fun listener(
     scope: CoroutineScope,
     emitter: (MenuItem) -> Unit
-) = BottomNavigationView.OnNavigationItemSelectedListener {
+) = NavigationBarView.OnItemSelectedListener {
     if (scope.isActive) { emitter(it) }
-    return@OnNavigationItemSelectedListener true
+    return@OnItemSelectedListener true
 }
