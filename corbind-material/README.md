@@ -4,7 +4,7 @@
 To add material bindings, import `corbind-material` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.5.1'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.5.2'
 ```
 
 ## List of extensions
@@ -12,8 +12,6 @@ implementation 'ru.ldralighieri.corbind:corbind-material:1.5.1'
 Component | Extension | Description
 --|---|--
 **AppBarLayout** | `offsetChanges` | Called when the AppBarLayout's layout offset has been changed
-**BottomNavigationView** | `itemReselections` | Called when the currently selected item in the bottom navigation menu is selected again.
-                         | `itemSelections`| Called when an item in the bottom navigation menu is selected.
 **View**<br>(BottomSheetBehavior) | `slides` | Called when the bottom sheet is being dragged.
                                   | `stateChanges` | Called when the bottom sheet changes its state.
 **Chip** | `closeIconClicks` | Called when the chip’s close icon is clicked.
@@ -30,6 +28,8 @@ Component | Extension | Description
                        | `dismisses` | Called whenever the time picker is dismissed, no matter how it is dismissed.
                        | `negativeClicks` | Called when the user clicks the time picker cancel button.
                        | `positiveClicks` | Called when the user confirms a valid selection of the time.
+**NavigationBarView** | `itemReselections` | Called when the currently selected navigation item is reselected.
+                         | `itemSelections`| Called when a navigation item is selected.
 **NavigationView** | `itemSelections` | Called when an item in the navigation menu is selected.
 **RangeSlider** | `touches` | Called when a range slider's touch event is being started/stopped.
                 | `valuesChanges` | Called a range slider's value is changed. This is called for all existing values to check all the current values use.
