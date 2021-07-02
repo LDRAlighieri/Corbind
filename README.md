@@ -7,6 +7,8 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://www.codacy.com/app/LDRAlighieri/Corbind?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LDRAlighieri/Corbind&amp;utm_campaign=Badge_Grade)
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
+
+[![Google Dev Library](https://img.shields.io/badge/Featured%20in%20devlibrary.withgoogle.com-Corbind-blue)](https://devlibrary.withgoogle.com/products/android/repos/LDRAlighieri-Corbind)
 [![Android Weekly](https://androidweekly.net/issues/issue-377/badge)](https://androidweekly.net/issues/issue-377)
 
 <br>
@@ -139,7 +141,7 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 ## License
 
 ```
-Copyright 2019 Vladimir Raupov
+Copyright 2019-2021 Vladimir Raupov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
