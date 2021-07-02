@@ -2,6 +2,14 @@
 # ChangeLog
 
 
+## Version 1.5.2
+
+* Update: `BottomNavigationView` extensions replaced by `NavigationBarView` extensions.
+* Update: Kotlin modules dependency to v1.5.20.
+* Update: Material components dependency to v1.4.0.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.5.1
 
 * Fix: Kotlin coroutines issue 974.

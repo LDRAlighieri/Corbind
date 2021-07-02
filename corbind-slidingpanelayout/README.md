@@ -4,7 +4,7 @@
 To add androidx slidingpanelayout bindings, import `corbind-slidingpanelayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.5.1'
+implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.5.2'
 ```
 
 ## List of extensions
