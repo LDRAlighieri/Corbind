@@ -4,7 +4,7 @@
 To add androidx leanback bindings, import `corbind-leanback` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.5.1'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.5.2'
 ```
 
 ## List of extensions
