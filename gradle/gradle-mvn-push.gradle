@@ -153,15 +153,15 @@ afterEvaluate { project ->
                         packageListUrl = new URL("https://developer.android.com/reference/com/google/android/material/package-list")
                     }
 
-                    externalDocumentationLink {
-                        url = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/")
-                        packageListUrl = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/package-list")
-                    }
-
-                    externalDocumentationLink {
-                        url = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-android/")
-                        packageListUrl = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-android/package-list")
-                    }
+//                    externalDocumentationLink {
+//                        url = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/")
+//                        packageListUrl = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/package-list")
+//                    }
+//
+//                    externalDocumentationLink {
+//                        url = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-android/")
+//                        packageListUrl = new URL("https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-android/package-list")
+//                    }
                 }
 
             }
