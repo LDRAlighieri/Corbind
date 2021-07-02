@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx viewpager2 bindings, import `corbind-viewpager2` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.5.1'
+implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.5.2'
 ```
 
 ## List of extensions

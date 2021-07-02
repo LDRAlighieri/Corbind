@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add material bindings, import `corbind-material` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.5.1'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.5.2'
 ```
 
 ## List of extensions
