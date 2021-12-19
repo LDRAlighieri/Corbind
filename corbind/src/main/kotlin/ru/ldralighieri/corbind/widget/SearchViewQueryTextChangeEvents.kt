@@ -122,13 +122,15 @@ fun SearchView.queryTextChangeEvents(
  * // handle initial value
  * searchView.queryTextChangeEvents()
  *      .onEach { /* handle query text change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * searchView.queryTextChangeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle query text change event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

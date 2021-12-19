@@ -116,6 +116,7 @@ fun AbsListView.scrollEvents(
  * ```
  * absListView.scrollEvents()
  *      .onEach { /* handle list scroll event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

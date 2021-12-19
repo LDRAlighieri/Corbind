@@ -119,13 +119,15 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
  * // handle initial value
  * adapterView.itemSelections()
  *      .onEach { /* handle selected position */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * adapterView.itemSelections()
  *      .dropInitialValue()
  *      .onEach { /* handle selected position */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

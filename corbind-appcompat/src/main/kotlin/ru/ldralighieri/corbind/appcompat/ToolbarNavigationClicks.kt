@@ -108,6 +108,7 @@ fun Toolbar.navigationClicks(
  * ```
  * toolbar.navigationClicks()
  *      .onEach { /* handle navigation click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

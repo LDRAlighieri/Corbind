@@ -113,13 +113,15 @@ fun Slider.valueChangeEvents(
  * // handle initial value
  * slider.valueChangeEvents()
  *      .onEach { /* handle value change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * slider.valueChangeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle value change event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

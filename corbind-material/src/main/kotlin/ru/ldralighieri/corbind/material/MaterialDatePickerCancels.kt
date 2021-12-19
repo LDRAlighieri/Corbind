@@ -114,6 +114,7 @@ fun <S> MaterialDatePicker<S>.cancels(
  * ```
  * materialDatePicker.cancels()
  *      .onEach { /* handle cancel event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

@@ -141,13 +141,15 @@ fun SeekBar.changes(
  * // handle initial value
  * seekBar.changes()
  *      .onEach { /* handle progress value change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * seekBar.changes()
  *      .dropInitialValue()
  *      .onEach { /* handle progress value change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
@@ -224,13 +226,15 @@ fun SeekBar.userChanges(
  * // handle initial value
  * seekBar.userChanges()
  *      .onEach { /* handle progress value change made from user */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * seekBar.userChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle progress value change made from user */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
@@ -307,13 +311,15 @@ fun SeekBar.systemChanges(
  * // handle initial value
  * seekBar.systemChanges()
  *      .onEach { /* handle progress value change made from system */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * seekBar.systemChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle progress value change made from system */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

@@ -107,6 +107,7 @@ fun View.windowInsetsApplyEvents(
  * ```
  * decorView.windowInsetsApplyEvents()
  *      .onEach { /* handle window insets event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
@@ -121,7 +122,8 @@ fun View.windowInsetsApplyEvents(
  *          insets.isVisible(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
  *       }
  *      .onEach { /* handle status bars or navigation bars visibility */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)

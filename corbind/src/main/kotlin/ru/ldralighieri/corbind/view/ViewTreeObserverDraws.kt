@@ -103,6 +103,7 @@ fun View.draws(
  * ```
  * view.draws()
  *      .onEach { /* handle draw */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

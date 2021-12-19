@@ -109,6 +109,7 @@ fun SlidingPaneLayout.panelSlides(
  * ```
  * slidingPaneLayout.panelSlides()
  *      .onEach { /* handle slide offset */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

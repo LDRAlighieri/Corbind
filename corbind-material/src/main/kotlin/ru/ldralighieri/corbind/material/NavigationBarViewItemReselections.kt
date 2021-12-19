@@ -18,9 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.MenuItem
 import androidx.annotation.CheckResult
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
-import com.google.android.material.navigationrail.NavigationRailView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -110,6 +108,7 @@ fun NavigationBarView.itemReselections(
  * ```
  * anyNavigationBarView.itemReselections()
  *      .onEach { /* handle reselected item */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

@@ -97,6 +97,7 @@ fun RecyclerView.scrollStateChanges(
  * ```
  * recyclerView.scrollStateChanges()
  *      .onEach { /* handle scroll state change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

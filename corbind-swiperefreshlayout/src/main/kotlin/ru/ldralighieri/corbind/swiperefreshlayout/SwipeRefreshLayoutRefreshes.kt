@@ -107,6 +107,7 @@ fun SwipeRefreshLayout.refreshes(
  * ```
  * swipeRefreshLayout.refreshes()
  *      .onEach { /* handle refresh */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

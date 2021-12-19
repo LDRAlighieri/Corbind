@@ -110,6 +110,7 @@ fun View.dismisses(
  * ```
  * swipeDismissBehavior.dismisses()
  *      .onEach { /* handle dismiss */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

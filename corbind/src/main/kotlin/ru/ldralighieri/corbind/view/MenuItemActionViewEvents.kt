@@ -149,12 +149,14 @@ fun MenuItem.actionViewEvents(
  *              is MenuItemActionViewExpandEvent -> { /* handle expand event */ }
  *          }
  *      }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * menuItem.actionViewEvents()
  *      .filterIsInstance<MenuItemActionViewCollapseEvent>()
  *      .onEach { /* handle collapse event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

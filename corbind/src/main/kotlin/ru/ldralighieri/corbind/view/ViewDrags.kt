@@ -115,6 +115,7 @@ fun View.drags(
  * ```
  * view.drags()
  *      .onEach { /* handle drag */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

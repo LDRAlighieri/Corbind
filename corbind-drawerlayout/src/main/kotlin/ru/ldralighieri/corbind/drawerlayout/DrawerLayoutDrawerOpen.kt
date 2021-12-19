@@ -112,13 +112,15 @@ fun DrawerLayout.drawerOpens(
  * // handle initial value
  * drawerLayout.drawerOpens()
  *      .onEach { /* handle open state */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * adapter.dataChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle open state */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param gravity Gravity of the drawer to check

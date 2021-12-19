@@ -121,6 +121,7 @@ fun View.scrollChangeEvents(
  * ```
  * view.scrollChangeEvents()
  *      .onEach { /* handle scroll change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

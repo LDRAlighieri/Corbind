@@ -17,19 +17,19 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'com.vanniktech.maven.publish'
 }
 
 android {
-
-    compileSdkVersion buildConfig.compileSdk
+    compileSdkVersion (findProperty("android.compileSdk") as Integer)
     defaultConfig {
-        minSdkVersion buildConfig.minSdk
+        minSdkVersion (findProperty("android.minSdk") as Integer)
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     buildTypes {
@@ -38,17 +38,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-
 }
 
 dependencies {
     api project(':corbind')
-
-    api deps.androidx.slidingpanelayout
+    api libs.androidx.slidingpanelayout
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

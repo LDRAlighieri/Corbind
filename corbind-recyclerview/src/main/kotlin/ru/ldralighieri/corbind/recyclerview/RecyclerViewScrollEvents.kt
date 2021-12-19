@@ -104,6 +104,7 @@ fun RecyclerView.scrollEvents(
  * ```
  * recyclerView.scrollEvents()
  *      .onEach { /* handle scroll event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

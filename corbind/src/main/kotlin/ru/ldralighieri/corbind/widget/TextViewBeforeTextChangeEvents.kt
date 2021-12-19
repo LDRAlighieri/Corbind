@@ -114,13 +114,15 @@ fun TextView.beforeTextChangeEvents(
  * // handle initial value
  * textView.beforeTextChangeEvents()
  *      .onEach { /* handle before text change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * textView.beforeTextChangeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle before text change event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

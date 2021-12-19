@@ -108,6 +108,7 @@ fun Chip.closeIconClicks(
  * ```
  * chip.closeIconClicks()
  *      .onEach { /* handle close icon click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

@@ -118,6 +118,7 @@ fun View.touches(
  * ```
  * view.touches()
  *      .onEach { /* handle touch */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

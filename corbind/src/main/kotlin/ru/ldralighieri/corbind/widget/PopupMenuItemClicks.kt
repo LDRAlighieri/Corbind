@@ -108,6 +108,7 @@ fun PopupMenu.itemClicks(
  * ```
  * popupMenu.itemClicks()
  *      .onEach { /* handle item click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

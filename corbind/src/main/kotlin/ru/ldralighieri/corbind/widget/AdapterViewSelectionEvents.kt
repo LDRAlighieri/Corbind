@@ -151,19 +151,22 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  *              is AdapterViewNothingSelectionEvent -> { /* handle nothing selection event */ }
  *          }
  *      }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * adapterView.selectionEvents()
  *      .filterIsInstance<AdapterViewItemSelectionEvent>()
  *      .onEach { /* handle item selection event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * adapterView.selectionEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle selection event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

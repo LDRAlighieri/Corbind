@@ -108,6 +108,7 @@ fun SearchEditText.keyboardDismisses(
  * ```
  * searchEditText.keyboardDismisses()
  *      .onEach { /* handle keyboard dismiss */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

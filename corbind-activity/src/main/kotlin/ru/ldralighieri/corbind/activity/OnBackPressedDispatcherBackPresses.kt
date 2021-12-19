@@ -104,6 +104,7 @@ fun OnBackPressedDispatcher.backPresses(
  * ```
  * requireActivity().onBackPressedDispatcher.backPresses()
  *      .onEach { /* handle onBackPressed event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
