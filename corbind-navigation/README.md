@@ -4,7 +4,7 @@
 To add androidx navigation bindings, import `corbind-navigation` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-navigation:1.5.2'
+implementation 'ru.ldralighieri.corbind:corbind-navigation:1.5.3'
 ```
 
 ## List of extensions
@@ -24,6 +24,7 @@ navController.destinationChanges() // Flow<NavDestination>
             hideSoftInput()
         }
     }
+    .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
