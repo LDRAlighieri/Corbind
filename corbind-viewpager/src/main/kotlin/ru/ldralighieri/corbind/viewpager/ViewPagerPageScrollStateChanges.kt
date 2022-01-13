@@ -97,6 +97,7 @@ fun ViewPager.pageScrollStateChanges(
  * ```
  * viewPager.pageScrollStateChanges()
  *      .onEach { /* handle scroll state change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

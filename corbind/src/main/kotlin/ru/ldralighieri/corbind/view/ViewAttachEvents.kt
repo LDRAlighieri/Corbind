@@ -129,12 +129,14 @@ fun View.attachEvents(
  *              is ViewAttachDetachedEvent -> { /* handle detach event */ }
  *          }
  *      }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * view.attachEvents()
  *      .filterIsInstance<ViewAttachAttachedEvent>()
  *      .onEach { /* handle attach event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

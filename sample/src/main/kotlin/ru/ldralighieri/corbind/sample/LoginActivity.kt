@@ -20,17 +20,20 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import ru.ldralighieri.corbind.sample.core.extensions.hideSoftInput
 import ru.ldralighieri.corbind.sample.databinding.ActivityLoginBinding
 import ru.ldralighieri.corbind.swiperefreshlayout.refreshes
@@ -45,14 +48,8 @@ class LoginActivity : AppCompatActivity() {
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.JELLY_BEAN until Build.VERSION_CODES.R) {
-            val view = window.decorView
-            @Suppress("DEPRECATION")
-            view.systemUiVisibility = view.systemUiVisibility or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
         }
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -62,48 +59,49 @@ class LoginActivity : AppCompatActivity() {
 
     private fun bindViews() {
         with(binding) {
-            combine(
-                etEmail.textChanges()
-                    .map { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    combine(
+                        etEmail.textChanges()
+                            .map { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
+                        etPassword.textChanges()
+                            .map { it.length > 7 },
+                        transform = { email, password -> email && password }
+                    )
+                        .onEach { btLogin.isEnabled = it }
+                        .launchIn(this)
 
-                etPassword.textChanges()
-                    .map { it.length > 7 },
+                    merge(
+                        btLogin.clicks(),
+                        etPassword.editorActionEvents()
+                            .filter { it.actionId == EditorInfo.IME_ACTION_DONE }
+                            .filter { btLogin.isEnabled }
+                            .onEach { hideSoftInput() }
+                    )
+                        .onEach {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                R.string.login_success_message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        .launchIn(this)
 
-                transform = { email, password -> email && password }
-            )
-                .onEach { btLogin.isEnabled = it }
-                .launchIn(lifecycleScope)
-
-            merge(
-                btLogin.clicks(),
-
-                etPassword.editorActionEvents()
-                    .filter { it.actionId == EditorInfo.IME_ACTION_DONE }
-                    .filter { btLogin.isEnabled }
-                    .onEach { hideSoftInput() }
-            )
-                .onEach {
-                    Toast.makeText(
-                        this@LoginActivity,
-                        R.string.login_success_message,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    swipe.refreshes()
+                        .onEach {
+                            etEmail.text?.clear()
+                            etPassword.text?.clear()
+                            swipe.isRefreshing = false
+                            hideSoftInput()
+                            Toast.makeText(
+                                this@LoginActivity,
+                                R.string.login_swipe_message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        .launchIn(this)
                 }
-                .launchIn(lifecycleScope)
-
-            swipe.refreshes()
-                .onEach {
-                    etEmail.text?.clear()
-                    etPassword.text?.clear()
-                    swipe.isRefreshing = false
-                    hideSoftInput()
-                    Toast.makeText(
-                        this@LoginActivity,
-                        R.string.login_swipe_message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                .launchIn(lifecycleScope)
+            }
         }
     }
 }

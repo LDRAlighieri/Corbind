@@ -95,6 +95,7 @@ fun View.layoutChanges(
  * ```
  * view.layoutChanges()
  *      .onEach { /* handle layout change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

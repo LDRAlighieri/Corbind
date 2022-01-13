@@ -115,13 +115,15 @@ fun View.focusChanges(
  * // handle initial value
  * view.focusChanges()
  *      .onEach { /* handle focus change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * view.focusChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle focus change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

@@ -97,6 +97,7 @@ fun Lifecycle.events(
  * ```
  * lifecycle.events()
  *      .onEach { /* handle lifecycle event change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

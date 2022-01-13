@@ -98,6 +98,7 @@ fun <S> MaterialDatePicker<S>.negativeClicks(
  * ```
  * materialDatePicker.negativeClicks()
  *      .onEach { /* handle negative button click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

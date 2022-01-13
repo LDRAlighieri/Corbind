@@ -4,7 +4,7 @@
 To add androidx recyclerview bindings, import `corbind-recyclerview` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.5.2'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.5.3'
 ```
 
 ## List of extensions
@@ -23,6 +23,7 @@ Component | Extension | Description
 ```kotlin
 rv.scrollStateChanges() // Flow<Int>
     .onEach { /* handle RecyclerView scroll state change events */ }
+    .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 

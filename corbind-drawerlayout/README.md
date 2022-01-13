@@ -4,7 +4,7 @@
 To add androidx drawerlayout bindings, import `corbind-drawerlayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.5.2'
+implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.5.3'
 ```
 
 ## List of extensions
@@ -21,6 +21,7 @@ drawer.drawerOpens() // Flow<Boolean>
     .onEach { isOpen ->
       tv_message = "Drawer completely ${ if (isOpen) "open" else "close"}"
     }
+    .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 

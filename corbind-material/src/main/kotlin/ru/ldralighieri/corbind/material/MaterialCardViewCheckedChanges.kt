@@ -115,13 +115,15 @@ fun MaterialCardView.checkedChanges(
  * // handle initial value
  * materialCardView.checkedChanges()
  *      .onEach { /* handle check change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * materialCardView.checkedChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle check change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

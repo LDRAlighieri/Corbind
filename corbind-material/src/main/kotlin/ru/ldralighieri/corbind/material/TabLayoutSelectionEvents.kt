@@ -148,18 +148,21 @@ fun TabLayout.selectionEvents(
  *              is TabLayoutSelectionUnselectedEvent -> { /* handle unselect event */ }
  *          }
  *      }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * tabLayout.selectionEvents()
  *      .filterIsInstance<TabLayoutSelectionSelectedEvent>()
  *      .onEach { /* handle select event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * tabLayout.selectionEvents()
  *      .drop(1)
  *      .onEach { /* handle event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

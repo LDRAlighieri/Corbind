@@ -122,13 +122,15 @@ fun ChipGroup.checkedChanges(
  * // handle initial value
  * chipGroup.checkedChanges()
  *      .onEach { /* handle checked view */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * chipGroup.checkedChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle checked view */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

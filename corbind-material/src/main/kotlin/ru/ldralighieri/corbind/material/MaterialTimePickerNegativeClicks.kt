@@ -98,6 +98,7 @@ fun MaterialTimePicker.negativeClicks(
  * ```
  * materialTimePicker.negativeClicks()
  *      .onEach { /* handle negative button click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

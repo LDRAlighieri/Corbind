@@ -110,6 +110,7 @@ fun NavController.destinationChangeEvents(
  * ```
  * navController.destinationChangeEvents()
  *      .onEach { /* handle destination change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

@@ -114,6 +114,7 @@ fun RecyclerView.flingEvents(
  * ```
  * recyclerView.flingEvents()
  *      .onEach { /* handle fling event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

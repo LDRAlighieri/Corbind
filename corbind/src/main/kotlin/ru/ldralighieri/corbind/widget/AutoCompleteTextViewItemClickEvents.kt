@@ -110,6 +110,7 @@ fun AutoCompleteTextView.itemClickEvents(
  * ```
  * autoCompleteTextView.itemClickEvents()
  *      .onEach { /* handle item click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

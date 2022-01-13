@@ -109,6 +109,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
  * ```
  * adapterView.itemClicks()
  *      .onEach { /* handle item click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

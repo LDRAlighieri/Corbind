@@ -107,6 +107,7 @@ fun PopupMenu.dismisses(
  * ```
  * popupMenu.dismisses()
  *      .onEach { /* handle dismiss */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

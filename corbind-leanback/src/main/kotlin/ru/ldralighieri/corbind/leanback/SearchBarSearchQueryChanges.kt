@@ -108,6 +108,7 @@ fun SearchBar.searchQueryChanges(
  * ```
  * searchBar.searchQueryChanges()
  *      .onEach { /* handle query change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

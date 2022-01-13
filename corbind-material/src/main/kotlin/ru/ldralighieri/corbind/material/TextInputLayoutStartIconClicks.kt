@@ -108,6 +108,7 @@ fun TextInputLayout.startIconClicks(
  * ```
  * textInputLayout.startIconClicks()
  *      .onEach { /* handle start icon click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

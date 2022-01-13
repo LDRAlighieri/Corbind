@@ -97,6 +97,7 @@ fun Snackbar.shown(
  * ```
  * snackbar.shown()
  *      .onEach { /* handle show */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

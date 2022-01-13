@@ -97,6 +97,7 @@ fun RangeSlider.touches(
  * ```
  * rangeSlider.touches()
  *      .onEach { /* handle touch tracking event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

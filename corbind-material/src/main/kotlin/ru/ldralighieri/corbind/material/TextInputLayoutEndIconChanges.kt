@@ -103,6 +103,7 @@ fun TextInputLayout.endIconChanges(
  * ```
  * textInputLayout.endIconChanges()
  *      .onEach { /* handle end icon mode change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

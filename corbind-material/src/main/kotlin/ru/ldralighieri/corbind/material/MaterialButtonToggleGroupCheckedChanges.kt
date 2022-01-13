@@ -126,13 +126,15 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
  * // handle initial value
  * materialButtonToggleGroup.buttonCheckedChanges()
  *      .onEach { /* handle check change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * materialButtonToggleGroup.buttonCheckedChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle check change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

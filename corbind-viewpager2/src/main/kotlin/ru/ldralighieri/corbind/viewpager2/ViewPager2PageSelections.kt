@@ -105,13 +105,15 @@ fun ViewPager2.pageSelections(
  * // handle initial value
  * viewPager2.pageSelections()
  *      .onEach { /* handle selected page */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * viewPager2.pageSelections()
  *      .dropInitialValue()
  *      .onEach { /* handle selected page */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

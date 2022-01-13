@@ -4,7 +4,7 @@
 To add androidx leanback bindings, import `corbind-leanback` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.5.2'
+implementation 'ru.ldralighieri.corbind:corbind-leanback:1.5.3'
 ```
 
 ## List of extensions
@@ -22,6 +22,7 @@ Component | Extension | Description
 search.searchQueryChanges() // Flow<String>
     .map { it.toLowerCase(Locale.getDefault()) }
     .onEach { query -> filter.updateItems(query) }
+    .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 

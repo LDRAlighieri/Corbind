@@ -115,13 +115,15 @@ fun RatingBar.ratingChanges(
  * // handle initial value
  * ratingBar.ratingChanges()
  *      .onEach { /* handle rating change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * ratingBar.ratingChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle rating change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

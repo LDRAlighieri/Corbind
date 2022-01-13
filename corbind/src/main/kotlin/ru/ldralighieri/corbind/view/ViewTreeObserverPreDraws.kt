@@ -104,6 +104,7 @@ fun View.preDraws(
  * ```
  * view.preDraws()
  *      .onEach { /* handle pre-draws */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

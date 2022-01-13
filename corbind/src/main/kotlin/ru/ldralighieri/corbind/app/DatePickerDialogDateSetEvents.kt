@@ -122,6 +122,7 @@ fun DatePickerDialog.dateSetEvents(
  * ```
  * datePickerDialog.dateSetEvents()
  *      .onEach { /* handle date set event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

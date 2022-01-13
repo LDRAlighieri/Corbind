@@ -124,13 +124,15 @@ fun NumberPicker.valueChangeEvents(
  * // handle initial value
  * numberPicker.valueChangeEvents()
  *      .onEach { /* handle value change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * numberPicker.valueChangeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle value change event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

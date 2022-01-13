@@ -109,6 +109,7 @@ fun View.dragStateChanges(
  * ```
  * swipeDismissBehavior.dragStateChanges()
  *      .onEach { /* handle drag state change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

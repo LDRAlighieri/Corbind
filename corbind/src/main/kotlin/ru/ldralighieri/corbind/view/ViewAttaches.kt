@@ -97,6 +97,7 @@ fun View.attaches(
  * ```
  * view.attaches()
  *      .onEach { /* handle attach */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
@@ -174,6 +175,7 @@ fun View.detaches(
  * ```
  * view.detaches()
  *      .onEach { /* handle detach */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

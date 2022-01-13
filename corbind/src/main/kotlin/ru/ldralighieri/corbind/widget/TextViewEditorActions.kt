@@ -117,6 +117,7 @@ fun TextView.editorActions(
  * ```
  * textView.editorActions()
  *      .onEach { /* handle action */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

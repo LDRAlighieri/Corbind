@@ -18,7 +18,6 @@ package ru.ldralighieri.corbind.material
 
 import android.view.MenuItem
 import androidx.annotation.CheckResult
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -116,13 +115,15 @@ fun NavigationBarView.itemSelections(
  * // handle initial value
  * anyNavigationBarView.itemSelections()
  *      .onEach { /* handle selected item */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * anyNavigationBarView.itemSelections()
  *      .drop(1)
  *      .onEach { /* handle selected item */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

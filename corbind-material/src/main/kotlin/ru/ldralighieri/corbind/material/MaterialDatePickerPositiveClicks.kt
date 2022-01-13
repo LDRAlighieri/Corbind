@@ -98,6 +98,7 @@ fun <S> MaterialDatePicker<S>.positiveClicks(
  * ```
  * materialDatePicker.positiveClicks()
  *      .onEach { /* handle positive button click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

@@ -143,6 +143,7 @@ fun View.systemUiVisibilityChanges(
  * ```
  * view.systemUiVisibilityChanges()
  *      .onEach { /* handle system UI visibility */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

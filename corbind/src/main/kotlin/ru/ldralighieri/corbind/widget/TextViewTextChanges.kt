@@ -108,13 +108,15 @@ fun TextView.textChanges(
  * // handle initial value
  * textView.textChanges()
  *      .onEach { /* handle text changes */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * textView.textChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle text changes */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

@@ -32,3 +32,5 @@ include ':corbind-viewpager'
 include ':corbind-viewpager2'
 
 include ':sample'
+
+enableFeaturePreview("VERSION_CATALOGS")

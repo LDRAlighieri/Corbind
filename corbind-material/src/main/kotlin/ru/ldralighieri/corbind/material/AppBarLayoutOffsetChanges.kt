@@ -97,6 +97,7 @@ fun AppBarLayout.offsetChanges(
  * ```
  * appBarLayout.offsetChanges()
  *      .onEach { /* handle offset change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

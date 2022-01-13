@@ -139,12 +139,14 @@ fun RecyclerView.childAttachStateChangeEvents(
  *              is RecyclerViewChildDetachEvent -> { /* handle child detach event */ }
  *          }
  *      }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * recyclerView.childAttachStateChangeEvents()
  *      .filterIsInstance<RecyclerViewChildAttachEvent>()
  *      .onEach { /* handle child attach event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

@@ -115,13 +115,15 @@ fun CompoundButton.checkedChanges(
  * // handle initial value
  * compoundButton.checkedChanges()
  *      .onEach { /* handle checked change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * compoundButton.checkedChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle checked change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

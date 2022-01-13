@@ -110,6 +110,7 @@ fun NestedScrollView.scrollChangeEvents(
  * ```
  * nestedScrollView.scrollChangeEvents()
  *      .onEach { /* handle scroll change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

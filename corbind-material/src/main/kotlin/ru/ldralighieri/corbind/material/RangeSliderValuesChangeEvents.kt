@@ -116,13 +116,15 @@ fun RangeSlider.valuesChangeEvents(
  * // handle initial values
  * rangeSlider.valuesChangeEvents()
  *      .onEach { /* handle values change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial values
  * rangeSlider.valuesChangeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle values change event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

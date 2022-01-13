@@ -104,6 +104,7 @@ fun View.globalLayouts(
  * ```
  * view.globalLayouts()
  *      .onEach { /* handle global layout */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
