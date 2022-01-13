@@ -128,13 +128,15 @@ fun DatePicker.dateChangeEvents(
  * // handle initial value
  * datePicker.dateChangeEvents()
  *      .onEach { /* handle date changed event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * datePicker.dateChangeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle date changed event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @RequiresApi(Build.VERSION_CODES.O)

@@ -117,13 +117,15 @@ fun SlidingPaneLayout.panelOpens(
  * // handle initial value
  * slidingPaneLayout.panelOpens()
  *      .onEach { /* handle open state */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * slidingPaneLayout.panelOpens()
  *      .dropInitialValue()
  *      .onEach { /* handle open state */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

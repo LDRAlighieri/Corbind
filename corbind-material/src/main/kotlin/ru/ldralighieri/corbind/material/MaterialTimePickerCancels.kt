@@ -114,6 +114,7 @@ fun MaterialTimePicker.cancels(
  * ```
  * materialTimePicker.cancels()
  *      .onEach { /* handle cancel event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

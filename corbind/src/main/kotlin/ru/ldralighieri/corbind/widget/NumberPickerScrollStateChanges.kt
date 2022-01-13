@@ -107,6 +107,7 @@ fun NumberPicker.scrollStateChanges(
  * ```
  * numberPicker.scrollStateChanges()
  *      .onEach { /* handle scroll state change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

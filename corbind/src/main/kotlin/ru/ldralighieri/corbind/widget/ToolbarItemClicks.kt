@@ -113,6 +113,7 @@ fun Toolbar.itemClicks(
  * ```
  * toolbar.itemClicks()
  *      .onEach { /* handle clicked item */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

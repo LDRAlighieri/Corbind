@@ -101,6 +101,7 @@ fun <S> MaterialDatePicker<S>.dismisses(
  * ```
  * materialDatePicker.dismisses()
  *      .onEach { /* handle dismiss */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

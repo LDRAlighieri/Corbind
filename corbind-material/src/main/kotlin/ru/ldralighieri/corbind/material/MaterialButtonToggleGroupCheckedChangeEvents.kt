@@ -118,6 +118,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  * ```
  * materialButtonToggleGroup.buttonCheckedChangeEvents()
  *      .onEach { /* handle check change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

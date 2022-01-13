@@ -106,6 +106,7 @@ fun View.clicks(
  * ```
  * view.clicks()
  *      .onEach { /* handle click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

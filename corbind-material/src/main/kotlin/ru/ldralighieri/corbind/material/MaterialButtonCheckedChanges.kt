@@ -115,13 +115,15 @@ fun MaterialButton.checkedChanges(
  * // handle initial value
  * materialButton.checkedChanges()
  *      .onEach { /* handle check state change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * materialButton.checkedChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle check state change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

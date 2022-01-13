@@ -28,7 +28,9 @@
         tools:ignore="GoogleAppIndexingWarning"
         android:fullBackupContent="false" >
 
-        <activity android:name=".LoginActivity">
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -127,12 +127,14 @@ fun TimePicker.timeChangeEvents(
  * // handle initial value
  * timePicker.timeChangeEvents()
  *      .onEach { /* handle time changed event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * timePicker.timeChangeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle time changed event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

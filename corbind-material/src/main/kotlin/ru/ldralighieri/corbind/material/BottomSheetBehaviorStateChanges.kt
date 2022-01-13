@@ -110,13 +110,15 @@ fun View.stateChanges(
  * // handle initial value
  * bottomSheetBehavior.stateChanges()
  *      .onEach { /* handle state change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * bottomSheetBehavior.stateChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle state change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 fun View.stateChanges(): InitialValueFlow<Int> = channelFlow {

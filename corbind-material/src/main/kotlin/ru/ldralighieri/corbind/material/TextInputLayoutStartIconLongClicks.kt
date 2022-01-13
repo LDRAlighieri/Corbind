@@ -118,6 +118,7 @@ fun TextInputLayout.startIconLongClicks(
  * ```
  * textInputLayout.startIconLongClicks()
  *      .onEach { /* handle start icon long click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

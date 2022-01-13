@@ -119,6 +119,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
  * ```
  * adapterView.itemLongClicks()
  *      .onEach { /* handle item long click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

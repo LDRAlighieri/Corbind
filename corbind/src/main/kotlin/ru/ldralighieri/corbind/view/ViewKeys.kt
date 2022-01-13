@@ -115,6 +115,7 @@ fun View.keys(
  * ```
  * view.keys()
  *      .onEach { /* handle key */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

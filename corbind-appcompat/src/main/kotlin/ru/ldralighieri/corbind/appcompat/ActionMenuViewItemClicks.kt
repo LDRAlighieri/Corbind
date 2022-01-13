@@ -108,6 +108,7 @@ fun ActionMenuView.itemClicks(
  * ```
  * actionMenuView.itemClicks()
  *      .onEach { /* handle menu item */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

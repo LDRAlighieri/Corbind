@@ -105,6 +105,7 @@ fun ViewPager2.pageScrollEvents(
  * ```
  * viewPager2.pageScrollEvents()
  *      .onEach { /* handle page scroll event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

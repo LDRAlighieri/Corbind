@@ -154,19 +154,22 @@ fun SeekBar.changeEvents(
  *              is SeekBarStopChangeEvent -> { /* handle stop change event */ }
  *          }
  *      }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * seekBar.changeEvents()
  *      .filterIsInstance<SeekBarProgressChangeEvent>()
  *      .onEach { /* handle progress change event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop one event
  * seekBar.changeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

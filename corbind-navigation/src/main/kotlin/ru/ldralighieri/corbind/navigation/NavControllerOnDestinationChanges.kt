@@ -98,6 +98,7 @@ fun NavController.destinationChanges(
  * ```
  * navController.destinationChanges()
  *      .onEach { /* handle destination change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

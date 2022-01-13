@@ -106,12 +106,14 @@ fun <T : Adapter> T.dataChanges(
  * // handle initial value
  * adapter.dataChanges()
  *      .onEach { /* handle data change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * adapter.dataChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle data change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

@@ -153,12 +153,14 @@ fun SearchBar.searchQueryChangeEvents(
  *              is SearchBarSearchQuerySubmittedEvent -> { /* handle query submit event */ }
  *          }
  *      }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * searchBar.searchQueryChangeEvents()
  *      .filterIsInstance<SearchBarSearchQueryChangedEvent>()
  *      .onEach { /* handle query change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  */
 @CheckResult

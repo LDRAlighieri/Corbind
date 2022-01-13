@@ -117,6 +117,7 @@ fun View.hovers(
  * ```
  * view.hovers()
  *      .onEach { /* handle hover */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

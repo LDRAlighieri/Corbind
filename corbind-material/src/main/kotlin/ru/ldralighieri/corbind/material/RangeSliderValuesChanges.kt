@@ -105,13 +105,15 @@ fun RangeSlider.valuesChanges(
  * // handle initial values
  * slider.valuesChanges()
  *      .onEach { /* handle values change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial values
  * slider.valuesChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle values change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

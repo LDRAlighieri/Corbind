@@ -118,13 +118,15 @@ fun RadioGroup.checkedChanges(
  * // handle initial value
  * radioGroup.checkedChanges()
  *      .onEach { /* handle checked change */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * radioGroup.checkedChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle checked change */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

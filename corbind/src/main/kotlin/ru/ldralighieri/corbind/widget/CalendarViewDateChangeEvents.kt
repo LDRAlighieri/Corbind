@@ -125,13 +125,15 @@ fun CalendarView.dateChangeEvents(
  * // handle initial value
  * calendarView.dateChangeEvents()
  *      .onEach { /* handle date change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * calendarView.dateChangeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle date change event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

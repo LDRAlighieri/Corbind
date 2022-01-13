@@ -117,6 +117,7 @@ fun View.longClicks(
  * ```
  * view.longClicks()
  *      .onEach { /* handle long click */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

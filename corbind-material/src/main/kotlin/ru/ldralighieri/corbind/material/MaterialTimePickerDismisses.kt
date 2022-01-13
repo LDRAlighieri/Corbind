@@ -101,6 +101,7 @@ fun MaterialTimePicker.dismisses(
  * ```
  * materialTimePicker.dismisses()
  *      .onEach { /* handle dismiss */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

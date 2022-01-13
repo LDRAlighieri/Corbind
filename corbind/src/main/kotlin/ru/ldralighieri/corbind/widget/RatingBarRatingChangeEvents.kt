@@ -122,13 +122,15 @@ fun RatingBar.ratingChangeEvents(
  * // handle initial value
  * ratingBar.ratingChangeEvents()
  *      .onEach { /* handle rating change event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * ratingBar.ratingChangeEvents()
  *      .dropInitialValue()
  *      .onEach { /* handle rating change event */ }
- *      .launchIn(lifecycleScope)
+ *      .flowWithLifecycle(lifecycle)
+ *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult

@@ -114,6 +114,7 @@ fun Context.receivesBroadcast(
  *          IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
  *      )
  *      .onEach { /* handle nfc adapter state changed */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *

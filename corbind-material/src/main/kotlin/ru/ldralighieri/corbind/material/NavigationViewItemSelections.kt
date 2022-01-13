@@ -115,12 +115,14 @@ fun NavigationView.itemSelections(
  * // handle initial value
  * navigationView.itemSelections()
  *      .onEach { /* handle selected item */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * navigationView.itemSelections()
  *      .drop(1)
  *      .onEach { /* handle selected item */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

@@ -143,12 +143,14 @@ fun ViewGroup.changeEvents(
  *              is ViewGroupHierarchyChildViewRemoveEvent -> { /* handle remove event */ }
  *          }
  *      }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // handle one event
  * viewGroup.changeEvents()
  *      .filterIsInstance<ViewGroupHierarchyChildViewAddEvent>()
  *      .onEach { /* handle add event */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

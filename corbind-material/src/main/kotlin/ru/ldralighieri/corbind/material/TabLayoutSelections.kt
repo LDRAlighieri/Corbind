@@ -104,12 +104,14 @@ fun TabLayout.selections(
  * // handle initial value
  * tabLayout.selections()
  *      .onEach { /* handle selected tab */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * tabLayout.selections()
  *      .drop(1)
  *      .onEach { /* handle selected tab */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */

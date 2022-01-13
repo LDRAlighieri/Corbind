@@ -112,6 +112,7 @@ fun AutoCompleteTextView.dismisses(
  * ```
  * autoCompleteTextView.dismisses()
  *      .onEach { /* handle dismiss */ }
+ *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
