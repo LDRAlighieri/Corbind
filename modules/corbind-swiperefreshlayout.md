@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx swiperefreshlayout bindings, import `corbind-swiperefreshlayout` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.5.2'
+implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.5.3'
 ```
 
 ## List of extensions
@@ -34,6 +34,7 @@ Component | Extension | Description
 ```kotlin
 swipe.refreshes() // Flow<Unit>
     .onEach { /* handle refresh events */ }
+    .flowWithLifecycle(lifecycle)
     .launchIn(this)
 ```
 

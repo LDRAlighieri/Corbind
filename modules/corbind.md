@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add platform bindings, import `corbind` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.5.2'
+implementation 'ru.ldralighieri.corbind:corbind:1.5.3'
 ```
 
 ## List of extensions
@@ -117,6 +117,7 @@ combine(
     transform = { email, password -> email && password }
 )
     .onEach { bt_login.isEnabled = it }
+    .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
@@ -131,6 +132,7 @@ flowOf(
 )
     .flattenMerge()
     .onEach { /* handle an authorization event */}
+    .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
@@ -141,6 +143,7 @@ context
         IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
     )
     .onEach { /* handle nfc adapter state changed */ }
+    .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
@@ -156,6 +159,7 @@ window.decorView.windowInsetsApplyEvents()
         insets.isVisible(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
     }
     .onEach { /* handle status bars or navigation bars visibility */ }
+    .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
