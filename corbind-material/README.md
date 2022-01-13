@@ -4,7 +4,7 @@
 To add material bindings, import `corbind-material` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.5.2'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.5.3'
 ```
 
 ## List of extensions
@@ -58,6 +58,7 @@ chipGroup.checkedChanges() // Flow<Int>
       tv_message =
         if (it != View.NO_ID) "Chip #$it selected" else "No one сhip selected"
     }
+    .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
