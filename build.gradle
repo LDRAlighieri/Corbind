@@ -55,8 +55,8 @@ subprojects {
             allWarningsAsErrors = true
 
             // Enable experimental coroutines APIs
-            freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ObsoleteCoroutinesApi"
-            freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+            freeCompilerArgs += "-opt-in=kotlinx.coroutines.ObsoleteCoroutinesApi"
+            freeCompilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
         }
     }
 
@@ -109,8 +109,6 @@ subprojects {
 
 
 detekt {
-    toolVersion = libs.versions.detekt.get()
-
     allRules = false
     buildUponDefaultConfig = true
 

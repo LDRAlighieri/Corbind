@@ -16,7 +16,6 @@
 
 package ru.ldralighieri.corbind.material
 
-import android.view.View
 import androidx.annotation.CheckResult
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.CoroutineScope
@@ -35,8 +34,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 /**
  * Perform an action on checked view ID changes in [ChipGroup].
  *
- * *Warning:* The created actor uses [ChipGroup.setOnCheckedChangeListener]. Only one actor can be
- * used at a time.
+ * *Warning:* The created actor uses [ChipGroup.setOnCheckedStateChangeListener]. Only one actor can
+ * be used at a time.
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
@@ -45,30 +44,29 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun ChipGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (List<Int>) -> Unit
 ) {
-    val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
+    val events = scope.actor<List<Int>>(Dispatchers.Main.immediate, capacity) {
         for (checkedId in channel) action(checkedId)
     }
 
-    checkSelectionMode(this)
-    events.trySend(checkedChipId)
-    setOnCheckedChangeListener(listener(scope, events::trySend))
-    events.invokeOnClose { setOnCheckedChangeListener(null) }
+    events.trySend(checkedChipIds)
+    setOnCheckedStateChangeListener(listener(scope, events::trySend))
+    events.invokeOnClose { setOnCheckedStateChangeListener(null) }
 }
 
 /**
  * Perform an action on checked view ID changes in [ChipGroup], inside new [CoroutineScope].
  *
- * *Warning:* The created actor uses [ChipGroup.setOnCheckedChangeListener]. Only one actor can be
- * used at a time.
+ * *Warning:* The created actor uses [ChipGroup.setOnCheckedStateChangeListener]. Only one actor can
+ * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
 suspend fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (List<Int>) -> Unit
 ) = coroutineScope {
     checkedChanges(this, capacity, action)
 }
@@ -76,12 +74,11 @@ suspend fun ChipGroup.checkedChanges(
 /**
  * Create a channel of the checked view ID changes in [ChipGroup].
  *
- * *Warning:* Only in single selection mode.
- * *Warning:* The created channel uses [ChipGroup.setOnCheckedChangeListener]. Only one channel can
- * be used at a time.
+ * *Warning:* The created channel uses [ChipGroup.setOnCheckedStateChangeListener]. Only one channel
+ * can be used at a time.
  *
  * *Note:* A value will be emitted immediately.
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID].
+ * *Note:* When the selection is cleared, checkedIds will be an empty list.
  *
  * Example:
  *
@@ -99,22 +96,20 @@ suspend fun ChipGroup.checkedChanges(
 fun ChipGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    checkSelectionMode(this@checkedChanges)
-    trySend(checkedChipId)
-    setOnCheckedChangeListener(listener(scope, ::trySend))
-    invokeOnClose { setOnCheckedChangeListener(null) }
+): ReceiveChannel<List<Int>> = corbindReceiveChannel(capacity) {
+    trySend(checkedChipIds)
+    setOnCheckedStateChangeListener(listener(scope, ::trySend))
+    invokeOnClose { setOnCheckedStateChangeListener(null) }
 }
 
 /**
  * Create a flow of the checked view ID changes in [ChipGroup].
  *
- * *Warning:* Only in single selection mode.
- * *Warning:* The created flow uses [ChipGroup.setOnCheckedChangeListener]. Only one flow can be
- * used at a time.
+ * *Warning:* The created flow uses [ChipGroup.setOnCheckedStateChangeListener]. Only one flow can
+ * be used at a time.
  *
  * *Note:* A value will be emitted immediately.
- * *Note:* When the selection is cleared, checkedId is [View.NO_ID].
+ * *Note:* When the selection is cleared, checkedIds will be an empty list.
  *
  * Examples:
  *
@@ -134,27 +129,15 @@ fun ChipGroup.checkedChanges(
  * ```
  */
 @CheckResult
-fun ChipGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow {
-    checkSelectionMode(this@checkedChanges)
-    setOnCheckedChangeListener(listener(this, ::trySend))
-    awaitClose { setOnCheckedChangeListener(null) }
-}.asInitialValueFlow(checkedChipId)
-
-private fun checkSelectionMode(group: ChipGroup) {
-    check(group.isSingleSelection) { "The ChipGroup is not in single selection mode." }
-}
+fun ChipGroup.checkedChanges(): InitialValueFlow<List<Int>> = channelFlow {
+    setOnCheckedStateChangeListener(listener(this, ::trySend))
+    awaitClose { setOnCheckedStateChangeListener(null) }
+}.asInitialValueFlow(checkedChipIds)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
-) = object : ChipGroup.OnCheckedChangeListener {
-
-    private var lastChecked = View.NO_ID
-    override fun onCheckedChanged(group: ChipGroup, checkedId: Int) {
-        if (scope.isActive && checkedId != lastChecked) {
-            lastChecked = checkedId
-            emitter(checkedId)
-        }
-    }
+    emitter: (List<Int>) -> Unit
+) = ChipGroup.OnCheckedStateChangeListener { _, checkedIds ->
+    if (scope.isActive) { emitter(checkedIds) }
 }
