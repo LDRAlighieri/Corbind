@@ -32,7 +32,7 @@ import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
- * Perform an action on checked view ID changes in [ChipGroup].
+ * Perform an action on checked view IDs changes in [ChipGroup].
  *
  * *Warning:* The created actor uses [ChipGroup.setOnCheckedStateChangeListener]. Only one actor can
  * be used at a time.
@@ -56,7 +56,7 @@ fun ChipGroup.checkedChanges(
 }
 
 /**
- * Perform an action on checked view ID changes in [ChipGroup], inside new [CoroutineScope].
+ * Perform an action on checked view IDs changes in [ChipGroup], inside new [CoroutineScope].
  *
  * *Warning:* The created actor uses [ChipGroup.setOnCheckedStateChangeListener]. Only one actor can
  * be used at a time.
@@ -72,7 +72,7 @@ suspend fun ChipGroup.checkedChanges(
 }
 
 /**
- * Create a channel of the checked view ID changes in [ChipGroup].
+ * Create a channel of the checked view IDs changes in [ChipGroup].
  *
  * *Warning:* The created channel uses [ChipGroup.setOnCheckedStateChangeListener]. Only one channel
  * can be used at a time.
@@ -85,7 +85,7 @@ suspend fun ChipGroup.checkedChanges(
  * ```
  * launch {
  *      chipGroup.checkedChanges(scope)
- *          .consumeEach { /* handle checked view */ }
+ *          .consumeEach { /* handle checked ids */ }
  * }
  * ```
  *
@@ -103,7 +103,7 @@ fun ChipGroup.checkedChanges(
 }
 
 /**
- * Create a flow of the checked view ID changes in [ChipGroup].
+ * Create a flow of the checked view IDs changes in [ChipGroup].
  *
  * *Warning:* The created flow uses [ChipGroup.setOnCheckedStateChangeListener]. Only one flow can
  * be used at a time.
@@ -116,7 +116,7 @@ fun ChipGroup.checkedChanges(
  * ```
  * // handle initial value
  * chipGroup.checkedChanges()
- *      .onEach { /* handle checked view */ }
+ *      .onEach { /* handle checked ids */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
