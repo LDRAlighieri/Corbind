@@ -7,6 +7,19 @@ description: Coroutines binding APIs for Android UI widgets from the platform an
 tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding,changelog]
 ---
 
+## Version 1.5.4
+
+* Update: `SlidingPaneLayout` `panelOpens` extensions. Changed listener setting method from `set` to `add`.
+* Update: `SlidingPaneLayout` `panelSlides` extensions. Changed listener setting method from `set` to `add`.
+* Update: `ChipGroup` `checkedChanges` extensions. Replace ChipGroup.OnCheckedChangeListener with
+ChipGroup.OnCheckedStateChangeListener. Supports multiple checked IDs and no longer requires the
+single selection flag.
+* Update: Kotlin modules dependency to v1.6.21.
+* Update: Kotlin coroutines modules dependency to v1.6.1.
+* Update: Material components dependency to v1.6.0.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.5.3
 
 * Update: Kotlin modules dependency to v1.6.10.

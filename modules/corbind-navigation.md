@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx navigation bindings, import `corbind-navigation` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-navigation:1.5.3'
+implementation 'ru.ldralighieri.corbind:corbind-navigation:1.5.4'
 ```
 
 ## List of extensions
