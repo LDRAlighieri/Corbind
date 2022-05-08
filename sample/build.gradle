@@ -77,6 +77,6 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation libs.androidx.lifecycle.runtime.ktx
     implementation libs.material
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
 
 }

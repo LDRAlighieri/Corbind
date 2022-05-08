@@ -4,7 +4,7 @@
 To add material bindings, import `corbind-material` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.5.3'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.5.4'
 ```
 
 ## List of extensions
@@ -15,7 +15,7 @@ Component | Extension | Description
 **View**<br>(BottomSheetBehavior) | `slides` | Called when the bottom sheet is being dragged.
                                   | `stateChanges` | Called when the bottom sheet changes its state.
 **Chip** | `closeIconClicks` | Called when the chip’s close icon is clicked.
-**ChipGroup** | `checkedChanges` | Called when the checked chip has changed (only in single selection mode).
+**ChipGroup** | `checkedChanges` | Called when the checked chips are changed.
 **MaterialButton** | `checkedChanges` | Called when the checked state of a MaterialButton has changed.
 **MaterialButtonToggleGroup** | `buttonCheckedChangeEvents` | Called when a `MaterialButton` in this group is checked or unchecked (only *not* in single selection mode).
                               | `buttonCheckedChanges` | Called when a `MaterialButton` in this group is checked (only in single selection mode).

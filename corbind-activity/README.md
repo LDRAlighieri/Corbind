@@ -4,7 +4,7 @@
 To add androidx activity bindings, import `corbind-activity` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-activity:1.5.3'
+implementation 'ru.ldralighieri.corbind:corbind-activity:1.5.4'
 ```
 
 ## List of extensions

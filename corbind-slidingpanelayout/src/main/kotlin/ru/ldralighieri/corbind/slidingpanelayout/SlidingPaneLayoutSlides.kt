@@ -34,9 +34,6 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 /**
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener]. Only one actor can
- * be used at a time.
- *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -50,8 +47,9 @@ fun SlidingPaneLayout.panelSlides(
         for (slide in channel) action(slide)
     }
 
-    setPanelSlideListener(listener(scope, events::trySend))
-    events.invokeOnClose { setPanelSlideListener(null) }
+    val listener = listener(scope, events::trySend)
+    addPanelSlideListener(listener)
+    events.invokeOnClose { removePanelSlideListener(listener) }
 }
 
 /**
@@ -74,9 +72,6 @@ suspend fun SlidingPaneLayout.panelSlides(
 /**
  * Create a channel of the slide offset of the pane of [SlidingPaneLayout].
  *
- * *Warning:* The created channel uses [SlidingPaneLayout.setPanelSlideListener]. Only one channel
- * can be used at a time.
- *
  * Example:
  *
  * ```
@@ -94,15 +89,13 @@ fun SlidingPaneLayout.panelSlides(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
-    setPanelSlideListener(listener(scope, ::trySend))
-    invokeOnClose { setPanelSlideListener(null) }
+    val listener = listener(scope, ::trySend)
+    addPanelSlideListener(listener)
+    invokeOnClose { removePanelSlideListener(listener) }
 }
 
 /**
  * Create a flow of the slide offset of the pane of [SlidingPaneLayout].
- *
- * *Warning:* The created flow uses [SlidingPaneLayout.setPanelSlideListener]. Only one flow can be
- * used at a time.
  *
  * Example:
  *
@@ -115,8 +108,9 @@ fun SlidingPaneLayout.panelSlides(
  */
 @CheckResult
 fun SlidingPaneLayout.panelSlides(): Flow<Float> = channelFlow {
-    setPanelSlideListener(listener(this, ::trySend))
-    awaitClose { setPanelSlideListener(null) }
+    val listener = listener(this, ::trySend)
+    addPanelSlideListener(listener)
+    awaitClose { removePanelSlideListener(listener) }
 }
 
 @CheckResult
