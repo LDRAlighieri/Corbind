@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx activity bindings, import `corbind-activity` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-activity:1.5.4'
+implementation 'ru.ldralighieri.corbind:corbind-activity:1.5.5'
 ```
 
 ## List of extensions
