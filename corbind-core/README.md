@@ -4,7 +4,7 @@
 To add androidx core bindings, import `corbind-core` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-core:1.5.4'
+implementation 'ru.ldralighieri.corbind:corbind-core:1.5.5'
 ```
 
 ## List of extensions
