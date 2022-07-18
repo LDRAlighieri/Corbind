@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Vladimir Raupov
+ * Copyright 2021 Vladimir Raupov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-rootProject.name = 'Corbind'
+plugins {
+    id("corbind.library")
+    id("corbind.spotless")
+    id("corbind.dokka")
+}
 
-include ':corbind'
-include ':corbind-activity'
-include ':corbind-appcompat'
-include ':corbind-core'
-include ':corbind-drawerlayout'
-include ':corbind-leanback'
-include ':corbind-lifecycle'
-include ':corbind-material'
-include ':corbind-navigation'
-include ':corbind-recyclerview'
-include ':corbind-slidingpanelayout'
-include ':corbind-swiperefreshlayout'
-include ':corbind-viewpager'
-include ':corbind-viewpager2'
-
-include ':sample'
-
-enableFeaturePreview("VERSION_CATALOGS")
+dependencies {
+    api(project(":corbind"))
+    api(libs.androidx.lifecycle.runtime.ktx)
+}

@@ -4,7 +4,7 @@
 To add androidx recyclerview bindings, import `corbind-recyclerview` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.5.4'
+implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.5.5'
 ```
 
 ## List of extensions
