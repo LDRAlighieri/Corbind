@@ -2,6 +2,15 @@
 # ChangeLog
 
 
+## Version 1.5.5
+
+* New: Build logic module.
+* Update: Kotlin modules dependency to v1.7.10.
+* Update: Kotlin coroutines modules dependency to v1.6.4.
+* Update: Material components dependency to v1.6.1.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.5.4
 
 * Update: `SlidingPaneLayout` `panelOpens` extensions. Changed listener setting method from `set` to `add`.

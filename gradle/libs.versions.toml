@@ -1,32 +1,33 @@
 [versions]
-spotless = "6.5.2"
+spotless = "6.8.0"
 gver = "0.42.0"
-detekt = "1.20.0"
+detekt = "1.21.0"
 dokka = "1.6.10"
-maven-publish = "0.18.0"
+maven-publish = "0.21.0"
 
-plugin-android = "7.1.3"
-plugin-kotlin = "1.6.21"
+plugin-android = "7.2.1"
 
-ktlint = "0.43.2"
-kotlin = "1.6.21"
-kotlin-coroutines = "1.6.1"
+kotlin = "1.7.10"
+kotlin-coroutines = "1.6.4"
 
-androidx-core = "1.7.0"
-androidx-annotation = "1.3.0"
-androidx-appcompat = "1.4.1"
+androidx-core = "1.8.0"
+androidx-annotation = "1.4.0"
+androidx-appcompat = "1.4.2"
 androidx-drawerlayout = "1.1.1"
 androidx-leanback = "1.0.0"
-androidx-navigation = "2.4.2"
+androidx-navigation = "2.5.0"
 androidx-recyclerview = "1.2.1"
 androidx-slidingpanelayout = "1.2.0"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-viewpager = "1.0.0"
 androidx-viewpager2 = "1.0.0"
-androidx-lifecycle = "2.4.1"
-androidx-activity = "1.4.0"
+androidx-lifecycle = "2.5.0"
+androidx-activity = "1.5.0"
+androidx-constraintlayout = "2.1.4"
 
-material = "1.6.0"
+material = "1.6.1"
+
+ktlint = "0.46.1"
 
 
 [plugins]
@@ -37,9 +38,11 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 
 [libraries]
-plugin-android = { module = "com.android.tools.build:gradle", version.ref = "plugin-android" }
-plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "plugin-kotlin" }
-maven-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "plugin-android" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+dokka-gradlePlugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+publish-gradlePlugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }
+spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
@@ -57,13 +60,15 @@ androidx-viewpager = { module = "androidx.viewpager:viewpager", version.ref = "a
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "androidx-viewpager2" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-activity = { module = "androidx.activity:activity", version.ref = "androidx-activity" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
 
 [bundles]
 plugins = [
-    "plugin-android",
-    "plugin-kotlin",
-    "maven-publish"
+    "android-gradlePlugin",
+    "kotlin-gradlePlugin",
+    "dokka-gradlePlugin",
+    "publish-gradlePlugin"
 ]
