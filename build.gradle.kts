@@ -65,8 +65,7 @@ tasks.withType<Detekt>().configureEach {
 
 // Dependency updates
 fun isNonStable(version: String): Boolean {
-    val stableKeyword = listOf("RELEASE", "FINAL")
-        .any { version.toUpperCase().contains(it) }
+    val stableKeyword = listOf("RELEASE", "FINAL").any { version.toUpperCase().contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)
     return isStable.not()

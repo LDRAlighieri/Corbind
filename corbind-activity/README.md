@@ -17,7 +17,7 @@ Component | Extension | Description
 ## Simple examples
 
 ```kotlin
-requireActivity().onBackPressedDispatcher.backPresses()
+onBackPressedDispatcher.backPresses(lifecycleOwner = this)
     .onEach { /* handle onBackPressed event */ }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx

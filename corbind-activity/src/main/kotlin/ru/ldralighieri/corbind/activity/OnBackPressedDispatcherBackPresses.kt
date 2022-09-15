@@ -36,14 +36,14 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * Perform an action on [OnBackPressedDispatcher.onBackPressed] call.
  *
  * @param scope Root coroutine scope
+ * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default)
- * @param owner The LifecycleOwner which controls when the callback should be invoked
  * @param action An action to perform
  */
 fun OnBackPressedDispatcher.backPresses(
     scope: CoroutineScope,
+    lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-    owner: LifecycleOwner,
     action: suspend () -> Unit
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
@@ -51,23 +51,23 @@ fun OnBackPressedDispatcher.backPresses(
     }
 
     val callback = callback(scope, events::trySend)
-    addCallback(owner, callback)
+    addCallback(lifecycleOwner, callback)
     events.invokeOnClose { callback.remove() }
 }
 
 /**
  * Perform an action on [OnBackPressedDispatcher.onBackPressed] call, inside new [CoroutineScope].
  *
+ * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default)
- * @param owner The LifecycleOwner which controls when the callback should be invoked
  * @param action An action to perform
  */
 suspend fun OnBackPressedDispatcher.backPresses(
+    lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-    owner: LifecycleOwner,
     action: suspend () -> Unit
 ) = coroutineScope {
-    backPresses(this, capacity, owner, action)
+    backPresses(this, lifecycleOwner, capacity, action)
 }
 
 /**
@@ -77,22 +77,22 @@ suspend fun OnBackPressedDispatcher.backPresses(
  *
  * ```
  * launch {
- *      requireActivity().onBackPressedDispatcher.backPresses()
+ *      onBackPressedDispatcher.backPresses(lifecycleOwner = this)
  *          .consumeEach { /* handle onBackPressed event */ }
  * }
  * ```
  *
  * @param scope Root coroutine scope
+ * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default)
- * @param owner The LifecycleOwner which controls when the callback should be invoked
  */
 fun OnBackPressedDispatcher.backPresses(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS,
-    owner: LifecycleOwner
+    lifecycleOwner: LifecycleOwner,
+    capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val callback = callback(scope, ::trySend)
-    addCallback(owner, callback)
+    addCallback(lifecycleOwner, callback)
     invokeOnClose { callback.remove() }
 }
 
@@ -102,17 +102,17 @@ fun OnBackPressedDispatcher.backPresses(
  * Example:
  *
  * ```
- * requireActivity().onBackPressedDispatcher.backPresses()
+ * onBackPressedDispatcher.backPresses(lifecycleOwner = this)
  *      .onEach { /* handle onBackPressed event */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
- * @param owner The LifecycleOwner which controls when the callback should be invoked
+ * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  */
-fun OnBackPressedDispatcher.backPresses(owner: LifecycleOwner): Flow<Unit> = channelFlow {
+fun OnBackPressedDispatcher.backPresses(lifecycleOwner: LifecycleOwner): Flow<Unit> = channelFlow {
     val callback = callback(this, ::trySend)
-    addCallback(owner, callback)
+    addCallback(lifecycleOwner, callback)
     awaitClose { callback.remove() }
 }
 

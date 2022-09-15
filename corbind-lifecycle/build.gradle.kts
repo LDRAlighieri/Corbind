@@ -20,7 +20,11 @@ plugins {
     id("corbind.dokka")
 }
 
+android {
+    namespace = "ru.ldralighieri.corbind.lifecycle"
+}
+
 dependencies {
-    api(project(":corbind"))
+    api(projects.corbind)
     api(libs.androidx.lifecycle.runtime.ktx)
 }

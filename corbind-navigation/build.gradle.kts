@@ -20,7 +20,11 @@ plugins {
     id("corbind.dokka")
 }
 
+android {
+    namespace = "ru.ldralighieri.corbind.navigation"
+}
+
 dependencies {
-    api(project(":corbind"))
+    api(projects.corbind)
     api(libs.androidx.navigation)
 }
