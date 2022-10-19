@@ -40,6 +40,7 @@ detekt {
             "corbind-appcompat/src/main/kotlin",
             "corbind-core/src/main/kotlin",
             "corbind-drawerlayout/src/main/kotlin",
+            "corbind-fragment/src/main/kotlin",
             "corbind-leanback/src/main/kotlin",
             "corbind-lifecycle/src/main/kotlin",
             "corbind-material/src/main/kotlin",

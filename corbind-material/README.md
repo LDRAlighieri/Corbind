@@ -54,10 +54,7 @@ Component | Extension | Description
 
 ```kotlin
 chipGroup.checkedChanges() // Flow<Int>
-    .onEach {
-      tv_message =
-        if (it != View.NO_ID) "Chip #$it selected" else "No one сhip selected"
-    }
+    .onEach { /* handle checked ids */ }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
