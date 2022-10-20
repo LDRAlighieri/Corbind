@@ -14,4 +14,5 @@
   ~ limitations under the License.
   -->
 
-<manifest package="ru.ldralighieri.corbind.leanback" />
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ImpliedTouchscreenHardware,MissingLeanbackLauncher,MissingLeanbackSupport" />

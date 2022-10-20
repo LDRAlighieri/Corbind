@@ -20,7 +20,11 @@ plugins {
     id("corbind.dokka")
 }
 
+android {
+    namespace = "ru.ldralighieri.corbind.leanback"
+}
+
 dependencies {
-    api(project(":corbind"))
+    api(projects.corbind)
     api(libs.androidx.leanback)
 }

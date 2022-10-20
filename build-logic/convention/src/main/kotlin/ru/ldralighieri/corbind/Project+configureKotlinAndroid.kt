@@ -22,16 +22,20 @@ import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension<*, *, *, *>,
 ) {
+    val compileSdk: String by project
+    val minSdk: String by project
+
     commonExtension.apply {
-        compileSdk = findProperty("android.compileSdk").toString().toInt()
+        this.compileSdk = compileSdk.toInt()
 
         defaultConfig {
-            minSdk = findProperty("android.minSdk").toString().toInt()
+            this.minSdk = minSdk.toInt()
         }
 
         compileOptions {

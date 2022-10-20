@@ -18,6 +18,7 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.provideDelegate
 import ru.ldralighieri.corbind.configureKotlinAndroid
 
 @Suppress("unused")
@@ -32,8 +33,10 @@ class LibraryConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<LibraryExtension> {
+                val targetSdk: String by project
+
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = findProperty("android.targetSdk").toString().toInt()
+                defaultConfig.targetSdk = targetSdk.toInt()
 
                 buildTypes {
                     release {
