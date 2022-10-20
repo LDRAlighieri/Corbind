@@ -28,6 +28,7 @@ navbar-links:
     - corbind-appcompat: "modules/corbind-appcompat"
     - corbind-core: "modules/corbind-core"
     - corbind-drawerlayout: "modules/corbind-drawerlayout"
+    - corbind-fragment: "modules/corbind-fragment"
     - corbind-leanback: "modules/corbind-leanback"
     - corbind-lifecycle: "modules/corbind-lifecycle"
     - corbind-material: "modules/corbind-material"

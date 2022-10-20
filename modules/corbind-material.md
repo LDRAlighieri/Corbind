@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add material bindings, import `corbind-material` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.5.5'
+implementation 'ru.ldralighieri.corbind:corbind-material:1.6.0'
 ```
 
 ## List of extensions
@@ -69,10 +69,7 @@ Component | Extension | Description
 
 ```kotlin
 chipGroup.checkedChanges() // Flow<Int>
-    .onEach {
-      tv_message =
-        if (it != View.NO_ID) "Chip #$it selected" else "No one сhip selected"
-    }
+    .onEach { /* handle checked ids */ }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```

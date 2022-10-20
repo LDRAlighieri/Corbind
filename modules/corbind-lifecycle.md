@@ -19,7 +19,7 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 To add androidx lifecycle bindings, import `corbind-lifecycle` module:
 
 ```groovy
-implementation 'ru.ldralighieri.corbind:corbind-lifecycle:1.5.5'
+implementation 'ru.ldralighieri.corbind:corbind-lifecycle:1.6.0'
 ```
 
 ## List of extensions
