@@ -170,6 +170,7 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 [corbind-appcompat]: https://ldralighieri.github.io/Corbind/modules/corbind-appcompat
 [corbind-core]: https://ldralighieri.github.io/Corbind/modules/corbind-core
 [corbind-drawerlayout]: https://ldralighieri.github.io/Corbind/modules/corbind-drawerlayout
+[corbind-fragment]: https://ldralighieri.github.io/Corbind/modules/corbind-fragment
 [corbind-leanback]: https://ldralighieri.github.io/Corbind/modules/corbind-leanback
 [corbind-lifecycle]: https://ldralighieri.github.io/Corbind/modules/corbind-lifecycle
 [corbind-material]: https://ldralighieri.github.io/Corbind/modules/corbind-material
