@@ -70,6 +70,7 @@ You can find a list of extensions in the description of each module:
 [corbind-appcompat]  
 [corbind-core]  
 [corbind-drawerlayout]  
+[corbind-fragment]  
 [corbind-leanback]  
 [corbind-lifecycle]  
 [corbind-material]  
@@ -172,6 +173,7 @@ limitations under the License.
 [corbind-appcompat]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-appcompat
 [corbind-core]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-core
 [corbind-drawerlayout]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-drawerlayout
+[corbind-fragment]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-fragment
 [corbind-leanback]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-leanback
 [corbind-lifecycle]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-lifecycle
 [corbind-material]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-material
