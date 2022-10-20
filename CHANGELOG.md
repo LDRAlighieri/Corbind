@@ -2,6 +2,19 @@
 # ChangeLog
 
 
+## Version 1.6.0
+
+* New: Fragment module
+* New: Bindings list:
+    * AndroidX library bindings:
+        * `corbind-fragment`:
+            * `FragmentManager`:
+                * `resultEvents`
+* Update: Kotlin modules dependency to v1.7.20.
+* Update: Material components dependency to v1.7.0.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.5.5
 
 * New: Build logic module.

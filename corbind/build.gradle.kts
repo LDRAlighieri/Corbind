@@ -20,6 +20,10 @@ plugins {
     id("corbind.dokka")
 }
 
+android {
+    namespace = "ru.ldralighieri.corbind"
+}
+
 dependencies {
     api(libs.kotlin.stdlib)
     api(libs.kotlin.coroutines.android)

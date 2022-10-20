@@ -20,13 +20,20 @@ plugins {
 }
 
 android {
-    compileSdk = findProperty("android.compileSdk").toString().toInt()
+    val compileSdk: String by project
+    val minSdk: String by project
+    val targetSdk: String by project
+    @Suppress("LocalVariableName") val VERSION_NAME: String by project
+
+    namespace = "ru.ldralighieri.corbind.sample"
+
+    this.compileSdk = compileSdk.toInt()
     defaultConfig {
         applicationId = "ru.ldralighieri.corbind.example"
-        minSdk = findProperty("android.minSdk").toString().toInt()
-        targetSdk = findProperty("android.targetSdk").toString().toInt()
+        this.minSdk = minSdk.toInt()
+        this.targetSdk = targetSdk.toInt()
         versionCode = 1
-        versionName = findProperty("VERSION_NAME").toString()
+        versionName = VERSION_NAME
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -68,7 +75,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":corbind-swiperefreshlayout"))
+    implementation(projects.corbindSwiperefreshlayout)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)

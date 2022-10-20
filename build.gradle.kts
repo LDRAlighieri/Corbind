@@ -40,6 +40,7 @@ detekt {
             "corbind-appcompat/src/main/kotlin",
             "corbind-core/src/main/kotlin",
             "corbind-drawerlayout/src/main/kotlin",
+            "corbind-fragment/src/main/kotlin",
             "corbind-leanback/src/main/kotlin",
             "corbind-lifecycle/src/main/kotlin",
             "corbind-material/src/main/kotlin",
@@ -65,8 +66,7 @@ tasks.withType<Detekt>().configureEach {
 
 // Dependency updates
 fun isNonStable(version: String): Boolean {
-    val stableKeyword = listOf("RELEASE", "FINAL")
-        .any { version.toUpperCase().contains(it) }
+    val stableKeyword = listOf("RELEASE", "FINAL").any { version.toUpperCase().contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)
     return isStable.not()

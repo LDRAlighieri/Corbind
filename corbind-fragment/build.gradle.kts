@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Vladimir Raupov
+ * Copyright 2022 Vladimir Raupov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ plugins {
 }
 
 android {
-    namespace = "ru.ldralighieri.corbind.drawerlayout"
+    namespace = "ru.ldralighieri.corbind.fragment"
 }
 
 dependencies {
     api(projects.corbind)
-    api(libs.androidx.drawerlayout)
+    api(libs.androidx.fragment)
 }
