@@ -269,5 +269,10 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 
+yandex_site_verification: fea7c36cba934548
+
+webmaster_verifications:
+  yandex: fea7c36cba934548
+
 # Beautiful Jekyll / Dean Attali
 # 2fc73a3a967e97599c9763d05e564189
