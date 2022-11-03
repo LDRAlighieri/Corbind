@@ -104,7 +104,7 @@ social-network-links:
 share-links-active:
 #  twitter: true
 #  facebook: true
-#  linkedin: true
+ linkedin: true
 #  google: true
 
 # How to display the link to the website in the footer
@@ -114,7 +114,7 @@ url-pretty: "ldralighieri.github.io"  # eg. "deanattali.com/beautiful-jekyll"
 # --- Web Statistics Section --- #
 
 # Fill in your Google Analytics gtag.js ID to track your website using gtag
-#gtag: ""
+gtag: "G-C4TG8P4KX1"
 
 # Fill in your Google Analytics ID to track your website using GA
 google_analytics: "UA-146144353-1"
