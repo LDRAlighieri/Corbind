@@ -1,5 +1,5 @@
 ﻿
-# corbind-activity
+# corbind-fragment
 
 To add androidx fragment bindings, import `corbind-fragment` module:
 
