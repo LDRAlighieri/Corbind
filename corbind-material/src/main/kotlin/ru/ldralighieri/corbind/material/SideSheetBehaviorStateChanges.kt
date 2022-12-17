@@ -1,25 +1,10 @@
-/*
- * Copyright 2019 Vladimir Raupov
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package ru.ldralighieri.corbind.material
 
 import android.view.View
 import androidx.annotation.CheckResult
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.sidesheet.SideSheetBehavior
+import com.google.android.material.sidesheet.SideSheetCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -34,13 +19,13 @@ import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
- * Perform an action on the state change events from [View] on [BottomSheetBehavior].
+ * Perform an action on the state change events from [View] on [SideSheetBehavior].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun View.stateChanges(
+fun View.sideSheetStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
@@ -49,29 +34,29 @@ fun View.stateChanges(
         for (state in channel) action(state)
     }
 
-    val behavior = getBottomSheetBehavior()
+    val behavior = getSideSheetBehavior()
     events.trySend(behavior.state)
     val callback = callback(scope, events::trySend)
-    behavior.addBottomSheetCallback(callback)
-    events.invokeOnClose { behavior.removeBottomSheetCallback(callback) }
+    behavior.addCallback(callback)
+    events.invokeOnClose { behavior.removeCallback(callback) }
 }
 
 /**
- * Perform an action on the state change events from [View] on [BottomSheetBehavior], inside new
+ * Perform an action on the state change events from [View] on [SideSheetBehavior], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun View.stateChanges(
+suspend fun View.sideSheetStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-    stateChanges(this, capacity, action)
+    sideSheetStateChanges(this, capacity, action)
 }
 
 /**
- * Create a channel which emits the state change events from [View] on [BottomSheetBehavior].
+ * Create a channel which emits the state change events from [View] on [SideSheetBehavior].
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -79,7 +64,7 @@ suspend fun View.stateChanges(
  *
  * ```
  * launch {
- *      bottomSheetBehavior.stateChanges(scope)
+ *      sideSheetBehavior.sideSheetStateChanges(scope)
  *          .consumeEach { /* handle state change */ }
  * }
  * ```
@@ -88,19 +73,19 @@ suspend fun View.stateChanges(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun View.stateChanges(
+fun View.sideSheetStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    val behavior = getBottomSheetBehavior()
+    val behavior = getSideSheetBehavior()
     trySend(behavior.state)
     val callback = callback(scope, ::trySend)
-    behavior.addBottomSheetCallback(callback)
-    invokeOnClose { behavior.removeBottomSheetCallback(callback) }
+    behavior.addCallback(callback)
+    invokeOnClose { behavior.removeCallback(callback) }
 }
 
 /**
- * Create a flow which emits the state change events from [View] on [BottomSheetBehavior].
+ * Create a flow which emits the state change events from [View] on [SideSheetBehavior].
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -108,13 +93,13 @@ fun View.stateChanges(
  *
  * ```
  * // handle initial value
- * bottomSheetBehavior.stateChanges()
+ * sideSheetBehavior.sideSheetStateChanges()
  *      .onEach { /* handle state change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
- * bottomSheetBehavior.stateChanges()
+ * sideSheetBehavior.sideSheetStateChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle state change */ }
  *      .flowWithLifecycle(lifecycle)
@@ -122,29 +107,29 @@ fun View.stateChanges(
  * ```
  */
 @CheckResult
-fun View.stateChanges(): InitialValueFlow<Int> = channelFlow {
-    val behavior = getBottomSheetBehavior()
+fun View.sideSheetStateChanges(): InitialValueFlow<Int> = channelFlow {
+    val behavior = getSideSheetBehavior()
     val callback = callback(this, ::trySend)
-    behavior.addBottomSheetCallback(callback)
-    awaitClose { behavior.removeBottomSheetCallback(callback) }
-}.asInitialValueFlow(getBottomSheetBehavior().state)
+    behavior.addCallback(callback)
+    awaitClose { behavior.removeCallback(callback) }
+}.asInitialValueFlow(getSideSheetBehavior().state)
 
-internal fun View.getBottomSheetBehavior(): BottomSheetBehavior<*> {
+internal fun View.getSideSheetBehavior(): SideSheetBehavior<*> {
     val params = layoutParams as? CoordinatorLayout.LayoutParams
         ?: throw IllegalArgumentException("The view is not in a Coordinator Layout.")
-    return params.behavior as BottomSheetBehavior<*>?
-        ?: throw IllegalStateException("There's no BottomSheetBehavior set on this view.")
+    return params.behavior as SideSheetBehavior<*>?
+        ?: throw IllegalStateException("There's no SideSheetBehavior set on this view.")
 }
 
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
     emitter: (Int) -> Unit
-) = object : BottomSheetBehavior.BottomSheetCallback() {
+) = object : SideSheetCallback() {
 
-    override fun onStateChanged(bottomSheet: View, newState: Int) {
+    override fun onStateChanged(sheet: View, newState: Int) {
         if (scope.isActive) { emitter(newState) }
     }
 
-    override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
+    override fun onSlide(sheet: View, slideOffset: Float) = Unit
 }

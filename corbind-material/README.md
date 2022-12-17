@@ -16,6 +16,7 @@ Component | Extension | Description
                                   | `stateChanges` | Called when the bottom sheet changes its state.
 **Chip** | `closeIconClicks` | Called when the chip’s close icon is clicked.
 **ChipGroup** | `checkedChanges` | Called when the checked chips are changed.
+**View**<br>(HideBottomViewOnScrollBehavior) | `bottomViewScrollStateChanges` | Called when the bottom view changes its scrolled state.
 **MaterialButton** | `checkedChanges` | Called when the checked state of a MaterialButton has changed.
 **MaterialButtonToggleGroup** | `buttonCheckedChangeEvents` | Called when a `MaterialButton` in this group is checked or unchecked (only *not* in single selection mode).
                               | `buttonCheckedChanges` | Called when a `MaterialButton` in this group is checked (only in single selection mode).
@@ -34,6 +35,8 @@ Component | Extension | Description
 **RangeSlider** | `touches` | Called when a range slider's touch event is being started/stopped.
                 | `valuesChanges` | Called a range slider's value is changed. This is called for all existing values to check all the current values use.
                 | `valuesChangeEvents` | A more advanced version of the `valuesChanges`.
+**View**<br>(SideSheetBehavior) | `sideSheetSlides` | Called when the side sheet is being dragged.
+                                | `sideSheetStateChanges` | Called when the side sheet changes its state.
 **Slider** | `touches` | Called when a slider's touch event is being started/stopped.
            | `valueChanges` | Called a slider's value is changed.
            | `valueChangeEvents` | A more advanced version of the `valueChanges`.
