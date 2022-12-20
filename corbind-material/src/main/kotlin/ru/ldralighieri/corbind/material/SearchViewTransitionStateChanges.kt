@@ -16,10 +16,8 @@
 
 package ru.ldralighieri.corbind.material
 
-import android.view.View
 import androidx.annotation.CheckResult
-import com.google.android.material.sidesheet.SideSheetBehavior
-import com.google.android.material.sidesheet.SideSheetCallback
+import com.google.android.material.search.SearchView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -33,50 +31,49 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
- * Perform an action on the slide offset events from [View] on [SideSheetBehavior].
+ * Perform an action on the transition state change events on [SearchView].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun View.sideSheetSlides(
+fun SearchView.transitionStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Float) -> Unit
+    action: suspend (SearchView.TransitionState) -> Unit
 ) {
-    val events = scope.actor<Float>(Dispatchers.Main.immediate, capacity) {
-        for (offset in channel) action(offset)
+    val events = scope.actor<SearchView.TransitionState>(Dispatchers.Main.immediate, capacity) {
+        for (state in channel) action(state)
     }
 
-    val behavior = getSideSheetBehavior()
-    val callback = callback(scope, events::trySend)
-    behavior.addCallback(callback)
-    events.invokeOnClose { behavior.removeCallback(callback) }
+    val listener = listener(scope, events::trySend)
+    addTransitionListener(listener)
+    events.invokeOnClose { removeTransitionListener(listener) }
 }
 
 /**
- * Perform an action on the slide offset events from [View] on [SideSheetBehavior], inside new
+ * Perform an action on the transition state change events on [SearchView], inside new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun View.sideSheetSlides(
+suspend fun SearchView.transitionStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Float) -> Unit
+    action: suspend (SearchView.TransitionState) -> Unit
 ) = coroutineScope {
-    sideSheetSlides(this, capacity, action)
+    transitionStateChanges(this, capacity, action)
 }
 
 /**
- * Create a channel which emits the slide offset events from [View] on [SideSheetBehavior].
+ * Create a channel which emits the transition state change events on [SearchView].
  *
  * Example:
  *
  * ```
  * launch {
- *      sideSheetBehavior.sideSheetSlides(scope)
- *          .consumeEach { /* handle slide offset */ }
+ *      searchView.transitionStateChanges(scope)
+ *          .consumeEach { /* handle transition state change even */ }
  * }
  * ```
  *
@@ -84,45 +81,38 @@ suspend fun View.sideSheetSlides(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun View.sideSheetSlides(
+fun SearchView.transitionStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
-): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
-    val behavior = getSideSheetBehavior()
-    val callback = callback(scope, ::trySend)
-    behavior.addCallback(callback)
-    invokeOnClose { behavior.removeCallback(callback) }
+): ReceiveChannel<SearchView.TransitionState> = corbindReceiveChannel(capacity) {
+    val listener = listener(scope, ::trySend)
+    addTransitionListener(listener)
+    invokeOnClose { removeTransitionListener(listener) }
 }
 
 /**
- * Create a flow which emits the slide offset events from [View] on [SideSheetBehavior].
+ * Create a flow which emits the transition state change events on [SearchView].
  *
  * Example:
  *
  * ```
- * sideSheetBehavior.sideSheetSlides()
- *      .onEach { /* handle slide offset */ }
+ * searchView.transitionStateChanges()
+ *      .onEach { /* handle transition state change event */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun View.sideSheetSlides(): Flow<Float> = channelFlow {
-    val behavior = getSideSheetBehavior()
-    val callback = callback(this, ::trySend)
-    behavior.addCallback(callback)
-    awaitClose { behavior.removeCallback(callback) }
+fun SearchView.transitionStateChanges(): Flow<SearchView.TransitionState> = channelFlow {
+    val listener = listener(this, ::trySend)
+    addTransitionListener(listener)
+    awaitClose { removeTransitionListener(listener) }
 }
 
 @CheckResult
-private fun callback(
+private fun listener(
     scope: CoroutineScope,
-    emitter: (Float) -> Unit
-) = object : SideSheetCallback() {
-
-    override fun onSlide(sheet: View, slideOffset: Float) {
-        if (scope.isActive) { emitter(slideOffset) }
-    }
-
-    override fun onStateChanged(sheet: View, newState: Int) = Unit
+    emitter: (SearchView.TransitionState) -> Unit
+) = SearchView.TransitionListener { _, _, newState ->
+    if (scope.isActive) { emitter(newState) }
 }

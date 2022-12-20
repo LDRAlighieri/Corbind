@@ -3,8 +3,10 @@
 
 To add androidx viewpager bindings, import `corbind-viewpager` module:
 
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind-viewpager:1.6.0")
+}
 ```
 
 ## List of extensions

@@ -39,17 +39,17 @@ android {
     }
 
     buildTypes {
-        debug {
+        val debug by getting {
             isDebuggable = true
             isMinifyEnabled = false
             isShrinkResources = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
 
         release {
             isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfig = debug.signingConfig
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }

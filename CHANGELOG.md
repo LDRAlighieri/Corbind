@@ -1,4 +1,3 @@
-
 # ChangeLog
 
 
@@ -222,7 +221,7 @@ single selection flag.
 	        * `Snackbar`:
 	            * `shown`
 	        * `SwipeDismissBehavior`:
-	            * 'dragStateChanges`
+	            * `dragStateChanges`
 * Fix: Fixed sources jars generation (#6).
 
 

@@ -25,7 +25,6 @@ android {
 }
 
 dependencies {
-    api(libs.kotlin.stdlib)
     api(libs.kotlin.coroutines.android)
     api(libs.androidx.annotation)
 }

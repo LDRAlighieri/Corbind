@@ -17,13 +17,12 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import io.gitlab.arturbosch.detekt.Detekt
 
-buildscript {
-    dependencies {
-        classpath(libs.bundles.plugins)
-    }
-}
-
 plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.spotless) apply false
+    alias(libs.plugins.maven.publish) apply false
     alias(libs.plugins.detekt)
     alias(libs.plugins.gver)
 }
@@ -66,7 +65,7 @@ tasks.withType<Detekt>().configureEach {
 
 // Dependency updates
 fun isNonStable(version: String): Boolean {
-    val stableKeyword = listOf("RELEASE", "FINAL").any { version.toUpperCase().contains(it) }
+    val stableKeyword = listOf("RELEASE", "FINAL").any { version.contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)
     return isStable.not()

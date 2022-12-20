@@ -32,7 +32,10 @@ class SpotlessConventionPlugin : Plugin<Project> {
                 kotlin {
                     target("**/*.kt")
                     targetExclude("**/build/**/*.kt")
+
                     ktlint(libs.findVersion("ktlint").get().toString())
+                        .editorConfigOverride(mapOf("disabled_rules" to "filename"))
+
                     licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
                 }
             }
