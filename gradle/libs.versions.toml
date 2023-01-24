@@ -29,7 +29,7 @@ androidxFragment = "1.5.5"
 androidxConstraintlayout = "2.1.4"
 
 # Google
-material = "1.8.0-rc01"
+material = "1.8.0"
 
 # Lint
 ktlint = "0.46.1"

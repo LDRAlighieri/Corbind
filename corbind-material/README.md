@@ -37,6 +37,7 @@ Component | Extension | Description
 **RangeSlider** | `touches` | Called when a range slider's touch event is being started/stopped.
                 | `valuesChanges` | Called a range slider's value is changed. This is called for all existing values to check all the current values use.
                 | `valuesChangeEvents` | A more advanced version of the `valuesChanges`.
+**SearchBar** | `navigationClicks` | Called whenever the user clicks the navigation button at the start of the searchbar.
 **SearchView** | `transitionStateChanges` | Called when the given `SearchView's` transition state has changed.
             | `transitionStateChangeEvents` | A more advanced version of the `transitionStateChanges`.
 **View**<br>(SideSheetBehavior) | `sideSheetSlides` | Called when the side sheet is being dragged.
