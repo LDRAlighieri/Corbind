@@ -20,12 +20,15 @@ plugins {
 }
 
 android {
+    namespace = "ru.ldralighieri.corbind.sample"
+
+    val buildTools: String by project
     val compileSdk: String by project
     val minSdk: String by project
     val targetSdk: String by project
     @Suppress("LocalVariableName") val VERSION_NAME: String by project
 
-    namespace = "ru.ldralighieri.corbind.sample"
+    buildToolsVersion = buildTools
 
     this.compileSdk = compileSdk.toInt()
     defaultConfig {
@@ -39,24 +42,24 @@ android {
     }
 
     buildTypes {
-        debug {
+        val debug by getting {
             isDebuggable = true
             isMinifyEnabled = false
             isShrinkResources = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
 
         release {
             isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfig = debug.signingConfig
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     packagingOptions {

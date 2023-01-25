@@ -1,5 +1,24 @@
-
 # ChangeLog
+
+
+## Version 1.7.0
+
+* New: Bindings list:
+	* Google "material" library bindings:
+		* `corbind-material`:
+			* `HideBottomViewOnScrollBehavior`:
+				* `bottomViewScrollStateChanges`
+			* `SearchBar`:
+				* `navigationClicks`
+			* `SearchView`:
+				* `transitionStateChanges`
+				* `transitionStateChangeEvents`
+			* `SideSheetBehavior`:
+				* `sideSheetSlides`
+				* `sideSheetStateChanges`
+* Update: Kotlin modules dependency to v1.8.0.
+* Update: Material components dependency to v1.8.0.
+* Update: Minor update of other libraries.
 
 
 ## Version 1.6.0
@@ -222,7 +241,7 @@ single selection flag.
 	        * `Snackbar`:
 	            * `shown`
 	        * `SwipeDismissBehavior`:
-	            * 'dragStateChanges`
+	            * `dragStateChanges`
 * Fix: Fixed sources jars generation (#6).
 
 

@@ -3,8 +3,10 @@
 
 To add androidx fragment bindings, import `corbind-fragment` module:
 
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind-fragment:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind-fragment:1.7.0")
+}
 ```
 
 ## List of extensions
@@ -21,7 +23,7 @@ lifecycleScope.launchWhenStarted {
     parentFragmentManager.resultEvents(
         requestKey = FRAGMENT_REQUEST_KEY,
         lifecycleOwner = this@CurrentFragment
-    )
+    ) // Flow<FragmentResultEvent>
         .onEach { event -> /* handle result event */ }
         .launchIn(this@launchWhenStarted) // lifecycle-runtime-ktx
 }

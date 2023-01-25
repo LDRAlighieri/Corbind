@@ -123,7 +123,6 @@ private fun listener(
     scope: CoroutineScope,
     emitter: (MenuItem) -> Unit
 ) = PopupMenu.OnMenuItemClickListener {
-
     if (scope.isActive) {
         emitter(it)
         return@OnMenuItemClickListener true
