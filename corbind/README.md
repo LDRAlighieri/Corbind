@@ -3,8 +3,10 @@
 
 To add platform bindings, import `corbind` module:
 
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind:1.7.0")
+}
 ```
 
 ## List of extensions

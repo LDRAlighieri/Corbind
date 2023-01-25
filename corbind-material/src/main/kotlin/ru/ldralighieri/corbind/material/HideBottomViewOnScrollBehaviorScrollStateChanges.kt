@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Vladimir Raupov
+ * Copyright 2022 Vladimir Raupov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package ru.ldralighieri.corbind.material
 import android.view.View
 import androidx.annotation.CheckResult
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,20 +27,20 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.InitialValueFlow
-import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
- * Perform an action on the state change events from [View] on [BottomSheetBehavior].
+ * Perform an action on the bottom view scroll state change events from [View] on
+ * [HideBottomViewOnScrollBehavior].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun View.stateChanges(
+fun View.bottomViewScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
@@ -49,38 +49,38 @@ fun View.stateChanges(
         for (state in channel) action(state)
     }
 
-    val behavior = getBottomSheetBehavior()
-    events.trySend(behavior.state)
-    val callback = callback(scope, events::trySend)
-    behavior.addBottomSheetCallback(callback)
-    events.invokeOnClose { behavior.removeBottomSheetCallback(callback) }
+    val behavior = getBehavior()
+    val listener = listener(scope, events::trySend)
+    behavior.addOnScrollStateChangedListener(listener)
+    events.invokeOnClose { behavior.removeOnScrollStateChangedListener(listener) }
 }
 
 /**
- * Perform an action on the state change events from [View] on [BottomSheetBehavior], inside new
- * [CoroutineScope].
+ * Perform an action on the bottom view scroll state change events from [View] on
+ * [HideBottomViewOnScrollBehavior], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun View.stateChanges(
+suspend fun View.bottomViewScrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit
 ) = coroutineScope {
-    stateChanges(this, capacity, action)
+    bottomViewScrollStateChanges(this, capacity, action)
 }
 
 /**
- * Create a channel which emits the state change events from [View] on [BottomSheetBehavior].
+ * Create a channel which emits the bottom view scroll state change events from [View] on
+ * [HideBottomViewOnScrollBehavior].
  *
  * *Note:* A value will be emitted immediately.
  *
- * Example:
+ * Examples:
  *
  * ```
  * launch {
- *      bottomSheetBehavior.stateChanges(scope)
- *          .consumeEach { /* handle state change */ }
+ *      bottomView.bottomViewScrollStateChanges(scope)
+ *          .consumeEach { /* handle bottom view scroll state change */ }
  * }
  * ```
  *
@@ -88,63 +88,50 @@ suspend fun View.stateChanges(
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
 @CheckResult
-fun View.stateChanges(
+fun View.bottomViewScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
-    val behavior = getBottomSheetBehavior()
-    trySend(behavior.state)
-    val callback = callback(scope, ::trySend)
-    behavior.addBottomSheetCallback(callback)
-    invokeOnClose { behavior.removeBottomSheetCallback(callback) }
+    val behavior = getBehavior()
+    val listener = listener(scope, ::trySend)
+    behavior.addOnScrollStateChangedListener(listener)
+    invokeOnClose { behavior.removeOnScrollStateChangedListener(listener) }
 }
 
 /**
- * Create a flow which emits the state change events from [View] on [BottomSheetBehavior].
+ * Create a flow which emits the bottom view scroll state change events from [View] on
+ * [HideBottomViewOnScrollBehavior].
  *
  * *Note:* A value will be emitted immediately.
  *
  * Examples:
  *
  * ```
- * // handle initial value
- * bottomSheetBehavior.stateChanges()
- *      .onEach { /* handle state change */ }
- *      .flowWithLifecycle(lifecycle)
- *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
- *
- * // drop initial value
- * bottomSheetBehavior.stateChanges()
- *      .dropInitialValue()
- *      .onEach { /* handle state change */ }
+ * bottomView.bottomViewScrollStateChanges()
+ *      .onEach { /* handle bottom view scroll state change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
 @CheckResult
-fun View.stateChanges(): InitialValueFlow<Int> = channelFlow {
-    val behavior = getBottomSheetBehavior()
-    val callback = callback(this, ::trySend)
-    behavior.addBottomSheetCallback(callback)
-    awaitClose { behavior.removeBottomSheetCallback(callback) }
-}.asInitialValueFlow(getBottomSheetBehavior().state)
+fun View.bottomViewScrollStateChanges(): Flow<Int> = channelFlow {
+    val behavior = getBehavior()
+    val listener = listener(this, ::trySend)
+    behavior.addOnScrollStateChangedListener(listener)
+    awaitClose { behavior.removeOnScrollStateChangedListener(listener) }
+}
 
-internal fun View.getBottomSheetBehavior(): BottomSheetBehavior<*> {
+private fun View.getBehavior(): HideBottomViewOnScrollBehavior<*> {
     val params = layoutParams as? CoordinatorLayout.LayoutParams
         ?: throw IllegalArgumentException("The view is not in a Coordinator Layout.")
-    return params.behavior as BottomSheetBehavior<*>?
-        ?: throw IllegalStateException("There's no BottomSheetBehavior set on this view.")
+    return params.behavior as HideBottomViewOnScrollBehavior<*>?
+        ?: throw IllegalStateException("There's no HideBottomViewOnScrollBehavior set on this view.")
 }
 
 @CheckResult
-private fun callback(
+private fun listener(
     scope: CoroutineScope,
     emitter: (Int) -> Unit
-) = object : BottomSheetBehavior.BottomSheetCallback() {
-
-    override fun onStateChanged(bottomSheet: View, newState: Int) {
-        if (scope.isActive) { emitter(newState) }
-    }
-
-    override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
+) = HideBottomViewOnScrollBehavior.OnScrollStateChangedListener { _, newState ->
+    if (scope.isActive) { emitter(newState) }
 }

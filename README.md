@@ -1,63 +1,69 @@
 ﻿[![Corbind](logo.svg)](https://ldralighieri.github.io/Corbind)
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.7.20-blue.svg)](https://kotlinlang.org)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.8.0-blue.svg?logo=kotlin)](https://kotlinlang.org)
 [![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.6.4-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://app.codacy.com/gh/LDRAlighieri/Corbind)
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
-[![Google Dev Library](https://img.shields.io/badge/Featured%20in%20devlibrary.withgoogle.com-Corbind-blue)](https://devlibrary.withgoogle.com/products/android/repos/LDRAlighieri-Corbind)
+[![Google Dev Library](https://img.shields.io/badge/Google_DevLibrary-Corbind-blue)](https://devlibrary.withgoogle.com/products/android/repos/LDRAlighieri-Corbind)
 [![Android Weekly](https://androidweekly.net/issues/issue-377/badge)](https://androidweekly.net/issues/issue-377)
 
 <br>
 
-Kotlin Coroutines binding APIs for Android UI widgets from the platform and support libraries. **Supports Flow, ReceiveChannel and Actor**.
+⚡ Kotlin Coroutines binding APIs for Android UI widgets from the platform and support libraries. **Supports Flow, ReceiveChannel and Actor**.
 
 
 ## Description
 
-This library is for Android applications only. Help you to transform Android UI events into cold [Flow][flow], hot [ReceiveChannel][channel] or just perform an action through an [Actor][actor].
+This library is for Android applications only. Help you to transform Android UI events into cold [Flow][flow], hot [ReceiveChannel][channel] or just perform an action through an [Actor][actor]. Please consider giving this repository a star ⭐ if you like the project.
 
 
-## Download
+## Using in your projects
 
 Platform bindings:
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind:1.7.0")
+}
 ```
 
 AndroidX library bindings:
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind-activity:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-core:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-fragment:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-lifecycle:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-navigation:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind-activity:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-appcompat:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-core:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-fragment:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-leanback:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-lifecycle:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-navigation:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-recyclerview:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager2:1.7.0")
+}
 ```
 
 Google 'material' library bindings:
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind-material:1.7.0")
+}
 ```
 
 Snapshot build:
-```groovy
+```kotlin
 repositories {
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
-   implementation 'ru.ldralighieri.corbind:{module}:1.6.1-SNAPSHOT'
+   implementation("ru.ldralighieri.corbind:{module}:1.8.0-SNAPSHOT")
 }
 ```
 
@@ -65,21 +71,21 @@ dependencies {
 ## List of extensions
 
 You can find a list of extensions in the description of each module:  
-[corbind]  
-[corbind-activity]  
-[corbind-appcompat]  
-[corbind-core]  
-[corbind-drawerlayout]  
-[corbind-fragment]  
-[corbind-leanback]  
-[corbind-lifecycle]  
-[corbind-material]  
-[corbind-navigation]  
-[corbind-recyclerview]  
-[corbind-slidingpanelayout]  
-[corbind-swiperefreshlayout]  
-[corbind-viewpager]  
-[corbind-viewpager2]
+* [corbind]  
+* [corbind-activity]  
+* [corbind-appcompat]  
+* [corbind-core]  
+* [corbind-drawerlayout]  
+* [corbind-fragment]  
+* [corbind-leanback]  
+* [corbind-lifecycle]  
+* [corbind-material]  
+* [corbind-navigation]  
+* [corbind-recyclerview]  
+* [corbind-slidingpanelayout]  
+* [corbind-swiperefreshlayout]  
+* [corbind-viewpager]  
+* [corbind-viewpager2]
 
 
 ## How to use it?
@@ -146,7 +152,7 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 ## License
 
 ```
-Copyright 2019-2022 Vladimir Raupov
+Copyright 2019-2023 Vladimir Raupov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

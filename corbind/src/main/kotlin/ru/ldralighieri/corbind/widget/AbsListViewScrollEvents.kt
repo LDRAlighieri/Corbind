@@ -138,8 +138,11 @@ private fun listener(
         currentScrollState = scrollState
         if (scope.isActive) {
             val event = AbsListViewScrollEvent(
-                absListView, scrollState,
-                absListView.firstVisiblePosition, absListView.childCount, absListView.count
+                view = absListView,
+                scrollState = scrollState,
+                firstVisibleItem = absListView.firstVisiblePosition,
+                visibleItemCount = absListView.childCount,
+                totalItemCount = absListView.count
             )
             emitter(event)
         }
@@ -153,8 +156,11 @@ private fun listener(
     ) {
         if (scope.isActive) {
             val event = AbsListViewScrollEvent(
-                absListView, currentScrollState, firstVisibleItem,
-                visibleItemCount, totalItemCount
+                view = absListView,
+                scrollState = currentScrollState,
+                firstVisibleItem = firstVisibleItem,
+                visibleItemCount = visibleItemCount,
+                totalItemCount = totalItemCount
             )
             emitter(event)
         }

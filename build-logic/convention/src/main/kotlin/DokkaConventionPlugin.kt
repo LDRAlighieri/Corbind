@@ -29,7 +29,7 @@ class DokkaConventionPlugin : Plugin<Project> {
 
             tasks.withType<DokkaTask>().configureEach {
                 dokkaSourceSets.named("main") {
-                    jdkVersion.set(JavaVersion.VERSION_11.majorVersion.toInt())
+                    jdkVersion.set(JavaVersion.VERSION_17.majorVersion.toInt())
 
                     skipDeprecated.set(false)
                     reportUndocumented.set(false)

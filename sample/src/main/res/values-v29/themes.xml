@@ -14,12 +14,12 @@
   ~ limitations under the License.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="Theme.Corbind.Base.V29" parent="Theme.Corbind.Base">
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="Theme.Polygon" parent="Theme.Corbind.Base.V29" />
+    <style name="Theme.Corbind" parent="Theme.Corbind.Base.V29" />
 
 </resources>

@@ -182,8 +182,10 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
         AdapterViewNothingSelectionEvent(adapterView)
     } else {
         AdapterViewItemSelectionEvent(
-            adapterView, adapterView.selectedView,
-            adapterView.selectedItemPosition, adapterView.selectedItemId
+            view = adapterView,
+            selectedView = adapterView.selectedView,
+            position = adapterView.selectedItemPosition,
+            id = adapterView.selectedItemId
         )
     }
 }
