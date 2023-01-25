@@ -20,12 +20,15 @@ plugins {
 }
 
 android {
+    namespace = "ru.ldralighieri.corbind.sample"
+
+    val buildTools: String by project
     val compileSdk: String by project
     val minSdk: String by project
     val targetSdk: String by project
     @Suppress("LocalVariableName") val VERSION_NAME: String by project
 
-    namespace = "ru.ldralighieri.corbind.sample"
+    buildToolsVersion = buildTools
 
     this.compileSdk = compileSdk.toInt()
     defaultConfig {

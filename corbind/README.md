@@ -5,7 +5,7 @@ To add platform bindings, import `corbind` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind:1.6.0")
+    implementation("ru.ldralighieri.corbind:corbind:1.7.0")
 }
 ```
 

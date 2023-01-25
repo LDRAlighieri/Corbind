@@ -5,7 +5,7 @@ To add androidx activity bindings, import `corbind-activity` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-activity:1.6.0")
+    implementation("ru.ldralighieri.corbind:corbind-activity:1.7.0")
 }
 ```
 
@@ -19,7 +19,7 @@ Component | Extension | Description
 ## Simple examples
 
 ```kotlin
-onBackPressedDispatcher.backPresses(lifecycleOwner = this)
+onBackPressedDispatcher.backPresses(lifecycleOwner = this) // Flow<Unit>
     .onEach { /* handle onBackPressed event */ }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx

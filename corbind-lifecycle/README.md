@@ -5,7 +5,7 @@ To add androidx lifecycle bindings, import `corbind-lifecycle` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-lifecycle:1.6.0")
+    implementation("ru.ldralighieri.corbind:corbind-lifecycle:1.7.0")
 }
 ```
 
@@ -19,7 +19,7 @@ Component | Extension | Description
 ## Simple examples
 
 ```kotlin
-lifecycle.events()
+lifecycle.events() // Flow<Lifecycle.Event>
     .filter { it == Lifecycle.Event.ON_RESUME }
     .onEach { /* handle lifecycle onResume event */ }
     .flowWithLifecycle(lifecycle)
