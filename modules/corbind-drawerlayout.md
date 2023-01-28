@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: corbind-drawerlayout module
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Androidx drawerlayout bindings.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx drawerlayout bindings,drawerlayout]
+tags: [android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,kotlin-extensions,kotlin-library,android-library,fragment,viewpager,activity,drawerlayout,appcompat,kotlin-coroutines,swiperefreshlayout,android-ui-widgets]
 ---
 
 <div style="text-align: center">
@@ -18,8 +18,10 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 
 To add androidx drawerlayout bindings, import `corbind-drawerlayout` module:
 
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.7.0")
+}
 ```
 
 ## List of extensions

@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: Coroutines binding APIs for Android UI widgets from the platform and support libraries.
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,actor,flow,data binding]
+tags: [android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,kotlin-extensions,kotlin-library,android-library,fragment,viewpager,activity,drawerlayout,appcompat,kotlin-coroutines,swiperefreshlayout,android-ui-widgets]
 ---
 
 <div style="text-align: center">
@@ -17,83 +17,92 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 </div>
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.7.20-blue.svg)](https://kotlinlang.org)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.8.0-blue.svg?logo=kotlin)](https://kotlinlang.org)
 [![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.6.4-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://app.codacy.com/gh/LDRAlighieri/Corbind)
-[![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
+[![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg)](https://android-arsenal.com/api?level=14)
+![Publish status](https://github.com/LDRAlighieri/Corbind/actions/workflows/publish.yml/badge.svg)
 
-[![Google Dev Library](https://img.shields.io/badge/Featured%20in%20devlibrary.withgoogle.com-Corbind-blue)](https://devlibrary.withgoogle.com/products/android/repos/LDRAlighieri-Corbind)
+[![Google Dev Library](https://img.shields.io/badge/Google_DevLibrary-Corbind-blue)](https://devlibrary.withgoogle.com/products/android/repos/LDRAlighieri-Corbind)
 [![Android Weekly](https://androidweekly.net/issues/issue-377/badge)](https://androidweekly.net/issues/issue-377)
 
+<br>
 
-Kotlin Coroutines binding APIs for Android UI widgets from the platform and support libraries. **Supports Flow, ReceiveChannel and Actor**.
+⚡ Kotlin Coroutines binding APIs for Android UI widgets from the platform and support libraries. **Supports Flow, ReceiveChannel and Actor**.
 
 
 ## Description
 
-This library is for Android applications only. Help you to transform Android UI events into cold [Flow][flow], hot [ReceiveChannel][channel] or just perform an action through an [Actor][actor].
+This library is for Android applications only. Help you to transform Android UI events into cold [Flow][flow], hot [ReceiveChannel][channel] or just perform an action through an [Actor][actor]. Please consider giving this repository a star ⭐ if you like the project.
 
 
-## Download
+## Using in your projects
 
 Platform bindings:
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind:1.7.0")
+}
 ```
 
 AndroidX library bindings:
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind-activity:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-appcompat:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-core:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-drawerlayout:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-fragment:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-leanback:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-lifecycle:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-navigation:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-recyclerview:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager:1.6.0'
-implementation 'ru.ldralighieri.corbind:corbind-viewpager2:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind-activity:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-appcompat:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-core:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-fragment:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-leanback:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-lifecycle:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-navigation:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-recyclerview:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager2:1.7.0")
+}
 ```
 
 Google 'material' library bindings:
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind-material:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind-material:1.7.0")
+}
 ```
 
-Snapshot build:
-```groovy
+Snapshot build:<br>
+[![Maven Central](https://img.shields.io/nexus/s/ru.ldralighieri.corbind/corbind?server=https://oss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/ru/ldralighieri/corbind/)
+```kotlin
 repositories {
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
-   implementation 'ru.ldralighieri.corbind:{module}:1.6.1-SNAPSHOT'
+   implementation("ru.ldralighieri.corbind:{module}:1.8.0-SNAPSHOT")
 }
 ```
 
 
 ## List of extensions
 You can find a list of extensions in the description of each module:<br>
-[corbind]<br>
-[corbind-activity]<br>
-[corbind-appcompat]<br>
-[corbind-core]<br>
-[corbind-drawerlayout]<br>
-[corbind-fragment]<br>
-[corbind-leanback]<br>
-[corbind-lifecycle]<br>
-[corbind-material]<br>
-[corbind-navigation]<br>
-[corbind-recyclerview]<br>
-[corbind-slidingpanelayout]<br>
-[corbind-swiperefreshlayout]<br>
-[corbind-viewpager]<br>
-[corbind-viewpager2]
+* [corbind]<br>
+* [corbind-activity]<br>
+* [corbind-appcompat]<br>
+* [corbind-core]<br>
+* [corbind-drawerlayout]<br>
+* [corbind-fragment]<br>
+* [corbind-leanback]<br>
+* [corbind-lifecycle]<br>
+* [corbind-material]<br>
+* [corbind-navigation]<br>
+* [corbind-recyclerview]<br>
+* [corbind-slidingpanelayout]<br>
+* [corbind-swiperefreshlayout]<br>
+* [corbind-viewpager]<br>
+* [corbind-viewpager2]
 
 
 ## How to use it?
@@ -104,7 +113,7 @@ findViewById<EditText>(R.id.et_name)
     .textChanges() // Flow<CharSequence>
     .onEach { /* handle text change events */ }
     .flowWithLifecycle(lifecycle)
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 If you prefer hot [ReceiveChannel][channel] and you need to get a ViewPager page selection events, then the use case will transform in something like this:
@@ -141,10 +150,10 @@ combine(
 )
     .onEach { bt_login.isEnabled = it }
     .flowWithLifecycle(lifecycle)
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
-More examples in module descriptions and in [source code][source].
+More examples in module descriptions and in source code
 
 
 ## Missed or forgot something?

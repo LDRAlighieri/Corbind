@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: corbind-activity module
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Androidx leanback bindings.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx activity bindings,activity]
+tags: [android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,kotlin-extensions,kotlin-library,android-library,fragment,viewpager,activity,drawerlayout,appcompat,kotlin-coroutines,swiperefreshlayout,android-ui-widgets]
 ---
 
 <div style="text-align: center">
@@ -18,9 +18,10 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 
 To add androidx activity bindings, import `corbind-activity` module:
 
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind-activity:1.6.0'
-```
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind-activity:1.7.0")
+}
 
 ## List of extensions
 

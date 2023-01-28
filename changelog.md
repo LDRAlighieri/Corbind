@@ -4,8 +4,28 @@ title: Corbind
 subtitle: Changelog
 show-avatar: false
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Changelog.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,receivechannel,flow,data binding,changelog]
+tags: [android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,kotlin-extensions,kotlin-library,android-library,fragment,viewpager,activity,drawerlayout,appcompat,kotlin-coroutines,swiperefreshlayout,android-ui-widgets]
 ---
+
+## Version 1.7.0
+
+* New: Bindings list:
+    * Google "material" library bindings:
+        * `corbind-material`:
+            * `HideBottomViewOnScrollBehavior`:
+                * `bottomViewScrollStateChanges`
+            * `SearchBar`:
+                * `navigationClicks`
+            * `SearchView`:
+                * `transitionStateChanges`
+                * `transitionStateChangeEvents`
+            * `SideSheetBehavior`:
+                * `sideSheetSlides`
+                * `sideSheetStateChanges`
+* Update: Kotlin modules dependency to v1.8.0.
+* Update: Material components dependency to v1.8.0.
+* Update: Minor update of other libraries.
+
 
 ## Version 1.6.0
 

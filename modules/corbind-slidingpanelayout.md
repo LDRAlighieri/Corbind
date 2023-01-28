@@ -3,7 +3,7 @@ layout: page
 title: Corbind
 subtitle: corbind-slidingpanelayout module
 description: Coroutines binding APIs for Android UI widgets from the platform and support libraries. Androidx slidingpanelayout bindings.
-tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,android,androidx,receivechannel,flow,data binding,androidx slidingpanelayout bindings,slidingpanelayout]
+tags: [slidingpanelayout,android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,kotlin-extensions,kotlin-library,android-library,fragment,viewpager,activity,drawerlayout,appcompat,kotlin-coroutines,swiperefreshlayout,android-ui-widgets]
 ---
 
 <div style="text-align: center">
@@ -18,8 +18,10 @@ tags: [coroutines binding,coroutine binding,coroutines,coroutine,corbind,kotlin,
 
 To add androidx slidingpanelayout bindings, import `corbind-slidingpanelayout` module:
 
-```groovy
-implementation 'ru.ldralighieri.corbind:corbind-slidingpanelayout:1.6.0'
+```kotlin
+dependencies {
+    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.7.0")
+}
 ```
 
 ## List of extensions
