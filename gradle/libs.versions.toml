@@ -9,7 +9,7 @@ detekt = "1.22.0"
 gver = "0.44.0"
 
 # Kotlin
-kotlin = "1.8.0"
+kotlin = "1.8.10"
 kotlinCoroutines = "1.6.4"
 
 # Androidx
