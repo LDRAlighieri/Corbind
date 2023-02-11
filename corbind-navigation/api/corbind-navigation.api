@@ -1,0 +1,35 @@
+public final class ru/ldralighieri/corbind/navigation/NavControllerOnDestinationChangeEvent {
+	public fun <init> (Landroidx/navigation/NavController;Landroidx/navigation/NavDestination;Landroid/os/Bundle;)V
+	public final fun component1 ()Landroidx/navigation/NavController;
+	public final fun component2 ()Landroidx/navigation/NavDestination;
+	public final fun component3 ()Landroid/os/Bundle;
+	public final fun copy (Landroidx/navigation/NavController;Landroidx/navigation/NavDestination;Landroid/os/Bundle;)Lru/ldralighieri/corbind/navigation/NavControllerOnDestinationChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/navigation/NavControllerOnDestinationChangeEvent;Landroidx/navigation/NavController;Landroidx/navigation/NavDestination;Landroid/os/Bundle;ILjava/lang/Object;)Lru/ldralighieri/corbind/navigation/NavControllerOnDestinationChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getArguments ()Landroid/os/Bundle;
+	public final fun getController ()Landroidx/navigation/NavController;
+	public final fun getDestination ()Landroidx/navigation/NavDestination;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/navigation/NavControllerOnDestinationChangeEventsKt {
+	public static final fun destinationChangeEvents (Landroidx/navigation/NavController;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun destinationChangeEvents (Landroidx/navigation/NavController;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun destinationChangeEvents (Landroidx/navigation/NavController;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun destinationChangeEvents (Landroidx/navigation/NavController;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun destinationChangeEvents$default (Landroidx/navigation/NavController;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun destinationChangeEvents$default (Landroidx/navigation/NavController;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun destinationChangeEvents$default (Landroidx/navigation/NavController;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/navigation/NavControllerOnDestinationChangesKt {
+	public static final fun destinationChanges (Landroidx/navigation/NavController;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun destinationChanges (Landroidx/navigation/NavController;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun destinationChanges (Landroidx/navigation/NavController;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun destinationChanges (Landroidx/navigation/NavController;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun destinationChanges$default (Landroidx/navigation/NavController;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun destinationChanges$default (Landroidx/navigation/NavController;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun destinationChanges$default (Landroidx/navigation/NavController;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+

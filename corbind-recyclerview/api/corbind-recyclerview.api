@@ -1,0 +1,111 @@
+public final class ru/ldralighieri/corbind/recyclerview/RecyclerAdapterDataChangesKt {
+	public static final fun dataChanges (Landroidx/recyclerview/widget/RecyclerView$Adapter;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun dataChanges (Landroidx/recyclerview/widget/RecyclerView$Adapter;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dataChanges (Landroidx/recyclerview/widget/RecyclerView$Adapter;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dataChanges (Landroidx/recyclerview/widget/RecyclerView$Adapter;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dataChanges$default (Landroidx/recyclerview/widget/RecyclerView$Adapter;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dataChanges$default (Landroidx/recyclerview/widget/RecyclerView$Adapter;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dataChanges$default (Landroidx/recyclerview/widget/RecyclerView$Adapter;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachEvent : ru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachStateChangeEvent {
+	public fun <init> (Landroidx/recyclerview/widget/RecyclerView;Landroid/view/View;)V
+	public final fun component1 ()Landroidx/recyclerview/widget/RecyclerView;
+	public final fun component2 ()Landroid/view/View;
+	public final fun copy (Landroidx/recyclerview/widget/RecyclerView;Landroid/view/View;)Lru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachEvent;Landroidx/recyclerview/widget/RecyclerView;Landroid/view/View;ILjava/lang/Object;)Lru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChild ()Landroid/view/View;
+	public fun getView ()Landroidx/recyclerview/widget/RecyclerView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class ru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachStateChangeEvent {
+	public abstract fun getChild ()Landroid/view/View;
+	public abstract fun getView ()Landroidx/recyclerview/widget/RecyclerView;
+}
+
+public final class ru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachStateChangeEventsKt {
+	public static final fun childAttachStateChangeEvents (Landroidx/recyclerview/widget/RecyclerView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun childAttachStateChangeEvents (Landroidx/recyclerview/widget/RecyclerView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun childAttachStateChangeEvents (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun childAttachStateChangeEvents (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun childAttachStateChangeEvents$default (Landroidx/recyclerview/widget/RecyclerView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun childAttachStateChangeEvents$default (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun childAttachStateChangeEvents$default (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/recyclerview/RecyclerViewChildDetachEvent : ru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachStateChangeEvent {
+	public fun <init> (Landroidx/recyclerview/widget/RecyclerView;Landroid/view/View;)V
+	public final fun component1 ()Landroidx/recyclerview/widget/RecyclerView;
+	public final fun component2 ()Landroid/view/View;
+	public final fun copy (Landroidx/recyclerview/widget/RecyclerView;Landroid/view/View;)Lru/ldralighieri/corbind/recyclerview/RecyclerViewChildDetachEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/recyclerview/RecyclerViewChildDetachEvent;Landroidx/recyclerview/widget/RecyclerView;Landroid/view/View;ILjava/lang/Object;)Lru/ldralighieri/corbind/recyclerview/RecyclerViewChildDetachEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChild ()Landroid/view/View;
+	public fun getView ()Landroidx/recyclerview/widget/RecyclerView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/recyclerview/RecyclerViewFlingEvent {
+	public fun <init> (Landroidx/recyclerview/widget/RecyclerView;II)V
+	public final fun component1 ()Landroidx/recyclerview/widget/RecyclerView;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun copy (Landroidx/recyclerview/widget/RecyclerView;II)Lru/ldralighieri/corbind/recyclerview/RecyclerViewFlingEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/recyclerview/RecyclerViewFlingEvent;Landroidx/recyclerview/widget/RecyclerView;IIILjava/lang/Object;)Lru/ldralighieri/corbind/recyclerview/RecyclerViewFlingEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getVelocityX ()I
+	public final fun getVelocityY ()I
+	public final fun getView ()Landroidx/recyclerview/widget/RecyclerView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/recyclerview/RecyclerViewFlingEventsKt {
+	public static final fun flingEvents (Landroidx/recyclerview/widget/RecyclerView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun flingEvents (Landroidx/recyclerview/widget/RecyclerView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun flingEvents (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun flingEvents (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun flingEvents$default (Landroidx/recyclerview/widget/RecyclerView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun flingEvents$default (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun flingEvents$default (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/recyclerview/RecyclerViewScrollEvent {
+	public fun <init> (Landroidx/recyclerview/widget/RecyclerView;II)V
+	public final fun component1 ()Landroidx/recyclerview/widget/RecyclerView;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun copy (Landroidx/recyclerview/widget/RecyclerView;II)Lru/ldralighieri/corbind/recyclerview/RecyclerViewScrollEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/recyclerview/RecyclerViewScrollEvent;Landroidx/recyclerview/widget/RecyclerView;IIILjava/lang/Object;)Lru/ldralighieri/corbind/recyclerview/RecyclerViewScrollEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDx ()I
+	public final fun getDy ()I
+	public final fun getView ()Landroidx/recyclerview/widget/RecyclerView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/recyclerview/RecyclerViewScrollEventsKt {
+	public static final fun scrollEvents (Landroidx/recyclerview/widget/RecyclerView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun scrollEvents (Landroidx/recyclerview/widget/RecyclerView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun scrollEvents (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun scrollEvents (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun scrollEvents$default (Landroidx/recyclerview/widget/RecyclerView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun scrollEvents$default (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun scrollEvents$default (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/recyclerview/RecyclerViewScrollStateChangesKt {
+	public static final fun scrollStateChanges (Landroidx/recyclerview/widget/RecyclerView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun scrollStateChanges (Landroidx/recyclerview/widget/RecyclerView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun scrollStateChanges (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun scrollStateChanges (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun scrollStateChanges$default (Landroidx/recyclerview/widget/RecyclerView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun scrollStateChanges$default (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun scrollStateChanges$default (Landroidx/recyclerview/widget/RecyclerView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+

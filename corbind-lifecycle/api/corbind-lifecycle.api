@@ -1,0 +1,10 @@
+public final class ru/ldralighieri/corbind/lifecycle/LifecycleEventsKt {
+	public static final fun events (Landroidx/lifecycle/Lifecycle;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun events (Landroidx/lifecycle/Lifecycle;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun events (Landroidx/lifecycle/Lifecycle;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun events (Landroidx/lifecycle/Lifecycle;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun events$default (Landroidx/lifecycle/Lifecycle;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun events$default (Landroidx/lifecycle/Lifecycle;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun events$default (Landroidx/lifecycle/Lifecycle;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+

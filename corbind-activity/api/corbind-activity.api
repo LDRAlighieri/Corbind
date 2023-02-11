@@ -1,0 +1,10 @@
+public final class ru/ldralighieri/corbind/activity/OnBackPressedDispatcherBackPressesKt {
+	public static final fun backPresses (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun backPresses (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun backPresses (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun backPresses (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun backPresses$default (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun backPresses$default (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun backPresses$default (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+

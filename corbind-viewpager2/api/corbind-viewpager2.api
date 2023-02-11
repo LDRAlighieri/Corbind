@@ -1,0 +1,47 @@
+public final class ru/ldralighieri/corbind/viewpager2/ViewPager2PageScrollEvent {
+	public fun <init> (Landroidx/viewpager2/widget/ViewPager2;IFI)V
+	public final fun component1 ()Landroidx/viewpager2/widget/ViewPager2;
+	public final fun component2 ()I
+	public final fun component3 ()F
+	public final fun component4 ()I
+	public final fun copy (Landroidx/viewpager2/widget/ViewPager2;IFI)Lru/ldralighieri/corbind/viewpager2/ViewPager2PageScrollEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/viewpager2/ViewPager2PageScrollEvent;Landroidx/viewpager2/widget/ViewPager2;IFIILjava/lang/Object;)Lru/ldralighieri/corbind/viewpager2/ViewPager2PageScrollEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPosition ()I
+	public final fun getPositionOffset ()F
+	public final fun getPositionOffsetPixels ()I
+	public final fun getViewPager ()Landroidx/viewpager2/widget/ViewPager2;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/viewpager2/ViewPager2PageScrollEventsKt {
+	public static final fun pageScrollEvents (Landroidx/viewpager2/widget/ViewPager2;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun pageScrollEvents (Landroidx/viewpager2/widget/ViewPager2;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun pageScrollEvents (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun pageScrollEvents (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun pageScrollEvents$default (Landroidx/viewpager2/widget/ViewPager2;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun pageScrollEvents$default (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun pageScrollEvents$default (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/viewpager2/ViewPager2PageScrollStateChangesKt {
+	public static final fun pageScrollStateChanges (Landroidx/viewpager2/widget/ViewPager2;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun pageScrollStateChanges (Landroidx/viewpager2/widget/ViewPager2;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun pageScrollStateChanges (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun pageScrollStateChanges (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun pageScrollStateChanges$default (Landroidx/viewpager2/widget/ViewPager2;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun pageScrollStateChanges$default (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun pageScrollStateChanges$default (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/viewpager2/ViewPager2PageSelectionsKt {
+	public static final fun pageSelections (Landroidx/viewpager2/widget/ViewPager2;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun pageSelections (Landroidx/viewpager2/widget/ViewPager2;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun pageSelections (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun pageSelections (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun pageSelections$default (Landroidx/viewpager2/widget/ViewPager2;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun pageSelections$default (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun pageSelections$default (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+

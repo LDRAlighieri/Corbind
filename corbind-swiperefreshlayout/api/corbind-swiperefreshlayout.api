@@ -1,0 +1,10 @@
+public final class ru/ldralighieri/corbind/swiperefreshlayout/SwipeRefreshLayoutRefreshesKt {
+	public static final fun refreshes (Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun refreshes (Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun refreshes (Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun refreshes (Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun refreshes$default (Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun refreshes$default (Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun refreshes$default (Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+

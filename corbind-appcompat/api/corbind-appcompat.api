@@ -1,0 +1,85 @@
+public final class ru/ldralighieri/corbind/appcompat/ActionMenuViewItemClicksKt {
+	public static final fun itemClicks (Landroidx/appcompat/widget/ActionMenuView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemClicks (Landroidx/appcompat/widget/ActionMenuView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemClicks (Landroidx/appcompat/widget/ActionMenuView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemClicks (Landroidx/appcompat/widget/ActionMenuView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemClicks$default (Landroidx/appcompat/widget/ActionMenuView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemClicks$default (Landroidx/appcompat/widget/ActionMenuView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemClicks$default (Landroidx/appcompat/widget/ActionMenuView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/appcompat/PopupMenuDismissesKt {
+	public static final fun dismisses (Landroidx/appcompat/widget/PopupMenu;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dismisses (Landroidx/appcompat/widget/PopupMenu;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dismisses (Landroidx/appcompat/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dismisses (Landroidx/appcompat/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun dismisses$default (Landroidx/appcompat/widget/PopupMenu;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dismisses$default (Landroidx/appcompat/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dismisses$default (Landroidx/appcompat/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/appcompat/PopupMenuItemClicksKt {
+	public static final fun itemClicks (Landroidx/appcompat/widget/PopupMenu;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemClicks (Landroidx/appcompat/widget/PopupMenu;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemClicks (Landroidx/appcompat/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemClicks (Landroidx/appcompat/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemClicks$default (Landroidx/appcompat/widget/PopupMenu;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemClicks$default (Landroidx/appcompat/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemClicks$default (Landroidx/appcompat/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/appcompat/SearchViewQueryTextChangeEventsKt {
+	public static final fun queryTextChangeEvents (Landroidx/appcompat/widget/SearchView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun queryTextChangeEvents (Landroidx/appcompat/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun queryTextChangeEvents (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun queryTextChangeEvents (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun queryTextChangeEvents$default (Landroidx/appcompat/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun queryTextChangeEvents$default (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun queryTextChangeEvents$default (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/appcompat/SearchViewQueryTextChangesKt {
+	public static final fun queryTextChanges (Landroidx/appcompat/widget/SearchView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun queryTextChanges (Landroidx/appcompat/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun queryTextChanges (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun queryTextChanges (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun queryTextChanges$default (Landroidx/appcompat/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun queryTextChanges$default (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun queryTextChanges$default (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/appcompat/SearchViewQueryTextEvent {
+	public fun <init> (Landroidx/appcompat/widget/SearchView;Ljava/lang/CharSequence;Z)V
+	public final fun component1 ()Landroidx/appcompat/widget/SearchView;
+	public final fun component2 ()Ljava/lang/CharSequence;
+	public final fun component3 ()Z
+	public final fun copy (Landroidx/appcompat/widget/SearchView;Ljava/lang/CharSequence;Z)Lru/ldralighieri/corbind/appcompat/SearchViewQueryTextEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/appcompat/SearchViewQueryTextEvent;Landroidx/appcompat/widget/SearchView;Ljava/lang/CharSequence;ZILjava/lang/Object;)Lru/ldralighieri/corbind/appcompat/SearchViewQueryTextEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getQueryText ()Ljava/lang/CharSequence;
+	public final fun getView ()Landroidx/appcompat/widget/SearchView;
+	public fun hashCode ()I
+	public final fun isSubmitted ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/appcompat/ToolbarItemClicksKt {
+	public static final fun itemClicks (Landroidx/appcompat/widget/Toolbar;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemClicks (Landroidx/appcompat/widget/Toolbar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemClicks (Landroidx/appcompat/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemClicks (Landroidx/appcompat/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemClicks$default (Landroidx/appcompat/widget/Toolbar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemClicks$default (Landroidx/appcompat/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemClicks$default (Landroidx/appcompat/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/appcompat/ToolbarNavigationClicksKt {
+	public static final fun navigationClicks (Landroidx/appcompat/widget/Toolbar;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun navigationClicks (Landroidx/appcompat/widget/Toolbar;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun navigationClicks (Landroidx/appcompat/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun navigationClicks (Landroidx/appcompat/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun navigationClicks$default (Landroidx/appcompat/widget/Toolbar;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun navigationClicks$default (Landroidx/appcompat/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun navigationClicks$default (Landroidx/appcompat/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
