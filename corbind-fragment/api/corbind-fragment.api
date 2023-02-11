@@ -1,0 +1,23 @@
+public final class ru/ldralighieri/corbind/fragment/FragmentManagerResultEventsKt {
+	public static final fun resultEvents (Landroidx/fragment/app/FragmentManager;Ljava/lang/String;Landroidx/lifecycle/LifecycleOwner;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun resultEvents (Landroidx/fragment/app/FragmentManager;Ljava/lang/String;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun resultEvents (Landroidx/fragment/app/FragmentManager;Lkotlinx/coroutines/CoroutineScope;Ljava/lang/String;Landroidx/lifecycle/LifecycleOwner;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun resultEvents (Landroidx/fragment/app/FragmentManager;Lkotlinx/coroutines/CoroutineScope;Ljava/lang/String;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun resultEvents$default (Landroidx/fragment/app/FragmentManager;Ljava/lang/String;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun resultEvents$default (Landroidx/fragment/app/FragmentManager;Lkotlinx/coroutines/CoroutineScope;Ljava/lang/String;Landroidx/lifecycle/LifecycleOwner;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun resultEvents$default (Landroidx/fragment/app/FragmentManager;Lkotlinx/coroutines/CoroutineScope;Ljava/lang/String;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/fragment/FragmentResultEvent {
+	public fun <init> (Ljava/lang/String;Landroid/os/Bundle;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Landroid/os/Bundle;
+	public final fun copy (Ljava/lang/String;Landroid/os/Bundle;)Lru/ldralighieri/corbind/fragment/FragmentResultEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/fragment/FragmentResultEvent;Ljava/lang/String;Landroid/os/Bundle;ILjava/lang/Object;)Lru/ldralighieri/corbind/fragment/FragmentResultEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBundle ()Landroid/os/Bundle;
+	public final fun getRequestKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+

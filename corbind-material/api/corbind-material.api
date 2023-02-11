@@ -1,0 +1,548 @@
+public final class ru/ldralighieri/corbind/material/AppBarLayoutOffsetChangesKt {
+	public static final fun offsetChanges (Lcom/google/android/material/appbar/AppBarLayout;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun offsetChanges (Lcom/google/android/material/appbar/AppBarLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun offsetChanges (Lcom/google/android/material/appbar/AppBarLayout;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun offsetChanges (Lcom/google/android/material/appbar/AppBarLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun offsetChanges$default (Lcom/google/android/material/appbar/AppBarLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun offsetChanges$default (Lcom/google/android/material/appbar/AppBarLayout;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun offsetChanges$default (Lcom/google/android/material/appbar/AppBarLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/BottomSheetBehaviorSlidesKt {
+	public static final fun slides (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun slides (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun slides (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun slides (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun slides$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun slides$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun slides$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/BottomSheetBehaviorStateChangesKt {
+	public static final fun stateChanges (Landroid/view/View;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun stateChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun stateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun stateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun stateChanges$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun stateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun stateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/ChipCloseIconClicksKt {
+	public static final fun closeIconClicks (Lcom/google/android/material/chip/Chip;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun closeIconClicks (Lcom/google/android/material/chip/Chip;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun closeIconClicks (Lcom/google/android/material/chip/Chip;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun closeIconClicks (Lcom/google/android/material/chip/Chip;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun closeIconClicks$default (Lcom/google/android/material/chip/Chip;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun closeIconClicks$default (Lcom/google/android/material/chip/Chip;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun closeIconClicks$default (Lcom/google/android/material/chip/Chip;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/ChipGroupCheckedChangesKt {
+	public static final fun checkedChanges (Lcom/google/android/material/chip/ChipGroup;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Lcom/google/android/material/chip/ChipGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun checkedChanges (Lcom/google/android/material/chip/ChipGroup;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun checkedChanges (Lcom/google/android/material/chip/ChipGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun checkedChanges$default (Lcom/google/android/material/chip/ChipGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun checkedChanges$default (Lcom/google/android/material/chip/ChipGroup;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun checkedChanges$default (Lcom/google/android/material/chip/ChipGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/HideBottomViewOnScrollBehaviorScrollStateChangesKt {
+	public static final fun bottomViewScrollStateChanges (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun bottomViewScrollStateChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun bottomViewScrollStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun bottomViewScrollStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun bottomViewScrollStateChanges$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun bottomViewScrollStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun bottomViewScrollStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialButtonCheckedChangeEvent {
+	public fun <init> (IZ)V
+	public final fun component1 ()I
+	public final fun component2 ()Z
+	public final fun copy (IZ)Lru/ldralighieri/corbind/material/MaterialButtonCheckedChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/material/MaterialButtonCheckedChangeEvent;IZILjava/lang/Object;)Lru/ldralighieri/corbind/material/MaterialButtonCheckedChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCheckedId ()I
+	public fun hashCode ()I
+	public final fun isChecked ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialButtonCheckedChangesKt {
+	public static final fun checkedChanges (Lcom/google/android/material/button/MaterialButton;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Lcom/google/android/material/button/MaterialButton;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun checkedChanges (Lcom/google/android/material/button/MaterialButton;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun checkedChanges (Lcom/google/android/material/button/MaterialButton;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun checkedChanges$default (Lcom/google/android/material/button/MaterialButton;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun checkedChanges$default (Lcom/google/android/material/button/MaterialButton;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun checkedChanges$default (Lcom/google/android/material/button/MaterialButton;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialButtonToggleGroupCheckedChangeEventsKt {
+	public static final fun buttonCheckedChangeEvents (Lcom/google/android/material/button/MaterialButtonToggleGroup;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun buttonCheckedChangeEvents (Lcom/google/android/material/button/MaterialButtonToggleGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun buttonCheckedChangeEvents (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun buttonCheckedChangeEvents (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun buttonCheckedChangeEvents$default (Lcom/google/android/material/button/MaterialButtonToggleGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun buttonCheckedChangeEvents$default (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun buttonCheckedChangeEvents$default (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialButtonToggleGroupCheckedChangesKt {
+	public static final fun buttonCheckedChanges (Lcom/google/android/material/button/MaterialButtonToggleGroup;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun buttonCheckedChanges (Lcom/google/android/material/button/MaterialButtonToggleGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun buttonCheckedChanges (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun buttonCheckedChanges (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun buttonCheckedChanges$default (Lcom/google/android/material/button/MaterialButtonToggleGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun buttonCheckedChanges$default (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun buttonCheckedChanges$default (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialCardViewCheckedChangesKt {
+	public static final fun checkedChanges (Lcom/google/android/material/card/MaterialCardView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Lcom/google/android/material/card/MaterialCardView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun checkedChanges (Lcom/google/android/material/card/MaterialCardView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun checkedChanges (Lcom/google/android/material/card/MaterialCardView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun checkedChanges$default (Lcom/google/android/material/card/MaterialCardView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun checkedChanges$default (Lcom/google/android/material/card/MaterialCardView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun checkedChanges$default (Lcom/google/android/material/card/MaterialCardView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialDatePickerCancelsKt {
+	public static final fun cancels (Lcom/google/android/material/datepicker/MaterialDatePicker;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun cancels (Lcom/google/android/material/datepicker/MaterialDatePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun cancels (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun cancels (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun cancels$default (Lcom/google/android/material/datepicker/MaterialDatePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun cancels$default (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun cancels$default (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialDatePickerDismissesKt {
+	public static final fun dismisses (Lcom/google/android/material/datepicker/MaterialDatePicker;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dismisses (Lcom/google/android/material/datepicker/MaterialDatePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dismisses (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dismisses (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun dismisses$default (Lcom/google/android/material/datepicker/MaterialDatePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dismisses$default (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dismisses$default (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialDatePickerNegativeClicksKt {
+	public static final fun negativeClicks (Lcom/google/android/material/datepicker/MaterialDatePicker;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun negativeClicks (Lcom/google/android/material/datepicker/MaterialDatePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun negativeClicks (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun negativeClicks (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun negativeClicks$default (Lcom/google/android/material/datepicker/MaterialDatePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun negativeClicks$default (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun negativeClicks$default (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialDatePickerPositiveClicksKt {
+	public static final fun positiveClicks (Lcom/google/android/material/datepicker/MaterialDatePicker;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun positiveClicks (Lcom/google/android/material/datepicker/MaterialDatePicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun positiveClicks (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun positiveClicks (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun positiveClicks$default (Lcom/google/android/material/datepicker/MaterialDatePicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun positiveClicks$default (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun positiveClicks$default (Lcom/google/android/material/datepicker/MaterialDatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialTimePickerCancelsKt {
+	public static final fun cancels (Lcom/google/android/material/timepicker/MaterialTimePicker;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun cancels (Lcom/google/android/material/timepicker/MaterialTimePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun cancels (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun cancels (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun cancels$default (Lcom/google/android/material/timepicker/MaterialTimePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun cancels$default (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun cancels$default (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialTimePickerDismissesKt {
+	public static final fun dismisses (Lcom/google/android/material/timepicker/MaterialTimePicker;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dismisses (Lcom/google/android/material/timepicker/MaterialTimePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dismisses (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dismisses (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun dismisses$default (Lcom/google/android/material/timepicker/MaterialTimePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dismisses$default (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dismisses$default (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialTimePickerNegativeClicksKt {
+	public static final fun negativeClicks (Lcom/google/android/material/timepicker/MaterialTimePicker;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun negativeClicks (Lcom/google/android/material/timepicker/MaterialTimePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun negativeClicks (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun negativeClicks (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun negativeClicks$default (Lcom/google/android/material/timepicker/MaterialTimePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun negativeClicks$default (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun negativeClicks$default (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/MaterialTimePickerPositiveClicksKt {
+	public static final fun positiveClicks (Lcom/google/android/material/timepicker/MaterialTimePicker;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun positiveClicks (Lcom/google/android/material/timepicker/MaterialTimePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun positiveClicks (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun positiveClicks (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun positiveClicks$default (Lcom/google/android/material/timepicker/MaterialTimePicker;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun positiveClicks$default (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun positiveClicks$default (Lcom/google/android/material/timepicker/MaterialTimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/NavigationBarViewItemReselectionsKt {
+	public static final fun itemReselections (Lcom/google/android/material/navigation/NavigationBarView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemReselections (Lcom/google/android/material/navigation/NavigationBarView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemReselections (Lcom/google/android/material/navigation/NavigationBarView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemReselections (Lcom/google/android/material/navigation/NavigationBarView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemReselections$default (Lcom/google/android/material/navigation/NavigationBarView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemReselections$default (Lcom/google/android/material/navigation/NavigationBarView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemReselections$default (Lcom/google/android/material/navigation/NavigationBarView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/NavigationBarViewItemSelectionsKt {
+	public static final fun itemSelections (Lcom/google/android/material/navigation/NavigationBarView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemSelections (Lcom/google/android/material/navigation/NavigationBarView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemSelections (Lcom/google/android/material/navigation/NavigationBarView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemSelections (Lcom/google/android/material/navigation/NavigationBarView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemSelections$default (Lcom/google/android/material/navigation/NavigationBarView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemSelections$default (Lcom/google/android/material/navigation/NavigationBarView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemSelections$default (Lcom/google/android/material/navigation/NavigationBarView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/NavigationViewItemSelectionsKt {
+	public static final fun itemSelections (Lcom/google/android/material/navigation/NavigationView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemSelections (Lcom/google/android/material/navigation/NavigationView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemSelections (Lcom/google/android/material/navigation/NavigationView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemSelections (Lcom/google/android/material/navigation/NavigationView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemSelections$default (Lcom/google/android/material/navigation/NavigationView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemSelections$default (Lcom/google/android/material/navigation/NavigationView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemSelections$default (Lcom/google/android/material/navigation/NavigationView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/RangeSliderChangeEvent {
+	public fun <init> (Lcom/google/android/material/slider/RangeSlider;Lru/ldralighieri/corbind/material/RangeSliderSide;Ljava/util/List;Ljava/util/List;Z)V
+	public final fun component1 ()Lcom/google/android/material/slider/RangeSlider;
+	public final fun component2 ()Lru/ldralighieri/corbind/material/RangeSliderSide;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Z
+	public final fun copy (Lcom/google/android/material/slider/RangeSlider;Lru/ldralighieri/corbind/material/RangeSliderSide;Ljava/util/List;Ljava/util/List;Z)Lru/ldralighieri/corbind/material/RangeSliderChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/material/RangeSliderChangeEvent;Lcom/google/android/material/slider/RangeSlider;Lru/ldralighieri/corbind/material/RangeSliderSide;Ljava/util/List;Ljava/util/List;ZILjava/lang/Object;)Lru/ldralighieri/corbind/material/RangeSliderChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChangedSide ()Lru/ldralighieri/corbind/material/RangeSliderSide;
+	public final fun getFromUser ()Z
+	public final fun getNewValues ()Ljava/util/List;
+	public final fun getPreviousValues ()Ljava/util/List;
+	public final fun getView ()Lcom/google/android/material/slider/RangeSlider;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/material/RangeSliderSide : java/lang/Enum {
+	public static final field INIT Lru/ldralighieri/corbind/material/RangeSliderSide;
+	public static final field LEFT Lru/ldralighieri/corbind/material/RangeSliderSide;
+	public static final field RIGHT Lru/ldralighieri/corbind/material/RangeSliderSide;
+	public static fun valueOf (Ljava/lang/String;)Lru/ldralighieri/corbind/material/RangeSliderSide;
+	public static fun values ()[Lru/ldralighieri/corbind/material/RangeSliderSide;
+}
+
+public final class ru/ldralighieri/corbind/material/RangeSliderTouchesKt {
+	public static final fun touches (Lcom/google/android/material/slider/RangeSlider;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun touches (Lcom/google/android/material/slider/RangeSlider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun touches (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun touches (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun touches$default (Lcom/google/android/material/slider/RangeSlider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun touches$default (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun touches$default (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/RangeSliderValuesChangeEventsKt {
+	public static final fun valuesChangeEvents (Lcom/google/android/material/slider/RangeSlider;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valuesChangeEvents (Lcom/google/android/material/slider/RangeSlider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun valuesChangeEvents (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun valuesChangeEvents (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun valuesChangeEvents$default (Lcom/google/android/material/slider/RangeSlider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun valuesChangeEvents$default (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun valuesChangeEvents$default (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/RangeSliderValuesChangesKt {
+	public static final fun valuesChanges (Lcom/google/android/material/slider/RangeSlider;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valuesChanges (Lcom/google/android/material/slider/RangeSlider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun valuesChanges (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun valuesChanges (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun valuesChanges$default (Lcom/google/android/material/slider/RangeSlider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun valuesChanges$default (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun valuesChanges$default (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SearchBarNavigationClicksKt {
+	public static final fun navigationClicks (Lcom/google/android/material/search/SearchBar;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun navigationClicks (Lcom/google/android/material/search/SearchBar;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun navigationClicks (Lcom/google/android/material/search/SearchBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun navigationClicks (Lcom/google/android/material/search/SearchBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun navigationClicks$default (Lcom/google/android/material/search/SearchBar;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun navigationClicks$default (Lcom/google/android/material/search/SearchBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun navigationClicks$default (Lcom/google/android/material/search/SearchBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SearchViewTransitionStateChangeEvent {
+	public fun <init> (Lcom/google/android/material/search/SearchView;Lcom/google/android/material/search/SearchView$TransitionState;Lcom/google/android/material/search/SearchView$TransitionState;)V
+	public final fun component1 ()Lcom/google/android/material/search/SearchView;
+	public final fun component2 ()Lcom/google/android/material/search/SearchView$TransitionState;
+	public final fun component3 ()Lcom/google/android/material/search/SearchView$TransitionState;
+	public final fun copy (Lcom/google/android/material/search/SearchView;Lcom/google/android/material/search/SearchView$TransitionState;Lcom/google/android/material/search/SearchView$TransitionState;)Lru/ldralighieri/corbind/material/SearchViewTransitionStateChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/material/SearchViewTransitionStateChangeEvent;Lcom/google/android/material/search/SearchView;Lcom/google/android/material/search/SearchView$TransitionState;Lcom/google/android/material/search/SearchView$TransitionState;ILjava/lang/Object;)Lru/ldralighieri/corbind/material/SearchViewTransitionStateChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNewState ()Lcom/google/android/material/search/SearchView$TransitionState;
+	public final fun getPreviousState ()Lcom/google/android/material/search/SearchView$TransitionState;
+	public final fun getView ()Lcom/google/android/material/search/SearchView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/material/SearchViewTransitionStateChangeEventsKt {
+	public static final fun transitionStateChangeEvents (Lcom/google/android/material/search/SearchView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun transitionStateChangeEvents (Lcom/google/android/material/search/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun transitionStateChangeEvents (Lcom/google/android/material/search/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun transitionStateChangeEvents (Lcom/google/android/material/search/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun transitionStateChangeEvents$default (Lcom/google/android/material/search/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun transitionStateChangeEvents$default (Lcom/google/android/material/search/SearchView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun transitionStateChangeEvents$default (Lcom/google/android/material/search/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SearchViewTransitionStateChangesKt {
+	public static final fun transitionStateChanges (Lcom/google/android/material/search/SearchView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun transitionStateChanges (Lcom/google/android/material/search/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun transitionStateChanges (Lcom/google/android/material/search/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun transitionStateChanges (Lcom/google/android/material/search/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun transitionStateChanges$default (Lcom/google/android/material/search/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun transitionStateChanges$default (Lcom/google/android/material/search/SearchView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun transitionStateChanges$default (Lcom/google/android/material/search/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SideSheetBehaviorSlidesKt {
+	public static final fun sideSheetSlides (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun sideSheetSlides (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun sideSheetSlides (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun sideSheetSlides (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun sideSheetSlides$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun sideSheetSlides$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun sideSheetSlides$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SideSheetBehaviorStateChangesKt {
+	public static final fun sideSheetStateChanges (Landroid/view/View;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun sideSheetStateChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun sideSheetStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun sideSheetStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun sideSheetStateChanges$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun sideSheetStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun sideSheetStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SliderChangeEvent {
+	public fun <init> (Lcom/google/android/material/slider/Slider;FFZ)V
+	public final fun component1 ()Lcom/google/android/material/slider/Slider;
+	public final fun component2 ()F
+	public final fun component3 ()F
+	public final fun component4 ()Z
+	public final fun copy (Lcom/google/android/material/slider/Slider;FFZ)Lru/ldralighieri/corbind/material/SliderChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/material/SliderChangeEvent;Lcom/google/android/material/slider/Slider;FFZILjava/lang/Object;)Lru/ldralighieri/corbind/material/SliderChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFromUser ()Z
+	public final fun getPreviousValue ()F
+	public final fun getValue ()F
+	public final fun getView ()Lcom/google/android/material/slider/Slider;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/material/SliderTouchesKt {
+	public static final fun touches (Lcom/google/android/material/slider/Slider;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun touches (Lcom/google/android/material/slider/Slider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun touches (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun touches (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun touches$default (Lcom/google/android/material/slider/Slider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun touches$default (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun touches$default (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SliderValueChangeEventsKt {
+	public static final fun valueChangeEvents (Lcom/google/android/material/slider/Slider;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valueChangeEvents (Lcom/google/android/material/slider/Slider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun valueChangeEvents (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun valueChangeEvents (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun valueChangeEvents$default (Lcom/google/android/material/slider/Slider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun valueChangeEvents$default (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun valueChangeEvents$default (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SliderValueChangesKt {
+	public static final fun valueChanges (Lcom/google/android/material/slider/Slider;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valueChanges (Lcom/google/android/material/slider/Slider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun valueChanges (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun valueChanges (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun valueChanges$default (Lcom/google/android/material/slider/Slider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun valueChanges$default (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun valueChanges$default (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SnackbarDismissesKt {
+	public static final fun dismisses (Lcom/google/android/material/snackbar/Snackbar;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dismisses (Lcom/google/android/material/snackbar/Snackbar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dismisses (Lcom/google/android/material/snackbar/Snackbar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dismisses (Lcom/google/android/material/snackbar/Snackbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dismisses$default (Lcom/google/android/material/snackbar/Snackbar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dismisses$default (Lcom/google/android/material/snackbar/Snackbar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dismisses$default (Lcom/google/android/material/snackbar/Snackbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SnackbarShownKt {
+	public static final fun shown (Lcom/google/android/material/snackbar/Snackbar;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun shown (Lcom/google/android/material/snackbar/Snackbar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun shown (Lcom/google/android/material/snackbar/Snackbar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun shown (Lcom/google/android/material/snackbar/Snackbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun shown$default (Lcom/google/android/material/snackbar/Snackbar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun shown$default (Lcom/google/android/material/snackbar/Snackbar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun shown$default (Lcom/google/android/material/snackbar/Snackbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SwipeDismissBehaviorDesmissesKt {
+	public static final fun dismisses (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dismisses (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dismisses (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dismisses (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dismisses$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dismisses$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dismisses$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/SwipeDismissBehaviorDragStateChangesKt {
+	public static final fun dragStateChanges (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dragStateChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dragStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dragStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dragStateChanges$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dragStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dragStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public abstract class ru/ldralighieri/corbind/material/TabLayoutSelectionEvent {
+	public abstract fun getTab ()Lcom/google/android/material/tabs/TabLayout$Tab;
+	public abstract fun getView ()Lcom/google/android/material/tabs/TabLayout;
+}
+
+public final class ru/ldralighieri/corbind/material/TabLayoutSelectionEventsKt {
+	public static final fun selectionEvents (Lcom/google/android/material/tabs/TabLayout;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun selectionEvents (Lcom/google/android/material/tabs/TabLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun selectionEvents (Lcom/google/android/material/tabs/TabLayout;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun selectionEvents (Lcom/google/android/material/tabs/TabLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun selectionEvents$default (Lcom/google/android/material/tabs/TabLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun selectionEvents$default (Lcom/google/android/material/tabs/TabLayout;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun selectionEvents$default (Lcom/google/android/material/tabs/TabLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/TabLayoutSelectionReselectedEvent : ru/ldralighieri/corbind/material/TabLayoutSelectionEvent {
+	public fun <init> (Lcom/google/android/material/tabs/TabLayout;Lcom/google/android/material/tabs/TabLayout$Tab;)V
+	public final fun component1 ()Lcom/google/android/material/tabs/TabLayout;
+	public final fun component2 ()Lcom/google/android/material/tabs/TabLayout$Tab;
+	public final fun copy (Lcom/google/android/material/tabs/TabLayout;Lcom/google/android/material/tabs/TabLayout$Tab;)Lru/ldralighieri/corbind/material/TabLayoutSelectionReselectedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/material/TabLayoutSelectionReselectedEvent;Lcom/google/android/material/tabs/TabLayout;Lcom/google/android/material/tabs/TabLayout$Tab;ILjava/lang/Object;)Lru/ldralighieri/corbind/material/TabLayoutSelectionReselectedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getTab ()Lcom/google/android/material/tabs/TabLayout$Tab;
+	public fun getView ()Lcom/google/android/material/tabs/TabLayout;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/material/TabLayoutSelectionSelectedEvent : ru/ldralighieri/corbind/material/TabLayoutSelectionEvent {
+	public fun <init> (Lcom/google/android/material/tabs/TabLayout;Lcom/google/android/material/tabs/TabLayout$Tab;)V
+	public final fun component1 ()Lcom/google/android/material/tabs/TabLayout;
+	public final fun component2 ()Lcom/google/android/material/tabs/TabLayout$Tab;
+	public final fun copy (Lcom/google/android/material/tabs/TabLayout;Lcom/google/android/material/tabs/TabLayout$Tab;)Lru/ldralighieri/corbind/material/TabLayoutSelectionSelectedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/material/TabLayoutSelectionSelectedEvent;Lcom/google/android/material/tabs/TabLayout;Lcom/google/android/material/tabs/TabLayout$Tab;ILjava/lang/Object;)Lru/ldralighieri/corbind/material/TabLayoutSelectionSelectedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getTab ()Lcom/google/android/material/tabs/TabLayout$Tab;
+	public fun getView ()Lcom/google/android/material/tabs/TabLayout;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/material/TabLayoutSelectionUnselectedEvent : ru/ldralighieri/corbind/material/TabLayoutSelectionEvent {
+	public fun <init> (Lcom/google/android/material/tabs/TabLayout;Lcom/google/android/material/tabs/TabLayout$Tab;)V
+	public final fun component1 ()Lcom/google/android/material/tabs/TabLayout;
+	public final fun component2 ()Lcom/google/android/material/tabs/TabLayout$Tab;
+	public final fun copy (Lcom/google/android/material/tabs/TabLayout;Lcom/google/android/material/tabs/TabLayout$Tab;)Lru/ldralighieri/corbind/material/TabLayoutSelectionUnselectedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/material/TabLayoutSelectionUnselectedEvent;Lcom/google/android/material/tabs/TabLayout;Lcom/google/android/material/tabs/TabLayout$Tab;ILjava/lang/Object;)Lru/ldralighieri/corbind/material/TabLayoutSelectionUnselectedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getTab ()Lcom/google/android/material/tabs/TabLayout$Tab;
+	public fun getView ()Lcom/google/android/material/tabs/TabLayout;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/material/TabLayoutSelectionsKt {
+	public static final fun selections (Lcom/google/android/material/tabs/TabLayout;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun selections (Lcom/google/android/material/tabs/TabLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun selections (Lcom/google/android/material/tabs/TabLayout;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun selections (Lcom/google/android/material/tabs/TabLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun selections$default (Lcom/google/android/material/tabs/TabLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun selections$default (Lcom/google/android/material/tabs/TabLayout;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun selections$default (Lcom/google/android/material/tabs/TabLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/TextInputLayoutEndIconChangesKt {
+	public static final fun endIconChanges (Lcom/google/android/material/textfield/TextInputLayout;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun endIconChanges (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun endIconChanges (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun endIconChanges (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun endIconChanges$default (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun endIconChanges$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun endIconChanges$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/TextInputLayoutEndIconClicksKt {
+	public static final fun endIconClicks (Lcom/google/android/material/textfield/TextInputLayout;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun endIconClicks (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun endIconClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun endIconClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun endIconClicks$default (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun endIconClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun endIconClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/TextInputLayoutEndIconLongClicksKt {
+	public static final fun endIconLongClicks (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun endIconLongClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun endIconLongClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun endIconLongClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun endIconLongClicks$default (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun endIconLongClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun endIconLongClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun endIconLongClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/TextInputLayoutStartIconClicksKt {
+	public static final fun startIconClicks (Lcom/google/android/material/textfield/TextInputLayout;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun startIconClicks (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun startIconClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun startIconClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun startIconClicks$default (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun startIconClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun startIconClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/TextInputLayoutStartIconLongClicksKt {
+	public static final fun startIconLongClicks (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun startIconLongClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun startIconLongClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun startIconLongClicks (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun startIconLongClicks$default (Lcom/google/android/material/textfield/TextInputLayout;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun startIconLongClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun startIconLongClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun startIconLongClicks$default (Lcom/google/android/material/textfield/TextInputLayout;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+

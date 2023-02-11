@@ -1,0 +1,74 @@
+public final class ru/ldralighieri/corbind/leanback/SearchBarSearchQueryChangeEventsKt {
+	public static final fun searchQueryChangeEvents (Landroidx/leanback/widget/SearchBar;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun searchQueryChangeEvents (Landroidx/leanback/widget/SearchBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun searchQueryChangeEvents (Landroidx/leanback/widget/SearchBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun searchQueryChangeEvents (Landroidx/leanback/widget/SearchBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun searchQueryChangeEvents$default (Landroidx/leanback/widget/SearchBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun searchQueryChangeEvents$default (Landroidx/leanback/widget/SearchBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun searchQueryChangeEvents$default (Landroidx/leanback/widget/SearchBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/leanback/SearchBarSearchQueryChangedEvent : ru/ldralighieri/corbind/leanback/SearchBarSearchQueryEvent {
+	public fun <init> (Landroidx/leanback/widget/SearchBar;Ljava/lang/String;)V
+	public final fun component1 ()Landroidx/leanback/widget/SearchBar;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Landroidx/leanback/widget/SearchBar;Ljava/lang/String;)Lru/ldralighieri/corbind/leanback/SearchBarSearchQueryChangedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/leanback/SearchBarSearchQueryChangedEvent;Landroidx/leanback/widget/SearchBar;Ljava/lang/String;ILjava/lang/Object;)Lru/ldralighieri/corbind/leanback/SearchBarSearchQueryChangedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSearchQuery ()Ljava/lang/String;
+	public fun getView ()Landroidx/leanback/widget/SearchBar;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/leanback/SearchBarSearchQueryChangesKt {
+	public static final fun searchQueryChanges (Landroidx/leanback/widget/SearchBar;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun searchQueryChanges (Landroidx/leanback/widget/SearchBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun searchQueryChanges (Landroidx/leanback/widget/SearchBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun searchQueryChanges (Landroidx/leanback/widget/SearchBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun searchQueryChanges$default (Landroidx/leanback/widget/SearchBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun searchQueryChanges$default (Landroidx/leanback/widget/SearchBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun searchQueryChanges$default (Landroidx/leanback/widget/SearchBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public abstract class ru/ldralighieri/corbind/leanback/SearchBarSearchQueryEvent {
+	public abstract fun getSearchQuery ()Ljava/lang/String;
+	public abstract fun getView ()Landroidx/leanback/widget/SearchBar;
+}
+
+public final class ru/ldralighieri/corbind/leanback/SearchBarSearchQueryKeyboardDismissedEvent : ru/ldralighieri/corbind/leanback/SearchBarSearchQueryEvent {
+	public fun <init> (Landroidx/leanback/widget/SearchBar;Ljava/lang/String;)V
+	public final fun component1 ()Landroidx/leanback/widget/SearchBar;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Landroidx/leanback/widget/SearchBar;Ljava/lang/String;)Lru/ldralighieri/corbind/leanback/SearchBarSearchQueryKeyboardDismissedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/leanback/SearchBarSearchQueryKeyboardDismissedEvent;Landroidx/leanback/widget/SearchBar;Ljava/lang/String;ILjava/lang/Object;)Lru/ldralighieri/corbind/leanback/SearchBarSearchQueryKeyboardDismissedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSearchQuery ()Ljava/lang/String;
+	public fun getView ()Landroidx/leanback/widget/SearchBar;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/leanback/SearchBarSearchQuerySubmittedEvent : ru/ldralighieri/corbind/leanback/SearchBarSearchQueryEvent {
+	public fun <init> (Landroidx/leanback/widget/SearchBar;Ljava/lang/String;)V
+	public final fun component1 ()Landroidx/leanback/widget/SearchBar;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Landroidx/leanback/widget/SearchBar;Ljava/lang/String;)Lru/ldralighieri/corbind/leanback/SearchBarSearchQuerySubmittedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/leanback/SearchBarSearchQuerySubmittedEvent;Landroidx/leanback/widget/SearchBar;Ljava/lang/String;ILjava/lang/Object;)Lru/ldralighieri/corbind/leanback/SearchBarSearchQuerySubmittedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSearchQuery ()Ljava/lang/String;
+	public fun getView ()Landroidx/leanback/widget/SearchBar;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/leanback/SearchEditTextKeyboardDismissesKt {
+	public static final fun keyboardDismisses (Landroidx/leanback/widget/SearchEditText;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun keyboardDismisses (Landroidx/leanback/widget/SearchEditText;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun keyboardDismisses (Landroidx/leanback/widget/SearchEditText;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun keyboardDismisses (Landroidx/leanback/widget/SearchEditText;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun keyboardDismisses$default (Landroidx/leanback/widget/SearchEditText;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun keyboardDismisses$default (Landroidx/leanback/widget/SearchEditText;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun keyboardDismisses$default (Landroidx/leanback/widget/SearchEditText;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+

@@ -1,0 +1,1027 @@
+public final class ru/ldralighieri/corbind/app/DatePickerDialogDateSetEventsKt {
+	public static final fun dateSetEvents (Landroid/app/DatePickerDialog;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dateSetEvents (Landroid/app/DatePickerDialog;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dateSetEvents (Landroid/app/DatePickerDialog;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dateSetEvents (Landroid/app/DatePickerDialog;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dateSetEvents$default (Landroid/app/DatePickerDialog;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dateSetEvents$default (Landroid/app/DatePickerDialog;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dateSetEvents$default (Landroid/app/DatePickerDialog;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/app/DatePickerDialogSetEvent {
+	public fun <init> (Landroid/widget/DatePicker;III)V
+	public final fun component1 ()Landroid/widget/DatePicker;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun copy (Landroid/widget/DatePicker;III)Lru/ldralighieri/corbind/app/DatePickerDialogSetEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/app/DatePickerDialogSetEvent;Landroid/widget/DatePicker;IIIILjava/lang/Object;)Lru/ldralighieri/corbind/app/DatePickerDialogSetEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDayOfMonth ()I
+	public final fun getMonthOfYear ()I
+	public final fun getView ()Landroid/widget/DatePicker;
+	public final fun getYear ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/content/ContextReceivesBroadcastKt {
+	public static final fun receivesBroadcast (Landroid/content/Context;Landroid/content/IntentFilter;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun receivesBroadcast (Landroid/content/Context;Landroid/content/IntentFilter;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun receivesBroadcast (Landroid/content/Context;Lkotlinx/coroutines/CoroutineScope;Landroid/content/IntentFilter;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun receivesBroadcast (Landroid/content/Context;Lkotlinx/coroutines/CoroutineScope;Landroid/content/IntentFilter;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun receivesBroadcast$default (Landroid/content/Context;Landroid/content/IntentFilter;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun receivesBroadcast$default (Landroid/content/Context;Lkotlinx/coroutines/CoroutineScope;Landroid/content/IntentFilter;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun receivesBroadcast$default (Landroid/content/Context;Lkotlinx/coroutines/CoroutineScope;Landroid/content/IntentFilter;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/MenuItemActionViewCollapseEvent : ru/ldralighieri/corbind/view/MenuItemActionViewEvent {
+	public fun <init> (Landroid/view/MenuItem;)V
+	public final fun component1 ()Landroid/view/MenuItem;
+	public final fun copy (Landroid/view/MenuItem;)Lru/ldralighieri/corbind/view/MenuItemActionViewCollapseEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/view/MenuItemActionViewCollapseEvent;Landroid/view/MenuItem;ILjava/lang/Object;)Lru/ldralighieri/corbind/view/MenuItemActionViewCollapseEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getMenuItem ()Landroid/view/MenuItem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class ru/ldralighieri/corbind/view/MenuItemActionViewEvent {
+	public abstract fun getMenuItem ()Landroid/view/MenuItem;
+}
+
+public final class ru/ldralighieri/corbind/view/MenuItemActionViewEventsKt {
+	public static final fun actionViewEvents (Landroid/view/MenuItem;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun actionViewEvents (Landroid/view/MenuItem;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun actionViewEvents (Landroid/view/MenuItem;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun actionViewEvents (Landroid/view/MenuItem;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun actionViewEvents$default (Landroid/view/MenuItem;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun actionViewEvents$default (Landroid/view/MenuItem;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun actionViewEvents$default (Landroid/view/MenuItem;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun actionViewEvents$default (Landroid/view/MenuItem;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/MenuItemActionViewExpandEvent : ru/ldralighieri/corbind/view/MenuItemActionViewEvent {
+	public fun <init> (Landroid/view/MenuItem;)V
+	public final fun component1 ()Landroid/view/MenuItem;
+	public final fun copy (Landroid/view/MenuItem;)Lru/ldralighieri/corbind/view/MenuItemActionViewExpandEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/view/MenuItemActionViewExpandEvent;Landroid/view/MenuItem;ILjava/lang/Object;)Lru/ldralighieri/corbind/view/MenuItemActionViewExpandEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getMenuItem ()Landroid/view/MenuItem;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/view/MenuItemClicksKt {
+	public static final fun clicks (Landroid/view/MenuItem;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun clicks (Landroid/view/MenuItem;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun clicks (Landroid/view/MenuItem;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun clicks (Landroid/view/MenuItem;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun clicks$default (Landroid/view/MenuItem;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun clicks$default (Landroid/view/MenuItem;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun clicks$default (Landroid/view/MenuItem;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun clicks$default (Landroid/view/MenuItem;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewAttachAttachedEvent : ru/ldralighieri/corbind/view/ViewAttachEvent {
+	public fun <init> (Landroid/view/View;)V
+	public final fun component1 ()Landroid/view/View;
+	public final fun copy (Landroid/view/View;)Lru/ldralighieri/corbind/view/ViewAttachAttachedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/view/ViewAttachAttachedEvent;Landroid/view/View;ILjava/lang/Object;)Lru/ldralighieri/corbind/view/ViewAttachAttachedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getView ()Landroid/view/View;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/view/ViewAttachDetachedEvent : ru/ldralighieri/corbind/view/ViewAttachEvent {
+	public fun <init> (Landroid/view/View;)V
+	public final fun component1 ()Landroid/view/View;
+	public final fun copy (Landroid/view/View;)Lru/ldralighieri/corbind/view/ViewAttachDetachedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/view/ViewAttachDetachedEvent;Landroid/view/View;ILjava/lang/Object;)Lru/ldralighieri/corbind/view/ViewAttachDetachedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getView ()Landroid/view/View;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class ru/ldralighieri/corbind/view/ViewAttachEvent {
+	public abstract fun getView ()Landroid/view/View;
+}
+
+public final class ru/ldralighieri/corbind/view/ViewAttachEventsKt {
+	public static final fun attachEvents (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun attachEvents (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun attachEvents (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun attachEvents (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun attachEvents$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun attachEvents$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun attachEvents$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewAttachesKt {
+	public static final fun attaches (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun attaches (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun attaches (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun attaches (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun attaches$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun attaches$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun attaches$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun detaches (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun detaches (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun detaches (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun detaches (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun detaches$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun detaches$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun detaches$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewClicksKt {
+	public static final fun clicks (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun clicks (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun clicks (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun clicks (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun clicks$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun clicks$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun clicks$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewDragsKt {
+	public static final fun drags (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun drags (Landroid/view/View;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun drags (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun drags (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun drags$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun drags$default (Landroid/view/View;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun drags$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun drags$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewFocusChangesKt {
+	public static final fun focusChanges (Landroid/view/View;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun focusChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun focusChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun focusChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun focusChanges$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun focusChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun focusChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public abstract class ru/ldralighieri/corbind/view/ViewGroupHierarchyChangeEvent {
+	public abstract fun getChild ()Landroid/view/View;
+	public abstract fun getView ()Landroid/view/ViewGroup;
+}
+
+public final class ru/ldralighieri/corbind/view/ViewGroupHierarchyChangeEventsKt {
+	public static final fun changeEvents (Landroid/view/ViewGroup;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun changeEvents (Landroid/view/ViewGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun changeEvents (Landroid/view/ViewGroup;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun changeEvents (Landroid/view/ViewGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun changeEvents$default (Landroid/view/ViewGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun changeEvents$default (Landroid/view/ViewGroup;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun changeEvents$default (Landroid/view/ViewGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewGroupHierarchyChildViewAddEvent : ru/ldralighieri/corbind/view/ViewGroupHierarchyChangeEvent {
+	public fun <init> (Landroid/view/ViewGroup;Landroid/view/View;)V
+	public final fun component1 ()Landroid/view/ViewGroup;
+	public final fun component2 ()Landroid/view/View;
+	public final fun copy (Landroid/view/ViewGroup;Landroid/view/View;)Lru/ldralighieri/corbind/view/ViewGroupHierarchyChildViewAddEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/view/ViewGroupHierarchyChildViewAddEvent;Landroid/view/ViewGroup;Landroid/view/View;ILjava/lang/Object;)Lru/ldralighieri/corbind/view/ViewGroupHierarchyChildViewAddEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChild ()Landroid/view/View;
+	public fun getView ()Landroid/view/ViewGroup;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/view/ViewGroupHierarchyChildViewRemoveEvent : ru/ldralighieri/corbind/view/ViewGroupHierarchyChangeEvent {
+	public fun <init> (Landroid/view/ViewGroup;Landroid/view/View;)V
+	public final fun component1 ()Landroid/view/ViewGroup;
+	public final fun component2 ()Landroid/view/View;
+	public final fun copy (Landroid/view/ViewGroup;Landroid/view/View;)Lru/ldralighieri/corbind/view/ViewGroupHierarchyChildViewRemoveEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/view/ViewGroupHierarchyChildViewRemoveEvent;Landroid/view/ViewGroup;Landroid/view/View;ILjava/lang/Object;)Lru/ldralighieri/corbind/view/ViewGroupHierarchyChildViewRemoveEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChild ()Landroid/view/View;
+	public fun getView ()Landroid/view/ViewGroup;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/view/ViewHoversKt {
+	public static final fun hovers (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun hovers (Landroid/view/View;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun hovers (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun hovers (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun hovers$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun hovers$default (Landroid/view/View;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun hovers$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun hovers$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewKeysKt {
+	public static final fun keys (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun keys (Landroid/view/View;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun keys (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun keys (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun keys$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun keys$default (Landroid/view/View;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun keys$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun keys$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewLayoutChangeEvent {
+	public fun <init> (Landroid/view/View;IIIIIIII)V
+	public final fun component1 ()Landroid/view/View;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun component6 ()I
+	public final fun component7 ()I
+	public final fun component8 ()I
+	public final fun component9 ()I
+	public final fun copy (Landroid/view/View;IIIIIIII)Lru/ldralighieri/corbind/view/ViewLayoutChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/view/ViewLayoutChangeEvent;Landroid/view/View;IIIIIIIIILjava/lang/Object;)Lru/ldralighieri/corbind/view/ViewLayoutChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBottom ()I
+	public final fun getLeft ()I
+	public final fun getOldBottom ()I
+	public final fun getOldLeft ()I
+	public final fun getOldRight ()I
+	public final fun getOldTop ()I
+	public final fun getRight ()I
+	public final fun getTop ()I
+	public final fun getView ()Landroid/view/View;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/view/ViewLayoutChangeEventsKt {
+	public static final fun layoutChangeEvents (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun layoutChangeEvents (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun layoutChangeEvents (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun layoutChangeEvents (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun layoutChangeEvents$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun layoutChangeEvents$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun layoutChangeEvents$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewLayoutChangesKt {
+	public static final fun layoutChanges (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun layoutChanges (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun layoutChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun layoutChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun layoutChanges$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun layoutChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun layoutChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewLongClicksKt {
+	public static final fun longClicks (Landroid/view/View;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun longClicks (Landroid/view/View;Lkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun longClicks (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun longClicks (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun longClicks$default (Landroid/view/View;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun longClicks$default (Landroid/view/View;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun longClicks$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun longClicks$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewScrollChangeEvent {
+	public fun <init> (Landroid/view/View;IIII)V
+	public final fun component1 ()Landroid/view/View;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun copy (Landroid/view/View;IIII)Lru/ldralighieri/corbind/view/ViewScrollChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/view/ViewScrollChangeEvent;Landroid/view/View;IIIIILjava/lang/Object;)Lru/ldralighieri/corbind/view/ViewScrollChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOldScrollX ()I
+	public final fun getOldScrollY ()I
+	public final fun getScrollX ()I
+	public final fun getScrollY ()I
+	public final fun getView ()Landroid/view/View;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/view/ViewScrollChangeEventsKt {
+	public static final fun scrollChangeEvents (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun scrollChangeEvents (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun scrollChangeEvents (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun scrollChangeEvents (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun scrollChangeEvents$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun scrollChangeEvents$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun scrollChangeEvents$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewSystemUiVisibilityChangesKt {
+	public static final fun systemUiVisibilityChanges (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun systemUiVisibilityChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun systemUiVisibilityChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun systemUiVisibilityChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun systemUiVisibilityChanges$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun systemUiVisibilityChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun systemUiVisibilityChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewTouchesKt {
+	public static final fun touches (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun touches (Landroid/view/View;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun touches (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun touches (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun touches$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun touches$default (Landroid/view/View;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun touches$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun touches$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewTreeObserverDrawsKt {
+	public static final fun draws (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun draws (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun draws (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun draws (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun draws$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun draws$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun draws$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewTreeObserverGlobalLayoutsKt {
+	public static final fun globalLayouts (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun globalLayouts (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun globalLayouts (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun globalLayouts (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun globalLayouts$default (Landroid/view/View;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun globalLayouts$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun globalLayouts$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewTreeObserverPreDrawsKt {
+	public static final fun preDraws (Landroid/view/View;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun preDraws (Landroid/view/View;Lkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun preDraws (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun preDraws (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun preDraws$default (Landroid/view/View;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun preDraws$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun preDraws$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/ViewWindowInsetsApplyEventsKt {
+	public static final fun windowInsetsApplyEvents (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun windowInsetsApplyEvents (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun windowInsetsApplyEvents (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun windowInsetsApplyEvents (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun windowInsetsApplyEvents$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun windowInsetsApplyEvents$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun windowInsetsApplyEvents$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/view/WindowInsetsEvent {
+	public fun <init> (Landroid/view/View;Landroid/view/WindowInsets;)V
+	public final fun component1 ()Landroid/view/View;
+	public final fun component2 ()Landroid/view/WindowInsets;
+	public final fun copy (Landroid/view/View;Landroid/view/WindowInsets;)Lru/ldralighieri/corbind/view/WindowInsetsEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/view/WindowInsetsEvent;Landroid/view/View;Landroid/view/WindowInsets;ILjava/lang/Object;)Lru/ldralighieri/corbind/view/WindowInsetsEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInsets ()Landroid/view/WindowInsets;
+	public final fun getView ()Landroid/view/View;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/AbsListViewScrollEvent {
+	public fun <init> (Landroid/widget/AbsListView;IIII)V
+	public final fun component1 ()Landroid/widget/AbsListView;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun copy (Landroid/widget/AbsListView;IIII)Lru/ldralighieri/corbind/widget/AbsListViewScrollEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/AbsListViewScrollEvent;Landroid/widget/AbsListView;IIIIILjava/lang/Object;)Lru/ldralighieri/corbind/widget/AbsListViewScrollEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFirstVisibleItem ()I
+	public final fun getScrollState ()I
+	public final fun getTotalItemCount ()I
+	public final fun getView ()Landroid/widget/AbsListView;
+	public final fun getVisibleItemCount ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/AbsListViewScrollEventsKt {
+	public static final fun scrollEvents (Landroid/widget/AbsListView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun scrollEvents (Landroid/widget/AbsListView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun scrollEvents (Landroid/widget/AbsListView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun scrollEvents (Landroid/widget/AbsListView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun scrollEvents$default (Landroid/widget/AbsListView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun scrollEvents$default (Landroid/widget/AbsListView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun scrollEvents$default (Landroid/widget/AbsListView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterDataChangesKt {
+	public static final fun dataChanges (Landroid/widget/Adapter;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun dataChanges (Landroid/widget/Adapter;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dataChanges (Landroid/widget/Adapter;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dataChanges (Landroid/widget/Adapter;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dataChanges$default (Landroid/widget/Adapter;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dataChanges$default (Landroid/widget/Adapter;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dataChanges$default (Landroid/widget/Adapter;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewItemClickEvent {
+	public fun <init> (Landroid/widget/AdapterView;Landroid/view/View;IJ)V
+	public final fun component1 ()Landroid/widget/AdapterView;
+	public final fun component2 ()Landroid/view/View;
+	public final fun component3 ()I
+	public final fun component4 ()J
+	public final fun copy (Landroid/widget/AdapterView;Landroid/view/View;IJ)Lru/ldralighieri/corbind/widget/AdapterViewItemClickEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/AdapterViewItemClickEvent;Landroid/widget/AdapterView;Landroid/view/View;IJILjava/lang/Object;)Lru/ldralighieri/corbind/widget/AdapterViewItemClickEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClickedView ()Landroid/view/View;
+	public final fun getId ()J
+	public final fun getPosition ()I
+	public final fun getView ()Landroid/widget/AdapterView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewItemClickEventsKt {
+	public static final fun itemClickEvents (Landroid/widget/AdapterView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemClickEvents (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemClickEvents (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemClickEvents (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemClickEvents$default (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemClickEvents$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemClickEvents$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewItemClicksKt {
+	public static final fun itemClicks (Landroid/widget/AdapterView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemClicks (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemClicks (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemClicks (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemClicks$default (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemClicks$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemClicks$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewItemLongClickEvent {
+	public fun <init> (Landroid/widget/AdapterView;Landroid/view/View;IJ)V
+	public final fun component1 ()Landroid/widget/AdapterView;
+	public final fun component2 ()Landroid/view/View;
+	public final fun component3 ()I
+	public final fun component4 ()J
+	public final fun copy (Landroid/widget/AdapterView;Landroid/view/View;IJ)Lru/ldralighieri/corbind/widget/AdapterViewItemLongClickEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/AdapterViewItemLongClickEvent;Landroid/widget/AdapterView;Landroid/view/View;IJILjava/lang/Object;)Lru/ldralighieri/corbind/widget/AdapterViewItemLongClickEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClickedView ()Landroid/view/View;
+	public final fun getId ()J
+	public final fun getPosition ()I
+	public final fun getView ()Landroid/widget/AdapterView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewItemLongClickEventsKt {
+	public static final fun itemLongClickEvents (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemLongClickEvents (Landroid/widget/AdapterView;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemLongClickEvents (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemLongClickEvents (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemLongClickEvents$default (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemLongClickEvents$default (Landroid/widget/AdapterView;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun itemLongClickEvents$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemLongClickEvents$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewItemLongClicksKt {
+	public static final fun itemLongClicks (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemLongClicks (Landroid/widget/AdapterView;Lkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemLongClicks (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemLongClicks (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemLongClicks$default (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemLongClicks$default (Landroid/widget/AdapterView;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun itemLongClicks$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemLongClicks$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewItemSelectionEvent : ru/ldralighieri/corbind/widget/AdapterViewSelectionEvent {
+	public fun <init> (Landroid/widget/AdapterView;Landroid/view/View;IJ)V
+	public final fun component1 ()Landroid/widget/AdapterView;
+	public final fun component2 ()Landroid/view/View;
+	public final fun component3 ()I
+	public final fun component4 ()J
+	public final fun copy (Landroid/widget/AdapterView;Landroid/view/View;IJ)Lru/ldralighieri/corbind/widget/AdapterViewItemSelectionEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/AdapterViewItemSelectionEvent;Landroid/widget/AdapterView;Landroid/view/View;IJILjava/lang/Object;)Lru/ldralighieri/corbind/widget/AdapterViewItemSelectionEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()J
+	public final fun getPosition ()I
+	public final fun getSelectedView ()Landroid/view/View;
+	public fun getView ()Landroid/widget/AdapterView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewItemSelectionsKt {
+	public static final fun itemSelections (Landroid/widget/AdapterView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun itemSelections (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemSelections (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemSelections (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemSelections$default (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemSelections$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemSelections$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewNothingSelectionEvent : ru/ldralighieri/corbind/widget/AdapterViewSelectionEvent {
+	public fun <init> (Landroid/widget/AdapterView;)V
+	public final fun component1 ()Landroid/widget/AdapterView;
+	public final fun copy (Landroid/widget/AdapterView;)Lru/ldralighieri/corbind/widget/AdapterViewNothingSelectionEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/AdapterViewNothingSelectionEvent;Landroid/widget/AdapterView;ILjava/lang/Object;)Lru/ldralighieri/corbind/widget/AdapterViewNothingSelectionEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getView ()Landroid/widget/AdapterView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class ru/ldralighieri/corbind/widget/AdapterViewSelectionEvent {
+	public abstract fun getView ()Landroid/widget/AdapterView;
+}
+
+public final class ru/ldralighieri/corbind/widget/AdapterViewSelectionEventsKt {
+	public static final fun selectionEvents (Landroid/widget/AdapterView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun selectionEvents (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun selectionEvents (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun selectionEvents (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun selectionEvents$default (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun selectionEvents$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun selectionEvents$default (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/AutoCompleteTextViewDismissesKt {
+	public static final fun dismisses (Landroid/widget/AutoCompleteTextView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dismisses (Landroid/widget/AutoCompleteTextView;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dismisses (Landroid/widget/AutoCompleteTextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dismisses (Landroid/widget/AutoCompleteTextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun dismisses$default (Landroid/widget/AutoCompleteTextView;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dismisses$default (Landroid/widget/AutoCompleteTextView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dismisses$default (Landroid/widget/AutoCompleteTextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/AutoCompleteTextViewItemClickEventsKt {
+	public static final fun itemClickEvents (Landroid/widget/AutoCompleteTextView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemClickEvents (Landroid/widget/AutoCompleteTextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemClickEvents (Landroid/widget/AutoCompleteTextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemClickEvents (Landroid/widget/AutoCompleteTextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemClickEvents$default (Landroid/widget/AutoCompleteTextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemClickEvents$default (Landroid/widget/AutoCompleteTextView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemClickEvents$default (Landroid/widget/AutoCompleteTextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/CalendarViewDateChangeEvent {
+	public fun <init> (Landroid/widget/CalendarView;III)V
+	public final fun component1 ()Landroid/widget/CalendarView;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun copy (Landroid/widget/CalendarView;III)Lru/ldralighieri/corbind/widget/CalendarViewDateChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/CalendarViewDateChangeEvent;Landroid/widget/CalendarView;IIIILjava/lang/Object;)Lru/ldralighieri/corbind/widget/CalendarViewDateChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDayOfMonth ()I
+	public final fun getMonth ()I
+	public final fun getView ()Landroid/widget/CalendarView;
+	public final fun getYear ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/CalendarViewDateChangeEventsKt {
+	public static final fun dateChangeEvents (Landroid/widget/CalendarView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun dateChangeEvents (Landroid/widget/CalendarView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dateChangeEvents (Landroid/widget/CalendarView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dateChangeEvents (Landroid/widget/CalendarView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dateChangeEvents$default (Landroid/widget/CalendarView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dateChangeEvents$default (Landroid/widget/CalendarView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dateChangeEvents$default (Landroid/widget/CalendarView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/CompoundButtonCheckedChangesKt {
+	public static final fun checkedChanges (Landroid/widget/CompoundButton;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Landroid/widget/CompoundButton;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun checkedChanges (Landroid/widget/CompoundButton;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun checkedChanges (Landroid/widget/CompoundButton;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun checkedChanges$default (Landroid/widget/CompoundButton;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun checkedChanges$default (Landroid/widget/CompoundButton;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun checkedChanges$default (Landroid/widget/CompoundButton;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/DateChangedEvent {
+	public fun <init> (Landroid/widget/DatePicker;III)V
+	public final fun component1 ()Landroid/widget/DatePicker;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun copy (Landroid/widget/DatePicker;III)Lru/ldralighieri/corbind/widget/DateChangedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/DateChangedEvent;Landroid/widget/DatePicker;IIIILjava/lang/Object;)Lru/ldralighieri/corbind/widget/DateChangedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDayOfMonth ()I
+	public final fun getMonthOfYear ()I
+	public final fun getView ()Landroid/widget/DatePicker;
+	public final fun getYear ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/DatePickerChangedEventsKt {
+	public static final fun dateChangeEvents (Landroid/widget/DatePicker;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun dateChangeEvents (Landroid/widget/DatePicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dateChangeEvents (Landroid/widget/DatePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dateChangeEvents (Landroid/widget/DatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun dateChangeEvents$default (Landroid/widget/DatePicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dateChangeEvents$default (Landroid/widget/DatePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dateChangeEvents$default (Landroid/widget/DatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/NumberPickerScrollStateChangesKt {
+	public static final fun scrollStateChanges (Landroid/widget/NumberPicker;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun scrollStateChanges (Landroid/widget/NumberPicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun scrollStateChanges (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun scrollStateChanges (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun scrollStateChanges$default (Landroid/widget/NumberPicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun scrollStateChanges$default (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun scrollStateChanges$default (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/NumberPickerValueChangeEvent {
+	public fun <init> (Landroid/widget/NumberPicker;II)V
+	public final fun component1 ()Landroid/widget/NumberPicker;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun copy (Landroid/widget/NumberPicker;II)Lru/ldralighieri/corbind/widget/NumberPickerValueChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/NumberPickerValueChangeEvent;Landroid/widget/NumberPicker;IIILjava/lang/Object;)Lru/ldralighieri/corbind/widget/NumberPickerValueChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNewVal ()I
+	public final fun getOldVal ()I
+	public final fun getPicker ()Landroid/widget/NumberPicker;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/NumberPickerValueChangeEventsKt {
+	public static final fun valueChangeEvents (Landroid/widget/NumberPicker;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valueChangeEvents (Landroid/widget/NumberPicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun valueChangeEvents (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun valueChangeEvents (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun valueChangeEvents$default (Landroid/widget/NumberPicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun valueChangeEvents$default (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun valueChangeEvents$default (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/PopupMenuDismissesKt {
+	public static final fun dismisses (Landroid/widget/PopupMenu;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun dismisses (Landroid/widget/PopupMenu;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun dismisses (Landroid/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun dismisses (Landroid/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun dismisses$default (Landroid/widget/PopupMenu;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun dismisses$default (Landroid/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun dismisses$default (Landroid/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/PopupMenuItemClicksKt {
+	public static final fun itemClicks (Landroid/widget/PopupMenu;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemClicks (Landroid/widget/PopupMenu;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemClicks (Landroid/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemClicks (Landroid/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemClicks$default (Landroid/widget/PopupMenu;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemClicks$default (Landroid/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemClicks$default (Landroid/widget/PopupMenu;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/RadioGroupCheckedChangesKt {
+	public static final fun checkedChanges (Landroid/widget/RadioGroup;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Landroid/widget/RadioGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun checkedChanges (Landroid/widget/RadioGroup;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun checkedChanges (Landroid/widget/RadioGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun checkedChanges$default (Landroid/widget/RadioGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun checkedChanges$default (Landroid/widget/RadioGroup;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun checkedChanges$default (Landroid/widget/RadioGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/RatingBarChangeEvent {
+	public fun <init> (Landroid/widget/RatingBar;FZ)V
+	public final fun component1 ()Landroid/widget/RatingBar;
+	public final fun component2 ()F
+	public final fun component3 ()Z
+	public final fun copy (Landroid/widget/RatingBar;FZ)Lru/ldralighieri/corbind/widget/RatingBarChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/RatingBarChangeEvent;Landroid/widget/RatingBar;FZILjava/lang/Object;)Lru/ldralighieri/corbind/widget/RatingBarChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFromUser ()Z
+	public final fun getRating ()F
+	public final fun getView ()Landroid/widget/RatingBar;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/RatingBarRatingChangeEventsKt {
+	public static final fun ratingChangeEvents (Landroid/widget/RatingBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun ratingChangeEvents (Landroid/widget/RatingBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun ratingChangeEvents (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun ratingChangeEvents (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun ratingChangeEvents$default (Landroid/widget/RatingBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun ratingChangeEvents$default (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun ratingChangeEvents$default (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/RatingBarRatingChangesKt {
+	public static final fun ratingChanges (Landroid/widget/RatingBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun ratingChanges (Landroid/widget/RatingBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun ratingChanges (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun ratingChanges (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun ratingChanges$default (Landroid/widget/RatingBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun ratingChanges$default (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun ratingChanges$default (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/SearchViewQueryTextChangeEventsKt {
+	public static final fun queryTextChangeEvents (Landroid/widget/SearchView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun queryTextChangeEvents (Landroid/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun queryTextChangeEvents (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun queryTextChangeEvents (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun queryTextChangeEvents$default (Landroid/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun queryTextChangeEvents$default (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun queryTextChangeEvents$default (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/SearchViewQueryTextChangesKt {
+	public static final fun queryTextChanges (Landroid/widget/SearchView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun queryTextChanges (Landroid/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun queryTextChanges (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun queryTextChanges (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun queryTextChanges$default (Landroid/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun queryTextChanges$default (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun queryTextChanges$default (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/SearchViewQueryTextEvent {
+	public fun <init> (Landroid/widget/SearchView;Ljava/lang/CharSequence;Z)V
+	public final fun component1 ()Landroid/widget/SearchView;
+	public final fun component2 ()Ljava/lang/CharSequence;
+	public final fun component3 ()Z
+	public final fun copy (Landroid/widget/SearchView;Ljava/lang/CharSequence;Z)Lru/ldralighieri/corbind/widget/SearchViewQueryTextEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/SearchViewQueryTextEvent;Landroid/widget/SearchView;Ljava/lang/CharSequence;ZILjava/lang/Object;)Lru/ldralighieri/corbind/widget/SearchViewQueryTextEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getQueryText ()Ljava/lang/CharSequence;
+	public final fun getView ()Landroid/widget/SearchView;
+	public fun hashCode ()I
+	public final fun isSubmitted ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class ru/ldralighieri/corbind/widget/SeekBarChangeEvent {
+	public abstract fun getView ()Landroid/widget/SeekBar;
+}
+
+public final class ru/ldralighieri/corbind/widget/SeekBarChangeEventsKt {
+	public static final fun changeEvents (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun changeEvents (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun changeEvents (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun changeEvents (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun changeEvents$default (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun changeEvents$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun changeEvents$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/SeekBarChangesKt {
+	public static final fun changes (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun changes (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun changes (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun changes (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun changes$default (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun changes$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun changes$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun systemChanges (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun systemChanges (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun systemChanges (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun systemChanges (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun systemChanges$default (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun systemChanges$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun systemChanges$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static final fun userChanges (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun userChanges (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun userChanges (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun userChanges (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun userChanges$default (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun userChanges$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun userChanges$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/SeekBarProgressChangeEvent : ru/ldralighieri/corbind/widget/SeekBarChangeEvent {
+	public fun <init> (Landroid/widget/SeekBar;IZ)V
+	public final fun component1 ()Landroid/widget/SeekBar;
+	public final fun component2 ()I
+	public final fun component3 ()Z
+	public final fun copy (Landroid/widget/SeekBar;IZ)Lru/ldralighieri/corbind/widget/SeekBarProgressChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/SeekBarProgressChangeEvent;Landroid/widget/SeekBar;IZILjava/lang/Object;)Lru/ldralighieri/corbind/widget/SeekBarProgressChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFromUser ()Z
+	public final fun getProgress ()I
+	public fun getView ()Landroid/widget/SeekBar;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/SeekBarStartChangeEvent : ru/ldralighieri/corbind/widget/SeekBarChangeEvent {
+	public fun <init> (Landroid/widget/SeekBar;)V
+	public final fun component1 ()Landroid/widget/SeekBar;
+	public final fun copy (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/widget/SeekBarStartChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/SeekBarStartChangeEvent;Landroid/widget/SeekBar;ILjava/lang/Object;)Lru/ldralighieri/corbind/widget/SeekBarStartChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getView ()Landroid/widget/SeekBar;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/SeekBarStopChangeEvent : ru/ldralighieri/corbind/widget/SeekBarChangeEvent {
+	public fun <init> (Landroid/widget/SeekBar;)V
+	public final fun component1 ()Landroid/widget/SeekBar;
+	public final fun copy (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/widget/SeekBarStopChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/SeekBarStopChangeEvent;Landroid/widget/SeekBar;ILjava/lang/Object;)Lru/ldralighieri/corbind/widget/SeekBarStopChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getView ()Landroid/widget/SeekBar;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewAfterTextChangeEvent {
+	public fun <init> (Landroid/widget/TextView;Landroid/text/Editable;)V
+	public final fun component1 ()Landroid/widget/TextView;
+	public final fun component2 ()Landroid/text/Editable;
+	public final fun copy (Landroid/widget/TextView;Landroid/text/Editable;)Lru/ldralighieri/corbind/widget/TextViewAfterTextChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/TextViewAfterTextChangeEvent;Landroid/widget/TextView;Landroid/text/Editable;ILjava/lang/Object;)Lru/ldralighieri/corbind/widget/TextViewAfterTextChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEditable ()Landroid/text/Editable;
+	public final fun getView ()Landroid/widget/TextView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewAfterTextChangeEventsKt {
+	public static final fun afterTextChangeEvents (Landroid/widget/TextView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun afterTextChangeEvents (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun afterTextChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun afterTextChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun afterTextChangeEvents$default (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun afterTextChangeEvents$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun afterTextChangeEvents$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewBeforeTextChangeEvent {
+	public fun <init> (Landroid/widget/TextView;Ljava/lang/CharSequence;III)V
+	public final fun component1 ()Landroid/widget/TextView;
+	public final fun component2 ()Ljava/lang/CharSequence;
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun copy (Landroid/widget/TextView;Ljava/lang/CharSequence;III)Lru/ldralighieri/corbind/widget/TextViewBeforeTextChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/TextViewBeforeTextChangeEvent;Landroid/widget/TextView;Ljava/lang/CharSequence;IIIILjava/lang/Object;)Lru/ldralighieri/corbind/widget/TextViewBeforeTextChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAfter ()I
+	public final fun getCount ()I
+	public final fun getStart ()I
+	public final fun getText ()Ljava/lang/CharSequence;
+	public final fun getView ()Landroid/widget/TextView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewBeforeTextChangeEventsKt {
+	public static final fun beforeTextChangeEvents (Landroid/widget/TextView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun beforeTextChangeEvents (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun beforeTextChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun beforeTextChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun beforeTextChangeEvents$default (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun beforeTextChangeEvents$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun beforeTextChangeEvents$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewEditorActionEvent {
+	public fun <init> (Landroid/widget/TextView;ILandroid/view/KeyEvent;)V
+	public final fun component1 ()Landroid/widget/TextView;
+	public final fun component2 ()I
+	public final fun component3 ()Landroid/view/KeyEvent;
+	public final fun copy (Landroid/widget/TextView;ILandroid/view/KeyEvent;)Lru/ldralighieri/corbind/widget/TextViewEditorActionEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/TextViewEditorActionEvent;Landroid/widget/TextView;ILandroid/view/KeyEvent;ILjava/lang/Object;)Lru/ldralighieri/corbind/widget/TextViewEditorActionEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActionId ()I
+	public final fun getKeyEvent ()Landroid/view/KeyEvent;
+	public final fun getView ()Landroid/widget/TextView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewEditorActionEventsKt {
+	public static final fun editorActionEvents (Landroid/widget/TextView;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun editorActionEvents (Landroid/widget/TextView;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun editorActionEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun editorActionEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun editorActionEvents$default (Landroid/widget/TextView;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun editorActionEvents$default (Landroid/widget/TextView;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun editorActionEvents$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun editorActionEvents$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewEditorActionsKt {
+	public static final fun editorActions (Landroid/widget/TextView;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun editorActions (Landroid/widget/TextView;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun editorActions (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun editorActions (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun editorActions$default (Landroid/widget/TextView;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun editorActions$default (Landroid/widget/TextView;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun editorActions$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun editorActions$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewTextChangeEvent {
+	public fun <init> (Landroid/widget/TextView;Ljava/lang/CharSequence;III)V
+	public final fun component1 ()Landroid/widget/TextView;
+	public final fun component2 ()Ljava/lang/CharSequence;
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun copy (Landroid/widget/TextView;Ljava/lang/CharSequence;III)Lru/ldralighieri/corbind/widget/TextViewTextChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/TextViewTextChangeEvent;Landroid/widget/TextView;Ljava/lang/CharSequence;IIIILjava/lang/Object;)Lru/ldralighieri/corbind/widget/TextViewTextChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBefore ()I
+	public final fun getCount ()I
+	public final fun getStart ()I
+	public final fun getText ()Ljava/lang/CharSequence;
+	public final fun getView ()Landroid/widget/TextView;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewTextChangeEventsKt {
+	public static final fun textChangeEvents (Landroid/widget/TextView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun textChangeEvents (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun textChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun textChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun textChangeEvents$default (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun textChangeEvents$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun textChangeEvents$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/TextViewTextChangesKt {
+	public static final fun textChanges (Landroid/widget/TextView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun textChanges (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun textChanges (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun textChanges (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun textChanges$default (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun textChanges$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun textChanges$default (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/TimeChangedEvent {
+	public fun <init> (Landroid/widget/TimePicker;II)V
+	public final fun component1 ()Landroid/widget/TimePicker;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun copy (Landroid/widget/TimePicker;II)Lru/ldralighieri/corbind/widget/TimeChangedEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/widget/TimeChangedEvent;Landroid/widget/TimePicker;IIILjava/lang/Object;)Lru/ldralighieri/corbind/widget/TimeChangedEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHourOfDay ()I
+	public final fun getMinute ()I
+	public final fun getView ()Landroid/widget/TimePicker;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/widget/TimePickerChangedEventsKt {
+	public static final fun timeChangeEvents (Landroid/widget/TimePicker;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun timeChangeEvents (Landroid/widget/TimePicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun timeChangeEvents (Landroid/widget/TimePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun timeChangeEvents (Landroid/widget/TimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun timeChangeEvents$default (Landroid/widget/TimePicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun timeChangeEvents$default (Landroid/widget/TimePicker;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun timeChangeEvents$default (Landroid/widget/TimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/ToolbarItemClicksKt {
+	public static final fun itemClicks (Landroid/widget/Toolbar;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun itemClicks (Landroid/widget/Toolbar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun itemClicks (Landroid/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun itemClicks (Landroid/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun itemClicks$default (Landroid/widget/Toolbar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun itemClicks$default (Landroid/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun itemClicks$default (Landroid/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/widget/ToolbarNavigationClicksKt {
+	public static final fun navigationClicks (Landroid/widget/Toolbar;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun navigationClicks (Landroid/widget/Toolbar;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun navigationClicks (Landroid/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun navigationClicks (Landroid/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun navigationClicks$default (Landroid/widget/Toolbar;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun navigationClicks$default (Landroid/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun navigationClicks$default (Landroid/widget/Toolbar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
