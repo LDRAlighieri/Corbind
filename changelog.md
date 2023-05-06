@@ -11,7 +11,7 @@ tags: [android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,ko
 
 * New: Bindings list:
     * Google "material" library bindings:
-  		  * `corbind-material`:
+        * `corbind-material`:
             * `MaskableFrameLayout`:
                 * `maskChanges`
 * New: Binary compatibility validator
