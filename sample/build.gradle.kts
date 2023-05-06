@@ -62,7 +62,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.apply {
             add("META-INF/NOTICE")
             add("META-INF/NOTICE.txt")

@@ -66,7 +66,7 @@ repositories {
 }
 
 dependencies {
-   implementation("ru.ldralighieri.corbind:{module}:1.8.0-SNAPSHOT")
+   implementation("ru.ldralighieri.corbind:{module}:1.9.0-SNAPSHOT")
 }
 ```
 
