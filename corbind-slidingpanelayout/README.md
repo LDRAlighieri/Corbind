@@ -5,7 +5,7 @@ To add androidx slidingpanelayout bindings, import `corbind-slidingpanelayout` m
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.8.0")
 }
 ```
 
@@ -22,7 +22,7 @@ Component | Extension | Description
 ```kotlin
 slider.panelOpens() // Flow<Boolean>
     .onEach { isOpen ->
-      tv_message = "Panel completely ${ if (isOpen) "open" else "close"}"
+      tvMessage = "Panel completely ${ if (isOpen) "open" else "close"}"
     }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
