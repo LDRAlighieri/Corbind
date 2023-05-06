@@ -20,7 +20,7 @@ To add platform bindings, import `corbind` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind:1.8.0")
 }
 ```
 
@@ -110,29 +110,28 @@ Component | Extension | Description
 Traditional example of login button enabling/disabling by email and password field validation:
 ```kotlin
 combine(
-    et_email.textChanges()
+    etEmail.textChanges() // Flow<CharSequence>
         .map { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
 
-    et_password.textChanges()
+    etPassword.textChanges() // Flow<CharSequence>
         .map { it.length > 7 },
 
     transform = { email, password -> email && password }
 )
-    .onEach { bt_login.isEnabled = it }
+    .onEach { btLogin.isEnabled = it }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 Handle an authorization event, which can be started by pressing a button `bt_login` or by pressing an action `EditorInfo.IME_ACTION_DONE` on the keyboard:
 ```kotlin
-flowOf(
-    bt_login.clicks(),
+merge(
+    btLogin.clicks(), // Flow<Unit>
 
-    et_password.editorActionEvents()
+    etPassword.editorActionEvents() // Flow<TextViewEditorActionEvent>
         .filter { it.actionId == EditorInfo.IME_ACTION_DONE }
-        .filter { bt_login.isEnabled }
+        .filter { btLogin.isEnabled }
 )
-    .flattenMerge()
     .onEach { /* handle an authorization event */}
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
@@ -143,7 +142,7 @@ Handle nfc adapter state changed
 context
     .receivesBroadcast(
         IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
-    )
+    ) // Flow<Intent>
     .onEach { /* handle nfc adapter state changed */ }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
@@ -151,7 +150,7 @@ context
 
 Handle status bars or navigation bars visibility
 ```kotlin
-window.decorView.windowInsetsApplyEvents()
+window.decorView.windowInsetsApplyEvents() // Flow<WindowInsetsEvent>
     .map { event ->
         with(event) {
             view.onApplyWindowInsets(insets)

@@ -20,7 +20,7 @@ To add androidx navigation bindings, import `corbind-navigation` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-navigation:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-navigation:1.8.0")
 }
 ```
 

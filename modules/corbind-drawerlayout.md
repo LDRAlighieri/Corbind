@@ -20,7 +20,7 @@ To add androidx drawerlayout bindings, import `corbind-drawerlayout` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.8.0")
 }
 ```
 
@@ -36,10 +36,10 @@ Component | Extension | Description
 ```kotlin
 drawer.drawerOpens() // Flow<Boolean>
     .onEach { isOpen ->
-      tv_message = "Drawer completely ${ if (isOpen) "open" else "close"}"
+      tvMessage = "Drawer completely ${ if (isOpen) "open" else "close"}"
     }
     .flowWithLifecycle(lifecycle)
-    .launchIn(scope)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in [source code][source]

@@ -20,7 +20,7 @@ To add androidx swiperefreshlayout bindings, import `corbind-swiperefreshlayout`
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.8.0")
 }
 ```
 

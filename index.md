@@ -17,13 +17,13 @@ tags: [android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,ko
 </div>
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.8.0-blue.svg?logo=kotlin)](https://kotlinlang.org)
-[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.6.4-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.8.21-blue.svg?logo=kotlin)](https://kotlinlang.org)
+[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.8.0-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://app.codacy.com/gh/LDRAlighieri/Corbind)
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg)](https://android-arsenal.com/api?level=14)
-![Publish status](https://github.com/LDRAlighieri/Corbind/actions/workflows/publish.yml/badge.svg)
+[![Publish status](https://github.com/LDRAlighieri/Corbind/actions/workflows/publish.yml/badge.svg)](https://github.com/LDRAlighieri/Corbind/actions)
 
 [![Google Dev Library](https://img.shields.io/badge/Google_DevLibrary-Corbind-blue)](https://devlibrary.withgoogle.com/products/android/repos/LDRAlighieri-Corbind)
 [![Android Weekly](https://androidweekly.net/issues/issue-377/badge)](https://androidweekly.net/issues/issue-377)
@@ -35,7 +35,8 @@ tags: [android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,ko
 
 ## Description
 
-This library is for Android applications only. Help you to transform Android UI events into cold [Flow][flow], hot [ReceiveChannel][channel] or just perform an action through an [Actor][actor]. Please consider giving this repository a star ⭐ if you like the project.
+This library is for Android applications only. Help you to transform Android UI events into cold [Flow][flow], hot [ReceiveChannel][channel] or just perform an action through an [Actor][actor].  
+Please consider giving this repository a star ⭐ if you like the project.
 
 
 ## Using in your projects
@@ -43,33 +44,33 @@ This library is for Android applications only. Help you to transform Android UI 
 Platform bindings:
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind:1.8.0")
 }
 ```
 
 AndroidX library bindings:
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-activity:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-appcompat:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-core:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-fragment:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-leanback:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-lifecycle:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-navigation:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-recyclerview:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-viewpager:1.7.0")
-    implementation("ru.ldralighieri.corbind:corbind-viewpager2:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-activity:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-appcompat:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-core:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-fragment:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-leanback:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-lifecycle:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-navigation:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-recyclerview:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager2:1.8.0")
 }
 ```
 
 Google 'material' library bindings:
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-material:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-material:1.8.0")
 }
 ```
 
@@ -81,7 +82,7 @@ repositories {
 }
 
 dependencies {
-   implementation("ru.ldralighieri.corbind:{module}:1.8.0-SNAPSHOT")
+   implementation("ru.ldralighieri.corbind:{module}:1.9.0-SNAPSHOT")
 }
 ```
 
@@ -109,7 +110,7 @@ You can find a list of extensions in the description of each module:<br>
 
 If you need to get a text change events of EditText widget, simple use case with cold [Flow][flow] will look something like this:
 ```kotlin
-findViewById<EditText>(R.id.et_name)
+findViewById<EditText>(R.id.etName)
     .textChanges() // Flow<CharSequence>
     .onEach { /* handle text change events */ }
     .flowWithLifecycle(lifecycle)
@@ -119,7 +120,7 @@ findViewById<EditText>(R.id.et_name)
 If you prefer hot [ReceiveChannel][channel] and you need to get a ViewPager page selection events, then the use case will transform in something like this:
 ```kotlin
 launch {
-    findViewById<ViewPager>(R.id.vp_slides)
+    findViewById<ViewPager>(R.id.vpSlides)
         .pageSelections(scope) // ReceiveChannel<Int>
         .consumeEach {
             /* handle ViewPager events */
@@ -130,7 +131,7 @@ launch {
 And if you just need to perform an action on button click, the easiest way will be:
 ```kotlin
 launch {
-    findViewById<AppCompatButton>(R.id.bt_confirm)
+    findViewById<AppCompatButton>(R.id.btConfirm)
         .clicks {
             /* perform an action on View click events */
         }
@@ -140,15 +141,15 @@ launch {
 Just one more traditional example of login button enabling/disabling by email and password field validation:
 ```kotlin
 combine(
-    et_email.textChanges()
+    etEmail.textChanges() // Flow<CharSequence>
         .map { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
 
-    et_password.textChanges()
+    etPassword.textChanges() // Flow<CharSequence>
         .map { it.length > 7 },
 
     transform = { email, password -> email && password }
 )
-    .onEach { bt_login.isEnabled = it }
+    .onEach { btLogin.isEnabled = it }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
