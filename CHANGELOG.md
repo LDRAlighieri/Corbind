@@ -1,6 +1,20 @@
 # ChangeLog
 
 
+## Version 1.8.0
+
+* New: Bindings list:
+	* Google "material" library bindings:
+		* `corbind-material`:
+			* `MaskableFrameLayout`:
+				* `maskChanges`
+* New: Binary compatibility validator
+* Update: Kotlin to v1.8.21.
+* Update: Kotlin coroutines to v1.7.0.
+* Update: Material components to v1.9.0.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.7.0
 
 * New: Bindings list:

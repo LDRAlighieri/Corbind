@@ -5,7 +5,7 @@ To add material bindings, import `corbind-material` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-material:1.7.0")
+    implementation("ru.ldralighieri.corbind:corbind-material:1.8.0")
 }
 ```
 
@@ -19,6 +19,7 @@ Component | Extension | Description
 **Chip** | `closeIconClicks` | Called when the chip’s close icon is clicked.
 **ChipGroup** | `checkedChanges` | Called when the checked chips are changed.
 **View**<br>(HideBottomViewOnScrollBehavior) | `bottomViewScrollStateChanges` | Called when the bottom view changes its scrolled state.
+**MaskableFrameLayout** | `maskChanges` | Called when changes in a mask's RectF occur.
 **MaterialButton** | `checkedChanges` | Called when the checked state of a MaterialButton has changed.
 **MaterialButtonToggleGroup** | `buttonCheckedChangeEvents` | Called when a `MaterialButton` in this group is checked or unchecked (only *not* in single selection mode).
                               | `buttonCheckedChanges` | Called when a `MaterialButton` in this group is checked (only in single selection mode).
