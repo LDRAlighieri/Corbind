@@ -28,9 +28,9 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**ViewPager** | `pageScrollEvents` | Called when the current page is scrolled, either as part of a programmatically initiated smooth scroll or a user initiated touch scroll.
-              | `pageScrollStateChanges` | Called when the scroll state changes.
-              | `pageSelections` | Called when a new page becomes selected.
+**ViewPager** | [`pageScrollEvents`][ViewPager_pageScrollEvents] | Called when the current page is scrolled, either as part of a programmatically initiated smooth scroll or a user initiated touch scroll.
+              | [`pageScrollStateChanges`][ViewPager_pageScrollStateChanges] | Called when the scroll state changes.
+              | [`pageSelections`][ViewPager_pageSelections] | Called when a new page becomes selected.
 
 
 ## Example
@@ -45,3 +45,7 @@ vpSlides.pageSelections() // Flow<Int>
 More examples in [source code][source]
 
 [source]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-viewpager
+
+[ViewPager_pageScrollEvents]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-viewpager/src/main/kotlin/ru/ldralighieri/corbind/viewpager/ViewPagerPageScrollEvents.kt
+[ViewPager_pageScrollStateChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-viewpager/src/main/kotlin/ru/ldralighieri/corbind/viewpager/ViewPagerPageScrollStateChanges.kt
+[ViewPager_pageSelections]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-viewpager/src/main/kotlin/ru/ldralighieri/corbind/viewpager/ViewPagerPageSelections.kt

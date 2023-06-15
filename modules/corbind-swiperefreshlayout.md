@@ -28,7 +28,7 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**SwipeRefreshLayout** | `refreshes` | Called when a swipe gesture triggers a refresh. open or closed.
+**SwipeRefreshLayout** | [`refreshes`][SwipeRefreshLayout_refreshes] | Called when a swipe gesture triggers a refresh. open or closed.
 
 
 ## Example
@@ -43,3 +43,5 @@ swipe.refreshes() // Flow<Unit>
 More examples in [source code][source]
 
 [source]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-swiperefreshlayout
+
+[SwipeRefreshLayout_refreshes]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-swiperefreshlayout/src/main/kotlin/ru/ldralighieri/corbind/swiperefreshlayout/SwipeRefreshLayoutRefreshes.kt

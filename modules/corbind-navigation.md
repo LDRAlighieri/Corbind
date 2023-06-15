@@ -28,8 +28,8 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**NavController** | `destinationChanges` | Called when the `NavController` destination or its arguments change.
-               | `destinationChangeEvents` | A more advanced version of the `destinationChanges`.
+**NavController** | [`destinationChanges`][NavController_destinationChanges] | Called when the `NavController` destination or its arguments change.
+               | [`destinationChangeEvents`][NavController_destinationChangeEvents] | A more advanced version of the `destinationChanges`.
 
 
 ## Simple examples
@@ -48,3 +48,6 @@ navController.destinationChanges() // Flow<NavDestination>
 More examples in [source code][source]
 
 [source]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-navigation
+
+[NavController_destinationChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-navigation/src/main/kotlin/ru/ldralighieri/corbind/navigation/NavControllerOnDestinationChanges.kt
+[NavController_destinationChangeEvents]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-navigation/src/main/kotlin/ru/ldralighieri/corbind/navigation/NavControllerOnDestinationChangeEvents.kt

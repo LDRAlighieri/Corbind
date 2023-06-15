@@ -28,7 +28,7 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**NestedScrollView** | `scrollChangeEvents` | Called when the scroll position of a view changes.
+**NestedScrollView** | [`scrollChangeEvents`][NestedScrollView_scrollChangeEvents] | Called when the scroll position of a view changes.
 
 
 ## Example
@@ -43,3 +43,5 @@ scrollView.scrollChangeEvents() // Flow<ViewScrollChangeEvent>
 More examples in [source code][source]
 
 [source]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-core
+
+[NestedScrollView_scrollChangeEvents]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-core/src/main/kotlin/ru/ldralighieri/corbind/core/NestedScrollViewScrollChangeEvents.kt
