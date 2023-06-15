@@ -23,6 +23,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.4.2
 
+      - name: Check spotless
+        run: ./gradlew spotlessCheck --no-configuration-cache
+
       - name: Build the sample app to verify it works
         run: ./gradlew sample:assemble
 

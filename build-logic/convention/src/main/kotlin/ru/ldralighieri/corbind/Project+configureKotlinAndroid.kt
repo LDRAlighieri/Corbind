@@ -22,7 +22,9 @@ import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.provideDelegate
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 internal fun Project.configureKotlinAndroid(
@@ -38,24 +40,28 @@ internal fun Project.configureKotlinAndroid(
             this.minSdk = minSdk.toInt()
         }
 
+        kotlin {
+            jvmToolchain(17)
+        }
+
+        // Remove this after https://issuetracker.google.com/issues/260059413 is fixed
+        // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
         compileOptions {
             sourceCompatibility = JavaVersion.VERSION_17
             targetCompatibility = JavaVersion.VERSION_17
         }
 
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_17.toString()
-
-            // Treat all Kotlin warnings as errors
             allWarningsAsErrors = true
-
             freeCompilerArgs = freeCompilerArgs + listOf(
-                "-opt-in=kotlinx.coroutines.ObsoleteCoroutinesApi",
-                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+                "-opt-in=kotlinx.coroutines.ObsoleteCoroutinesApi"
             )
         }
     }
 }
+
+private fun Project.kotlin(action: KotlinAndroidProjectExtension.() -> Unit) =
+    extensions.configure(action)
 
 private fun CommonExtension<*, *, *, *>.kotlinOptions(block: KotlinJvmOptions.() -> Unit) {
     (this as ExtensionAware).extensions.configure("kotlinOptions", block)
