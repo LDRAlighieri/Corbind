@@ -15,10 +15,7 @@
  */
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import io.gitlab.arturbosch.detekt.Detekt
 
-// https://youtrack.jetbrains.com/issue/KTIJ-19369
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -26,7 +23,6 @@ plugins {
     alias(libs.plugins.spotless) apply false
     alias(libs.plugins.maven.publish) apply false
     alias(libs.plugins.binary.compatibility.validator)
-    alias(libs.plugins.detekt)
     alias(libs.plugins.gver)
 }
 
@@ -34,42 +30,6 @@ plugins {
 apiValidation {
     ignoredProjects.add("sample")
     ignoredPackages.add("ru/ldralighieri/corbind/internal")
-}
-
-// Detekt
-detekt {
-    allRules = false
-    buildUponDefaultConfig = true
-
-    config = files("default-detekt-config.yml")
-    source = files(
-            "corbind/src/main/kotlin",
-            "corbind-activity/src/main/kotlin",
-            "corbind-appcompat/src/main/kotlin",
-            "corbind-core/src/main/kotlin",
-            "corbind-drawerlayout/src/main/kotlin",
-            "corbind-fragment/src/main/kotlin",
-            "corbind-leanback/src/main/kotlin",
-            "corbind-lifecycle/src/main/kotlin",
-            "corbind-material/src/main/kotlin",
-            "corbind-navigation/src/main/kotlin",
-            "corbind-recyclerview/src/main/kotlin",
-            "corbind-slidingpanelayout/src/main/kotlin",
-            "corbind-swiperefreshlayout/src/main/kotlin",
-            "corbind-viewpager/src/main/kotlin",
-            "corbind-viewpager2/src/main/kotlin"
-    )
-    parallel = true
-}
-
-tasks.withType<Detekt>().configureEach {
-    jvmTarget = JavaVersion.VERSION_17.toString()
-    reports {
-        html.required.set(true)
-        xml.required.set(false)
-        txt.required.set(false)
-        sarif.required.set(false)
-    }
 }
 
 // Dependency updates

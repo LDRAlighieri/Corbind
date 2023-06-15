@@ -5,7 +5,6 @@ dokka = "1.8.10"
 spotless = "6.18.0"
 mavenPublish = "0.25.2"
 bcv = "0.13.1"
-detekt = "1.22.0"
 gver = "0.46.0"
 
 # Kotlin
@@ -75,5 +74,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "bcv" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 gver = { id = "com.github.ben-manes.versions", version.ref = "gver" }
