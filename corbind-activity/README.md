@@ -13,7 +13,7 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**OnBackPressedDispatcher** | `backPresses` | Called when OnBackPressedDispatcher.onBackPressed triggered.
+**OnBackPressedDispatcher** | [`backPresses`][OnBackPressedDispatcher_backPresses] | Called when OnBackPressedDispatcher.onBackPressed triggered.
 
 
 ## Simple examples
@@ -26,3 +26,5 @@ onBackPressedDispatcher.backPresses(lifecycleOwner = this) // Flow<Unit>
 ```
 
 More examples in source code
+
+[OnBackPressedDispatcher_backPresses]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-activity/src/main/kotlin/ru/ldralighieri/corbind/activity/OnBackPressedDispatcherBackPresses.kt

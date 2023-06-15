@@ -13,7 +13,7 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**Lifecycle** | `events` | Called when any lifecycle event change.
+**Lifecycle** | [`events`][Lifecycle_events] | Called when any lifecycle event change.
 
 
 ## Simple examples
@@ -27,3 +27,5 @@ lifecycle.events() // Flow<Lifecycle.Event>
 ```
 
 More examples in source code
+
+[Lifecycle_events]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-lifecycle/src/main/kotlin/ru/ldralighieri/corbind/lifecycle/LifecycleEvents.kt

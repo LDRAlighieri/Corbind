@@ -13,7 +13,7 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**FragmentManager** | `resultEvents` | Called when any results set by setFragmentResult using the same requestKey.
+**FragmentManager** | [`resultEvents`][FragmentManager_resultEvents] | Called when any results set by setFragmentResult using the same requestKey.
 
 
 ## Simple examples
@@ -30,3 +30,5 @@ lifecycleScope.launchWhenStarted {
 ```
 
 More examples in source code
+
+[FragmentManager_resultEvents]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-fragment/src/main/kotlin/ru/ldralighieri/corbind/fragment/FragmentManagerResultEvents.kt

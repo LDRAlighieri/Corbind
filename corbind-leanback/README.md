@@ -13,9 +13,9 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**SearchBar** | `searchQueryChanges` | Called when the search bar detects a change in the query.
-              | `searchQueryChangeEvents` | A more advanced version of the `searchQueryChanges`.
-**SearchEditText** | `keyboardDismisses` | Called when the keyboard is dismissed.
+**SearchBar** | [`searchQueryChanges`][SearchBar_searchQueryChanges] | Called when the search bar detects a change in the query.
+              | [`searchQueryChangeEvents`][SearchBar_searchQueryChangeEvents] | A more advanced version of the `searchQueryChanges`.
+**SearchEditText** | [`keyboardDismisses`][SearchEditText_keyboardDismisses] | Called when the keyboard is dismissed.
 
 
 ## Example
@@ -29,3 +29,7 @@ search.searchQueryChanges() // Flow<String>
 ```
 
 More examples in source code
+
+[SearchBar_searchQueryChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-leanback/src/main/kotlin/ru/ldralighieri/corbind/leanback/SearchBarSearchQueryChanges.kt
+[SearchBar_searchQueryChangeEvents]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-leanback/src/main/kotlin/ru/ldralighieri/corbind/leanback/SearchBarSearchQueryChangeEvents.kt
+[SearchEditText_keyboardDismisses]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-leanback/src/main/kotlin/ru/ldralighieri/corbind/leanback/SearchEditTextKeyboardDismisses.kt

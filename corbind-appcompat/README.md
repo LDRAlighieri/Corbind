@@ -13,13 +13,13 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**ActionMenuView** | `itemClicks` | Called when a menu item is clicked if the item itself did not already handle the event.
-**PopupMenu** | `dismisses` | Called when the associated menu has been dismissed.
-              | `itemClicks` | Called when a menu item is clicked if the item itself did not already handle the event.
-**SearchView** | `queryTextChanges` | Called when the query text is changed by the user.
-               | `queryTextChangeEvents` | A more advanced version of the `queryTextChanges`.
-**Toolbar** | `itemClicks` | Called when a menu item is clicked if the item itself did not already handle the event.
-            | `navigationClicks` | Called whenever the user clicks the navigation button at the start of the toolbar.
+**ActionMenuView** | [`itemClicks`][ActionMenuView_itemClicks] | Called when a menu item is clicked if the item itself did not already handle the event.
+**PopupMenu** | [`dismisses`][PopupMenu_dismisses] | Called when the associated menu has been dismissed.
+              | [`itemClicks`][PopupMenu_itemClicks] | Called when a menu item is clicked if the item itself did not already handle the event.
+**SearchView** | [`queryTextChanges`][SearchView_queryTextChanges] | Called when the query text is changed by the user.
+               | [`queryTextChangeEvents`][SearchView_queryTextChangeEvents] | A more advanced version of the `queryTextChanges`.
+**Toolbar** | [`itemClicks`][Toolbar_itemClicks] | Called when a menu item is clicked if the item itself did not already handle the event.
+            | [`navigationClicks`][Toolbar_navigationClicks] | Called whenever the user clicks the navigation button at the start of the toolbar.
 
 
 ## Example
@@ -32,3 +32,11 @@ toolbar.itemClicks() // Flow<MenuItem>
 ```
 
 More examples in source code
+
+[ActionMenuView_itemClicks]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-appcompat/src/main/kotlin/ru/ldralighieri/corbind/appcompat/ActionMenuViewItemClicks.kt
+[PopupMenu_dismisses]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-appcompat/src/main/kotlin/ru/ldralighieri/corbind/appcompat/PopupMenuDismisses.kt
+[PopupMenu_itemClicks]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-appcompat/src/main/kotlin/ru/ldralighieri/corbind/appcompat/PopupMenuItemClicks.kt
+[SearchView_queryTextChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-appcompat/src/main/kotlin/ru/ldralighieri/corbind/appcompat/SearchViewQueryTextChanges.kt
+[SearchView_queryTextChangeEvents]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-appcompat/src/main/kotlin/ru/ldralighieri/corbind/appcompat/SearchViewQueryTextChangeEvents.kt
+[Toolbar_itemClicks]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-appcompat/src/main/kotlin/ru/ldralighieri/corbind/appcompat/ToolbarItemClicks.kt
+[Toolbar_navigationClicks]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-appcompat/src/main/kotlin/ru/ldralighieri/corbind/appcompat/ToolbarNavigationClicks.kt

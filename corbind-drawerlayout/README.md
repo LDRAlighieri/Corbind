@@ -13,7 +13,7 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**DrawerLayout** | `drawerOpens` | Called when a drawer has settled in a completely open or close state.
+**DrawerLayout** | [`drawerOpens`][DrawerLayout_drawerOpens] | Called when a drawer has settled in a completely open or close state.
 
 
 ## Example
@@ -28,3 +28,5 @@ drawer.drawerOpens() // Flow<Boolean>
 ```
 
 More examples in source code
+
+[DrawerLayout_drawerOpens]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-drawerlayout/src/main/kotlin/ru/ldralighieri/corbind/drawerlayout/DrawerLayoutDrawerOpen.kt

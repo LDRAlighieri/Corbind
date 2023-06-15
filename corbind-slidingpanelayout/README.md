@@ -13,8 +13,8 @@ dependencies {
 
 Component | Extension | Description
 --|---|--
-**SlidingPaneLayoutr** | `panelOpens` | Called when a sliding pane becomes slid completely open or closed.
-                       | `panelSlides` | Called when a sliding pane's position changes.
+**SlidingPaneLayout** | [`panelOpens`][SlidingPaneLayout_panelOpens] | Called when a sliding pane becomes slid completely open or closed.
+                       | [`panelSlides`][SlidingPaneLayout_panelSlides] | Called when a sliding pane's position changes.
 
 
 ## Example
@@ -29,3 +29,6 @@ slider.panelOpens() // Flow<Boolean>
 ```
 
 More examples in source code
+
+[SlidingPaneLayout_panelOpens]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-slidingpanelayout/src/main/kotlin/ru/ldralighieri/corbind/slidingpanelayout/SlidingPaneLayoutPaneOpens.kt
+[SlidingPaneLayout_panelSlides]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-slidingpanelayout/src/main/kotlin/ru/ldralighieri/corbind/slidingpanelayout/SlidingPaneLayoutSlides.kt
