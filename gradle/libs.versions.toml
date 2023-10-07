@@ -8,7 +8,7 @@ bcv = "0.13.2"
 gver = "0.48.0"
 
 # Kotlin
-kotlin = "1.8.21"
+kotlin = "1.9.10"
 kotlinCoroutines = "1.7.0"
 
 # Androidx
