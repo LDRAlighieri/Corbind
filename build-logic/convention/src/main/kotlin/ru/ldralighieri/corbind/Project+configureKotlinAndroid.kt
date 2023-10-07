@@ -19,7 +19,6 @@
 package ru.ldralighieri.corbind
 
 import com.android.build.api.dsl.CommonExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.configure
@@ -42,13 +41,6 @@ internal fun Project.configureKotlinAndroid(
 
         kotlin {
             jvmToolchain(17)
-        }
-
-        // Remove this after https://issuetracker.google.com/issues/260059413 is fixed
-        // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
         }
 
         kotlinOptions {
