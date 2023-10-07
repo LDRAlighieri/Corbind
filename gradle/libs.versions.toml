@@ -1,7 +1,7 @@
 [versions]
 # Plugins
 agp = "8.1.2"
-dokka = "1.8.20"
+dokka = "1.9.0"
 spotless = "6.22.0"
 mavenPublish = "0.25.3"
 bcv = "0.13.2"
@@ -9,7 +9,7 @@ gver = "0.48.0"
 
 # Kotlin
 kotlin = "1.9.10"
-kotlinCoroutines = "1.7.0"
+kotlinCoroutines = "1.7.3"
 
 # Androidx
 androidxCore = "1.9.0"
