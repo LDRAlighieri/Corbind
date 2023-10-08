@@ -77,8 +77,8 @@ suspend fun OnBackPressedDispatcher.backPresses(
  *
  * ```
  * launch {
- *      onBackPressedDispatcher.backPresses(lifecycleOwner = this)
- *          .consumeEach { /* handle onBackPressed event */ }
+ *      onBackPressedDispatcher.backPresses(scope, lifecycleOwner = this)
+ *          .consumeEach { /* handle back pressed event */ }
  * }
  * ```
  *
@@ -103,7 +103,7 @@ fun OnBackPressedDispatcher.backPresses(
  *
  * ```
  * onBackPressedDispatcher.backPresses(lifecycleOwner = this)
- *      .onEach { /* handle onBackPressed event */ }
+ *      .onEach { /* handle back pressed event */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
