@@ -1,6 +1,20 @@
 # ChangeLog
 
 
+## Version 1.9.0
+
+* New: Bindings list:
+	* AndroidX library bindings:
+		* `corbind-activity`:
+			* `OnBackPressedDispatcher`:
+				* `backProgressed`
+				* `backEvents`
+* Update: Kotlin to v1.9.10.
+* Update: Kotlin coroutines to v1.7.3.
+* Update: Material components to v1.10.0.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.8.0
 
 * New: Bindings list:
