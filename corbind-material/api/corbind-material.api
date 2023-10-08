@@ -254,6 +254,7 @@ public final class ru/ldralighieri/corbind/material/RangeSliderSide : java/lang/
 	public static final field INIT Lru/ldralighieri/corbind/material/RangeSliderSide;
 	public static final field LEFT Lru/ldralighieri/corbind/material/RangeSliderSide;
 	public static final field RIGHT Lru/ldralighieri/corbind/material/RangeSliderSide;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lru/ldralighieri/corbind/material/RangeSliderSide;
 	public static fun values ()[Lru/ldralighieri/corbind/material/RangeSliderSide;
 }
@@ -440,7 +441,7 @@ public final class ru/ldralighieri/corbind/material/SwipeDismissBehaviorDragStat
 	public static synthetic fun dragStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
-public abstract class ru/ldralighieri/corbind/material/TabLayoutSelectionEvent {
+public abstract interface class ru/ldralighieri/corbind/material/TabLayoutSelectionEvent {
 	public abstract fun getTab ()Lcom/google/android/material/tabs/TabLayout$Tab;
 	public abstract fun getView ()Lcom/google/android/material/tabs/TabLayout;
 }

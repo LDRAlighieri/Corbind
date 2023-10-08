@@ -1,3 +1,20 @@
+public final class ru/ldralighieri/corbind/activity/OnBackCanceled : ru/ldralighieri/corbind/activity/OnBackEvent {
+	public static final field INSTANCE Lru/ldralighieri/corbind/activity/OnBackCanceled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class ru/ldralighieri/corbind/activity/OnBackEvent {
+}
+
+public final class ru/ldralighieri/corbind/activity/OnBackPressed : ru/ldralighieri/corbind/activity/OnBackEvent {
+	public static final field INSTANCE Lru/ldralighieri/corbind/activity/OnBackPressed;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class ru/ldralighieri/corbind/activity/OnBackPressedDispatcherBackPressesKt {
 	public static final fun backPresses (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun backPresses (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -6,5 +23,47 @@ public final class ru/ldralighieri/corbind/activity/OnBackPressedDispatcherBackP
 	public static synthetic fun backPresses$default (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun backPresses$default (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static synthetic fun backPresses$default (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/activity/OnBackPressedDispatcherBackProgressedKt {
+	public static final fun backProgressed (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun backProgressed (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun backProgressed (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun backProgressed (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun backProgressed$default (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun backProgressed$default (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun backProgressed$default (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/activity/OnBackPressedDispatcherOnBackEventsKt {
+	public static final fun backEvents (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun backEvents (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun backEvents (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun backEvents (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun backEvents$default (Landroidx/activity/OnBackPressedDispatcher;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun backEvents$default (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun backEvents$default (Landroidx/activity/OnBackPressedDispatcher;Lkotlinx/coroutines/CoroutineScope;Landroidx/lifecycle/LifecycleOwner;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/activity/OnBackProgressed : ru/ldralighieri/corbind/activity/OnBackEvent {
+	public fun <init> (Landroidx/activity/BackEventCompat;)V
+	public final fun component1 ()Landroidx/activity/BackEventCompat;
+	public final fun copy (Landroidx/activity/BackEventCompat;)Lru/ldralighieri/corbind/activity/OnBackProgressed;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/activity/OnBackProgressed;Landroidx/activity/BackEventCompat;ILjava/lang/Object;)Lru/ldralighieri/corbind/activity/OnBackProgressed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBackEvent ()Landroidx/activity/BackEventCompat;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class ru/ldralighieri/corbind/activity/OnBackStarted : ru/ldralighieri/corbind/activity/OnBackEvent {
+	public fun <init> (Landroidx/activity/BackEventCompat;)V
+	public final fun component1 ()Landroidx/activity/BackEventCompat;
+	public final fun copy (Landroidx/activity/BackEventCompat;)Lru/ldralighieri/corbind/activity/OnBackStarted;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/activity/OnBackStarted;Landroidx/activity/BackEventCompat;ILjava/lang/Object;)Lru/ldralighieri/corbind/activity/OnBackStarted;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBackEvent ()Landroidx/activity/BackEventCompat;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 

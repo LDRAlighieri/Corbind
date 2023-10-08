@@ -31,7 +31,7 @@ public final class ru/ldralighieri/corbind/leanback/SearchBarSearchQueryChangesK
 	public static synthetic fun searchQueryChanges$default (Landroidx/leanback/widget/SearchBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
-public abstract class ru/ldralighieri/corbind/leanback/SearchBarSearchQueryEvent {
+public abstract interface class ru/ldralighieri/corbind/leanback/SearchBarSearchQueryEvent {
 	public abstract fun getSearchQuery ()Ljava/lang/String;
 	public abstract fun getView ()Landroidx/leanback/widget/SearchBar;
 }

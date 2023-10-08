@@ -46,7 +46,7 @@ public final class ru/ldralighieri/corbind/view/MenuItemActionViewCollapseEvent 
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class ru/ldralighieri/corbind/view/MenuItemActionViewEvent {
+public abstract interface class ru/ldralighieri/corbind/view/MenuItemActionViewEvent {
 	public abstract fun getMenuItem ()Landroid/view/MenuItem;
 }
 
@@ -105,7 +105,7 @@ public final class ru/ldralighieri/corbind/view/ViewAttachDetachedEvent : ru/ldr
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class ru/ldralighieri/corbind/view/ViewAttachEvent {
+public abstract interface class ru/ldralighieri/corbind/view/ViewAttachEvent {
 	public abstract fun getView ()Landroid/view/View;
 }
 
@@ -167,7 +167,7 @@ public final class ru/ldralighieri/corbind/view/ViewFocusChangesKt {
 	public static synthetic fun focusChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
-public abstract class ru/ldralighieri/corbind/view/ViewGroupHierarchyChangeEvent {
+public abstract interface class ru/ldralighieri/corbind/view/ViewGroupHierarchyChangeEvent {
 	public abstract fun getChild ()Landroid/view/View;
 	public abstract fun getView ()Landroid/view/ViewGroup;
 }
@@ -544,7 +544,7 @@ public final class ru/ldralighieri/corbind/widget/AdapterViewNothingSelectionEve
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class ru/ldralighieri/corbind/widget/AdapterViewSelectionEvent {
+public abstract interface class ru/ldralighieri/corbind/widget/AdapterViewSelectionEvent {
 	public abstract fun getView ()Landroid/widget/AdapterView;
 }
 
@@ -777,7 +777,7 @@ public final class ru/ldralighieri/corbind/widget/SearchViewQueryTextEvent {
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class ru/ldralighieri/corbind/widget/SeekBarChangeEvent {
+public abstract interface class ru/ldralighieri/corbind/widget/SeekBarChangeEvent {
 	public abstract fun getView ()Landroid/widget/SeekBar;
 }
 
