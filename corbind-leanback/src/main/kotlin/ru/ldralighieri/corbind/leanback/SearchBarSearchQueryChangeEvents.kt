@@ -30,25 +30,25 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
-sealed class SearchBarSearchQueryEvent {
-    abstract val view: SearchBar
-    abstract val searchQuery: String
+sealed interface SearchBarSearchQueryEvent {
+    val view: SearchBar
+    val searchQuery: String
 }
 
 data class SearchBarSearchQueryChangedEvent(
     override val view: SearchBar,
     override val searchQuery: String
-) : SearchBarSearchQueryEvent()
+) : SearchBarSearchQueryEvent
 
 data class SearchBarSearchQueryKeyboardDismissedEvent(
     override val view: SearchBar,
     override val searchQuery: String
-) : SearchBarSearchQueryEvent()
+) : SearchBarSearchQueryEvent
 
 data class SearchBarSearchQuerySubmittedEvent(
     override val view: SearchBar,
     override val searchQuery: String
-) : SearchBarSearchQueryEvent()
+) : SearchBarSearchQueryEvent
 
 /**
  * Perform an action on [search query events][SearchBarSearchQueryEvent] on [SearchBar].

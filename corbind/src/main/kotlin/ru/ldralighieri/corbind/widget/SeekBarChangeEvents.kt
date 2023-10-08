@@ -31,23 +31,23 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
-sealed class SeekBarChangeEvent {
-    abstract val view: SeekBar
+sealed interface SeekBarChangeEvent {
+    val view: SeekBar
 }
 
 data class SeekBarProgressChangeEvent(
     override val view: SeekBar,
     val progress: Int,
     val fromUser: Boolean
-) : SeekBarChangeEvent()
+) : SeekBarChangeEvent
 
 data class SeekBarStartChangeEvent(
     override val view: SeekBar
-) : SeekBarChangeEvent()
+) : SeekBarChangeEvent
 
 data class SeekBarStopChangeEvent(
     override val view: SeekBar
-) : SeekBarChangeEvent()
+) : SeekBarChangeEvent
 
 /**
  * Perform an action on [change events][SeekBarChangeEvent] for [SeekBar].

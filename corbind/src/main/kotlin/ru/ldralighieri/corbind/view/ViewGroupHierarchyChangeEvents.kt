@@ -31,20 +31,20 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
-sealed class ViewGroupHierarchyChangeEvent {
-    abstract val view: ViewGroup
-    abstract val child: View
+sealed interface ViewGroupHierarchyChangeEvent {
+    val view: ViewGroup
+    val child: View
 }
 
 data class ViewGroupHierarchyChildViewAddEvent(
     override val view: ViewGroup,
     override val child: View
-) : ViewGroupHierarchyChangeEvent()
+) : ViewGroupHierarchyChangeEvent
 
 data class ViewGroupHierarchyChildViewRemoveEvent(
     override val view: ViewGroup,
     override val child: View
-) : ViewGroupHierarchyChangeEvent()
+) : ViewGroupHierarchyChangeEvent
 
 /**
  * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup].
