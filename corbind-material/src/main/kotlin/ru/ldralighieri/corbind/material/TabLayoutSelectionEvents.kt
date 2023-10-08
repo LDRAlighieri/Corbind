@@ -30,25 +30,25 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
-sealed class TabLayoutSelectionEvent {
-    abstract val view: TabLayout
-    abstract val tab: TabLayout.Tab
+sealed interface TabLayoutSelectionEvent {
+    val view: TabLayout
+    val tab: TabLayout.Tab
 }
 
 data class TabLayoutSelectionSelectedEvent(
     override val view: TabLayout,
     override val tab: TabLayout.Tab
-) : TabLayoutSelectionEvent()
+) : TabLayoutSelectionEvent
 
 data class TabLayoutSelectionReselectedEvent(
     override val view: TabLayout,
     override val tab: TabLayout.Tab
-) : TabLayoutSelectionEvent()
+) : TabLayoutSelectionEvent
 
 data class TabLayoutSelectionUnselectedEvent(
     override val view: TabLayout,
     override val tab: TabLayout.Tab
-) : TabLayoutSelectionEvent()
+) : TabLayoutSelectionEvent
 
 /**
  * Perform an action on selection, reselection, and unselection [events][TabLayoutSelectionEvent]

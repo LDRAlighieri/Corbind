@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Vladimir Raupov
+ * Copyright 2023 Vladimir Raupov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package ru.ldralighieri.corbind.activity
 
+import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.CheckResult
@@ -33,21 +34,21 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
- * Perform an action on [OnBackPressedDispatcher.onBackPressed] call.
+ * Perform an action on [OnBackPressedDispatcher.dispatchOnBackProgressed] call.
  *
  * @param scope Root coroutine scope
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-fun OnBackPressedDispatcher.backPresses(
+fun OnBackPressedDispatcher.backProgressed(
     scope: CoroutineScope,
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend (Float) -> Unit
 ) {
-    val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
-        for (ignored in channel) action()
+    val events = scope.actor<Float>(Dispatchers.Main.immediate, capacity) {
+        for (progress in channel) action(progress)
     }
 
     val callback = callback(scope, events::trySend)
@@ -56,29 +57,31 @@ fun OnBackPressedDispatcher.backPresses(
 }
 
 /**
- * Perform an action on [OnBackPressedDispatcher.onBackPressed] call, inside new [CoroutineScope].
+ * Perform an action on [OnBackPressedDispatcher.dispatchOnBackProgressed] call, inside new
+ * [CoroutineScope].
  *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-suspend fun OnBackPressedDispatcher.backPresses(
+suspend fun OnBackPressedDispatcher.backProgressed(
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend (Float) -> Unit
 ) = coroutineScope {
-    backPresses(this, lifecycleOwner, capacity, action)
+    backProgressed(this, lifecycleOwner, capacity, action)
 }
 
 /**
- * Create a channel which emits on [OnBackPressedDispatcher.onBackPressed] call.
+ * Create a channel which emits back progress on [OnBackPressedDispatcher.dispatchOnBackProgressed]
+ * call.
  *
  * Example:
  *
  * ```
  * launch {
- *      onBackPressedDispatcher.backPresses(scope, lifecycleOwner = this)
- *          .consumeEach { /* handle back pressed event */ }
+ *      onBackPressedDispatcher.backProgressed(scope, lifecycleOwner = this)
+ *          .consumeEach { /* handle back progressed event */ }
  * }
  * ```
  *
@@ -86,43 +89,47 @@ suspend fun OnBackPressedDispatcher.backPresses(
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
-fun OnBackPressedDispatcher.backPresses(
+fun OnBackPressedDispatcher.backProgressed(
     scope: CoroutineScope,
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
     val callback = callback(scope, ::trySend)
     addCallback(lifecycleOwner, callback)
     invokeOnClose { callback.remove() }
 }
 
 /**
- * Create a flow which emits on [OnBackPressedDispatcher.onBackPressed] call.
+ * Create a flow which emits back progress on [OnBackPressedDispatcher.dispatchOnBackProgressed]
+ * call.
  *
  * Example:
  *
  * ```
- * onBackPressedDispatcher.backPresses(lifecycleOwner = this)
- *      .onEach { /* handle back pressed event */ }
+ * onBackPressedDispatcher.backProgressed(lifecycleOwner = this)
+ *      .onEach { /* handle back progressed event */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  */
-fun OnBackPressedDispatcher.backPresses(lifecycleOwner: LifecycleOwner): Flow<Unit> = channelFlow {
-    val callback = callback(this, ::trySend)
-    addCallback(lifecycleOwner, callback)
-    awaitClose { callback.remove() }
-}
+fun OnBackPressedDispatcher.backProgressed(lifecycleOwner: LifecycleOwner): Flow<Float> =
+    channelFlow {
+        val callback = callback(this, ::trySend)
+        addCallback(lifecycleOwner, callback)
+        awaitClose { callback.remove() }
+    }
 
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit
+    emitter: (Float) -> Unit
 ) = object : OnBackPressedCallback(true) {
 
-    override fun handleOnBackPressed() {
-        if (scope.isActive) { emitter(Unit) }
+    override fun handleOnBackProgressed(backEvent: BackEventCompat) {
+        if (scope.isActive) { emitter(backEvent.progress) }
     }
+
+    override fun handleOnBackPressed() = Unit
 }

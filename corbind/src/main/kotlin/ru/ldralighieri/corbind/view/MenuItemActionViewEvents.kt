@@ -31,17 +31,17 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
-sealed class MenuItemActionViewEvent {
-    abstract val menuItem: MenuItem
+sealed interface MenuItemActionViewEvent {
+    val menuItem: MenuItem
 }
 
 data class MenuItemActionViewCollapseEvent(
     override val menuItem: MenuItem
-) : MenuItemActionViewEvent()
+) : MenuItemActionViewEvent
 
 data class MenuItemActionViewExpandEvent(
     override val menuItem: MenuItem
-) : MenuItemActionViewEvent()
+) : MenuItemActionViewEvent
 
 /**
  * Perform an action on [action view events][MenuItemActionViewEvent] for [MenuItem].

@@ -30,17 +30,17 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
-sealed class ViewAttachEvent {
-    abstract val view: View
+sealed interface ViewAttachEvent {
+    val view: View
 }
 
 data class ViewAttachAttachedEvent(
     override val view: View
-) : ViewAttachEvent()
+) : ViewAttachEvent
 
 data class ViewAttachDetachedEvent(
     override val view: View
-) : ViewAttachEvent()
+) : ViewAttachEvent
 
 /**
  * Perform an action on [attach and detach events][ViewAttachEvent] on [View].

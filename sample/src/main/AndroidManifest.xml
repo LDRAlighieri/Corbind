@@ -23,7 +23,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Corbind"
-        tools:ignore="GoogleAppIndexingWarning">
+        android:enableOnBackInvokedCallback="true"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="tiramisu">
 
         <activity
             android:name=".LoginActivity"

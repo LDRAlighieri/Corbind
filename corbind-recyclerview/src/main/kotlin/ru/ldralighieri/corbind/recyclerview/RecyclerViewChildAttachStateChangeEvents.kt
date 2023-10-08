@@ -31,20 +31,20 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
-sealed class RecyclerViewChildAttachStateChangeEvent {
-    abstract val view: RecyclerView
-    abstract val child: View
+sealed interface RecyclerViewChildAttachStateChangeEvent {
+    val view: RecyclerView
+    val child: View
 }
 
 data class RecyclerViewChildAttachEvent(
     override val view: RecyclerView,
     override val child: View
-) : RecyclerViewChildAttachStateChangeEvent()
+) : RecyclerViewChildAttachStateChangeEvent
 
 data class RecyclerViewChildDetachEvent(
     override val view: RecyclerView,
     override val child: View
-) : RecyclerViewChildAttachStateChangeEvent()
+) : RecyclerViewChildAttachStateChangeEvent
 
 /**
  * Perform an action on [child attach state change events][RecyclerViewChildAttachStateChangeEvent]

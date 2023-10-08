@@ -21,7 +21,7 @@ public final class ru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachE
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class ru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachStateChangeEvent {
+public abstract interface class ru/ldralighieri/corbind/recyclerview/RecyclerViewChildAttachStateChangeEvent {
 	public abstract fun getChild ()Landroid/view/View;
 	public abstract fun getView ()Landroidx/recyclerview/widget/RecyclerView;
 }

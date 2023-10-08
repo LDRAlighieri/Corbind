@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.util.Patterns
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.BackEventCompat
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
@@ -34,7 +35,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import ru.ldralighieri.corbind.activity.OnBackPressed
+import ru.ldralighieri.corbind.activity.OnBackProgressed
+import ru.ldralighieri.corbind.activity.backEvents
 import ru.ldralighieri.corbind.sample.core.extensions.hideSoftInput
+import ru.ldralighieri.corbind.sample.core.extensions.toPx
 import ru.ldralighieri.corbind.sample.databinding.ActivityLoginBinding
 import ru.ldralighieri.corbind.swiperefreshlayout.refreshes
 import ru.ldralighieri.corbind.view.clicks
@@ -43,7 +48,13 @@ import ru.ldralighieri.corbind.widget.textChanges
 
 class LoginActivity : AppCompatActivity() {
 
+    private companion object {
+        const val TRANSITION_X_THRESHOLD_DP = 40
+    }
+
     private lateinit var binding: ActivityLoginBinding
+
+    private val transitionXThresholdPx: Float by lazy { TRANSITION_X_THRESHOLD_DP.toPx }
 
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,6 +109,24 @@ class LoginActivity : AppCompatActivity() {
                                 R.string.login_swipe_message,
                                 Toast.LENGTH_SHORT
                             ).show()
+                        }
+                        .launchIn(this)
+
+                    onBackPressedDispatcher.backEvents(lifecycleOwner = this@LoginActivity)
+                        .onEach { event ->
+                            when {
+                                event is OnBackPressed -> finish()
+                                event is OnBackProgressed -> {
+                                    with (event) {
+                                        val direction: Int =
+                                            if (backEvent.swipeEdge == BackEventCompat.EDGE_LEFT) 1
+                                            else -1
+                                        
+                                        tvTitle.translationX =
+                                            direction * transitionXThresholdPx * backEvent.progress
+                                    }
+                                }
+                            }
                         }
                         .launchIn(this)
                 }

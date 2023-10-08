@@ -33,8 +33,8 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
-sealed class AdapterViewSelectionEvent {
-    abstract val view: AdapterView<*>
+sealed interface AdapterViewSelectionEvent {
+    val view: AdapterView<*>
 }
 
 data class AdapterViewItemSelectionEvent(
@@ -42,11 +42,11 @@ data class AdapterViewItemSelectionEvent(
     val selectedView: View?,
     val position: Int,
     val id: Long
-) : AdapterViewSelectionEvent()
+) : AdapterViewSelectionEvent
 
 data class AdapterViewNothingSelectionEvent(
     override val view: AdapterView<*>
-) : AdapterViewSelectionEvent()
+) : AdapterViewSelectionEvent
 
 /**
  * Perform an action on [selection events][AdapterViewSelectionEvent] for [AdapterView].

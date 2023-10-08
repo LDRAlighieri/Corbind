@@ -79,6 +79,7 @@ android {
 
 dependencies {
     implementation(projects.corbindSwiperefreshlayout)
+    implementation(projects.corbindActivity)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)

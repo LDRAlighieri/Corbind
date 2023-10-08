@@ -73,17 +73,17 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:gravity="center"
                 android:text="@string/login_title"
+                android:textColor="@color/colorPrimary"
                 android:textSize="32sp"
                 android:textStyle="bold"
-                android:typeface="serif"
-                android:textColor="@color/colorPrimary"
                 app:layout_constraintBottom_toTopOf="@+id/til_email_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_right_border"
+                app:layout_constraintStart_toStartOf="@+id/guideline_left_border"
                 app:layout_constraintTop_toTopOf="parent"
                 />
 

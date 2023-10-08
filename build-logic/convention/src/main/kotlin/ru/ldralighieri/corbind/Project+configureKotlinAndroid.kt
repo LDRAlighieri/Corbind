@@ -19,7 +19,6 @@
 package ru.ldralighieri.corbind
 
 import com.android.build.api.dsl.CommonExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.configure
@@ -28,7 +27,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *>,
+    commonExtension: CommonExtension<*, *, *, *, *>,
 ) {
     val compileSdk: String by project
     val minSdk: String by project
@@ -44,13 +43,6 @@ internal fun Project.configureKotlinAndroid(
             jvmToolchain(17)
         }
 
-        // Remove this after https://issuetracker.google.com/issues/260059413 is fixed
-        // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
-        }
-
         kotlinOptions {
             allWarningsAsErrors = true
             freeCompilerArgs = freeCompilerArgs + listOf(
@@ -63,6 +55,6 @@ internal fun Project.configureKotlinAndroid(
 private fun Project.kotlin(action: KotlinAndroidProjectExtension.() -> Unit) =
     extensions.configure(action)
 
-private fun CommonExtension<*, *, *, *>.kotlinOptions(block: KotlinJvmOptions.() -> Unit) {
+private fun CommonExtension<*, *, *, *, *>.kotlinOptions(block: KotlinJvmOptions.() -> Unit) {
     (this as ExtensionAware).extensions.configure("kotlinOptions", block)
 }
