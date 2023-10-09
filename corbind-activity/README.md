@@ -14,8 +14,8 @@ dependencies {
 Component | Extension | Description
 --|---|--
 **OnBackPressedDispatcher** | [`backPresses`][OnBackPressedDispatcher_backPresses] | Called when OnBackPressedDispatcher.onBackPressed triggered. OnBackPressed events only 
-**OnBackPressedDispatcher** | [`backProgressed`][OnBackPressedDispatcher_backProgressed] | Called when OnBackPressedDispatcher.dispatchOnBackProgressed triggered. OnBackProgressed event only
-**OnBackPressedDispatcher** | [`backEvents`][OnBackPressedDispatcher_backEvents] | Called when any callback event triggered. All events
+                         | [`backProgressed`][OnBackPressedDispatcher_backProgressed] | Called when OnBackPressedDispatcher.dispatchOnBackProgressed triggered. OnBackProgressed event only
+                         | [`backEvents`][OnBackPressedDispatcher_backEvents] | Called when any callback event triggered. All events
 
 
 ## Simple examples
