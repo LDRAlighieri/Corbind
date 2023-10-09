@@ -20,7 +20,7 @@ To add androidx slidingpanelayout bindings, import `corbind-slidingpanelayout` m
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.8.0")
+    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.9.0")
 }
 ```
 
