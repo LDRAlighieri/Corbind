@@ -17,9 +17,8 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.getByType
+import ru.ldralighieri.corbind.libs
 
 @Suppress("unused")
 class SpotlessConventionPlugin : Plugin<Project> {
@@ -27,7 +26,6 @@ class SpotlessConventionPlugin : Plugin<Project> {
         with(target) {
             pluginManager.apply("com.diffplug.spotless")
 
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
             extensions.configure<SpotlessExtension> {
                 kotlin {
                     target("**/*.kt")

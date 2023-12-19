@@ -36,6 +36,8 @@ dependencyResolutionManagement {
 // https://github.com/gradle/gradle/issues/16608
 rootProject.name = "CorbindProject"
 
+include(":corbind-bom")
+
 include(":corbind")
 include(":corbind-activity")
 include(":corbind-appcompat")

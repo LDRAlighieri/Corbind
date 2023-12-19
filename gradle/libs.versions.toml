@@ -1,7 +1,7 @@
 [versions]
 # Plugins
 agp = "8.2.0"
-dokka = "1.9.0"
+dokka = "1.9.10"
 spotless = "6.18.0"
 mavenPublish = "0.25.3"
 bcv = "0.13.2"
