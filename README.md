@@ -1,7 +1,7 @@
 ﻿[![Corbind](logo.svg)](https://ldralighieri.github.io/Corbind)
 
 [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.9.10-blue.svg?logo=kotlin)](https://kotlinlang.org)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.9.21-blue.svg?logo=kotlin)](https://kotlinlang.org)
 [![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.7.3-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -27,34 +27,37 @@ Please consider giving this repository a star ⭐ if you like the project.
 
 Platform bindings:
 ```kotlin
-dependencies {
-    implementation("ru.ldralighieri.corbind:corbind:1.9.0")
+dependencies { 
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2023.12.00"))
+    implementation("ru.ldralighieri.corbind:corbind")
 }
 ```
 
 AndroidX library bindings:
 ```kotlin
-dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-activity:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-appcompat:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-core:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-fragment:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-leanback:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-lifecycle:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-navigation:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-recyclerview:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-viewpager:1.9.0")
-    implementation("ru.ldralighieri.corbind:corbind-viewpager2:1.9.0")
+dependencies { 
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2023.12.00"))
+    implementation("ru.ldralighieri.corbind:corbind-activity")
+    implementation("ru.ldralighieri.corbind:corbind-appcompat")
+    implementation("ru.ldralighieri.corbind:corbind-core")
+    implementation("ru.ldralighieri.corbind:corbind-drawerlayout")
+    implementation("ru.ldralighieri.corbind:corbind-fragment")
+    implementation("ru.ldralighieri.corbind:corbind-leanback")
+    implementation("ru.ldralighieri.corbind:corbind-lifecycle")
+    implementation("ru.ldralighieri.corbind:corbind-navigation")
+    implementation("ru.ldralighieri.corbind:corbind-recyclerview")
+    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout")
+    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager2")
 }
 ```
 
 Google 'material' library bindings:
 ```kotlin
-dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-material:1.9.0")
+dependencies { 
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2023.12.00"))
+    implementation("ru.ldralighieri.corbind:corbind-material")
 }
 ```
 
@@ -65,8 +68,9 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
-dependencies {
-   implementation("ru.ldralighieri.corbind:{module}:1.10.0-SNAPSHOT")
+dependencies { 
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2024.01.00-SNAPSHOT"))
+    implementation("ru.ldralighieri.corbind:{module}")
 }
 ```
 

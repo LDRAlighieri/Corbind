@@ -5,16 +5,15 @@ To add androidx fragment bindings, import `corbind-fragment` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-fragment:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-fragment:1.10.0")
 }
 ```
 
 ## List of extensions
 
-Component | Extension | Description
---|---|--
-**FragmentManager** | [`resultEvents`][FragmentManager_resultEvents] | Called when any results set by setFragmentResult using the same requestKey.
-
+| Component           | Extension                                      | Description                                                                 |
+|---------------------|------------------------------------------------|-----------------------------------------------------------------------------|
+| **FragmentManager** | [`resultEvents`][FragmentManager_resultEvents] | Called when any results set by setFragmentResult using the same requestKey. |
 
 ## Simple examples
 

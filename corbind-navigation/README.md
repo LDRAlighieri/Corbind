@@ -5,17 +5,16 @@ To add androidx navigation bindings, import `corbind-navigation` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-navigation:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-navigation:1.10.0")
 }
 ```
 
 ## List of extensions
 
-Component | Extension | Description
---|---|--
-**NavController** | [`destinationChanges`][NavController_destinationChanges] | Called when the `NavController` destination or its arguments change.
-               | [`destinationChangeEvents`][NavController_destinationChangeEvents] | A more advanced version of the `destinationChanges`.
-
+| Component         | Extension                                                          | Description                                                          |
+|-------------------|--------------------------------------------------------------------|----------------------------------------------------------------------|
+| **NavController** | [`destinationChanges`][NavController_destinationChanges]           | Called when the `NavController` destination or its arguments change. |
+|                   | [`destinationChangeEvents`][NavController_destinationChangeEvents] | A more advanced version of the `destinationChanges`.                 |
 
 ## Simple examples
 

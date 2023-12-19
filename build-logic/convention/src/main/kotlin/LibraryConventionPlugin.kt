@@ -23,7 +23,6 @@ import ru.ldralighieri.corbind.configureKotlinAndroid
 
 @Suppress("unused")
 class LibraryConventionPlugin : Plugin<Project> {
-    @Suppress("UnstableApiUsage")
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {

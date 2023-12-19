@@ -30,6 +30,7 @@ plugins {
 apiValidation {
     ignoredProjects.add("sample")
     ignoredPackages.add("ru/ldralighieri/corbind/internal")
+    ignoredPackages.add("corbind-bom")
 }
 
 // Dependency updates

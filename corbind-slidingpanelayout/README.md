@@ -5,17 +5,16 @@ To add androidx slidingpanelayout bindings, import `corbind-slidingpanelayout` m
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout:1.10.0")
 }
 ```
 
 ## List of extensions
 
-Component | Extension | Description
---|---|--
-**SlidingPaneLayout** | [`panelOpens`][SlidingPaneLayout_panelOpens] | Called when a sliding pane becomes slid completely open or closed.
-                       | [`panelSlides`][SlidingPaneLayout_panelSlides] | Called when a sliding pane's position changes.
-
+| Component             | Extension                                      | Description                                                        |
+|-----------------------|------------------------------------------------|--------------------------------------------------------------------|
+| **SlidingPaneLayout** | [`panelOpens`][SlidingPaneLayout_panelOpens]   | Called when a sliding pane becomes slid completely open or closed. |
+|                       | [`panelSlides`][SlidingPaneLayout_panelSlides] | Called when a sliding pane's position changes.                     |
 
 ## Example
 
