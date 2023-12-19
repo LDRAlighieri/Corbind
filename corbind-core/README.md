@@ -5,16 +5,15 @@ To add androidx core bindings, import `corbind-core` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-core:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-core:1.10.0")
 }
 ```
 
 ## List of extensions
 
-Component | Extension | Description
---|---|--
-**NestedScrollView** | [`scrollChangeEvents`][NestedScrollView_scrollChangeEvents] | Called when the scroll position of a view changes.
-
+| Component            | Extension                                                   | Description                                        |
+|----------------------|-------------------------------------------------------------|----------------------------------------------------|
+| **NestedScrollView** | [`scrollChangeEvents`][NestedScrollView_scrollChangeEvents] | Called when the scroll position of a view changes. |
 
 ## Example
 

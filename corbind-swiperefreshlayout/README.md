@@ -5,16 +5,15 @@ To add androidx swiperefreshlayout bindings, import `corbind-swiperefreshlayout`
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout:1.10.0")
 }
 ```
 
 ## List of extensions
 
-Component | Extension | Description
---|---|--
-**SwipeRefreshLayout** | [`refreshes`][SwipeRefreshLayout_refreshes] | Called when a swipe gesture triggers a refresh. open or closed.
-
+| Component              | Extension                                   | Description                                                     |
+|------------------------|---------------------------------------------|-----------------------------------------------------------------|
+| **SwipeRefreshLayout** | [`refreshes`][SwipeRefreshLayout_refreshes] | Called when a swipe gesture triggers a refresh. open or closed. |
 
 ## Example
 

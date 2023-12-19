@@ -5,22 +5,21 @@ To add androidx appcompat bindings, import `corbind-appcompat` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-appcompat:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-appcompat:1.10.0")
 }
 ```
 
 ## List of extensions
 
-Component | Extension | Description
---|---|--
-**ActionMenuView** | [`itemClicks`][ActionMenuView_itemClicks] | Called when a menu item is clicked if the item itself did not already handle the event.
-**PopupMenu** | [`dismisses`][PopupMenu_dismisses] | Called when the associated menu has been dismissed.
-              | [`itemClicks`][PopupMenu_itemClicks] | Called when a menu item is clicked if the item itself did not already handle the event.
-**SearchView** | [`queryTextChanges`][SearchView_queryTextChanges] | Called when the query text is changed by the user.
-               | [`queryTextChangeEvents`][SearchView_queryTextChangeEvents] | A more advanced version of the `queryTextChanges`.
-**Toolbar** | [`itemClicks`][Toolbar_itemClicks] | Called when a menu item is clicked if the item itself did not already handle the event.
-            | [`navigationClicks`][Toolbar_navigationClicks] | Called whenever the user clicks the navigation button at the start of the toolbar.
-
+| Component          | Extension                                                   | Description                                                                             |
+|--------------------|-------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| **ActionMenuView** | [`itemClicks`][ActionMenuView_itemClicks]                   | Called when a menu item is clicked if the item itself did not already handle the event. |
+| **PopupMenu**      | [`dismisses`][PopupMenu_dismisses]                          | Called when the associated menu has been dismissed.                                     |
+|                    | [`itemClicks`][PopupMenu_itemClicks]                        | Called when a menu item is clicked if the item itself did not already handle the event. |
+| **SearchView**     | [`queryTextChanges`][SearchView_queryTextChanges]           | Called when the query text is changed by the user.                                      |
+|                    | [`queryTextChangeEvents`][SearchView_queryTextChangeEvents] | A more advanced version of the `queryTextChanges`.                                      |
+| **Toolbar**        | [`itemClicks`][Toolbar_itemClicks]                          | Called when a menu item is clicked if the item itself did not already handle the event. |
+|                    | [`navigationClicks`][Toolbar_navigationClicks]              | Called whenever the user clicks the navigation button at the start of the toolbar.      |
 
 ## Example
 

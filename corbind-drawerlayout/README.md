@@ -5,16 +5,15 @@ To add androidx drawerlayout bindings, import `corbind-drawerlayout` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.10.0")
 }
 ```
 
 ## List of extensions
 
-Component | Extension | Description
---|---|--
-**DrawerLayout** | [`drawerOpens`][DrawerLayout_drawerOpens] | Called when a drawer has settled in a completely open or close state.
-
+| Component        | Extension                                 | Description                                                           |
+|------------------|-------------------------------------------|-----------------------------------------------------------------------|
+| **DrawerLayout** | [`drawerOpens`][DrawerLayout_drawerOpens] | Called when a drawer has settled in a completely open or close state. |
 
 ## Example
 

@@ -5,18 +5,17 @@ To add androidx viewpager bindings, import `corbind-viewpager` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-viewpager:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager:1.10.0")
 }
 ```
 
 ## List of extensions
 
-Component | Extension | Description
---|---|--
-**ViewPager** | [`pageScrollEvents`][ViewPager_pageScrollEvents] | Called when the current page is scrolled, either as part of a programmatically initiated smooth scroll or a user initiated touch scroll.
-              | [`pageScrollStateChanges`][ViewPager_pageScrollStateChanges] | Called when the scroll state changes.
-              | [`pageSelections`][ViewPager_pageSelections] | Called when a new page becomes selected.
-
+| Component     | Extension                                                    | Description                                                                                                                              |
+|---------------|--------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| **ViewPager** | [`pageScrollEvents`][ViewPager_pageScrollEvents]             | Called when the current page is scrolled, either as part of a programmatically initiated smooth scroll or a user initiated touch scroll. |
+|               | [`pageScrollStateChanges`][ViewPager_pageScrollStateChanges] | Called when the scroll state changes.                                                                                                    |
+|               | [`pageSelections`][ViewPager_pageSelections]                 | Called when a new page becomes selected.                                                                                                 |
 
 ## Example
 

@@ -5,18 +5,17 @@ To add androidx activity bindings, import `corbind-activity` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-activity:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-activity:1.10.0")
 }
 ```
 
 ## List of extensions
 
-Component | Extension | Description
---|---|--
-**OnBackPressedDispatcher** | [`backPresses`][OnBackPressedDispatcher_backPresses] | Called when OnBackPressedDispatcher.onBackPressed triggered. OnBackPressed events only 
-                         | [`backProgressed`][OnBackPressedDispatcher_backProgressed] | Called when OnBackPressedDispatcher.dispatchOnBackProgressed triggered. OnBackProgressed event only
-                         | [`backEvents`][OnBackPressedDispatcher_backEvents] | Called when any callback event triggered. All events
-
+| Component                   | Extension                                                  | Description                                                                                         |
+|-----------------------------|------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| **OnBackPressedDispatcher** | [`backPresses`][OnBackPressedDispatcher_backPresses]       | Called when OnBackPressedDispatcher.onBackPressed triggered. OnBackPressed events only              |
+|                             | [`backProgressed`][OnBackPressedDispatcher_backProgressed] | Called when OnBackPressedDispatcher.dispatchOnBackProgressed triggered. OnBackProgressed event only |
+|                             | [`backEvents`][OnBackPressedDispatcher_backEvents]         | Called when any callback event triggered. All events                                                |
 
 ## Simple examples
 
