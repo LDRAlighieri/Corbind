@@ -3,7 +3,7 @@
 
 ## Version 1.10.0
 
-* New: BOM (Bills of Materials) module:
+* New: BOM (Bills of Materials) module
 * Update: Kotlin to v1.9.21.
 * Update: Material components to v1.11.0.
 * Update: Minor update of other libraries.
