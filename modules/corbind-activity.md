@@ -20,7 +20,7 @@ To add androidx activity bindings, import `corbind-activity` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-activity:1.9.0")
+    implementation("ru.ldralighieri.corbind:corbind-activity:1.10.0")
 }
 ```
 

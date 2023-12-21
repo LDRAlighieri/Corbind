@@ -23,6 +23,7 @@ description: Coroutine binding APIs for Android UI widgets from the platform and
 # List of links in the navigation bar
 navbar-links:
   Modules:
+    - corbind-bom: "modules/corbind-bom"
     - corbind: "modules/corbind"
     - corbind-activity: "modules/corbind-activity"
     - corbind-appcompat: "modules/corbind-appcompat"
