@@ -23,6 +23,28 @@ This library is for Android applications only. Help you to transform Android UI 
 Please consider giving this repository a star ⭐ if you like the project.
 
 
+## Current versions
+
+| Module                       | Version                                                                                                                                                                                                  |
+|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [corbind-bom]                | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-bom.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-bom)                               |
+| [corbind]                    | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind)                                       |
+| [corbind-activity]           | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-activity.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-activity)                     |
+| [corbind-appcompat]          | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-appcompat.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-appcompat)                   |
+| [corbind-core]               | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-core.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-core)                             |
+| [corbind-drawerlayout]       | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-drawerlayout.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-drawerlayout)             |
+| [corbind-fragment]           | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-fragment.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-fragment)                     |
+| [corbind-leanback]           | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-leanback.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-leanback)                     |
+| [corbind-lifecycle]          | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-lifecycle.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-lifecycle)                   |
+| [corbind-material]           | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-material.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-material)                     |
+| [corbind-navigation]         | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-navigation.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-navigation)                 |
+| [corbind-recyclerview]       | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-recyclerview.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-recyclerview)             |
+| [corbind-slidingpanelayout]  | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-slidingpanelayout.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-slidingpanelayout)   |
+| [corbind-swiperefreshlayout] | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-swiperefreshlayout.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-swiperefreshlayout) |
+| [corbind-viewpager]          | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-viewpager.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-viewpager)                   |
+| [corbind-viewpager2]         | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-viewpager2.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-viewpager2)                 |
+
+
 ## Using in your projects
 
 Platform bindings:
@@ -181,6 +203,7 @@ limitations under the License.
 [channel]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/index.html
 [actor]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
 
+[corbind-bom]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-bom
 [corbind]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind
 [corbind-activity]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-activity
 [corbind-appcompat]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-appcompat
