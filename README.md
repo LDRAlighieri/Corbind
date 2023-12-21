@@ -1,6 +1,5 @@
 ﻿[![Corbind](logo.svg)](https://ldralighieri.github.io/Corbind)
 
-[![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind.svg)](https://search.maven.org/search?q=g:ru.ldralighieri.corbind)
 [![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.9.21-blue.svg?logo=kotlin)](https://kotlinlang.org)
 [![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.7.3-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
@@ -21,6 +20,11 @@
 
 This library is for Android applications only. Help you to transform Android UI events into cold [Flow][flow], hot [ReceiveChannel][channel] or just perform an action through an [Actor][actor].  
 Please consider giving this repository a star ⭐ if you like the project.
+
+
+## Articles
+* [⚡ Kotlin Coroutine binding with Flow support][kotlin-coroutine-binding]
+* [What’s up Corbind! Release 1.7.0 🎉. It’s been a long road][release-1.7.0]
 
 
 ## Current versions
@@ -202,6 +206,9 @@ limitations under the License.
 [flow]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html
 [channel]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/index.html
 [actor]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
+
+[kotlin-coroutine-binding]: https://medium.com/@ldralighieri/kotlin-coroutine-binding-with-flow-support-68499492a89c
+[release-1.7.0]: https://medium.com/@ldralighieri/whats-up-corbind-release-1-7-0-it-s-been-a-long-road-eadf84db19c1
 
 [corbind-bom]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-bom
 [corbind]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind
