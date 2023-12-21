@@ -32,6 +32,13 @@ dependencies {
     implementation(libs.dokka.gradlePlugin)
 }
 
+tasks {
+    validatePlugins {
+        enableStricterValidation = true
+        failOnWarning = true
+    }
+}
+
 gradlePlugin {
     plugins {
         register("dokka") {
