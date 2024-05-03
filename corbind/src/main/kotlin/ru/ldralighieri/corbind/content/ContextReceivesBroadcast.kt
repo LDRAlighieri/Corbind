@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+@file:SuppressWarnings("UnspecifiedRegisterReceiverFlag")
+
 package ru.ldralighieri.corbind.content
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import androidx.annotation.CheckResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +55,13 @@ fun Context.receivesBroadcast(
     }
 
     val receiver = receiver(scope, events::trySend)
-    registerReceiver(receiver, intentFilter)
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        registerReceiver(receiver, intentFilter)
+    } else {
+        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+    }
+
     events.invokeOnClose { unregisterReceiver(receiver) }
 }
 
@@ -99,7 +108,13 @@ fun Context.receivesBroadcast(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Intent> = corbindReceiveChannel(capacity) {
     val receiver = receiver(scope, ::trySend)
-    registerReceiver(receiver, intentFilter)
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        registerReceiver(receiver, intentFilter)
+    } else {
+        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+    }
+
     invokeOnClose { unregisterReceiver(receiver) }
 }
 
@@ -122,7 +137,13 @@ fun Context.receivesBroadcast(
  */
 fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = channelFlow {
     val receiver = receiver(this, ::trySend)
-    registerReceiver(receiver, intentFilter)
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        registerReceiver(receiver, intentFilter)
+    } else {
+        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+    }
+
     awaitClose { unregisterReceiver(receiver) }
 }
 
