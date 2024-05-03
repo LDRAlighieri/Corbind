@@ -15,4 +15,7 @@
   -->
 
 <manifest xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="ImpliedTouchscreenHardware,MissingLeanbackLauncher,MissingLeanbackSupport" />
+    tools:ignore="ImpliedTouchscreenHardware,MissingLeanbackLauncher,MissingLeanbackSupport">
+
+    <uses-sdk tools:overrideLibrary="androidx.leanback" />
+</manifest>
