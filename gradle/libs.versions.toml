@@ -9,7 +9,7 @@ gver = "0.50.0"
 
 # Kotlin
 kotlin = "1.9.23"
-kotlinCoroutines = "1.7.3"
+kotlinCoroutines = "1.8.0"
 
 # Androidx
 androidxCore = "1.12.0"
