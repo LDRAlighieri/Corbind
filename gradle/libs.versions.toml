@@ -1,10 +1,10 @@
 [versions]
 # Plugins
-agp = "8.2.0"
-dokka = "1.9.10"
+agp = "8.4.0"
+dokka = "1.9.20"
 spotless = "6.18.0"
-mavenPublish = "0.25.3"
-bcv = "0.13.2"
+mavenPublish = "0.28.0"
+bcv = "0.14.0"
 gver = "0.50.0"
 
 # Kotlin
