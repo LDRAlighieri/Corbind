@@ -33,7 +33,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 data class RecyclerViewFlingEvent(
     val view: RecyclerView,
     val velocityX: Int,
-    val velocityY: Int
+    val velocityY: Int,
 )
 
 /**
@@ -49,7 +49,7 @@ data class RecyclerViewFlingEvent(
 fun RecyclerView.flingEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RecyclerViewFlingEvent) -> Unit
+    action: suspend (RecyclerViewFlingEvent) -> Unit,
 ) {
     val events = scope.actor<RecyclerViewFlingEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -71,7 +71,7 @@ fun RecyclerView.flingEvents(
  */
 suspend fun RecyclerView.flingEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RecyclerViewFlingEvent) -> Unit
+    action: suspend (RecyclerViewFlingEvent) -> Unit,
 ) = coroutineScope {
     flingEvents(this, capacity, action)
 }
@@ -97,7 +97,7 @@ suspend fun RecyclerView.flingEvents(
 @CheckResult
 fun RecyclerView.flingEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel(capacity) {
     onFlingListener = listener(scope, this@flingEvents, ::trySend)
     invokeOnClose { onFlingListener = null }
@@ -128,7 +128,7 @@ fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = channelFlow {
 private fun listener(
     scope: CoroutineScope,
     recyclerView: RecyclerView,
-    emitter: (RecyclerViewFlingEvent) -> Unit
+    emitter: (RecyclerViewFlingEvent) -> Unit,
 ) = object : RecyclerView.OnFlingListener() {
 
     override fun onFling(velocityX: Int, velocityY: Int): Boolean {

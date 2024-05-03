@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun <T : Adapter> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (T) -> Unit
+    action: suspend (T) -> Unit,
 ) {
     val events = scope.actor<T>(Dispatchers.Main.immediate, capacity) {
         for (adapter in channel) action(adapter)
@@ -62,7 +62,7 @@ fun <T : Adapter> T.dataChanges(
  */
 suspend fun <T : Adapter> T.dataChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (T) -> Unit
+    action: suspend (T) -> Unit,
 ) = coroutineScope {
     dataChanges(this, capacity, action)
 }
@@ -87,7 +87,7 @@ suspend fun <T : Adapter> T.dataChanges(
 @CheckResult
 fun <T : Adapter> T.dataChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
     trySend(this@dataChanges)
     val dataSetObserver = observer(scope, this@dataChanges, ::trySend)
@@ -128,10 +128,10 @@ fun <T : Adapter> T.dataChanges(): InitialValueFlow<T> = channelFlow {
 private fun <T : Adapter> observer(
     scope: CoroutineScope,
     adapter: T,
-    emitter: (T) -> Unit
+    emitter: (T) -> Unit,
 ) = object : DataSetObserver() {
 
     override fun onChanged() {
-        if (scope.isActive) { emitter(adapter) }
+        if (scope.isActive) emitter(adapter)
     }
 }

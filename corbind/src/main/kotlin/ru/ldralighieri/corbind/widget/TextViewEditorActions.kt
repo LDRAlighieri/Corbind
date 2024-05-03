@@ -47,7 +47,7 @@ fun TextView.editorActions(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (Int) -> Boolean = AlwaysTrue,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (actionId in channel) action(actionId)
@@ -71,7 +71,7 @@ fun TextView.editorActions(
 suspend fun TextView.editorActions(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (Int) -> Boolean = AlwaysTrue,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     editorActions(this, capacity, handled, action)
 }
@@ -100,7 +100,7 @@ suspend fun TextView.editorActions(
 fun TextView.editorActions(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: (Int) -> Boolean = AlwaysTrue
+    handled: (Int) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     setOnEditorActionListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnEditorActionListener(null) }
@@ -134,7 +134,7 @@ fun TextView.editorActions(handled: (Int) -> Boolean = AlwaysTrue): Flow<Int> = 
 private fun listener(
     scope: CoroutineScope,
     handled: (Int) -> Boolean,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = TextView.OnEditorActionListener { _, actionId, _ ->
     if (scope.isActive && handled(actionId)) {
         emitter(actionId)

@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun TextView.textChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (CharSequence) -> Unit
+    action: suspend (CharSequence) -> Unit,
 ) {
     val events = scope.actor<CharSequence>(Dispatchers.Main.immediate, capacity) {
         for (chars in channel) action(chars)
@@ -64,7 +64,7 @@ fun TextView.textChanges(
  */
 suspend fun TextView.textChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (CharSequence) -> Unit
+    action: suspend (CharSequence) -> Unit,
 ) = coroutineScope {
     textChanges(this, capacity, action)
 }
@@ -89,7 +89,7 @@ suspend fun TextView.textChanges(
 @CheckResult
 fun TextView.textChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
     trySend(text)
     val listener = listener(scope, ::trySend)
@@ -129,13 +129,13 @@ fun TextView.textChanges(): InitialValueFlow<CharSequence> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (CharSequence) -> Unit
+    emitter: (CharSequence) -> Unit,
 ) = object : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        if (scope.isActive) { emitter(s) }
+        if (scope.isActive) emitter(s)
     }
 
     override fun afterTextChanged(s: Editable) = Unit

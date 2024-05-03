@@ -45,7 +45,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun <T : Adapter> AdapterView<T>.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (position in channel) action(position)
@@ -66,7 +66,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
  */
 suspend fun <T : Adapter> AdapterView<T>.itemClicks(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     itemClicks(this, capacity, action)
 }
@@ -92,7 +92,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemClicks(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClicks(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     onItemClickListener = listener(scope, ::trySend)
     invokeOnClose { onItemClickListener = null }
@@ -122,7 +122,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = AdapterView.OnItemClickListener { _, _: View?, position, _ ->
-    if (scope.isActive) { emitter(position) }
+    if (scope.isActive) emitter(position)
 }

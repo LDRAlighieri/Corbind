@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun RecyclerView.scrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
@@ -59,7 +59,7 @@ fun RecyclerView.scrollStateChanges(
  */
 suspend fun RecyclerView.scrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     scrollStateChanges(this, capacity, action)
 }
@@ -82,7 +82,7 @@ suspend fun RecyclerView.scrollStateChanges(
 @CheckResult
 fun RecyclerView.scrollStateChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val scrollListener = listener(scope, ::trySend)
     addOnScrollListener(scrollListener)
@@ -111,10 +111,10 @@ fun RecyclerView.scrollStateChanges(): Flow<Int> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = object : RecyclerView.OnScrollListener() {
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-        if (scope.isActive) { emitter(newState) }
+        if (scope.isActive) emitter(newState)
     }
 }

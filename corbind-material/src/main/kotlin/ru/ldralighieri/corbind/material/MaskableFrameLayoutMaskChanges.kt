@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun MaskableFrameLayout.maskChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RectF) -> Unit
+    action: suspend (RectF) -> Unit,
 ) {
     val events = scope.actor<RectF>(Dispatchers.Main.immediate, capacity) {
         for (changes in channel) action(changes)
@@ -64,7 +64,7 @@ fun MaskableFrameLayout.maskChanges(
  */
 suspend fun MaskableFrameLayout.maskChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RectF) -> Unit
+    action: suspend (RectF) -> Unit,
 ) = coroutineScope {
     maskChanges(this, capacity, action)
 }
@@ -90,7 +90,7 @@ suspend fun MaskableFrameLayout.maskChanges(
 @CheckResult
 fun MaskableFrameLayout.maskChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RectF> = corbindReceiveChannel(capacity) {
     setOnMaskChangedListener(listener(scope, ::trySend))
     invokeOnClose { setOnMaskChangedListener(null) }
@@ -119,7 +119,7 @@ fun MaskableFrameLayout.maskChanges() = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (RectF) -> Unit
+    emitter: (RectF) -> Unit,
 ) = OnMaskChangedListener { maskRect ->
-    if (scope.isActive) { emitter(maskRect) }
+    if (scope.isActive) emitter(maskRect)
 }

@@ -44,7 +44,7 @@ import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
 fun NestedScrollView.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewScrollChangeEvent) -> Unit
+    action: suspend (ViewScrollChangeEvent) -> Unit,
 ) {
     val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -67,7 +67,7 @@ fun NestedScrollView.scrollChangeEvents(
  */
 suspend fun NestedScrollView.scrollChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewScrollChangeEvent) -> Unit
+    action: suspend (ViewScrollChangeEvent) -> Unit,
 ) = coroutineScope {
     scrollChangeEvents(this, capacity, action)
 }
@@ -93,7 +93,7 @@ suspend fun NestedScrollView.scrollChangeEvents(
 @CheckResult
 fun NestedScrollView.scrollChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
     setOnScrollChangeListener(listener(scope, ::trySend))
     invokeOnClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
@@ -123,7 +123,7 @@ fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channel
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewScrollChangeEvent) -> Unit
+    emitter: (ViewScrollChangeEvent) -> Unit,
 ) = NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
     if (scope.isActive) {
         emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))

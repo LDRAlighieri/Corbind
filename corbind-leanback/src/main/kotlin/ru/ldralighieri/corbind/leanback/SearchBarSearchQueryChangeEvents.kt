@@ -37,17 +37,17 @@ sealed interface SearchBarSearchQueryEvent {
 
 data class SearchBarSearchQueryChangedEvent(
     override val view: SearchBar,
-    override val searchQuery: String
+    override val searchQuery: String,
 ) : SearchBarSearchQueryEvent
 
 data class SearchBarSearchQueryKeyboardDismissedEvent(
     override val view: SearchBar,
-    override val searchQuery: String
+    override val searchQuery: String,
 ) : SearchBarSearchQueryEvent
 
 data class SearchBarSearchQuerySubmittedEvent(
     override val view: SearchBar,
-    override val searchQuery: String
+    override val searchQuery: String,
 ) : SearchBarSearchQueryEvent
 
 /**
@@ -63,7 +63,7 @@ data class SearchBarSearchQuerySubmittedEvent(
 fun SearchBar.searchQueryChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SearchBarSearchQueryEvent) -> Unit
+    action: suspend (SearchBarSearchQueryEvent) -> Unit,
 ) {
     val events = scope.actor<SearchBarSearchQueryEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -85,7 +85,7 @@ fun SearchBar.searchQueryChangeEvents(
  */
 suspend fun SearchBar.searchQueryChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SearchBarSearchQueryEvent) -> Unit
+    action: suspend (SearchBarSearchQueryEvent) -> Unit,
 ) = coroutineScope {
     searchQueryChangeEvents(this, capacity, action)
 }
@@ -127,7 +127,7 @@ suspend fun SearchBar.searchQueryChangeEvents(
 @CheckResult
 fun SearchBar.searchQueryChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel(capacity) {
     setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::trySend))
     invokeOnClose { setSearchBarListener(null) }
@@ -173,7 +173,7 @@ fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> = chann
 private fun listener(
     scope: CoroutineScope,
     searchBar: SearchBar,
-    emitter: (SearchBarSearchQueryEvent) -> Unit
+    emitter: (SearchBarSearchQueryEvent) -> Unit,
 ) = object : SearchBar.SearchBarListener {
 
     override fun onSearchQueryChange(query: String) {
@@ -189,6 +189,6 @@ private fun listener(
     }
 
     private fun onEvent(event: SearchBarSearchQueryEvent) {
-        if (scope.isActive) { emitter(event) }
+        if (scope.isActive) emitter(event)
     }
 }

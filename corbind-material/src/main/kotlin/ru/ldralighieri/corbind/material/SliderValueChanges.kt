@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun Slider.valueChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Float) -> Unit
+    action: suspend (Float) -> Unit,
 ) {
     val events = scope.actor<Float>(Dispatchers.Main.immediate, capacity) {
         for (value in channel) action(value)
@@ -61,7 +61,7 @@ fun Slider.valueChanges(
  */
 suspend fun Slider.valueChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Float) -> Unit
+    action: suspend (Float) -> Unit,
 ) = coroutineScope {
     valueChanges(this, capacity, action)
 }
@@ -86,7 +86,7 @@ suspend fun Slider.valueChanges(
 @CheckResult
 fun Slider.valueChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
     trySend(value)
     val listener = listener(scope, ::trySend)
@@ -126,7 +126,7 @@ fun Slider.valueChanges(): InitialValueFlow<Float> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Float) -> Unit
+    emitter: (Float) -> Unit,
 ) = Slider.OnChangeListener { _, value, _ ->
-    if (scope.isActive) { emitter(value) }
+    if (scope.isActive) emitter(value)
 }

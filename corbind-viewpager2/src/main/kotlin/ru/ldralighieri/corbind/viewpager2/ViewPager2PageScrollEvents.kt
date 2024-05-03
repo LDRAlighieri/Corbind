@@ -34,7 +34,7 @@ data class ViewPager2PageScrollEvent(
     val viewPager: ViewPager2,
     val position: Int,
     val positionOffset: Float,
-    val positionOffsetPixels: Int
+    val positionOffsetPixels: Int,
 )
 
 /**
@@ -47,7 +47,7 @@ data class ViewPager2PageScrollEvent(
 fun ViewPager2.pageScrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewPager2PageScrollEvent) -> Unit
+    action: suspend (ViewPager2PageScrollEvent) -> Unit,
 ) {
     val events = scope.actor<ViewPager2PageScrollEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -67,7 +67,7 @@ fun ViewPager2.pageScrollEvents(
  */
 suspend fun ViewPager2.pageScrollEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewPager2PageScrollEvent) -> Unit
+    action: suspend (ViewPager2PageScrollEvent) -> Unit,
 ) = coroutineScope {
     pageScrollEvents(this, capacity, action)
 }
@@ -90,7 +90,7 @@ suspend fun ViewPager2.pageScrollEvents(
 @CheckResult
 fun ViewPager2.pageScrollEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewPager2PageScrollEvent> = corbindReceiveChannel(capacity) {
     val callback = callback(scope, this@pageScrollEvents, ::trySend)
     registerOnPageChangeCallback(callback)
@@ -120,7 +120,7 @@ fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = channelFlow
 private fun callback(
     scope: CoroutineScope,
     viewPager: ViewPager2,
-    emitter: (ViewPager2PageScrollEvent) -> Unit
+    emitter: (ViewPager2PageScrollEvent) -> Unit,
 ) = object : ViewPager2.OnPageChangeCallback() {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -129,7 +129,7 @@ private fun callback(
                 viewPager = viewPager,
                 position = position,
                 positionOffset = positionOffset,
-                positionOffsetPixels = positionOffsetPixels
+                positionOffsetPixels = positionOffsetPixels,
             )
             emitter(event)
         }

@@ -47,7 +47,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun Toolbar.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (MenuItem) -> Unit
+    action: suspend (MenuItem) -> Unit,
 ) {
     val events = scope.actor<MenuItem>(Dispatchers.Main.immediate, capacity) {
         for (item in channel) action(item)
@@ -69,7 +69,7 @@ fun Toolbar.itemClicks(
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 suspend fun Toolbar.itemClicks(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (MenuItem) -> Unit
+    action: suspend (MenuItem) -> Unit,
 ) = coroutineScope {
     itemClicks(this, capacity, action)
 }
@@ -96,7 +96,7 @@ suspend fun Toolbar.itemClicks(
 @CheckResult
 fun Toolbar.itemClicks(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
     setOnMenuItemClickListener(listener(scope, ::trySend))
     invokeOnClose { setOnMenuItemClickListener(null) }
@@ -127,7 +127,7 @@ fun Toolbar.itemClicks(): Flow<MenuItem> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MenuItem) -> Unit
+    emitter: (MenuItem) -> Unit,
 ) = Toolbar.OnMenuItemClickListener {
     if (scope.isActive) {
         emitter(it)

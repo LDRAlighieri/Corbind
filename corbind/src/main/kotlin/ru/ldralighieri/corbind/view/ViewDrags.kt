@@ -47,7 +47,7 @@ fun View.drags(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (DragEvent) -> Boolean = AlwaysTrue,
-    action: suspend (DragEvent) -> Unit
+    action: suspend (DragEvent) -> Unit,
 ) {
     val events = scope.actor<DragEvent>(Dispatchers.Main.immediate, capacity) {
         for (drag in channel) action(drag)
@@ -70,7 +70,7 @@ fun View.drags(
 suspend fun View.drags(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (DragEvent) -> Boolean = AlwaysTrue,
-    action: suspend (DragEvent) -> Unit
+    action: suspend (DragEvent) -> Unit,
 ) = coroutineScope {
     drags(this, capacity, handled, action)
 }
@@ -99,7 +99,7 @@ suspend fun View.drags(
 fun View.drags(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: (DragEvent) -> Boolean = AlwaysTrue
+    handled: (DragEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<DragEvent> = corbindReceiveChannel(capacity) {
     setOnDragListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnDragListener(null) }
@@ -124,7 +124,7 @@ fun View.drags(
  */
 @CheckResult
 fun View.drags(
-    handled: (DragEvent) -> Boolean = AlwaysTrue
+    handled: (DragEvent) -> Boolean = AlwaysTrue,
 ): Flow<DragEvent> = channelFlow {
     setOnDragListener(listener(this, handled, ::trySend))
     awaitClose { setOnDragListener(null) }
@@ -134,7 +134,7 @@ fun View.drags(
 private fun listener(
     scope: CoroutineScope,
     handled: (DragEvent) -> Boolean,
-    emitter: (DragEvent) -> Unit
+    emitter: (DragEvent) -> Unit,
 ) = View.OnDragListener { _, dragEvent ->
     if (scope.isActive && handled(dragEvent)) {
         emitter(dragEvent)

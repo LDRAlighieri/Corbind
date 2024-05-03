@@ -31,5 +31,5 @@ class InitialValueFlow<T>(private val flow: Flow<T>) : Flow<T> by flow {
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 fun <T> Flow<T>.asInitialValueFlow(value: T): InitialValueFlow<T> = InitialValueFlow(
-    onStart { emit(value) }
+    onStart { emit(value) },
 )

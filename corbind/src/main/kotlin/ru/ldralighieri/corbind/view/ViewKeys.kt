@@ -47,7 +47,7 @@ fun View.keys(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (KeyEvent) -> Boolean = AlwaysTrue,
-    action: suspend (KeyEvent) -> Unit
+    action: suspend (KeyEvent) -> Unit,
 ) {
     val events = scope.actor<KeyEvent>(Dispatchers.Main.immediate, capacity) {
         for (key in channel) action(key)
@@ -70,7 +70,7 @@ fun View.keys(
 suspend fun View.keys(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (KeyEvent) -> Boolean = AlwaysTrue,
-    action: suspend (KeyEvent) -> Unit
+    action: suspend (KeyEvent) -> Unit,
 ) = coroutineScope {
     keys(this, capacity, handled, action)
 }
@@ -99,7 +99,7 @@ suspend fun View.keys(
 fun View.keys(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: (KeyEvent) -> Boolean = AlwaysTrue
+    handled: (KeyEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<KeyEvent> = corbindReceiveChannel(capacity) {
     setOnKeyListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnKeyListener(null) }
@@ -132,7 +132,7 @@ fun View.keys(handled: (KeyEvent) -> Boolean = AlwaysTrue): Flow<KeyEvent> = cha
 private fun listener(
     scope: CoroutineScope,
     handled: (KeyEvent) -> Boolean,
-    emitter: (KeyEvent) -> Unit
+    emitter: (KeyEvent) -> Unit,
 ) = View.OnKeyListener { _, _, keyEvent ->
     if (scope.isActive && handled(keyEvent)) {
         emitter(keyEvent)

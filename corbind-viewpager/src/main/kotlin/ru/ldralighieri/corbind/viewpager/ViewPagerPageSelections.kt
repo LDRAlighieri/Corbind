@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun ViewPager.pageSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (position in channel) action(position)
@@ -61,7 +61,7 @@ fun ViewPager.pageSelections(
  */
 suspend fun ViewPager.pageSelections(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     pageSelections(this, capacity, action)
 }
@@ -87,7 +87,7 @@ suspend fun ViewPager.pageSelections(
 @CheckResult
 fun ViewPager.pageSelections(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     trySend(currentItem)
     val listener = listener(scope, ::trySend)
@@ -127,13 +127,13 @@ fun ViewPager.pageSelections(): InitialValueFlow<Int> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = object : ViewPager.OnPageChangeListener {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
 
     override fun onPageSelected(position: Int) {
-        if (scope.isActive) { emitter(position) }
+        if (scope.isActive) emitter(position)
     }
 
     override fun onPageScrollStateChanged(state: Int) = Unit

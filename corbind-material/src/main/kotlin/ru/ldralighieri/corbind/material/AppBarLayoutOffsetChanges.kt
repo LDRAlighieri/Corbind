@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun AppBarLayout.offsetChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (offset in channel) action(offset)
@@ -59,7 +59,7 @@ fun AppBarLayout.offsetChanges(
  */
 suspend fun AppBarLayout.offsetChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     offsetChanges(this, capacity, action)
 }
@@ -82,7 +82,7 @@ suspend fun AppBarLayout.offsetChanges(
 @CheckResult
 fun AppBarLayout.offsetChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addOnOffsetChangedListener(listener)
@@ -111,7 +111,7 @@ fun AppBarLayout.offsetChanges(): Flow<Int> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-    if (scope.isActive) { emitter(verticalOffset) }
+    if (scope.isActive) emitter(verticalOffset)
 }

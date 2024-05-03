@@ -46,7 +46,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun AutoCompleteTextView.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -68,7 +68,7 @@ fun AutoCompleteTextView.dismisses(
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 suspend fun AutoCompleteTextView.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     dismisses(this, capacity, action)
 }
@@ -95,7 +95,7 @@ suspend fun AutoCompleteTextView.dismisses(
 @CheckResult
 fun AutoCompleteTextView.dismisses(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     setOnDismissListener(listener(scope, ::trySend))
     invokeOnClose { setOnDismissListener(null) }
@@ -126,7 +126,7 @@ fun AutoCompleteTextView.dismisses(): Flow<Unit> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = AutoCompleteTextView.OnDismissListener {
-    if (scope.isActive) { emitter(Unit) }
+    if (scope.isActive) emitter(Unit)
 }

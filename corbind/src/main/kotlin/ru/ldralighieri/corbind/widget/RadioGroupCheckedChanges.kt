@@ -45,7 +45,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun RadioGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (checkedId in channel) action(checkedId)
@@ -67,7 +67,7 @@ fun RadioGroup.checkedChanges(
  */
 suspend fun RadioGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     checkedChanges(this, capacity, action)
 }
@@ -96,7 +96,7 @@ suspend fun RadioGroup.checkedChanges(
 @CheckResult
 fun RadioGroup.checkedChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     trySend(checkedRadioButtonId)
     setOnCheckedChangeListener(listener(scope, ::trySend))
@@ -138,7 +138,7 @@ fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = object : RadioGroup.OnCheckedChangeListener {
 
     private var lastChecked = View.NO_ID

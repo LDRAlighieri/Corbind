@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (T) -> Unit
+    action: suspend (T) -> Unit,
 ) {
     val events = scope.actor<T>(Dispatchers.Main.immediate, capacity) {
         for (adapter in channel) action(adapter)
@@ -61,7 +61,7 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
  */
 suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (T) -> Unit
+    action: suspend (T) -> Unit,
 ) = coroutineScope {
     dataChanges(this, capacity, action)
 }
@@ -86,7 +86,7 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
     trySend(this@dataChanges)
     val dataObserver = observer(scope, this@dataChanges, ::trySend)
@@ -128,10 +128,10 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): Ini
 private fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> observer(
     scope: CoroutineScope,
     adapter: T,
-    emitter: (T) -> Unit
+    emitter: (T) -> Unit,
 ) = object : RecyclerView.AdapterDataObserver() {
 
     override fun onChanged() {
-        if (scope.isActive) { emitter(adapter) }
+        if (scope.isActive) emitter(adapter)
     }
 }

@@ -36,11 +36,11 @@ sealed interface MenuItemActionViewEvent {
 }
 
 data class MenuItemActionViewCollapseEvent(
-    override val menuItem: MenuItem
+    override val menuItem: MenuItem,
 ) : MenuItemActionViewEvent
 
 data class MenuItemActionViewExpandEvent(
-    override val menuItem: MenuItem
+    override val menuItem: MenuItem,
 ) : MenuItemActionViewEvent
 
 /**
@@ -59,7 +59,7 @@ fun MenuItem.actionViewEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-    action: suspend (MenuItemActionViewEvent) -> Unit
+    action: suspend (MenuItemActionViewEvent) -> Unit,
 ) {
     val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -84,7 +84,7 @@ fun MenuItem.actionViewEvents(
 suspend fun MenuItem.actionViewEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-    action: suspend (MenuItemActionViewEvent) -> Unit
+    action: suspend (MenuItemActionViewEvent) -> Unit,
 ) = coroutineScope {
     actionViewEvents(this, capacity, handled, action)
 }
@@ -126,7 +126,7 @@ suspend fun MenuItem.actionViewEvents(
 fun MenuItem.actionViewEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
+    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel(capacity) {
     setOnActionExpandListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnActionExpandListener(null) }
@@ -165,7 +165,7 @@ fun MenuItem.actionViewEvents(
  */
 @CheckResult
 fun MenuItem.actionViewEvents(
-    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue
+    handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
 ): Flow<MenuItemActionViewEvent> = channelFlow {
     setOnActionExpandListener(listener(this, handled, ::trySend))
     awaitClose { setOnActionExpandListener(null) }
@@ -175,7 +175,7 @@ fun MenuItem.actionViewEvents(
 private fun listener(
     scope: CoroutineScope,
     handled: (MenuItemActionViewEvent) -> Boolean,
-    emitter: (MenuItemActionViewEvent) -> Unit
+    emitter: (MenuItemActionViewEvent) -> Unit,
 ) = object : MenuItem.OnActionExpandListener {
 
     override fun onMenuItemActionExpand(item: MenuItem): Boolean {

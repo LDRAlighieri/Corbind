@@ -35,11 +35,11 @@ sealed interface ViewAttachEvent {
 }
 
 data class ViewAttachAttachedEvent(
-    override val view: View
+    override val view: View,
 ) : ViewAttachEvent
 
 data class ViewAttachDetachedEvent(
-    override val view: View
+    override val view: View,
 ) : ViewAttachEvent
 
 /**
@@ -52,7 +52,7 @@ data class ViewAttachDetachedEvent(
 fun View.attachEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewAttachEvent) -> Unit
+    action: suspend (ViewAttachEvent) -> Unit,
 ) {
     val events = scope.actor<ViewAttachEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -72,7 +72,7 @@ fun View.attachEvents(
  */
 suspend fun View.attachEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewAttachEvent) -> Unit
+    action: suspend (ViewAttachEvent) -> Unit,
 ) = coroutineScope {
     attachEvents(this, capacity, action)
 }
@@ -108,7 +108,7 @@ suspend fun View.attachEvents(
 @CheckResult
 fun View.attachEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewAttachEvent> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addOnAttachStateChangeListener(listener)
@@ -150,13 +150,13 @@ fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewAttachEvent) -> Unit
+    emitter: (ViewAttachEvent) -> Unit,
 ) = object : View.OnAttachStateChangeListener {
 
-    override fun onViewAttachedToWindow(v: View) { onEvent(ViewAttachAttachedEvent(v)) }
-    override fun onViewDetachedFromWindow(v: View) { onEvent(ViewAttachDetachedEvent(v)) }
+    override fun onViewAttachedToWindow(v: View) = onEvent(ViewAttachAttachedEvent(v))
+    override fun onViewDetachedFromWindow(v: View) = onEvent(ViewAttachDetachedEvent(v))
 
     private fun onEvent(event: ViewAttachEvent) {
-        if (scope.isActive) { emitter(event) }
+        if (scope.isActive) emitter(event)
     }
 }

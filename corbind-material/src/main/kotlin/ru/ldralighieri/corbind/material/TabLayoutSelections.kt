@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun TabLayout.selections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TabLayout.Tab) -> Unit
+    action: suspend (TabLayout.Tab) -> Unit,
 ) {
     val events = scope.actor<TabLayout.Tab>(Dispatchers.Main.immediate, capacity) {
         for (tab in channel) action(tab)
@@ -60,7 +60,7 @@ fun TabLayout.selections(
  */
 suspend fun TabLayout.selections(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TabLayout.Tab) -> Unit
+    action: suspend (TabLayout.Tab) -> Unit,
 ) = coroutineScope {
     selections(this, capacity, action)
 }
@@ -85,7 +85,7 @@ suspend fun TabLayout.selections(
 @CheckResult
 fun TabLayout.selections(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
     setInitialValue(this@selections, ::trySend)
     val listener = listener(scope, ::trySend)
@@ -125,20 +125,20 @@ fun TabLayout.selections(): Flow<TabLayout.Tab> = channelFlow {
 
 private fun setInitialValue(
     tabLayout: TabLayout,
-    emitter: (TabLayout.Tab) -> Unit
+    emitter: (TabLayout.Tab) -> Unit,
 ) {
     val index = tabLayout.selectedTabPosition
-    if (index != -1) { emitter(tabLayout.getTabAt(index)!!) }
+    if (index != -1) emitter(tabLayout.getTabAt(index)!!)
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (TabLayout.Tab) -> Unit
+    emitter: (TabLayout.Tab) -> Unit,
 ) = object : TabLayout.OnTabSelectedListener {
 
     override fun onTabSelected(tab: TabLayout.Tab) {
-        if (scope.isActive) { emitter(tab) }
+        if (scope.isActive) emitter(tab)
     }
 
     override fun onTabReselected(tab: TabLayout.Tab) = Unit

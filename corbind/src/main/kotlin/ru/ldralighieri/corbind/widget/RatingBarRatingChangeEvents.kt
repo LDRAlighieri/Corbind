@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 data class RatingBarChangeEvent(
     val view: RatingBar,
     val rating: Float,
-    val fromUser: Boolean
+    val fromUser: Boolean,
 )
 
 /**
@@ -50,7 +50,7 @@ data class RatingBarChangeEvent(
 fun RatingBar.ratingChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RatingBarChangeEvent) -> Unit
+    action: suspend (RatingBarChangeEvent) -> Unit,
 ) {
     val events = scope.actor<RatingBarChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -73,7 +73,7 @@ fun RatingBar.ratingChangeEvents(
  */
 suspend fun RatingBar.ratingChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RatingBarChangeEvent) -> Unit
+    action: suspend (RatingBarChangeEvent) -> Unit,
 ) = coroutineScope {
     ratingChangeEvents(this, capacity, action)
 }
@@ -101,7 +101,7 @@ suspend fun RatingBar.ratingChangeEvents(
 @CheckResult
 fun RatingBar.ratingChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel(capacity) {
     trySend(initialValue(this@ratingChangeEvents))
     onRatingBarChangeListener = listener(scope, ::trySend)
@@ -146,7 +146,9 @@ private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (RatingBarChangeEvent) -> Unit
+    emitter: (RatingBarChangeEvent) -> Unit,
 ) = RatingBar.OnRatingBarChangeListener { ratingBar, rating, fromUser ->
-    if (scope.isActive) { emitter(RatingBarChangeEvent(ratingBar, rating, fromUser)) }
+    if (scope.isActive) {
+        emitter(RatingBarChangeEvent(ratingBar, rating, fromUser))
+    }
 }

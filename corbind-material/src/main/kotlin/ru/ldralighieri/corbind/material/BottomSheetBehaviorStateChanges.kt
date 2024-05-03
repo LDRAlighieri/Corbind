@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun View.stateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
@@ -65,7 +65,7 @@ fun View.stateChanges(
  */
 suspend fun View.stateChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     stateChanges(this, capacity, action)
 }
@@ -90,7 +90,7 @@ suspend fun View.stateChanges(
 @CheckResult
 fun View.stateChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getBottomSheetBehavior()
     trySend(behavior.state)
@@ -139,11 +139,11 @@ internal fun View.getBottomSheetBehavior(): BottomSheetBehavior<*> {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = object : BottomSheetBehavior.BottomSheetCallback() {
 
     override fun onStateChanged(bottomSheet: View, newState: Int) {
-        if (scope.isActive) { emitter(newState) }
+        if (scope.isActive) emitter(newState)
     }
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit

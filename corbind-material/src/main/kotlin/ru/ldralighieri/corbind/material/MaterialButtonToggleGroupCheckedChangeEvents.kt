@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class MaterialButtonCheckedChangeEvent(
     @IdRes val checkedId: Int,
-    val isChecked: Boolean
+    val isChecked: Boolean,
 )
 
 /**
@@ -50,7 +50,7 @@ data class MaterialButtonCheckedChangeEvent(
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (MaterialButtonCheckedChangeEvent) -> Unit
+    action: suspend (MaterialButtonCheckedChangeEvent) -> Unit,
 ) {
     val events = scope.actor<MaterialButtonCheckedChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -73,7 +73,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  */
 suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (MaterialButtonCheckedChangeEvent) -> Unit
+    action: suspend (MaterialButtonCheckedChangeEvent) -> Unit,
 ) = coroutineScope {
     buttonCheckedChangeEvents(this, capacity, action)
 }
@@ -99,7 +99,7 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<MaterialButtonCheckedChangeEvent> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@buttonCheckedChangeEvents)
     val listener = listener(scope, ::trySend)
@@ -141,7 +141,7 @@ private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MaterialButtonCheckedChangeEvent) -> Unit
+    emitter: (MaterialButtonCheckedChangeEvent) -> Unit,
 ) = MaterialButtonToggleGroup.OnButtonCheckedListener { _, checkedId, isChecked ->
-    if (scope.isActive) { emitter(MaterialButtonCheckedChangeEvent(checkedId, isChecked)) }
+    if (scope.isActive) emitter(MaterialButtonCheckedChangeEvent(checkedId, isChecked))
 }

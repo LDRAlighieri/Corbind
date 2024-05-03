@@ -49,7 +49,7 @@ fun View.touches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
-    action: suspend (MotionEvent) -> Unit
+    action: suspend (MotionEvent) -> Unit,
 ) {
     val events = scope.actor<MotionEvent>(Dispatchers.Main.immediate, capacity) {
         for (motion in channel) action(motion)
@@ -73,7 +73,7 @@ fun View.touches(
 suspend fun View.touches(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
-    action: suspend (MotionEvent) -> Unit
+    action: suspend (MotionEvent) -> Unit,
 ) = coroutineScope {
     touches(this, capacity, handled, action)
 }
@@ -102,7 +102,7 @@ suspend fun View.touches(
 fun View.touches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: (MotionEvent) -> Boolean = AlwaysTrue
+    handled: (MotionEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
     setOnTouchListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnTouchListener(null) }
@@ -127,7 +127,7 @@ fun View.touches(
  */
 @CheckResult
 fun View.touches(
-    handled: (MotionEvent) -> Boolean = AlwaysTrue
+    handled: (MotionEvent) -> Boolean = AlwaysTrue,
 ): Flow<MotionEvent> = channelFlow {
     setOnTouchListener(listener(this, handled, ::trySend))
     awaitClose { setOnTouchListener(null) }
@@ -138,7 +138,7 @@ fun View.touches(
 private fun listener(
     scope: CoroutineScope,
     handled: (MotionEvent) -> Boolean,
-    emitter: (MotionEvent) -> Unit
+    emitter: (MotionEvent) -> Unit,
 ) = View.OnTouchListener { _, motionEvent ->
 
     if (scope.isActive && handled(motionEvent)) {

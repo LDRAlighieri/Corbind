@@ -39,7 +39,7 @@ data class ViewLayoutChangeEvent(
     val oldLeft: Int,
     val oldTop: Int,
     val oldRight: Int,
-    val oldBottom: Int
+    val oldBottom: Int,
 )
 
 /**
@@ -52,7 +52,7 @@ data class ViewLayoutChangeEvent(
 fun View.layoutChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewLayoutChangeEvent) -> Unit
+    action: suspend (ViewLayoutChangeEvent) -> Unit,
 ) {
     val events = scope.actor<ViewLayoutChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -72,7 +72,7 @@ fun View.layoutChangeEvents(
  */
 suspend fun View.layoutChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewLayoutChangeEvent) -> Unit
+    action: suspend (ViewLayoutChangeEvent) -> Unit,
 ) = coroutineScope {
     layoutChangeEvents(this, capacity, action)
 }
@@ -95,7 +95,7 @@ suspend fun View.layoutChangeEvents(
 @CheckResult
 fun View.layoutChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addOnLayoutChangeListener(listener)
@@ -124,14 +124,21 @@ fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewLayoutChangeEvent) -> Unit
+    emitter: (ViewLayoutChangeEvent) -> Unit,
 ) = View.OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
     if (scope.isActive) {
         emitter(
             ViewLayoutChangeEvent(
-                v, left, top, right, bottom, oldLeft, oldTop, oldRight,
-                oldBottom
-            )
+                view = v,
+                left = left,
+                top = top,
+                right = right,
+                bottom = bottom,
+                oldLeft = oldLeft,
+                oldTop = oldTop,
+                oldRight = oldRight,
+                oldBottom = oldBottom,
+            ),
         )
     }
 }

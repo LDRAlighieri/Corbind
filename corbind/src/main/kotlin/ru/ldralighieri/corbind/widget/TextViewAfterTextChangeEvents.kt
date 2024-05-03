@@ -35,7 +35,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class TextViewAfterTextChangeEvent(
     val view: TextView,
-    val editable: Editable?
+    val editable: Editable?,
 )
 
 /**
@@ -48,7 +48,7 @@ data class TextViewAfterTextChangeEvent(
 fun TextView.afterTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TextViewAfterTextChangeEvent) -> Unit
+    action: suspend (TextViewAfterTextChangeEvent) -> Unit,
 ) {
     val events = scope.actor<TextViewAfterTextChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -69,7 +69,7 @@ fun TextView.afterTextChangeEvents(
  */
 suspend fun TextView.afterTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TextViewAfterTextChangeEvent) -> Unit
+    action: suspend (TextViewAfterTextChangeEvent) -> Unit,
 ) = coroutineScope {
     afterTextChangeEvents(this, capacity, action)
 }
@@ -94,7 +94,7 @@ suspend fun TextView.afterTextChangeEvents(
 @CheckResult
 fun TextView.afterTextChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TextViewAfterTextChangeEvent> = corbindReceiveChannel(capacity) {
     trySend(initialValue(this@afterTextChangeEvents))
     val listener = listener(scope, this@afterTextChangeEvents, ::trySend)
@@ -139,13 +139,15 @@ private fun initialValue(textView: TextView): TextViewAfterTextChangeEvent =
 private fun listener(
     scope: CoroutineScope,
     textView: TextView,
-    emitter: (TextViewAfterTextChangeEvent) -> Unit
+    emitter: (TextViewAfterTextChangeEvent) -> Unit,
 ) = object : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = Unit
 
     override fun afterTextChanged(s: Editable) {
-        if (scope.isActive) { emitter(TextViewAfterTextChangeEvent(textView, s)) }
+        if (scope.isActive) {
+            emitter(TextViewAfterTextChangeEvent(textView, s))
+        }
     }
 }

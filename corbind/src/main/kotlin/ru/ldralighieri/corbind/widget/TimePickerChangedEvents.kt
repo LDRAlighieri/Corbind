@@ -36,7 +36,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 data class TimeChangedEvent(
     val view: TimePicker,
     val hourOfDay: Int,
-    val minute: Int
+    val minute: Int,
 )
 
 /**
@@ -53,7 +53,7 @@ data class TimeChangedEvent(
 fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TimeChangedEvent) -> Unit
+    action: suspend (TimeChangedEvent) -> Unit,
 ) {
     val events = scope.actor<TimeChangedEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -77,7 +77,7 @@ fun TimePicker.timeChangeEvents(
 @RequiresApi(Build.VERSION_CODES.M)
 suspend fun TimePicker.timeChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TimeChangedEvent) -> Unit
+    action: suspend (TimeChangedEvent) -> Unit,
 ) = coroutineScope {
     timeChangeEvents(this, capacity, action)
 }
@@ -106,7 +106,7 @@ suspend fun TimePicker.timeChangeEvents(
 @CheckResult
 fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TimeChangedEvent> = corbindReceiveChannel(capacity) {
     trySend(TimeChangedEvent(this@timeChangeEvents, hour, minute))
     setOnTimeChangedListener(listener(scope, ::trySend))
@@ -148,7 +148,9 @@ fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = channelF
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (TimeChangedEvent) -> Unit
+    emitter: (TimeChangedEvent) -> Unit,
 ) = TimePicker.OnTimeChangedListener { view, hourOfDay, minute ->
-    if (scope.isActive) { emitter(TimeChangedEvent(view, hourOfDay, minute)) }
+    if (scope.isActive) {
+        emitter(TimeChangedEvent(view, hourOfDay, minute))
+    }
 }

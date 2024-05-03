@@ -47,7 +47,7 @@ fun View.longClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -71,7 +71,7 @@ fun View.longClicks(
 suspend fun View.longClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     longClicks(this, capacity, handled, action)
 }
@@ -100,7 +100,7 @@ suspend fun View.longClicks(
 fun View.longClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: () -> Boolean = AlwaysTrue
+    handled: () -> Boolean = AlwaysTrue,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     setOnLongClickListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnLongClickListener(null) }
@@ -126,7 +126,7 @@ fun View.longClicks(
  */
 @CheckResult
 fun View.longClicks(
-    handled: () -> Boolean = AlwaysTrue
+    handled: () -> Boolean = AlwaysTrue,
 ): Flow<Unit> = channelFlow {
     setOnLongClickListener(listener(this, handled, ::trySend))
     awaitClose { setOnLongClickListener(null) }
@@ -136,7 +136,7 @@ fun View.longClicks(
 private fun listener(
     scope: CoroutineScope,
     handled: () -> Boolean,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = View.OnLongClickListener {
     if (scope.isActive && handled()) {
         emitter(Unit)

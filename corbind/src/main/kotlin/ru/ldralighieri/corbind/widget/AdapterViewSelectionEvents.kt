@@ -41,11 +41,11 @@ data class AdapterViewItemSelectionEvent(
     override val view: AdapterView<*>,
     val selectedView: View?,
     val position: Int,
-    val id: Long
+    val id: Long,
 ) : AdapterViewSelectionEvent
 
 data class AdapterViewNothingSelectionEvent(
-    override val view: AdapterView<*>
+    override val view: AdapterView<*>,
 ) : AdapterViewSelectionEvent
 
 /**
@@ -61,7 +61,7 @@ data class AdapterViewNothingSelectionEvent(
 fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (AdapterViewSelectionEvent) -> Unit
+    action: suspend (AdapterViewSelectionEvent) -> Unit,
 ) {
     val events = scope.actor<AdapterViewSelectionEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -84,7 +84,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  */
 suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (AdapterViewSelectionEvent) -> Unit
+    action: suspend (AdapterViewSelectionEvent) -> Unit,
 ) = coroutineScope {
     selectionEvents(this, capacity, action)
 }
@@ -125,7 +125,7 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(capacity) {
     trySend(initialValue(this@selectionEvents))
     onItemSelectedListener = listener(scope, ::trySend)
@@ -185,7 +185,7 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
             view = adapterView,
             selectedView = adapterView.selectedView,
             position = adapterView.selectedItemPosition,
-            id = adapterView.selectedItemId
+            id = adapterView.selectedItemId,
         )
     }
 }
@@ -193,7 +193,7 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (AdapterViewSelectionEvent) -> Unit
+    emitter: (AdapterViewSelectionEvent) -> Unit,
 ) = object : AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -205,6 +205,6 @@ private fun listener(
     }
 
     private fun onEvent(event: AdapterViewSelectionEvent) {
-        if (scope.isActive) { emitter(event) }
+        if (scope.isActive) emitter(event)
     }
 }

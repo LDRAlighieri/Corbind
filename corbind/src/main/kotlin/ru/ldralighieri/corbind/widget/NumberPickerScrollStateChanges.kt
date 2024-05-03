@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun NumberPicker.scrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
@@ -73,7 +73,7 @@ fun NumberPicker.scrollStateChanges(
  */
 suspend fun NumberPicker.scrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     scrollStateChanges(this, capacity, action)
 }
@@ -90,7 +90,7 @@ suspend fun NumberPicker.scrollStateChanges(
 @CheckResult
 fun NumberPicker.scrollStateChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     setOnScrollListener(listener(scope, ::trySend))
     invokeOnClose { setOnScrollListener(null) }
@@ -120,7 +120,7 @@ fun NumberPicker.scrollStateChanges(): Flow<Int> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = NumberPicker.OnScrollListener { _, scrollState ->
-    if (scope.isActive) { emitter(scrollState) }
+    if (scope.isActive) emitter(scrollState)
 }

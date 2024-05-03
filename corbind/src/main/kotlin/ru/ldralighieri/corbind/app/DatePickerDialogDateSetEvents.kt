@@ -37,7 +37,7 @@ data class DatePickerDialogSetEvent(
     val view: DatePicker,
     val year: Int,
     val monthOfYear: Int,
-    val dayOfMonth: Int
+    val dayOfMonth: Int,
 )
 
 /**
@@ -54,7 +54,7 @@ data class DatePickerDialogSetEvent(
 fun DatePickerDialog.dateSetEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (DatePickerDialogSetEvent) -> Unit
+    action: suspend (DatePickerDialogSetEvent) -> Unit,
 ) {
     val events = scope.actor<DatePickerDialogSetEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -77,7 +77,7 @@ fun DatePickerDialog.dateSetEvents(
 @RequiresApi(Build.VERSION_CODES.N)
 suspend fun DatePickerDialog.dateSetEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (DatePickerDialogSetEvent) -> Unit
+    action: suspend (DatePickerDialogSetEvent) -> Unit,
 ) = coroutineScope {
     dateSetEvents(this, capacity, action)
 }
@@ -105,7 +105,7 @@ suspend fun DatePickerDialog.dateSetEvents(
 @CheckResult
 fun DatePickerDialog.dateSetEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<DatePickerDialogSetEvent> = corbindReceiveChannel(capacity) {
     setOnDateSetListener(listener(scope, ::trySend))
     invokeOnClose { setOnDateSetListener(null) }
@@ -136,7 +136,9 @@ fun DatePickerDialog.dateSetEvents(): Flow<DatePickerDialogSetEvent> = channelFl
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (DatePickerDialogSetEvent) -> Unit
+    emitter: (DatePickerDialogSetEvent) -> Unit,
 ) = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-    if (scope.isActive) { emitter(DatePickerDialogSetEvent(view, year, month, dayOfMonth)) }
+    if (scope.isActive) {
+        emitter(DatePickerDialogSetEvent(view, year, month, dayOfMonth))
+    }
 }

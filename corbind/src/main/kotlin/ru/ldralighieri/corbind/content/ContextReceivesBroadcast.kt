@@ -45,7 +45,7 @@ fun Context.receivesBroadcast(
     scope: CoroutineScope,
     intentFilter: IntentFilter,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Intent) -> Unit
+    action: suspend (Intent) -> Unit,
 ) {
     val events = scope.actor<Intent>(Dispatchers.Main.immediate, capacity) {
         for (intent in channel) action(intent)
@@ -67,7 +67,7 @@ fun Context.receivesBroadcast(
 suspend fun Context.receivesBroadcast(
     intentFilter: IntentFilter,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Intent) -> Unit
+    action: suspend (Intent) -> Unit,
 ) = coroutineScope {
     receivesBroadcast(this, intentFilter, capacity, action)
 }
@@ -96,7 +96,7 @@ suspend fun Context.receivesBroadcast(
 fun Context.receivesBroadcast(
     scope: CoroutineScope,
     intentFilter: IntentFilter,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Intent> = corbindReceiveChannel(capacity) {
     val receiver = receiver(scope, ::trySend)
     registerReceiver(receiver, intentFilter)
@@ -129,10 +129,10 @@ fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = channe
 @CheckResult
 private fun receiver(
     scope: CoroutineScope,
-    emitter: (Intent) -> Unit
+    emitter: (Intent) -> Unit,
 ) = object : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (scope.isActive) { emitter(intent) }
+        if (scope.isActive) emitter(intent)
     }
 }

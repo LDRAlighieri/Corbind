@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun SearchBar.searchQueryChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (String) -> Unit
+    action: suspend (String) -> Unit,
 ) {
     val events = scope.actor<String>(Dispatchers.Main.immediate, capacity) {
         for (query in channel) action(query)
@@ -65,7 +65,7 @@ fun SearchBar.searchQueryChanges(
  */
 suspend fun SearchBar.searchQueryChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (String) -> Unit
+    action: suspend (String) -> Unit,
 ) = coroutineScope {
     searchQueryChanges(this, capacity, action)
 }
@@ -91,7 +91,7 @@ suspend fun SearchBar.searchQueryChanges(
 @CheckResult
 fun SearchBar.searchQueryChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<String> = corbindReceiveChannel(capacity) {
     setSearchBarListener(listener(scope, ::trySend))
     invokeOnClose { setSearchBarListener(null) }
@@ -121,11 +121,11 @@ fun SearchBar.searchQueryChanges(): Flow<String> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (String) -> Unit
+    emitter: (String) -> Unit,
 ) = object : SearchBar.SearchBarListener {
 
     override fun onSearchQueryChange(query: String) {
-        if (scope.isActive) { emitter(query) }
+        if (scope.isActive) emitter(query)
     }
 
     override fun onSearchQuerySubmit(query: String) = Unit

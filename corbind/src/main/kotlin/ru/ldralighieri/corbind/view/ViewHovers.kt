@@ -48,7 +48,7 @@ fun View.hovers(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
-    action: suspend (MotionEvent) -> Unit
+    action: suspend (MotionEvent) -> Unit,
 ) {
     val events = scope.actor<MotionEvent>(Dispatchers.Main.immediate, capacity) {
         for (motion in channel) action(motion)
@@ -72,7 +72,7 @@ fun View.hovers(
 suspend fun View.hovers(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
-    action: suspend (MotionEvent) -> Unit
+    action: suspend (MotionEvent) -> Unit,
 ) = coroutineScope {
     hovers(this, capacity, handled, action)
 }
@@ -101,7 +101,7 @@ suspend fun View.hovers(
 fun View.hovers(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: (MotionEvent) -> Boolean = AlwaysTrue
+    handled: (MotionEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
     setOnHoverListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnHoverListener(null) }
@@ -134,7 +134,7 @@ fun View.hovers(handled: (MotionEvent) -> Boolean = AlwaysTrue): Flow<MotionEven
 private fun listener(
     scope: CoroutineScope,
     handled: (MotionEvent) -> Boolean,
-    emitter: (MotionEvent) -> Unit
+    emitter: (MotionEvent) -> Unit,
 ) = View.OnHoverListener { _, motionEvent ->
     if (scope.isActive && handled(motionEvent)) {
         emitter(motionEvent)

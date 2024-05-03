@@ -37,7 +37,7 @@ data class ViewScrollChangeEvent(
     val scrollX: Int,
     val scrollY: Int,
     val oldScrollX: Int,
-    val oldScrollY: Int
+    val oldScrollY: Int,
 )
 
 /**
@@ -54,7 +54,7 @@ data class ViewScrollChangeEvent(
 fun View.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewScrollChangeEvent) -> Unit
+    action: suspend (ViewScrollChangeEvent) -> Unit,
 ) {
     val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -77,7 +77,7 @@ fun View.scrollChangeEvents(
 @RequiresApi(Build.VERSION_CODES.M)
 suspend fun View.scrollChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewScrollChangeEvent) -> Unit
+    action: suspend (ViewScrollChangeEvent) -> Unit,
 ) = coroutineScope {
     scrollChangeEvents(this, capacity, action)
 }
@@ -104,7 +104,7 @@ suspend fun View.scrollChangeEvents(
 @CheckResult
 fun View.scrollChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
     setOnScrollChangeListener(listener(scope, ::trySend))
     invokeOnClose { setOnScrollChangeListener(null) }
@@ -135,7 +135,7 @@ fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewScrollChangeEvent) -> Unit
+    emitter: (ViewScrollChangeEvent) -> Unit,
 ) = View.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
     if (scope.isActive) {
         emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))

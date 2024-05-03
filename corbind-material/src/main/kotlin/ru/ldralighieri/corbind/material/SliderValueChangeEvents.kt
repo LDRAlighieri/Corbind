@@ -35,7 +35,7 @@ data class SliderChangeEvent(
     val view: Slider,
     val value: Float,
     val previousValue: Float,
-    val fromUser: Boolean
+    val fromUser: Boolean,
 )
 
 /**
@@ -48,7 +48,7 @@ data class SliderChangeEvent(
 fun Slider.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SliderChangeEvent) -> Unit
+    action: suspend (SliderChangeEvent) -> Unit,
 ) {
     val events = scope.actor<SliderChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -69,7 +69,7 @@ fun Slider.valueChangeEvents(
  */
 suspend fun Slider.valueChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SliderChangeEvent) -> Unit
+    action: suspend (SliderChangeEvent) -> Unit,
 ) = coroutineScope {
     valueChangeEvents(this, capacity, action)
 }
@@ -94,7 +94,7 @@ suspend fun Slider.valueChangeEvents(
 @CheckResult
 fun Slider.valueChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SliderChangeEvent> = corbindReceiveChannel(capacity) {
     val event = initialValue(this@valueChangeEvents).also(::trySend)
     val listener = listener(scope, ::trySend).apply { previousValue = event.previousValue }
@@ -138,11 +138,13 @@ private fun initialValue(slider: Slider): SliderChangeEvent =
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (SliderChangeEvent) -> Unit
+    emitter: (SliderChangeEvent) -> Unit,
 ) = object : Slider.OnChangeListener {
 
     var previousValue: Float = Float.NaN
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
-        if (scope.isActive) { emitter(SliderChangeEvent(slider, value, previousValue, fromUser)) }
+        if (scope.isActive) {
+            emitter(SliderChangeEvent(slider, value, previousValue, fromUser))
+        }
     }
 }

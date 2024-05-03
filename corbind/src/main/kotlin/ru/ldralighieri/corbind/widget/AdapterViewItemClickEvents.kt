@@ -36,7 +36,7 @@ data class AdapterViewItemClickEvent(
     val view: AdapterView<*>,
     val clickedView: View?,
     val position: Int,
-    val id: Long
+    val id: Long,
 )
 
 /**
@@ -52,7 +52,7 @@ data class AdapterViewItemClickEvent(
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (AdapterViewItemClickEvent) -> Unit
+    action: suspend (AdapterViewItemClickEvent) -> Unit,
 ) {
     val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -74,7 +74,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
  */
 suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (AdapterViewItemClickEvent) -> Unit
+    action: suspend (AdapterViewItemClickEvent) -> Unit,
 ) = coroutineScope {
     itemClickEvents(this, capacity, action)
 }
@@ -100,7 +100,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClickEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(capacity) {
     onItemClickListener = listener(scope, ::trySend)
     invokeOnClose { onItemClickListener = null }
@@ -130,7 +130,7 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(): Flow<AdapterViewItemClickEve
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (AdapterViewItemClickEvent) -> Unit
+    emitter: (AdapterViewItemClickEvent) -> Unit,
 ) = AdapterView.OnItemClickListener { parent, view: View?, position, id ->
     if (scope.isActive) {
         emitter(AdapterViewItemClickEvent(parent, view, position, id))

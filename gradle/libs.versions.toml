@@ -2,7 +2,7 @@
 # Plugins
 agp = "8.4.0"
 dokka = "1.9.20"
-spotless = "6.18.0"
+spotless = "6.25.0"
 mavenPublish = "0.28.0"
 bcv = "0.14.0"
 gver = "0.50.0"
@@ -32,7 +32,7 @@ androidxConstraintlayout = "2.1.4"
 material = "1.11.0"
 
 # Lint
-ktlint = "0.46.1"
+ktlint = "1.2.1"
 
 
 [libraries]

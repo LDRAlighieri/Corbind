@@ -38,12 +38,12 @@ sealed interface ViewGroupHierarchyChangeEvent {
 
 data class ViewGroupHierarchyChildViewAddEvent(
     override val view: ViewGroup,
-    override val child: View
+    override val child: View,
 ) : ViewGroupHierarchyChangeEvent
 
 data class ViewGroupHierarchyChildViewRemoveEvent(
     override val view: ViewGroup,
-    override val child: View
+    override val child: View,
 ) : ViewGroupHierarchyChangeEvent
 
 /**
@@ -59,7 +59,7 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
 fun ViewGroup.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
+    action: suspend (ViewGroupHierarchyChangeEvent) -> Unit,
 ) {
     val events = scope.actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -81,7 +81,7 @@ fun ViewGroup.changeEvents(
  */
 suspend fun ViewGroup.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (ViewGroupHierarchyChangeEvent) -> Unit
+    action: suspend (ViewGroupHierarchyChangeEvent) -> Unit,
 ) = coroutineScope {
     changeEvents(this, capacity, action)
 }
@@ -120,7 +120,7 @@ suspend fun ViewGroup.changeEvents(
 @CheckResult
 fun ViewGroup.changeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel(capacity) {
     setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::trySend))
     invokeOnClose { setOnHierarchyChangeListener(null) }
@@ -164,18 +164,16 @@ fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = channelFlow 
 private fun listener(
     scope: CoroutineScope,
     viewGroup: ViewGroup,
-    emitter: (ViewGroupHierarchyChangeEvent) -> Unit
+    emitter: (ViewGroupHierarchyChangeEvent) -> Unit,
 ) = object : ViewGroup.OnHierarchyChangeListener {
 
-    override fun onChildViewAdded(parent: View, child: View) {
+    override fun onChildViewAdded(parent: View, child: View) =
         onEvent(ViewGroupHierarchyChildViewAddEvent(viewGroup, child))
-    }
 
-    override fun onChildViewRemoved(parent: View, child: View) {
+    override fun onChildViewRemoved(parent: View, child: View) =
         onEvent(ViewGroupHierarchyChildViewRemoveEvent(viewGroup, child))
-    }
 
     private fun onEvent(event: ViewGroupHierarchyChangeEvent) {
-        if (scope.isActive) { emitter(event) }
+        if (scope.isActive) emitter(event)
     }
 }

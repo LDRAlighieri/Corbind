@@ -48,7 +48,7 @@ fun TextInputLayout.startIconLongClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -72,7 +72,7 @@ fun TextInputLayout.startIconLongClicks(
 suspend fun TextInputLayout.startIconLongClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     startIconLongClicks(this, capacity, handled, action)
 }
@@ -101,7 +101,7 @@ suspend fun TextInputLayout.startIconLongClicks(
 fun TextInputLayout.startIconLongClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: () -> Boolean = AlwaysTrue
+    handled: () -> Boolean = AlwaysTrue,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     setStartIconOnLongClickListener(listener(scope, handled, ::trySend))
     invokeOnClose { setStartIconOnLongClickListener(null) }
@@ -127,7 +127,7 @@ fun TextInputLayout.startIconLongClicks(
  */
 @CheckResult
 fun TextInputLayout.startIconLongClicks(
-    handled: () -> Boolean = AlwaysTrue
+    handled: () -> Boolean = AlwaysTrue,
 ): Flow<Unit> = channelFlow {
     setStartIconOnLongClickListener(listener(this, handled, ::trySend))
     awaitClose { setStartIconOnLongClickListener(null) }
@@ -137,7 +137,7 @@ fun TextInputLayout.startIconLongClicks(
 private fun listener(
     scope: CoroutineScope,
     handled: () -> Boolean,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = View.OnLongClickListener {
     if (scope.isActive && handled()) {
         emitter(Unit)
