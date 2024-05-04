@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun View.attaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -59,7 +59,7 @@ fun View.attaches(
  */
 suspend fun View.attaches(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     attaches(this, capacity, action)
 }
@@ -82,7 +82,7 @@ suspend fun View.attaches(
 @CheckResult
 fun View.attaches(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, true, ::trySend)
     addOnAttachStateChangeListener(listener)
@@ -118,7 +118,7 @@ fun View.attaches(): Flow<Unit> = channelFlow {
 fun View.detaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -137,7 +137,7 @@ fun View.detaches(
  */
 suspend fun View.detaches(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     detaches(this, capacity, action)
 }
@@ -160,7 +160,7 @@ suspend fun View.detaches(
 @CheckResult
 fun View.detaches(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, false, ::trySend)
     addOnAttachStateChangeListener(listener)
@@ -190,14 +190,14 @@ fun View.detaches(): Flow<Unit> = channelFlow {
 private fun listener(
     scope: CoroutineScope,
     callOnAttach: Boolean,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = object : View.OnAttachStateChangeListener {
 
     override fun onViewDetachedFromWindow(v: View) {
-        if (callOnAttach && scope.isActive) { emitter(Unit) }
+        if (callOnAttach && scope.isActive) emitter(Unit)
     }
 
     override fun onViewAttachedToWindow(v: View) {
-        if (!callOnAttach && scope.isActive) { emitter(Unit) }
+        if (!callOnAttach && scope.isActive) emitter(Unit)
     }
 }

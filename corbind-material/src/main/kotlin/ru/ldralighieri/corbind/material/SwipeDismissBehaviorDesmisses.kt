@@ -45,7 +45,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun View.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (View) -> Unit
+    action: suspend (View) -> Unit,
 ) {
     val events = scope.actor<View>(Dispatchers.Main.immediate, capacity) {
         for (view in channel) action(view)
@@ -68,7 +68,7 @@ fun View.dismisses(
  */
 suspend fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (View) -> Unit
+    action: suspend (View) -> Unit,
 ) = coroutineScope {
     dismisses(this, capacity, action)
 }
@@ -92,7 +92,7 @@ suspend fun View.dismisses(
 @CheckResult
 fun View.dismisses(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<View> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior(this@dismisses)
     behavior.listener = listener(scope, ::trySend)
@@ -132,11 +132,11 @@ private fun getBehavior(view: View): SwipeDismissBehavior<*> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (View) -> Unit
+    emitter: (View) -> Unit,
 ) = object : SwipeDismissBehavior.OnDismissListener {
 
     override fun onDismiss(view: View) {
-        if (scope.isActive) { emitter(view) }
+        if (scope.isActive) emitter(view)
     }
 
     override fun onDragStateChanged(state: Int) = Unit

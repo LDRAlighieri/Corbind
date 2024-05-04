@@ -36,7 +36,7 @@ data class CalendarViewDateChangeEvent(
     val view: CalendarView,
     val year: Int,
     val month: Int,
-    val dayOfMonth: Int
+    val dayOfMonth: Int,
 )
 
 /**
@@ -52,7 +52,7 @@ data class CalendarViewDateChangeEvent(
 fun CalendarView.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (CalendarViewDateChangeEvent) -> Unit
+    action: suspend (CalendarViewDateChangeEvent) -> Unit,
 ) {
     val events = scope.actor<CalendarViewDateChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -75,7 +75,7 @@ fun CalendarView.dateChangeEvents(
  */
 suspend fun CalendarView.dateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (CalendarViewDateChangeEvent) -> Unit
+    action: suspend (CalendarViewDateChangeEvent) -> Unit,
 ) = coroutineScope {
     dateChangeEvents(this, capacity, action)
 }
@@ -104,7 +104,7 @@ suspend fun CalendarView.dateChangeEvents(
 @CheckResult
 fun CalendarView.dateChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<CalendarViewDateChangeEvent> = corbindReceiveChannel(capacity) {
     trySend(initialValue(this@dateChangeEvents))
     setOnDateChangeListener(listener(scope, ::trySend))
@@ -154,7 +154,9 @@ private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent =
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (CalendarViewDateChangeEvent) -> Unit
+    emitter: (CalendarViewDateChangeEvent) -> Unit,
 ) = CalendarView.OnDateChangeListener { view, year, month, dayOfMonth ->
-    if (scope.isActive) { emitter(CalendarViewDateChangeEvent(view, year, month, dayOfMonth)) }
+    if (scope.isActive) {
+        emitter(CalendarViewDateChangeEvent(view, year, month, dayOfMonth))
+    }
 }

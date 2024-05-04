@@ -37,7 +37,7 @@ data class AdapterViewItemLongClickEvent(
     val view: AdapterView<*>,
     val clickedView: View?,
     val position: Int,
-    val id: Long
+    val id: Long,
 )
 
 /**
@@ -56,7 +56,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
-    action: suspend (AdapterViewItemLongClickEvent) -> Unit
+    action: suspend (AdapterViewItemLongClickEvent) -> Unit,
 ) {
     val events = scope.actor<AdapterViewItemLongClickEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -81,7 +81,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
-    action: suspend (AdapterViewItemLongClickEvent) -> Unit
+    action: suspend (AdapterViewItemLongClickEvent) -> Unit,
 ) = coroutineScope {
     itemLongClickEvents(this, capacity, handled, action)
 }
@@ -111,7 +111,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
+    handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel(capacity) {
     onItemLongClickListener = listener(scope, handled, ::trySend)
     invokeOnClose { onItemLongClickListener = null }
@@ -137,7 +137,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
-    handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue
+    handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
 ): Flow<AdapterViewItemLongClickEvent> = channelFlow {
     onItemLongClickListener = listener(this, handled, ::trySend)
     awaitClose { onItemLongClickListener = null }
@@ -147,7 +147,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 private fun listener(
     scope: CoroutineScope,
     handled: (AdapterViewItemLongClickEvent) -> Boolean,
-    emitter: (AdapterViewItemLongClickEvent) -> Unit
+    emitter: (AdapterViewItemLongClickEvent) -> Unit,
 ) = AdapterView.OnItemLongClickListener { parent, view: View?, position, id ->
     if (scope.isActive) {
         val event = AdapterViewItemLongClickEvent(parent, view, position, id)

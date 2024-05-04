@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun <S> MaterialDatePicker<S>.positiveClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (S) -> Unit
+    action: suspend (S) -> Unit,
 ) {
     val events = scope.actor<S>(Dispatchers.Main.immediate, capacity) {
         for (selection in channel) action(selection)
@@ -60,7 +60,7 @@ fun <S> MaterialDatePicker<S>.positiveClicks(
  */
 suspend fun <S> MaterialDatePicker<S>.positiveClicks(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (S) -> Unit
+    action: suspend (S) -> Unit,
 ) = coroutineScope {
     positiveClicks(this, capacity, action)
 }
@@ -83,7 +83,7 @@ suspend fun <S> MaterialDatePicker<S>.positiveClicks(
 @CheckResult
 fun <S> MaterialDatePicker<S>.positiveClicks(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<S> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addOnPositiveButtonClickListener(listener)
@@ -112,7 +112,7 @@ fun <S> MaterialDatePicker<S>.positiveClicks(): Flow<S> = channelFlow {
 @CheckResult
 private fun <S> listener(
     scope: CoroutineScope,
-    emitter: (S) -> Unit
+    emitter: (S) -> Unit,
 ) = MaterialPickerOnPositiveButtonClickListener<S> { selection ->
-    if (scope.isActive) { emitter(selection) }
+    if (scope.isActive) emitter(selection)
 }

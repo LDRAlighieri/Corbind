@@ -38,12 +38,12 @@ sealed interface RecyclerViewChildAttachStateChangeEvent {
 
 data class RecyclerViewChildAttachEvent(
     override val view: RecyclerView,
-    override val child: View
+    override val child: View,
 ) : RecyclerViewChildAttachStateChangeEvent
 
 data class RecyclerViewChildDetachEvent(
     override val view: RecyclerView,
-    override val child: View
+    override val child: View,
 ) : RecyclerViewChildAttachStateChangeEvent
 
 /**
@@ -57,11 +57,11 @@ data class RecyclerViewChildDetachEvent(
 fun RecyclerView.childAttachStateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit
+    action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit,
 ) {
     val events = scope.actor<RecyclerViewChildAttachStateChangeEvent>(
         Dispatchers.Main.immediate,
-        capacity
+        capacity,
     ) {
         for (event in channel) action(event)
     }
@@ -80,7 +80,7 @@ fun RecyclerView.childAttachStateChangeEvents(
  */
 suspend fun RecyclerView.childAttachStateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit
+    action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit,
 ) = coroutineScope {
     childAttachStateChangeEvents(this, capacity, action)
 }
@@ -117,7 +117,7 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, this@childAttachStateChangeEvents, ::trySend)
     addOnChildAttachStateChangeListener(listener)
@@ -162,7 +162,7 @@ fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachSta
 private fun listener(
     scope: CoroutineScope,
     recyclerView: RecyclerView,
-    emitter: (RecyclerViewChildAttachStateChangeEvent) -> Unit
+    emitter: (RecyclerViewChildAttachStateChangeEvent) -> Unit,
 ) = object : RecyclerView.OnChildAttachStateChangeListener {
 
     override fun onChildViewAttachedToWindow(childView: View) {
@@ -174,6 +174,6 @@ private fun listener(
     }
 
     private fun onEvent(event: RecyclerViewChildAttachStateChangeEvent) {
-        if (scope.isActive) { emitter(event) }
+        if (scope.isActive) emitter(event)
     }
 }

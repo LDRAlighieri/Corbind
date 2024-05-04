@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun ViewPager2.pageScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
@@ -59,7 +59,7 @@ fun ViewPager2.pageScrollStateChanges(
  */
 suspend fun ViewPager2.pageScrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     pageScrollStateChanges(this, capacity, action)
 }
@@ -82,7 +82,7 @@ suspend fun ViewPager2.pageScrollStateChanges(
 @CheckResult
 fun ViewPager2.pageScrollStateChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val callback = callback(scope, ::trySend)
     registerOnPageChangeCallback(callback)
@@ -111,13 +111,13 @@ fun ViewPager2.pageScrollStateChanges(): Flow<Int> = channelFlow {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = object : ViewPager2.OnPageChangeCallback() {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
     override fun onPageSelected(position: Int) = Unit
 
     override fun onPageScrollStateChanged(state: Int) {
-        if (scope.isActive) { emitter(state) }
+        if (scope.isActive) emitter(state)
     }
 }

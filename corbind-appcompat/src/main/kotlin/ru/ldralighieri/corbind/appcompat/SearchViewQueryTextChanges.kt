@@ -44,7 +44,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun SearchView.queryTextChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (CharSequence) -> Unit
+    action: suspend (CharSequence) -> Unit,
 ) {
     val events = scope.actor<CharSequence>(Dispatchers.Main.immediate, capacity) {
         for (chars in channel) action(chars)
@@ -67,7 +67,7 @@ fun SearchView.queryTextChanges(
  */
 suspend fun SearchView.queryTextChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (CharSequence) -> Unit
+    action: suspend (CharSequence) -> Unit,
 ) = coroutineScope {
     queryTextChanges(this, capacity, action)
 }
@@ -95,7 +95,7 @@ suspend fun SearchView.queryTextChanges(
 @CheckResult
 fun SearchView.queryTextChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(capacity) {
     trySend(query)
     setOnQueryTextListener(listener(scope, ::trySend))
@@ -136,7 +136,7 @@ fun SearchView.queryTextChanges(): InitialValueFlow<CharSequence> = channelFlow 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (CharSequence) -> Unit
+    emitter: (CharSequence) -> Unit,
 ) = object : SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(s: String): Boolean {
@@ -147,5 +147,5 @@ private fun listener(
         return false
     }
 
-    override fun onQueryTextSubmit(query: String): Boolean { return false }
+    override fun onQueryTextSubmit(query: String): Boolean = false
 }

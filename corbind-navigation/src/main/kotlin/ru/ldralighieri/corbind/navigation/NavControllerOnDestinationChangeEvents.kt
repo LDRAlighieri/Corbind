@@ -35,7 +35,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 data class NavControllerOnDestinationChangeEvent(
     val controller: NavController,
     val destination: NavDestination,
-    val arguments: Bundle?
+    val arguments: Bundle?,
 )
 
 /**
@@ -49,7 +49,7 @@ data class NavControllerOnDestinationChangeEvent(
 fun NavController.destinationChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (NavControllerOnDestinationChangeEvent) -> Unit
+    action: suspend (NavControllerOnDestinationChangeEvent) -> Unit,
 ) {
     val events = scope
         .actor<NavControllerOnDestinationChangeEvent>(Dispatchers.Main.immediate, capacity) {
@@ -70,7 +70,7 @@ fun NavController.destinationChangeEvents(
  */
 suspend fun NavController.destinationChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (NavControllerOnDestinationChangeEvent) -> Unit
+    action: suspend (NavControllerOnDestinationChangeEvent) -> Unit,
 ) = coroutineScope {
     destinationChangeEvents(this, capacity, action)
 }
@@ -94,7 +94,7 @@ suspend fun NavController.destinationChangeEvents(
 @CheckResult
 fun NavController.destinationChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<NavControllerOnDestinationChangeEvent> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addOnDestinationChangedListener(listener)
@@ -125,7 +125,7 @@ fun NavController.destinationChangeEvents(): Flow<NavControllerOnDestinationChan
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (NavControllerOnDestinationChangeEvent) -> Unit
+    emitter: (NavControllerOnDestinationChangeEvent) -> Unit,
 ) = NavController.OnDestinationChangedListener { controller, destination, arguments ->
     if (scope.isActive) {
         emitter(NavControllerOnDestinationChangeEvent(controller, destination, arguments))

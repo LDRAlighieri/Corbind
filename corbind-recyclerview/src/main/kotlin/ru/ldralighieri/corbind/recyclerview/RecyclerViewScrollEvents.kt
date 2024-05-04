@@ -33,7 +33,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 data class RecyclerViewScrollEvent(
     val view: RecyclerView,
     val dx: Int,
-    val dy: Int
+    val dy: Int,
 )
 
 /**
@@ -46,7 +46,7 @@ data class RecyclerViewScrollEvent(
 fun RecyclerView.scrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RecyclerViewScrollEvent) -> Unit
+    action: suspend (RecyclerViewScrollEvent) -> Unit,
 ) {
     val events = scope.actor<RecyclerViewScrollEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -66,7 +66,7 @@ fun RecyclerView.scrollEvents(
  */
 suspend fun RecyclerView.scrollEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RecyclerViewScrollEvent) -> Unit
+    action: suspend (RecyclerViewScrollEvent) -> Unit,
 ) = coroutineScope {
     scrollEvents(this, capacity, action)
 }
@@ -89,7 +89,7 @@ suspend fun RecyclerView.scrollEvents(
 @CheckResult
 fun RecyclerView.scrollEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RecyclerViewScrollEvent> = corbindReceiveChannel(capacity) {
     val scrollListener = listener(scope, ::trySend)
     addOnScrollListener(scrollListener)
@@ -118,10 +118,10 @@ fun RecyclerView.scrollEvents(): Flow<RecyclerViewScrollEvent> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (RecyclerViewScrollEvent) -> Unit
+    emitter: (RecyclerViewScrollEvent) -> Unit,
 ) = object : RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        if (scope.isActive) { emitter(RecyclerViewScrollEvent(recyclerView, dx, dy)) }
+        if (scope.isActive) emitter(RecyclerViewScrollEvent(recyclerView, dx, dy))
     }
 }

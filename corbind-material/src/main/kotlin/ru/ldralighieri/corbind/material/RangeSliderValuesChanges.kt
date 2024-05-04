@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun RangeSlider.valuesChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (List<Float>) -> Unit
+    action: suspend (List<Float>) -> Unit,
 ) {
     val events = scope.actor<List<Float>>(Dispatchers.Main.immediate, capacity) {
         for (values in channel) action(values)
@@ -61,7 +61,7 @@ fun RangeSlider.valuesChanges(
  */
 suspend fun RangeSlider.valuesChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (List<Float>) -> Unit
+    action: suspend (List<Float>) -> Unit,
 ) = coroutineScope {
     valuesChanges(this, capacity, action)
 }
@@ -86,7 +86,7 @@ suspend fun RangeSlider.valuesChanges(
 @CheckResult
 fun RangeSlider.valuesChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<List<Float>> = corbindReceiveChannel(capacity) {
     trySend(values)
     val listener = listener(scope, ::trySend)
@@ -126,7 +126,7 @@ fun RangeSlider.valuesChanges(): InitialValueFlow<List<Float>> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (List<Float>) -> Unit
+    emitter: (List<Float>) -> Unit,
 ) = RangeSlider.OnChangeListener { slider, _, _ ->
-    if (scope.isActive) { emitter(slider.values) }
+    if (scope.isActive) emitter(slider.values)
 }

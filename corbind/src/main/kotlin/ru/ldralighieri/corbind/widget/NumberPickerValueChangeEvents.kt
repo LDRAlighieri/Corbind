@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 data class NumberPickerValueChangeEvent(
     val picker: NumberPicker,
     val oldVal: Int,
-    val newVal: Int
+    val newVal: Int,
 )
 
 /**
@@ -50,7 +50,7 @@ data class NumberPickerValueChangeEvent(
 fun NumberPicker.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (NumberPickerValueChangeEvent) -> Unit
+    action: suspend (NumberPickerValueChangeEvent) -> Unit,
 ) {
     val events = scope.actor<NumberPickerValueChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -73,7 +73,7 @@ fun NumberPicker.valueChangeEvents(
  */
 suspend fun NumberPicker.valueChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (NumberPickerValueChangeEvent) -> Unit
+    action: suspend (NumberPickerValueChangeEvent) -> Unit,
 ) = coroutineScope {
     valueChangeEvents(this, capacity, action)
 }
@@ -102,7 +102,7 @@ suspend fun NumberPicker.valueChangeEvents(
 @CheckResult
 fun NumberPicker.valueChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<NumberPickerValueChangeEvent> = corbindReceiveChannel(capacity) {
     trySend(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
     setOnValueChangedListener(listener(scope, ::trySend))
@@ -144,7 +144,9 @@ fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEv
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (NumberPickerValueChangeEvent) -> Unit
+    emitter: (NumberPickerValueChangeEvent) -> Unit,
 ) = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-    if (scope.isActive) { emitter(NumberPickerValueChangeEvent(picker, oldVal, newVal)); }
+    if (scope.isActive) {
+        emitter(NumberPickerValueChangeEvent(picker, oldVal, newVal))
+    }
 }

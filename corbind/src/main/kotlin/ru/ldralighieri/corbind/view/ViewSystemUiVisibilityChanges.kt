@@ -49,13 +49,13 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
         "{@link WindowInsets#isVisible(int)} to find out about system bar visibilities",
     replaceWith = ReplaceWith(
         expression = "windowInsetsApplyEvents(scope, capacity, action)",
-        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"]
-    )
+        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"],
+    ),
 )
 fun View.systemUiVisibilityChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (visibility in channel) action(visibility)
@@ -83,12 +83,12 @@ fun View.systemUiVisibilityChanges(
         "{@link WindowInsets#isVisible(int)} to find out about system bar visibilities",
     replaceWith = ReplaceWith(
         expression = "windowInsetsApplyEvents(capacity, action)",
-        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"]
-    )
+        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"],
+    ),
 )
 suspend fun View.systemUiVisibilityChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     systemUiVisibilityChanges(this, capacity, action)
 }
@@ -120,13 +120,13 @@ suspend fun View.systemUiVisibilityChanges(
         "{@link WindowInsets#isVisible(int)} to find out about system bar visibilities",
     replaceWith = ReplaceWith(
         expression = "windowInsetsApplyEvents(scope, capacity)",
-        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"]
-    )
+        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"],
+    ),
 )
 @CheckResult
 fun View.systemUiVisibilityChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     setOnSystemUiVisibilityChangeListener(listener(scope, ::trySend))
     invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
@@ -156,8 +156,8 @@ fun View.systemUiVisibilityChanges(
         "{@link WindowInsets#isVisible(int)} to find out about system bar visibilities",
     replaceWith = ReplaceWith(
         expression = "windowInsetsApplyEvents()",
-        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"]
-    )
+        imports = ["ru.ldralighieri.corbind.view.windowInsetsApplies"],
+    ),
 )
 @CheckResult
 fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
@@ -169,7 +169,7 @@ fun View.systemUiVisibilityChanges(): Flow<Int> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = View.OnSystemUiVisibilityChangeListener {
-    if (scope.isActive) { emitter(it) }
+    if (scope.isActive) emitter(it)
 }

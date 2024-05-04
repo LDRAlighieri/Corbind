@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun View.globalLayouts(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -63,7 +63,7 @@ fun View.globalLayouts(
  */
 suspend fun View.globalLayouts(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     globalLayouts(this, capacity, action)
 }
@@ -86,7 +86,7 @@ suspend fun View.globalLayouts(
 @CheckResult
 fun View.globalLayouts(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     viewTreeObserver.addOnGlobalLayoutListener(listener)
@@ -121,7 +121,7 @@ fun View.globalLayouts(): Flow<Unit> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = ViewTreeObserver.OnGlobalLayoutListener {
-    if (scope.isActive) { emitter(Unit) }
+    if (scope.isActive) emitter(Unit)
 }

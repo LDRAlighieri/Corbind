@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun View.bottomViewScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
@@ -64,7 +64,7 @@ fun View.bottomViewScrollStateChanges(
  */
 suspend fun View.bottomViewScrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     bottomViewScrollStateChanges(this, capacity, action)
 }
@@ -90,7 +90,7 @@ suspend fun View.bottomViewScrollStateChanges(
 @CheckResult
 fun View.bottomViewScrollStateChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getBehavior()
     val listener = listener(scope, ::trySend)
@@ -131,7 +131,7 @@ private fun View.getBehavior(): HideBottomViewOnScrollBehavior<*> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = HideBottomViewOnScrollBehavior.OnScrollStateChangedListener { _, newState ->
-    if (scope.isActive) { emitter(newState) }
+    if (scope.isActive) emitter(newState)
 }

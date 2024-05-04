@@ -45,7 +45,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun AutoCompleteTextView.itemClickEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (AdapterViewItemClickEvent) -> Unit
+    action: suspend (AdapterViewItemClickEvent) -> Unit,
 ) {
     val events = scope.actor<AdapterViewItemClickEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -67,7 +67,7 @@ fun AutoCompleteTextView.itemClickEvents(
  */
 suspend fun AutoCompleteTextView.itemClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (AdapterViewItemClickEvent) -> Unit
+    action: suspend (AdapterViewItemClickEvent) -> Unit,
 ) = coroutineScope {
     itemClickEvents(this, capacity, action)
 }
@@ -93,7 +93,7 @@ suspend fun AutoCompleteTextView.itemClickEvents(
 @CheckResult
 fun AutoCompleteTextView.itemClickEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(capacity) {
     onItemClickListener = listener(scope, ::trySend)
     invokeOnClose { onItemClickListener = null }
@@ -123,7 +123,7 @@ fun AutoCompleteTextView.itemClickEvents(): Flow<AdapterViewItemClickEvent> = ch
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (AdapterViewItemClickEvent) -> Unit
+    emitter: (AdapterViewItemClickEvent) -> Unit,
 ) = AdapterView.OnItemClickListener { parent, view: View?, position, id ->
     if (scope.isActive) {
         emitter(AdapterViewItemClickEvent(parent, view, position, id))

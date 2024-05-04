@@ -47,7 +47,7 @@ fun MenuItem.clicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItem) -> Boolean = AlwaysTrue,
-    action: suspend (MenuItem) -> Unit
+    action: suspend (MenuItem) -> Unit,
 ) {
     val events = scope.actor<MenuItem>(Dispatchers.Main.immediate, capacity) {
         for (item in channel) action(item)
@@ -71,7 +71,7 @@ fun MenuItem.clicks(
 suspend fun MenuItem.clicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItem) -> Boolean = AlwaysTrue,
-    action: suspend (MenuItem) -> Unit
+    action: suspend (MenuItem) -> Unit,
 ) = coroutineScope {
     clicks(this, capacity, handled, action)
 }
@@ -100,7 +100,7 @@ suspend fun MenuItem.clicks(
 fun MenuItem.clicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: (MenuItem) -> Boolean = AlwaysTrue
+    handled: (MenuItem) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
     setOnMenuItemClickListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnMenuItemClickListener(null) }
@@ -126,7 +126,7 @@ fun MenuItem.clicks(
  */
 @CheckResult
 fun MenuItem.clicks(
-    handled: (MenuItem) -> Boolean = AlwaysTrue
+    handled: (MenuItem) -> Boolean = AlwaysTrue,
 ): Flow<MenuItem> = channelFlow {
     setOnMenuItemClickListener(listener(this, handled, ::trySend))
     awaitClose { setOnMenuItemClickListener(null) }
@@ -136,7 +136,7 @@ fun MenuItem.clicks(
 private fun listener(
     scope: CoroutineScope,
     handled: (MenuItem) -> Boolean,
-    emitter: (MenuItem) -> Unit
+    emitter: (MenuItem) -> Unit,
 ) = MenuItem.OnMenuItemClickListener { item ->
     if (scope.isActive && handled(item)) {
         emitter(item)

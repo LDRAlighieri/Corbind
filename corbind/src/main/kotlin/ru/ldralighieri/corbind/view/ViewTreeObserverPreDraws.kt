@@ -43,7 +43,7 @@ fun View.preDraws(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     proceedDrawingPass: () -> Boolean,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -64,7 +64,7 @@ fun View.preDraws(
 suspend fun View.preDraws(
     capacity: Int = Channel.RENDEZVOUS,
     proceedDrawingPass: () -> Boolean,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     preDraws(this, capacity, proceedDrawingPass, action)
 }
@@ -89,7 +89,7 @@ suspend fun View.preDraws(
 fun View.preDraws(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    proceedDrawingPass: () -> Boolean
+    proceedDrawingPass: () -> Boolean,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, proceedDrawingPass, ::trySend)
     viewTreeObserver.addOnPreDrawListener(listener)
@@ -112,7 +112,7 @@ fun View.preDraws(
  */
 @CheckResult
 fun View.preDraws(
-    proceedDrawingPass: () -> Boolean
+    proceedDrawingPass: () -> Boolean,
 ): Flow<Unit> = channelFlow {
     val listener = listener(this, proceedDrawingPass, ::trySend)
     viewTreeObserver.addOnPreDrawListener(listener)
@@ -123,7 +123,7 @@ fun View.preDraws(
 private fun listener(
     scope: CoroutineScope,
     proceedDrawingPass: () -> Boolean,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = ViewTreeObserver.OnPreDrawListener {
     if (scope.isActive) {
         emitter(Unit)

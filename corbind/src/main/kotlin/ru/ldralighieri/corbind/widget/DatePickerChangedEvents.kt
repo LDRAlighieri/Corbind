@@ -37,7 +37,7 @@ data class DateChangedEvent(
     val view: DatePicker,
     val year: Int,
     val monthOfYear: Int,
-    val dayOfMonth: Int
+    val dayOfMonth: Int,
 )
 
 /**
@@ -54,7 +54,7 @@ data class DateChangedEvent(
 fun DatePicker.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (DateChangedEvent) -> Unit
+    action: suspend (DateChangedEvent) -> Unit,
 ) {
     val events = scope.actor<DateChangedEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -78,7 +78,7 @@ fun DatePicker.dateChangeEvents(
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun DatePicker.dateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (DateChangedEvent) -> Unit
+    action: suspend (DateChangedEvent) -> Unit,
 ) = coroutineScope {
     dateChangeEvents(this, capacity, action)
 }
@@ -107,7 +107,7 @@ suspend fun DatePicker.dateChangeEvents(
 @CheckResult
 fun DatePicker.dateChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<DateChangedEvent> = corbindReceiveChannel(capacity) {
     trySend(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
     setOnDateChangedListener(listener(scope, ::trySend))
@@ -149,7 +149,9 @@ fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> = channelF
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (DateChangedEvent) -> Unit
+    emitter: (DateChangedEvent) -> Unit,
 ) = DatePicker.OnDateChangedListener { view, year, monthOfYear, dayOfMonth ->
-    if (scope.isActive) { emitter(DateChangedEvent(view, year, monthOfYear, dayOfMonth)) }
+    if (scope.isActive) {
+        emitter(DateChangedEvent(view, year, monthOfYear, dayOfMonth))
+    }
 }

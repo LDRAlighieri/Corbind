@@ -33,7 +33,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 data class SearchViewTransitionStateChangeEvent(
     val view: SearchView,
     val previousState: SearchView.TransitionState,
-    val newState: SearchView.TransitionState
+    val newState: SearchView.TransitionState,
 )
 
 /**
@@ -47,7 +47,7 @@ data class SearchViewTransitionStateChangeEvent(
 fun SearchView.transitionStateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SearchViewTransitionStateChangeEvent) -> Unit
+    action: suspend (SearchViewTransitionStateChangeEvent) -> Unit,
 ) {
     val events = scope.actor<SearchViewTransitionStateChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -68,7 +68,7 @@ fun SearchView.transitionStateChangeEvents(
  */
 suspend fun SearchView.transitionStateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SearchViewTransitionStateChangeEvent) -> Unit
+    action: suspend (SearchViewTransitionStateChangeEvent) -> Unit,
 ) = coroutineScope {
     transitionStateChangeEvents(this, capacity, action)
 }
@@ -92,7 +92,7 @@ suspend fun SearchView.transitionStateChangeEvents(
 @CheckResult
 fun SearchView.transitionStateChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SearchViewTransitionStateChangeEvent> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addTransitionListener(listener)
@@ -123,7 +123,7 @@ fun SearchView.transitionStateChangeEvents(): Flow<SearchViewTransitionStateChan
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (SearchViewTransitionStateChangeEvent) -> Unit
+    emitter: (SearchViewTransitionStateChangeEvent) -> Unit,
 ) = SearchView.TransitionListener { searchView, previousState, newState ->
     if (scope.isActive) {
         emitter(SearchViewTransitionStateChangeEvent(searchView, previousState, newState))

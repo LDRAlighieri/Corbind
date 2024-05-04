@@ -35,7 +35,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class WindowInsetsEvent(
     val view: View,
-    val insets: WindowInsets
+    val insets: WindowInsets,
 )
 
 /**
@@ -49,7 +49,7 @@ data class WindowInsetsEvent(
 fun View.windowInsetsApplyEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (WindowInsetsEvent) -> Unit
+    action: suspend (WindowInsetsEvent) -> Unit,
 ) {
     val events = scope.actor<WindowInsetsEvent>(Dispatchers.Main.immediate, capacity) {
         for (insets in channel) action(insets)
@@ -69,7 +69,7 @@ fun View.windowInsetsApplyEvents(
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 suspend fun View.windowInsetsApplyEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (WindowInsetsEvent) -> Unit
+    action: suspend (WindowInsetsEvent) -> Unit,
 ) = coroutineScope {
     windowInsetsApplyEvents(this, capacity, action)
 }
@@ -93,7 +93,7 @@ suspend fun View.windowInsetsApplyEvents(
 @CheckResult
 fun View.windowInsetsApplyEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<WindowInsetsEvent> = corbindReceiveChannel(capacity) {
     setOnApplyWindowInsetsListener(listener(scope, ::trySend))
     invokeOnClose { setOnApplyWindowInsetsListener(null) }
@@ -137,8 +137,8 @@ fun View.windowInsetsApplyEvents(): Flow<WindowInsetsEvent> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (WindowInsetsEvent) -> Unit
+    emitter: (WindowInsetsEvent) -> Unit,
 ) = View.OnApplyWindowInsetsListener { v, insets ->
-    if (scope.isActive) { emitter(WindowInsetsEvent(v, insets)) }
+    if (scope.isActive) emitter(WindowInsetsEvent(v, insets))
     insets
 }

@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun SearchView.transitionStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SearchView.TransitionState) -> Unit
+    action: suspend (SearchView.TransitionState) -> Unit,
 ) {
     val events = scope.actor<SearchView.TransitionState>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
@@ -60,7 +60,7 @@ fun SearchView.transitionStateChanges(
  */
 suspend fun SearchView.transitionStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SearchView.TransitionState) -> Unit
+    action: suspend (SearchView.TransitionState) -> Unit,
 ) = coroutineScope {
     transitionStateChanges(this, capacity, action)
 }
@@ -83,7 +83,7 @@ suspend fun SearchView.transitionStateChanges(
 @CheckResult
 fun SearchView.transitionStateChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SearchView.TransitionState> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addTransitionListener(listener)
@@ -112,7 +112,7 @@ fun SearchView.transitionStateChanges(): Flow<SearchView.TransitionState> = chan
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (SearchView.TransitionState) -> Unit
+    emitter: (SearchView.TransitionState) -> Unit,
 ) = SearchView.TransitionListener { _, _, newState ->
-    if (scope.isActive) { emitter(newState) }
+    if (scope.isActive) emitter(newState)
 }

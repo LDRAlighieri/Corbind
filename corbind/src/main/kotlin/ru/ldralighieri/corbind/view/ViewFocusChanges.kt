@@ -44,7 +44,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun View.focusChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) {
     val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (focus in channel) action(focus)
@@ -66,7 +66,7 @@ fun View.focusChanges(
  */
 suspend fun View.focusChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) = coroutineScope {
     focusChanges(this, capacity, action)
 }
@@ -94,7 +94,7 @@ suspend fun View.focusChanges(
 @CheckResult
 fun View.focusChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     trySend(hasFocus())
     onFocusChangeListener = listener(scope, ::trySend)
@@ -135,7 +135,7 @@ fun View.focusChanges(): InitialValueFlow<Boolean> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit
+    emitter: (Boolean) -> Unit,
 ) = View.OnFocusChangeListener { _, hasFocus ->
-    if (scope.isActive) { emitter(hasFocus) }
+    if (scope.isActive) emitter(hasFocus)
 }

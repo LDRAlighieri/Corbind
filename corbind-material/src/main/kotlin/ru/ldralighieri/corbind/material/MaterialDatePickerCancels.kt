@@ -45,7 +45,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -68,7 +68,7 @@ fun <S> MaterialDatePicker<S>.cancels(
  */
 suspend fun <S> MaterialDatePicker<S>.cancels(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     cancels(this, capacity, action)
 }
@@ -95,7 +95,7 @@ suspend fun <S> MaterialDatePicker<S>.cancels(
 @CheckResult
 fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addOnCancelListener(listener)
@@ -128,7 +128,7 @@ fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = DialogInterface.OnCancelListener {
-    if (scope.isActive) { emitter(Unit) }
+    if (scope.isActive) emitter(Unit)
 }

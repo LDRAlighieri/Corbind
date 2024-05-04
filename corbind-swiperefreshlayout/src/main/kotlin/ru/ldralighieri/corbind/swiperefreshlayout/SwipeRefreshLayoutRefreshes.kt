@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun SwipeRefreshLayout.refreshes(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -64,7 +64,7 @@ fun SwipeRefreshLayout.refreshes(
  */
 suspend fun SwipeRefreshLayout.refreshes(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     refreshes(this, capacity, action)
 }
@@ -90,7 +90,7 @@ suspend fun SwipeRefreshLayout.refreshes(
 @CheckResult
 fun SwipeRefreshLayout.refreshes(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     setOnRefreshListener(listener(scope, ::trySend))
     invokeOnClose { setOnRefreshListener(null) }
@@ -120,7 +120,7 @@ fun SwipeRefreshLayout.refreshes(): Flow<Unit> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = SwipeRefreshLayout.OnRefreshListener {
-    if (scope.isActive) { emitter(Unit) }
+    if (scope.isActive) emitter(Unit)
 }

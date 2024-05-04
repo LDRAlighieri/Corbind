@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun SlidingPaneLayout.panelOpens(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) {
     val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -66,7 +66,7 @@ fun SlidingPaneLayout.panelOpens(
  */
 suspend fun SlidingPaneLayout.panelOpens(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) = coroutineScope {
     panelOpens(this, capacity, action)
 }
@@ -91,7 +91,7 @@ suspend fun SlidingPaneLayout.panelOpens(
 @CheckResult
 fun SlidingPaneLayout.panelOpens(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     trySend(isOpen)
     val listener = listener(scope, ::trySend)
@@ -131,14 +131,14 @@ fun SlidingPaneLayout.panelOpens(): InitialValueFlow<Boolean> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit
+    emitter: (Boolean) -> Unit,
 ) = object : SlidingPaneLayout.PanelSlideListener {
 
     override fun onPanelSlide(panel: View, slideOffset: Float) = Unit
-    override fun onPanelOpened(panel: View) { onEvent(true) }
-    override fun onPanelClosed(panel: View) { onEvent(false) }
+    override fun onPanelOpened(panel: View) = onEvent(true)
+    override fun onPanelClosed(panel: View) = onEvent(false)
 
     private fun onEvent(event: Boolean) {
-        if (scope.isActive) { emitter(event) }
+        if (scope.isActive) emitter(event)
     }
 }

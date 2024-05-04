@@ -46,7 +46,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun <T : Adapter> AdapterView<T>.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (position in channel) action(position)
@@ -68,7 +68,7 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
  */
 suspend fun <T : Adapter> AdapterView<T>.itemSelections(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     itemSelections(this, capacity, action)
 }
@@ -97,7 +97,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemSelections(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     trySend(selectedItemPosition)
     onItemSelectedListener = listener(scope, ::trySend)
@@ -139,16 +139,16 @@ fun <T : Adapter> AdapterView<T>.itemSelections(): InitialValueFlow<Int> = chann
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = object : AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         onEvent(position)
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>) { onEvent(AdapterView.INVALID_POSITION) }
+    override fun onNothingSelected(parent: AdapterView<*>) = onEvent(AdapterView.INVALID_POSITION)
 
     private fun onEvent(position: Int) {
-        if (scope.isActive) { emitter(position) }
+        if (scope.isActive) emitter(position)
     }
 }

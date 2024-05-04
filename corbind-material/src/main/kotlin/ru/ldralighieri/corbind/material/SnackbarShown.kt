@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun Snackbar.shown(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Snackbar) -> Unit
+    action: suspend (Snackbar) -> Unit,
 ) {
     val events = scope.actor<Snackbar>(Dispatchers.Main.immediate, capacity) {
         for (snackbar in channel) action(snackbar)
@@ -59,7 +59,7 @@ fun Snackbar.shown(
  */
 suspend fun Snackbar.shown(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Snackbar) -> Unit
+    action: suspend (Snackbar) -> Unit,
 ) = coroutineScope {
     shown(this, capacity, action)
 }
@@ -82,7 +82,7 @@ suspend fun Snackbar.shown(
 @CheckResult
 fun Snackbar.shown(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Snackbar> = corbindReceiveChannel(capacity) {
     val callback = callback(scope, ::trySend)
     addCallback(callback)
@@ -111,9 +111,9 @@ fun Snackbar.shown(): Flow<Snackbar> = channelFlow {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Snackbar) -> Unit
+    emitter: (Snackbar) -> Unit,
 ) = object : Snackbar.Callback() {
     override fun onShown(sb: Snackbar) {
-        if (scope.isActive) { emitter(sb) }
+        if (scope.isActive) emitter(sb)
     }
 }

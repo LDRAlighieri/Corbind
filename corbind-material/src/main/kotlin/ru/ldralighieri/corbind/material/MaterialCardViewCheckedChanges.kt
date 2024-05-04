@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun MaterialCardView.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) {
     val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (checked in channel) action(checked)
@@ -66,7 +66,7 @@ fun MaterialCardView.checkedChanges(
  */
 suspend fun MaterialCardView.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) = coroutineScope {
     checkedChanges(this, capacity, action)
 }
@@ -93,7 +93,7 @@ suspend fun MaterialCardView.checkedChanges(
 @CheckResult
 fun MaterialCardView.checkedChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     checkCheckableState(this@checkedChanges)
     trySend(isChecked)
@@ -140,7 +140,7 @@ private fun checkCheckableState(card: MaterialCardView) {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit
+    emitter: (Boolean) -> Unit,
 ) = MaterialCardView.OnCheckedChangeListener { _, isChecked ->
-    if (scope.isActive) { emitter(isChecked) }
+    if (scope.isActive) emitter(isChecked)
 }

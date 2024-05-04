@@ -44,7 +44,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun ChipGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (List<Int>) -> Unit
+    action: suspend (List<Int>) -> Unit,
 ) {
     val events = scope.actor<List<Int>>(Dispatchers.Main.immediate, capacity) {
         for (checkedId in channel) action(checkedId)
@@ -66,7 +66,7 @@ fun ChipGroup.checkedChanges(
  */
 suspend fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (List<Int>) -> Unit
+    action: suspend (List<Int>) -> Unit,
 ) = coroutineScope {
     checkedChanges(this, capacity, action)
 }
@@ -95,7 +95,7 @@ suspend fun ChipGroup.checkedChanges(
 @CheckResult
 fun ChipGroup.checkedChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<List<Int>> = corbindReceiveChannel(capacity) {
     trySend(checkedChipIds)
     setOnCheckedStateChangeListener(listener(scope, ::trySend))
@@ -137,7 +137,7 @@ fun ChipGroup.checkedChanges(): InitialValueFlow<List<Int>> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (List<Int>) -> Unit
+    emitter: (List<Int>) -> Unit,
 ) = ChipGroup.OnCheckedStateChangeListener { _, checkedIds ->
-    if (scope.isActive) { emitter(checkedIds) }
+    if (scope.isActive) emitter(checkedIds)
 }

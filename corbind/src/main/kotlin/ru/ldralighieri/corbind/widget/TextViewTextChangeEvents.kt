@@ -38,7 +38,7 @@ data class TextViewTextChangeEvent(
     val text: CharSequence,
     val start: Int,
     val before: Int,
-    val count: Int
+    val count: Int,
 )
 
 /**
@@ -51,7 +51,7 @@ data class TextViewTextChangeEvent(
 fun TextView.textChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TextViewTextChangeEvent) -> Unit
+    action: suspend (TextViewTextChangeEvent) -> Unit,
 ) {
     val events = scope.actor<TextViewTextChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -72,7 +72,7 @@ fun TextView.textChangeEvents(
  */
 suspend fun TextView.textChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (TextViewTextChangeEvent) -> Unit
+    action: suspend (TextViewTextChangeEvent) -> Unit,
 ) = coroutineScope {
     textChangeEvents(this, capacity, action)
 }
@@ -97,7 +97,7 @@ suspend fun TextView.textChangeEvents(
 @CheckResult
 fun TextView.textChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TextViewTextChangeEvent> = corbindReceiveChannel(capacity) {
     trySend(initialValue(this@textChangeEvents))
     val listener = listener(scope, this@textChangeEvents, ::trySend)
@@ -142,7 +142,7 @@ private fun initialValue(textView: TextView): TextViewTextChangeEvent =
 private fun listener(
     scope: CoroutineScope,
     textView: TextView,
-    emitter: (TextViewTextChangeEvent) -> Unit
+    emitter: (TextViewTextChangeEvent) -> Unit,
 ) = object : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit

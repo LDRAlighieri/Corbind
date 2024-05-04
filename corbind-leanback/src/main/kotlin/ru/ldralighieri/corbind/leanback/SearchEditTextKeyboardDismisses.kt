@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun SearchEditText.keyboardDismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -65,7 +65,7 @@ fun SearchEditText.keyboardDismisses(
  */
 suspend fun SearchEditText.keyboardDismisses(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     keyboardDismisses(this, capacity, action)
 }
@@ -91,7 +91,7 @@ suspend fun SearchEditText.keyboardDismisses(
 @CheckResult
 fun SearchEditText.keyboardDismisses(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     setOnKeyboardDismissListener(listener(scope, ::trySend))
     invokeOnClose { setOnKeyboardDismissListener(null) }
@@ -121,7 +121,7 @@ fun SearchEditText.keyboardDismisses(): Flow<Unit> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = SearchEditText.OnKeyboardDismissListener {
-    if (scope.isActive) { emitter(Unit) }
+    if (scope.isActive) emitter(Unit)
 }

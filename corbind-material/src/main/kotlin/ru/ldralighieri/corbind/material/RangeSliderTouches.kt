@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun RangeSlider.touches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) {
     val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -59,7 +59,7 @@ fun RangeSlider.touches(
  */
 suspend fun RangeSlider.touches(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) = coroutineScope {
     touches(this, capacity, action)
 }
@@ -82,7 +82,7 @@ suspend fun RangeSlider.touches(
 @CheckResult
 fun RangeSlider.touches(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addOnSliderTouchListener(listener)
@@ -111,13 +111,13 @@ fun RangeSlider.touches(): Flow<Boolean> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit
+    emitter: (Boolean) -> Unit,
 ) = object : RangeSlider.OnSliderTouchListener {
 
-    override fun onStartTrackingTouch(slider: RangeSlider) { onEvent(true) }
-    override fun onStopTrackingTouch(slider: RangeSlider) { onEvent(false) }
+    override fun onStartTrackingTouch(slider: RangeSlider) = onEvent(true)
+    override fun onStopTrackingTouch(slider: RangeSlider) = onEvent(false)
 
     private fun onEvent(event: Boolean) {
-        if (scope.isActive) { emitter(event) }
+        if (scope.isActive) emitter(event)
     }
 }

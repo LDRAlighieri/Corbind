@@ -49,7 +49,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (position in channel) action(position)
@@ -73,7 +73,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     itemLongClicks(this, capacity, handled, action)
 }
@@ -102,7 +102,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: () -> Boolean = AlwaysTrue
+    handled: () -> Boolean = AlwaysTrue,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     onItemLongClickListener = listener(scope, handled, ::trySend)
     invokeOnClose { onItemLongClickListener = null }
@@ -128,7 +128,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
-    handled: () -> Boolean = AlwaysTrue
+    handled: () -> Boolean = AlwaysTrue,
 ): Flow<Int> = channelFlow {
     onItemLongClickListener = listener(this, handled, ::trySend)
     awaitClose { onItemLongClickListener = null }
@@ -138,7 +138,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 private fun listener(
     scope: CoroutineScope,
     handled: () -> Boolean,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = AdapterView.OnItemLongClickListener { _, _: View?, position, _ ->
     if (scope.isActive && handled()) {
         emitter(position)

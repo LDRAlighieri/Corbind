@@ -23,5 +23,5 @@ import kotlinx.coroutines.channels.ReceiveChannel
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 inline fun <T> corbindReceiveChannel(
     capacity: Int = Channel.RENDEZVOUS,
-    block: Channel<T>.() -> Unit
+    block: Channel<T>.() -> Unit,
 ): ReceiveChannel<T> = Channel<T>(capacity).apply(block)

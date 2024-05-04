@@ -38,15 +38,15 @@ sealed interface SeekBarChangeEvent {
 data class SeekBarProgressChangeEvent(
     override val view: SeekBar,
     val progress: Int,
-    val fromUser: Boolean
+    val fromUser: Boolean,
 ) : SeekBarChangeEvent
 
 data class SeekBarStartChangeEvent(
-    override val view: SeekBar
+    override val view: SeekBar,
 ) : SeekBarChangeEvent
 
 data class SeekBarStopChangeEvent(
-    override val view: SeekBar
+    override val view: SeekBar,
 ) : SeekBarChangeEvent
 
 /**
@@ -62,7 +62,7 @@ data class SeekBarStopChangeEvent(
 fun SeekBar.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SeekBarChangeEvent) -> Unit
+    action: suspend (SeekBarChangeEvent) -> Unit,
 ) {
     val events = scope.actor<SeekBarChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -85,7 +85,7 @@ fun SeekBar.changeEvents(
  */
 suspend fun SeekBar.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SeekBarChangeEvent) -> Unit
+    action: suspend (SeekBarChangeEvent) -> Unit,
 ) = coroutineScope {
     changeEvents(this, capacity, action)
 }
@@ -127,7 +127,7 @@ suspend fun SeekBar.changeEvents(
 @CheckResult
 fun SeekBar.changeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
     trySend(initialValue(this@changeEvents))
     setOnSeekBarChangeListener(listener(scope, ::trySend))
@@ -185,7 +185,7 @@ private fun initialValue(seekBar: SeekBar): SeekBarChangeEvent =
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (SeekBarChangeEvent) -> Unit
+    emitter: (SeekBarChangeEvent) -> Unit,
 ) = object : SeekBar.OnSeekBarChangeListener {
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -201,6 +201,6 @@ private fun listener(
     }
 
     private fun onEvent(event: SeekBarChangeEvent) {
-        if (scope.isActive) { emitter(event) }
+        if (scope.isActive) emitter(event)
     }
 }

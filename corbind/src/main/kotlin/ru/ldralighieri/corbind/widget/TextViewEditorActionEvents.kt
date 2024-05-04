@@ -35,7 +35,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 data class TextViewEditorActionEvent(
     val view: TextView,
     val actionId: Int,
-    val keyEvent: KeyEvent?
+    val keyEvent: KeyEvent?,
 )
 
 /**
@@ -54,7 +54,7 @@ fun TextView.editorActionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
-    action: suspend (TextViewEditorActionEvent) -> Unit
+    action: suspend (TextViewEditorActionEvent) -> Unit,
 ) {
     val events = scope.actor<TextViewEditorActionEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -79,7 +79,7 @@ fun TextView.editorActionEvents(
 suspend fun TextView.editorActionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
-    action: suspend (TextViewEditorActionEvent) -> Unit
+    action: suspend (TextViewEditorActionEvent) -> Unit,
 ) = coroutineScope {
     editorActionEvents(this, capacity, handled, action)
 }
@@ -108,7 +108,7 @@ suspend fun TextView.editorActionEvents(
 fun TextView.editorActionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
+    handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel(capacity) {
     setOnEditorActionListener(listener(scope, handled, ::trySend))
     invokeOnClose { setOnEditorActionListener(null) }
@@ -134,7 +134,7 @@ fun TextView.editorActionEvents(
  */
 @CheckResult
 fun TextView.editorActionEvents(
-    handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue
+    handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
 ): Flow<TextViewEditorActionEvent> = channelFlow {
     setOnEditorActionListener(listener(this, handled, ::trySend))
     awaitClose { setOnEditorActionListener(null) }
@@ -144,7 +144,7 @@ fun TextView.editorActionEvents(
 private fun listener(
     scope: CoroutineScope,
     handled: (TextViewEditorActionEvent) -> Boolean,
-    emitter: (TextViewEditorActionEvent) -> Unit
+    emitter: (TextViewEditorActionEvent) -> Unit,
 ) = TextView.OnEditorActionListener { v, actionId, keyEvent ->
     if (scope.isActive) {
         val event = TextViewEditorActionEvent(v, actionId, keyEvent)

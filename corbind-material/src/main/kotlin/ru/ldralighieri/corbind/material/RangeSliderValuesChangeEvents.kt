@@ -38,7 +38,7 @@ data class RangeSliderChangeEvent(
     val changedSide: RangeSliderSide,
     val newValues: List<Float>,
     val previousValues: List<Float>,
-    val fromUser: Boolean
+    val fromUser: Boolean,
 )
 
 /**
@@ -51,7 +51,7 @@ data class RangeSliderChangeEvent(
 fun RangeSlider.valuesChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RangeSliderChangeEvent) -> Unit
+    action: suspend (RangeSliderChangeEvent) -> Unit,
 ) {
     val events = scope.actor<RangeSliderChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -72,7 +72,7 @@ fun RangeSlider.valuesChangeEvents(
  */
 suspend fun RangeSlider.valuesChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (RangeSliderChangeEvent) -> Unit
+    action: suspend (RangeSliderChangeEvent) -> Unit,
 ) = coroutineScope {
     valuesChangeEvents(this, capacity, action)
 }
@@ -97,7 +97,7 @@ suspend fun RangeSlider.valuesChangeEvents(
 @CheckResult
 fun RangeSlider.valuesChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RangeSliderChangeEvent> = corbindReceiveChannel(capacity) {
     val event = initialValue(this@valuesChangeEvents).also { trySend(it) }
     val listener = listener(scope, ::trySend).apply { previousValues = event.previousValues }
@@ -141,7 +141,7 @@ private fun initialValue(slider: RangeSlider): RangeSliderChangeEvent =
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (RangeSliderChangeEvent) -> Unit
+    emitter: (RangeSliderChangeEvent) -> Unit,
 ) = object : RangeSlider.OnChangeListener {
 
     var previousValues: List<Float> = mutableListOf()
@@ -149,10 +149,15 @@ private fun listener(
         val values = slider.values
         if (scope.isActive) {
             val changedSide =
-                if (previousValues[0] != values[0]) RangeSliderSide.LEFT
-                else RangeSliderSide.RIGHT
+                if (previousValues[0] != values[0]) {
+                    RangeSliderSide.LEFT
+                } else {
+                    RangeSliderSide.RIGHT
+                }
+
             val event =
                 RangeSliderChangeEvent(slider, changedSide, values, previousValues, fromUser)
+
             previousValues = values
             emitter(event)
         }

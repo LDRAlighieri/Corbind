@@ -47,7 +47,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun MaterialButtonToggleGroup.buttonCheckedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (checkedId in channel) action(checkedId)
@@ -73,7 +73,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
  */
 suspend fun MaterialButtonToggleGroup.buttonCheckedChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     buttonCheckedChanges(this, capacity, action)
 }
@@ -102,7 +102,7 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChanges(
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@buttonCheckedChanges)
     trySend(checkedButtonId)
@@ -155,14 +155,14 @@ private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = object : MaterialButtonToggleGroup.OnButtonCheckedListener {
 
     private var lastChecked = View.NO_ID
     override fun onButtonChecked(
         group: MaterialButtonToggleGroup,
         checkedId: Int,
-        isChecked: Boolean
+        isChecked: Boolean,
     ) {
         if (scope.isActive) {
             when {

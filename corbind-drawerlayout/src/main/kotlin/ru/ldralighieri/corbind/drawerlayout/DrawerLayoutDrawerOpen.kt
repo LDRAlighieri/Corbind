@@ -44,7 +44,7 @@ fun DrawerLayout.drawerOpens(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     gravity: Int,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) {
     val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (open in channel) action(open)
@@ -66,7 +66,7 @@ fun DrawerLayout.drawerOpens(
 suspend fun DrawerLayout.drawerOpens(
     capacity: Int = Channel.RENDEZVOUS,
     gravity: Int,
-    action: suspend (Boolean) -> Unit
+    action: suspend (Boolean) -> Unit,
 ) = coroutineScope {
     drawerOpens(this, capacity, gravity, action)
 }
@@ -93,7 +93,7 @@ suspend fun DrawerLayout.drawerOpens(
 fun DrawerLayout.drawerOpens(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    gravity: Int
+    gravity: Int,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
     trySend(isDrawerOpen(gravity))
     val listener = listener(scope, gravity, ::trySend)
@@ -136,18 +136,18 @@ fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = channelF
 private fun listener(
     scope: CoroutineScope,
     gravity: Int,
-    emitter: (Boolean) -> Unit
+    emitter: (Boolean) -> Unit,
 ) = object : DrawerLayout.DrawerListener {
 
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) = Unit
-    override fun onDrawerOpened(drawerView: View) { onEvent(drawerView, true) }
-    override fun onDrawerClosed(drawerView: View) { onEvent(drawerView, false) }
+    override fun onDrawerOpened(drawerView: View) = onEvent(drawerView, true)
+    override fun onDrawerClosed(drawerView: View) = onEvent(drawerView, false)
     override fun onDrawerStateChanged(newState: Int) = Unit
 
     private fun onEvent(drawerView: View, opened: Boolean) {
         if (scope.isActive) {
             val drawerGravity = (drawerView.layoutParams as DrawerLayout.LayoutParams).gravity
-            if (drawerGravity == gravity) { emitter(opened) }
+            if (drawerGravity == gravity) emitter(opened)
         }
     }
 }

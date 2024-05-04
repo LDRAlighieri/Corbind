@@ -1,38 +1,38 @@
 [versions]
 # Plugins
-agp = "8.2.0"
-dokka = "1.9.10"
-spotless = "6.18.0"
-mavenPublish = "0.25.3"
-bcv = "0.13.2"
-gver = "0.50.0"
+agp = "8.4.0"
+dokka = "1.9.20"
+spotless = "6.25.0"
+mavenPublish = "0.28.0"
+bcv = "0.14.0"
+gver = "0.51.0"
 
 # Kotlin
-kotlin = "1.9.21"
-kotlinCoroutines = "1.7.3"
+kotlin = "1.9.23"
+kotlinCoroutines = "1.8.0"
 
 # Androidx
-androidxCore = "1.12.0"
+androidxCore = "1.13.1"
 androidxAnnotation = "1.7.1"
 androidxAppcompat = "1.6.1"
 androidxDrawerlayout = "1.2.0"
 androidxLeanback = "1.0.0"
-androidxNavigation = "2.7.6"
+androidxNavigation = "2.7.7"
 androidxRecyclerview = "1.3.2"
 androidxSlidingpanelayout = "1.2.0"
 androidxSwiperefreshlayout = "1.1.0"
 androidxViewpager = "1.0.0"
 androidxViewpager2 = "1.0.0"
-androidxLifecycle = "2.6.2"
-androidxActivity = "1.8.2"
-androidxFragment = "1.6.2"
+androidxLifecycle = "2.7.0"
+androidxActivity = "1.9.0"
+androidxFragment = "1.7.0"
 androidxConstraintlayout = "2.1.4"
 
 # Google
-material = "1.11.0"
+material = "1.12.0"
 
 # Lint
-ktlint = "0.46.1"
+ktlint = "1.2.1"
 
 
 [libraries]

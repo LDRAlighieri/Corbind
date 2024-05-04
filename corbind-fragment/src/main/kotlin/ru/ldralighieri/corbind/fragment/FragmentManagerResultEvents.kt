@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class FragmentResultEvent(
     val requestKey: String,
-    val bundle: Bundle
+    val bundle: Bundle,
 )
 
 /**
@@ -55,7 +55,7 @@ fun FragmentManager.resultEvents(
     requestKey: String,
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (FragmentResultEvent) -> Unit
+    action: suspend (FragmentResultEvent) -> Unit,
 ) {
     val events = scope.actor<FragmentResultEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -82,7 +82,7 @@ suspend fun FragmentManager.resultEvents(
     requestKey: String,
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (FragmentResultEvent) -> Unit
+    action: suspend (FragmentResultEvent) -> Unit,
 ) = coroutineScope {
     resultEvents(this, requestKey, lifecycleOwner, capacity, action)
 }
@@ -114,7 +114,7 @@ fun FragmentManager.resultEvents(
     scope: CoroutineScope,
     requestKey: String,
     lifecycleOwner: LifecycleOwner,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<FragmentResultEvent> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     setFragmentResultListener(requestKey, lifecycleOwner, listener)
@@ -145,7 +145,7 @@ fun FragmentManager.resultEvents(
  */
 fun FragmentManager.resultEvents(
     requestKey: String,
-    lifecycleOwner: LifecycleOwner
+    lifecycleOwner: LifecycleOwner,
 ): Flow<FragmentResultEvent> = channelFlow {
     val listener = listener(this, ::trySend)
     setFragmentResultListener(requestKey, lifecycleOwner, listener)
@@ -155,7 +155,7 @@ fun FragmentManager.resultEvents(
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (FragmentResultEvent) -> Unit
+    emitter: (FragmentResultEvent) -> Unit,
 ) = { requestKey: String, bundle: Bundle ->
-    if (scope.isActive) { emitter(FragmentResultEvent(requestKey, bundle)) }
+    if (scope.isActive) emitter(FragmentResultEvent(requestKey, bundle))
 }

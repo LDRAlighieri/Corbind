@@ -51,7 +51,7 @@ fun OnBackPressedDispatcher.backEvents(
     scope: CoroutineScope,
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (OnBackEvent) -> Unit
+    action: suspend (OnBackEvent) -> Unit,
 ) {
     val events = scope.actor<OnBackEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -72,7 +72,7 @@ fun OnBackPressedDispatcher.backEvents(
 suspend fun OnBackPressedDispatcher.backEvents(
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (OnBackEvent) -> Unit
+    action: suspend (OnBackEvent) -> Unit,
 ) = coroutineScope {
     backEvents(this, lifecycleOwner, capacity, action)
 }
@@ -110,7 +110,7 @@ suspend fun OnBackPressedDispatcher.backEvents(
 fun OnBackPressedDispatcher.backEvents(
     scope: CoroutineScope,
     lifecycleOwner: LifecycleOwner,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<OnBackEvent> = corbindReceiveChannel(capacity) {
     val callback = callback(scope, ::trySend)
     addCallback(lifecycleOwner, callback)
@@ -156,7 +156,7 @@ fun OnBackPressedDispatcher.backEvents(lifecycleOwner: LifecycleOwner): Flow<OnB
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (OnBackEvent) -> Unit
+    emitter: (OnBackEvent) -> Unit,
 ) = object : OnBackPressedCallback(true) {
 
     override fun handleOnBackPressed() = onEvent(OnBackPressed)
@@ -166,6 +166,6 @@ private fun callback(
         onEvent(OnBackProgressed(backEvent))
 
     private fun onEvent(event: OnBackEvent) {
-        if (scope.isActive) { emitter(event) }
+        if (scope.isActive) emitter(event)
     }
 }

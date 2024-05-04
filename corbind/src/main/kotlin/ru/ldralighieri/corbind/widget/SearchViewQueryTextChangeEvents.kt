@@ -34,7 +34,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 data class SearchViewQueryTextEvent(
     val view: SearchView,
     val queryText: CharSequence,
-    val isSubmitted: Boolean
+    val isSubmitted: Boolean,
 )
 
 /**
@@ -50,7 +50,7 @@ data class SearchViewQueryTextEvent(
 fun SearchView.queryTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SearchViewQueryTextEvent) -> Unit
+    action: suspend (SearchViewQueryTextEvent) -> Unit,
 ) {
     val events = scope.actor<SearchViewQueryTextEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -73,7 +73,7 @@ fun SearchView.queryTextChangeEvents(
  */
 suspend fun SearchView.queryTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (SearchViewQueryTextEvent) -> Unit
+    action: suspend (SearchViewQueryTextEvent) -> Unit,
 ) = coroutineScope {
     queryTextChangeEvents(this, capacity, action)
 }
@@ -101,7 +101,7 @@ suspend fun SearchView.queryTextChangeEvents(
 @CheckResult
 fun SearchView.queryTextChangeEvents(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(capacity) {
     trySend(initialValue(this@queryTextChangeEvents))
     setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::trySend))
@@ -147,7 +147,7 @@ private fun initialValue(searchView: SearchView): SearchViewQueryTextEvent =
 private fun listener(
     scope: CoroutineScope,
     searchView: SearchView,
-    emitter: (SearchViewQueryTextEvent) -> Unit
+    emitter: (SearchViewQueryTextEvent) -> Unit,
 ) = object : SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(s: String): Boolean {

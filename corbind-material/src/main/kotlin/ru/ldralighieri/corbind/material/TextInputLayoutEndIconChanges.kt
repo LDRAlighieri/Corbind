@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun TextInputLayout.endIconChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (mode in channel) action(mode)
@@ -59,7 +59,7 @@ fun TextInputLayout.endIconChanges(
  */
 suspend fun TextInputLayout.endIconChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     endIconChanges(this, capacity, action)
 }
@@ -85,7 +85,7 @@ suspend fun TextInputLayout.endIconChanges(
 @CheckResult
 fun TextInputLayout.endIconChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addOnEndIconChangedListener(listener)
@@ -117,7 +117,7 @@ fun TextInputLayout.endIconChanges(): Flow<Int> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = TextInputLayout.OnEndIconChangedListener { _, previousIcon ->
-    if (scope.isActive) { emitter(previousIcon) }
+    if (scope.isActive) emitter(previousIcon)
 }

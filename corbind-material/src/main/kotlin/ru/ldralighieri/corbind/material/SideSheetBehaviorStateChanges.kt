@@ -44,7 +44,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun View.sideSheetStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) {
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
@@ -66,7 +66,7 @@ fun View.sideSheetStateChanges(
  */
 suspend fun View.sideSheetStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Int) -> Unit
+    action: suspend (Int) -> Unit,
 ) = coroutineScope {
     sideSheetStateChanges(this, capacity, action)
 }
@@ -91,7 +91,7 @@ suspend fun View.sideSheetStateChanges(
 @CheckResult
 fun View.sideSheetStateChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     val behavior = getSideSheetBehavior()
     trySend(behavior.state)
@@ -140,11 +140,11 @@ internal fun View.getSideSheetBehavior(): SideSheetBehavior<*> {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit
+    emitter: (Int) -> Unit,
 ) = object : SideSheetCallback() {
 
     override fun onStateChanged(sheet: View, newState: Int) {
-        if (scope.isActive) { emitter(newState) }
+        if (scope.isActive) emitter(newState)
     }
 
     override fun onSlide(sheet: View, slideOffset: Float) = Unit

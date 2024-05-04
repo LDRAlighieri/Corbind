@@ -44,7 +44,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun Toolbar.navigationClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) {
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
@@ -65,7 +65,7 @@ fun Toolbar.navigationClicks(
  */
 suspend fun Toolbar.navigationClicks(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend () -> Unit
+    action: suspend () -> Unit,
 ) = coroutineScope {
     navigationClicks(this, capacity, action)
 }
@@ -91,7 +91,7 @@ suspend fun Toolbar.navigationClicks(
 @CheckResult
 fun Toolbar.navigationClicks(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     setNavigationOnClickListener(listener(scope, ::trySend))
     invokeOnClose { setNavigationOnClickListener(null) }
@@ -121,7 +121,7 @@ fun Toolbar.navigationClicks(): Flow<Unit> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit
+    emitter: (Unit) -> Unit,
 ) = View.OnClickListener {
-    if (scope.isActive) { emitter(Unit) }
+    if (scope.isActive) emitter(Unit)
 }

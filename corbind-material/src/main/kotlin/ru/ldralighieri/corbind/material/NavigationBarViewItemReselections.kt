@@ -44,7 +44,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun NavigationBarView.itemReselections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (MenuItem) -> Unit
+    action: suspend (MenuItem) -> Unit,
 ) {
     val events = scope.actor<MenuItem>(Dispatchers.Main.immediate, capacity) {
         for (item in channel) action(item)
@@ -65,7 +65,7 @@ fun NavigationBarView.itemReselections(
  */
 suspend fun NavigationBarView.itemReselections(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (MenuItem) -> Unit
+    action: suspend (MenuItem) -> Unit,
 ) = coroutineScope {
     itemReselections(this, capacity, action)
 }
@@ -91,7 +91,7 @@ suspend fun NavigationBarView.itemReselections(
 @CheckResult
 fun NavigationBarView.itemReselections(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
     setOnItemReselectedListener(listener(scope, ::trySend))
     invokeOnClose { setOnItemReselectedListener(null) }
@@ -121,7 +121,7 @@ fun NavigationBarView.itemReselections(): Flow<MenuItem> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MenuItem) -> Unit
+    emitter: (MenuItem) -> Unit,
 ) = NavigationBarView.OnItemReselectedListener {
-    if (scope.isActive) { emitter(it) }
+    if (scope.isActive) emitter(it)
 }

@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun Lifecycle.events(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Lifecycle.Event) -> Unit
+    action: suspend (Lifecycle.Event) -> Unit,
 ) {
     val events = scope.actor<Lifecycle.Event>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
@@ -60,7 +60,7 @@ fun Lifecycle.events(
  */
 suspend fun Lifecycle.events(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Lifecycle.Event) -> Unit
+    action: suspend (Lifecycle.Event) -> Unit,
 ) = coroutineScope {
     events(this, capacity, action)
 }
@@ -82,7 +82,7 @@ suspend fun Lifecycle.events(
  */
 fun Lifecycle.events(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Lifecycle.Event> = corbindReceiveChannel(capacity) {
     val observer = observer(scope, ::trySend)
     addObserver(observer)
@@ -111,8 +111,7 @@ fun Lifecycle.events(): Flow<Lifecycle.Event> = channelFlow {
 @CheckResult
 private fun observer(
     scope: CoroutineScope,
-    emitter: (Lifecycle.Event) -> Unit
+    emitter: (Lifecycle.Event) -> Unit,
 ) = LifecycleEventObserver { _, event ->
-
-    if (scope.isActive) { emitter(event) }
+    if (scope.isActive) emitter(event)
 }

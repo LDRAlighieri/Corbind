@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 fun NavController.destinationChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (NavDestination) -> Unit
+    action: suspend (NavDestination) -> Unit,
 ) {
     val events = scope.actor<NavDestination>(Dispatchers.Main.immediate, capacity) {
         for (destination in channel) action(destination)
@@ -60,7 +60,7 @@ fun NavController.destinationChanges(
  */
 suspend fun NavController.destinationChanges(
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (NavDestination) -> Unit
+    action: suspend (NavDestination) -> Unit,
 ) = coroutineScope {
     destinationChanges(this, capacity, action)
 }
@@ -83,7 +83,7 @@ suspend fun NavController.destinationChanges(
 @CheckResult
 fun NavController.destinationChanges(
     scope: CoroutineScope,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<NavDestination> = corbindReceiveChannel(capacity) {
     val listener = listener(scope, ::trySend)
     addOnDestinationChangedListener(listener)
@@ -112,7 +112,7 @@ fun NavController.destinationChanges(): Flow<NavDestination> = channelFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (NavDestination) -> Unit
+    emitter: (NavDestination) -> Unit,
 ) = NavController.OnDestinationChangedListener { _, destination, _ ->
-    if (scope.isActive) { emitter(destination) }
+    if (scope.isActive) emitter(destination)
 }

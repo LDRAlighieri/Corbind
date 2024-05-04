@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+@file:SuppressWarnings("UnspecifiedRegisterReceiverFlag")
+
 package ru.ldralighieri.corbind.content
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import androidx.annotation.CheckResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,14 +48,20 @@ fun Context.receivesBroadcast(
     scope: CoroutineScope,
     intentFilter: IntentFilter,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Intent) -> Unit
+    action: suspend (Intent) -> Unit,
 ) {
     val events = scope.actor<Intent>(Dispatchers.Main.immediate, capacity) {
         for (intent in channel) action(intent)
     }
 
     val receiver = receiver(scope, events::trySend)
-    registerReceiver(receiver, intentFilter)
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        registerReceiver(receiver, intentFilter)
+    } else {
+        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+    }
+
     events.invokeOnClose { unregisterReceiver(receiver) }
 }
 
@@ -67,7 +76,7 @@ fun Context.receivesBroadcast(
 suspend fun Context.receivesBroadcast(
     intentFilter: IntentFilter,
     capacity: Int = Channel.RENDEZVOUS,
-    action: suspend (Intent) -> Unit
+    action: suspend (Intent) -> Unit,
 ) = coroutineScope {
     receivesBroadcast(this, intentFilter, capacity, action)
 }
@@ -96,10 +105,16 @@ suspend fun Context.receivesBroadcast(
 fun Context.receivesBroadcast(
     scope: CoroutineScope,
     intentFilter: IntentFilter,
-    capacity: Int = Channel.RENDEZVOUS
+    capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Intent> = corbindReceiveChannel(capacity) {
     val receiver = receiver(scope, ::trySend)
-    registerReceiver(receiver, intentFilter)
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        registerReceiver(receiver, intentFilter)
+    } else {
+        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+    }
+
     invokeOnClose { unregisterReceiver(receiver) }
 }
 
@@ -122,17 +137,23 @@ fun Context.receivesBroadcast(
  */
 fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = channelFlow {
     val receiver = receiver(this, ::trySend)
-    registerReceiver(receiver, intentFilter)
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        registerReceiver(receiver, intentFilter)
+    } else {
+        registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+    }
+
     awaitClose { unregisterReceiver(receiver) }
 }
 
 @CheckResult
 private fun receiver(
     scope: CoroutineScope,
-    emitter: (Intent) -> Unit
+    emitter: (Intent) -> Unit,
 ) = object : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (scope.isActive) { emitter(intent) }
+        if (scope.isActive) emitter(intent)
     }
 }
