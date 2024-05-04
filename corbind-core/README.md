@@ -5,7 +5,7 @@ To add androidx core bindings, import `corbind-core` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-core:1.10.0")
+    implementation("ru.ldralighieri.corbind:corbind-core:1.11.0")
 }
 ```
 
