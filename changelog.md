@@ -7,6 +7,14 @@ description: Coroutines binding APIs for Android UI widgets from the platform an
 tags: [android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,kotlin-extensions,kotlin-library,android-library,fragment,viewpager,activity,drawerlayout,appcompat,kotlin-coroutines,swiperefreshlayout,android-ui-widgets]
 ---
 
+## Version 1.11.0
+
+* Update: minSdk is now 19.
+* Update: Kotlin to v1.9.23.
+* Update: Material components to v1.12.0.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.10.0
 
 * New: BOM (Bills of Materials) module

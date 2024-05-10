@@ -16,12 +16,12 @@ tags: [android,kotlin,flow,widget,ui,material,binding,recyclerview,coroutines,ko
   <a class="github-button" href="https://github.com/LDRAlighieri/Corbind" data-icon="octicon-star" data-size="large" aria-label="Star LDRAlighieri/Corbind on GitHub">Star</a>
 </div>
 
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.9.10-blue.svg?logo=kotlin)](https://kotlinlang.org)
-[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.7.3-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.9.23-blue.svg?logo=kotlin)](https://kotlinlang.org)
+[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.8.0-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://app.codacy.com/gh/LDRAlighieri/Corbind)
-[![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg)](https://android-arsenal.com/api?level=14)
+[![API](https://img.shields.io/badge/API-19%2B-brightgreen.svg)](https://android-arsenal.com/api?level=19)
 [![Publish status](https://github.com/LDRAlighieri/Corbind/actions/workflows/publish.yml/badge.svg)](https://github.com/LDRAlighieri/Corbind/actions)
 
 [![Google Dev Library](https://img.shields.io/badge/Google_DevLibrary-Corbind-blue)](https://devlibrary.withgoogle.com/products/android/repos/LDRAlighieri-Corbind)
@@ -70,7 +70,7 @@ Please consider giving this repository a star ⭐ if you like the project.
 Platform bindings:
 ```kotlin
 dependencies {
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2023.12.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2024.01.00"))
     implementation("ru.ldralighieri.corbind:corbind")
 }
 ```
@@ -78,7 +78,7 @@ dependencies {
 AndroidX library bindings:
 ```kotlin
 dependencies {
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2023.12.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2024.01.00"))
     implementation("ru.ldralighieri.corbind:corbind-activity")
     implementation("ru.ldralighieri.corbind:corbind-appcompat")
     implementation("ru.ldralighieri.corbind:corbind-core")
@@ -98,7 +98,7 @@ dependencies {
 Google 'material' library bindings:
 ```kotlin
 dependencies {
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2023.12.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2024.01.00"))
     implementation("ru.ldralighieri.corbind:corbind-material")
 }
 ```
@@ -111,7 +111,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2024.01.00-SNAPSHOT"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2024.02.00-SNAPSHOT"))
     implementation("ru.ldralighieri.corbind:{module}")
 }
 ```
