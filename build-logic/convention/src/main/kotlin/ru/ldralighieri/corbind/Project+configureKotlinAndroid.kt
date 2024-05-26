@@ -14,47 +14,45 @@
  * limitations under the License.
  */
 
-@file:Suppress("UnstableApiUsage")
-
 package ru.ldralighieri.corbind
 
 import com.android.build.api.dsl.CommonExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.plugins.ExtensionAware
-import org.gradle.kotlin.dsl.configure
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.provideDelegate
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
+    extension: CommonExtension<*, *, *, *, *, *>,
 ) {
     val compileSdk: String by project
     val minSdk: String by project
 
-    commonExtension.apply {
+    val javaLanguageVersion: JavaLanguageVersion =
+        JavaLanguageVersion.of(JavaVersion.VERSION_17.majorVersion)
+
+    extension.apply {
         this.compileSdk = compileSdk.toInt()
 
         defaultConfig {
             this.minSdk = minSdk.toInt()
         }
+    }
 
-        kotlin {
-            jvmToolchain(17)
-        }
+    kotlin {
+        jvmToolchain { languageVersion.set(javaLanguageVersion) }
 
-        kotlinOptions {
-            allWarningsAsErrors = true
-            freeCompilerArgs = freeCompilerArgs + listOf(
-                "-opt-in=kotlinx.coroutines.ObsoleteCoroutinesApi"
+        compilerOptions {
+            allWarningsAsErrors.set(true)
+            jvmTarget.set(JvmTarget.JVM_17)
+            languageVersion.set(KotlinVersion.KOTLIN_2_0)
+            freeCompilerArgs.addAll(
+                listOf(
+                    "-opt-in=kotlinx.coroutines.ObsoleteCoroutinesApi"
+                )
             )
         }
     }
-}
-
-private fun Project.kotlin(action: KotlinAndroidProjectExtension.() -> Unit) =
-    extensions.configure(action)
-
-private fun CommonExtension<*, *, *, *, *, *>.kotlinOptions(block: KotlinJvmOptions.() -> Unit) {
-    (this as ExtensionAware).extensions.configure("kotlinOptions", block)
 }
