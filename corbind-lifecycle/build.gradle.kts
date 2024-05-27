@@ -26,5 +26,5 @@ android {
 
 dependencies {
     api(projects.corbind)
-    api(libs.androidx.lifecycle.runtime.ktx)
+    api(libs.androidx.lifecycle.runtime)
 }

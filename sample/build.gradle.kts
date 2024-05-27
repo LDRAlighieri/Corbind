@@ -82,7 +82,7 @@ dependencies {
     implementation(projects.corbindActivity)
 
     implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
 }
