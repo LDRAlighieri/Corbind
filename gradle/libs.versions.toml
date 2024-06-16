@@ -25,7 +25,7 @@ androidxViewpager = "1.0.0"
 androidxViewpager2 = "1.1.0"
 androidxLifecycle = "2.8.1"
 androidxActivity = "1.9.0"
-androidxFragment = "1.7.1"
+androidxFragment = "1.8.0"
 androidxConstraintlayout = "2.1.4"
 
 # Google
