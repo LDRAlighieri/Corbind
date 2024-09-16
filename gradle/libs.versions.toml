@@ -14,7 +14,7 @@ kotlinCoroutines = "1.9.0"
 # Androidx
 androidxCore = "1.13.1"
 androidxAnnotation = "1.8.0"
-androidxAppcompat = "1.6.1"
+androidxAppcompat = "1.7.0"
 androidxDrawerlayout = "1.2.0"
 androidxLeanback = "1.0.0"
 androidxNavigation = "2.7.7"
