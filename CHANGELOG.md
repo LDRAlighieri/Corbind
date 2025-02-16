@@ -1,5 +1,10 @@
 # ChangeLog
 
+## Version 1.11.1
+
+* Update: compileSdk to v35.
+* Update: targetSdk to v35.
+
 
 ## Version 1.11.0
 
