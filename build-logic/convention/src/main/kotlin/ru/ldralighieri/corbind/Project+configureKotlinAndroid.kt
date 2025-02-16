@@ -31,7 +31,7 @@ internal fun Project.configureKotlinAndroid(
     val minSdk: String by project
 
     val javaLanguageVersion: JavaLanguageVersion =
-        JavaLanguageVersion.of(JavaVersion.VERSION_17.majorVersion)
+        JavaLanguageVersion.of(JavaVersion.VERSION_21.majorVersion)
 
     extension.apply {
         this.compileSdk = compileSdk.toInt()
@@ -46,7 +46,7 @@ internal fun Project.configureKotlinAndroid(
 
         compilerOptions {
             allWarningsAsErrors.set(true)
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(JvmTarget.JVM_21)
             languageVersion.set(KotlinVersion.KOTLIN_2_0)
             freeCompilerArgs.addAll(
                 listOf(
