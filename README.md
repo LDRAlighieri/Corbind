@@ -1,7 +1,7 @@
 ﻿[![Corbind](logo.svg)](https://ldralighieri.github.io/Corbind)
 
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v1.9.23-blue.svg?logo=kotlin)](https://kotlinlang.org)
-[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.8.0-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v2.1.10-blue.svg?logo=kotlin)](https://kotlinlang.org)
+[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.10.1-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://app.codacy.com/gh/LDRAlighieri/Corbind)
@@ -54,7 +54,7 @@ Please consider giving this repository a star ⭐ if you like the project.
 Platform bindings:
 ```kotlin
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.02.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.02.01"))
     implementation("ru.ldralighieri.corbind:corbind")
 }
 ```
@@ -62,7 +62,7 @@ dependencies {
 AndroidX library bindings:
 ```kotlin
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.02.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.02.01"))
     implementation("ru.ldralighieri.corbind:corbind-activity")
     implementation("ru.ldralighieri.corbind:corbind-appcompat")
     implementation("ru.ldralighieri.corbind:corbind-core")
@@ -82,7 +82,7 @@ dependencies {
 Google 'material' library bindings:
 ```kotlin
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.02.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.02.01"))
     implementation("ru.ldralighieri.corbind:corbind-material")
 }
 ```
@@ -185,7 +185,7 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 ## License
 
 ```
-Copyright 2019-2023 Vladimir Raupov
+Copyright 2019-2025 Vladimir Raupov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
