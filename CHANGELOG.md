@@ -1,5 +1,12 @@
 # ChangeLog
 
+
+## Version 1.11.2
+
+* Update: Kotlin to v2.1.10.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.11.1
 
 * Update: compileSdk to v35.
