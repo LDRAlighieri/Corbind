@@ -88,7 +88,8 @@ dependencies {
 ```
 
 Snapshot build:  
-[![Maven Central](https://img.shields.io/nexus/s/ru.ldralighieri.corbind/corbind?server=https://oss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/ru/ldralighieri/corbind/)
+[![Corbind](https://img.shields.io/nexus/s/ru.ldralighieri.corbind/corbind?server=https://oss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/ru/ldralighieri/corbind/)
+[![Corbind BOM](https://img.shields.io/nexus/s/ru.ldralighieri.corbind/corbind-bom?server=https://oss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/ru/ldralighieri/corbind/)
 ```kotlin
 repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
