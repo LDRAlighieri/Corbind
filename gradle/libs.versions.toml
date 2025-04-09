@@ -12,7 +12,7 @@ kotlin = "2.1.20"
 kotlinCoroutines = "1.10.1"
 
 # Androidx
-androidxCore = "1.15.0"
+androidxCore = "1.16.0"
 androidxAnnotation = "1.9.1"
 androidxAppcompat = "1.7.0"
 androidxDrawerlayout = "1.2.0"
