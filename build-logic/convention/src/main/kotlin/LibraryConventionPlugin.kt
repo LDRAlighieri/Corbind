@@ -28,7 +28,6 @@ class LibraryConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 apply("kotlin-android")
-                apply("com.vanniktech.maven.publish")
             }
 
             extensions.configure<LibraryExtension> {

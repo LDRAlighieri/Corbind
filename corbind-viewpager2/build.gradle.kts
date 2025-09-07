@@ -15,9 +15,10 @@
  */
 
 plugins {
-    id("corbind.library")
-    id("corbind.spotless")
-    id("corbind.dokka")
+    alias(libs.plugins.corbind.library)
+    alias(libs.plugins.corbind.spotless)
+    alias(libs.plugins.corbind.dokka)
+    alias(libs.plugins.corbind.maven.publish)
 }
 
 android {

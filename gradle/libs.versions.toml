@@ -1,7 +1,7 @@
 [versions]
 # Plugins
 agp = "8.13.0"
-dokka = "1.9.20"
+dokka = "2.0.0"
 spotless = "7.2.1"
 mavenPublish = "0.34.0"
 bcv = "0.18.1"
@@ -35,6 +35,21 @@ material = "1.13.0"
 ktlint = "1.2.1"
 
 
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
+binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "bcv" }
+gver = { id = "com.github.ben-manes.versions", version.ref = "gver" }
+
+corbind-library = { id = "corbind.library", version = "unspecified" }
+corbind-spotless = { id = "corbind.spotless", version = "unspecified" }
+corbind-dokka = { id = "corbind.dokka", version = "unspecified" }
+corbind-maven-publish = { id = "corbind.maven.publish", version = "unspecified" }
+
+
 [libraries]
 # Kotlin
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
@@ -63,15 +78,6 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 # build-logic
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-dokka-gradlePlugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
-
-
-[plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "bcv" }
-gver = { id = "com.github.ben-manes.versions", version.ref = "gver" }
+maven-publish-gradlePlugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenPublish" }
+dokka-gradlePlugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
