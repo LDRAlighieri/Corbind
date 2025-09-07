@@ -1,6 +1,20 @@
 # ChangeLog
 
 
+## Version 1.12.0
+
+* Update: minSdk is now 21.
+* New: Bindings list:
+	* Google "material" library bindings:
+		* `corbind-material`:
+			* `View`:
+				* `hideOnScrollStateChanges`
+* Deprecated: View `bottomViewScrollStateChanges` extension
+* Update: Kotlin to v2.2.10.
+* Update: Material components to v1.13.0.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.11.2
 
 * Update: Kotlin to v2.1.10.

@@ -47,7 +47,7 @@ internal fun Project.configureKotlinAndroid(
         compilerOptions {
             allWarningsAsErrors.set(true)
             jvmTarget.set(JvmTarget.JVM_21)
-            languageVersion.set(KotlinVersion.KOTLIN_2_0)
+            languageVersion.set(KotlinVersion.KOTLIN_2_2)
             freeCompilerArgs.addAll(
                 listOf(
                     "-opt-in=kotlinx.coroutines.ObsoleteCoroutinesApi"

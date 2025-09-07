@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Vladimir Raupov
+ * Copyright 2025 Vladimir Raupov
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-plugins {
-    alias(libs.plugins.corbind.library)
-    alias(libs.plugins.corbind.spotless)
-    alias(libs.plugins.corbind.dokka)
-    alias(libs.plugins.corbind.maven.publish)
-}
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-android {
-    namespace = "ru.ldralighieri.corbind.material"
-}
+@Suppress("unused")
+class MavenPublishConventionPlugin : Plugin<Project> {
 
-dependencies {
-    api(projects.corbind)
-    api(libs.material)
+    override fun apply(target: Project) = with(target) {
+        pluginManager.apply("com.vanniktech.maven.publish")
+    }
 }

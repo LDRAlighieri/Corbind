@@ -5,7 +5,7 @@ To add material bindings, import `corbind-material` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-material:1.11.2")
+    implementation("ru.ldralighieri.corbind:corbind-material:1.12.0")
 }
 ```
 
@@ -18,7 +18,8 @@ dependencies {
 |                                              | [`stateChanges`][BottomSheetBehavior_stateChanges]                                            | Called when the bottom sheet changes its state.                                                                                                                                                                                                      |
 | **Chip**                                     | [`closeIconClicks`][Chip_closeIconClicks]                                                     | Called when the chip’s close icon is clicked.                                                                                                                                                                                                        |
 | **ChipGroup**                                | [`checkedChanges`][ChipGroup_checkedChanges]                                                  | Called when the checked chips are changed.                                                                                                                                                                                                           |
-| **View**<br>(HideBottomViewOnScrollBehavior) | [`bottomViewScrollStateChanges`][HideBottomViewOnScrollBehavior_bottomViewScrollStateChanges] | Called when the bottom view changes its scrolled state.                                                                                                                                                                                              |
+| **View**<br>(HideBottomViewOnScrollBehavior) | [`bottomViewScrollStateChanges`][HideBottomViewOnScrollBehavior_bottomViewScrollStateChanges] | (Deprecated) Called when the bottom view changes its scrolled state. `Deprecated, use hideOnScrollStateChanges`.                                                                                                                                     |
+| **View**<br>(HideViewOnScrollBehavior)       | [`hideOnScrollStateChanges`][HideBottomViewOnScrollBehavior_hideOnScrollStateChanges]         | Called when the bottom view changes its scrolled state.                                                                                                                                                                                              |
 | **MaskableFrameLayout**                      | [`maskChanges`][MaskableFrameLayout_maskChanges]                                              | Called when changes in a mask's RectF occur.                                                                                                                                                                                                         |
 | **MaterialButton**                           | [`checkedChanges`][MaterialButton_checkedChanges]                                             | Called when the checked state of a MaterialButton has changed.                                                                                                                                                                                       |
 | **MaterialButtonToggleGroup**                | [`buttonCheckedChangeEvents`][MaterialButtonToggleGroup_buttonCheckedChangeEvents]            | Called when a `MaterialButton` in this group is checked or unchecked (only *not* in single selection mode).                                                                                                                                          |
@@ -75,6 +76,7 @@ More examples in source code
 [Chip_closeIconClicks]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-material/src/main/kotlin/ru/ldralighieri/corbind/material/ChipCloseIconClicks.kt
 [ChipGroup_checkedChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-material/src/main/kotlin/ru/ldralighieri/corbind/material/ChipGroupCheckedChanges.kt
 [HideBottomViewOnScrollBehavior_bottomViewScrollStateChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-material/src/main/kotlin/ru/ldralighieri/corbind/material/HideBottomViewOnScrollBehaviorScrollStateChanges.kt
+[HideBottomViewOnScrollBehavior_hideOnScrollStateChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-material/src/main/kotlin/ru/ldralighieri/corbind/material/HideViewOnScrollBehaviorScrollStateChanges.kt
 [MaskableFrameLayout_maskChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-material/src/main/kotlin/ru/ldralighieri/corbind/material/MaskableFrameLayoutMaskChanges.kt
 [MaterialButton_checkedChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-material/src/main/kotlin/ru/ldralighieri/corbind/material/MaterialButtonCheckedChanges.kt
 [MaterialButtonToggleGroup_buttonCheckedChangeEvents]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-material/src/main/kotlin/ru/ldralighieri/corbind/material/MaterialButtonToggleGroupCheckedChangeEvents.kt

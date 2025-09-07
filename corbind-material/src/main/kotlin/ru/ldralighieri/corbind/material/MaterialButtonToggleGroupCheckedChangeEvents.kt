@@ -17,7 +17,6 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
-import androidx.annotation.IdRes
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +32,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class MaterialButtonCheckedChangeEvent(
-    @IdRes val checkedId: Int,
+    val checkedId: Int,
     val isChecked: Boolean,
 )
 

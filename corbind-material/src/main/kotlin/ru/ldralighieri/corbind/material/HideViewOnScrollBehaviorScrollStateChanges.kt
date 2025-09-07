@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-@file:Suppress("DEPRECATION")
-
 package ru.ldralighieri.corbind.material
 
 import android.view.View
 import androidx.annotation.CheckResult
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
+import com.google.android.material.behavior.HideViewOnScrollBehavior
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -36,17 +34,13 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on the bottom view scroll state change events from [View] on
- * [HideBottomViewOnScrollBehavior].
+ * [HideViewOnScrollBehavior].
  *
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-@Deprecated(
-    message = "Use hideOnScrollStateChanges instead",
-    replaceWith = ReplaceWith("hideOnScrollStateChanges(scope, capacity, action)"),
-)
-fun View.bottomViewScrollStateChanges(
+fun View.hideOnScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -63,25 +57,21 @@ fun View.bottomViewScrollStateChanges(
 
 /**
  * Perform an action on the bottom view scroll state change events from [View] on
- * [HideBottomViewOnScrollBehavior], inside new [CoroutineScope].
+ * [HideViewOnScrollBehavior], inside new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
  */
-@Deprecated(
-    message = "Use hideOnScrollStateChanges instead",
-    replaceWith = ReplaceWith("hideOnScrollStateChanges(capacity, action)"),
-)
-suspend fun View.bottomViewScrollStateChanges(
+suspend fun View.hideOnScrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
 ) = coroutineScope {
-    bottomViewScrollStateChanges(this, capacity, action)
+    hideOnScrollStateChanges(this, capacity, action)
 }
 
 /**
  * Create a channel which emits the bottom view scroll state change events from [View] on
- * [HideBottomViewOnScrollBehavior].
+ * [HideViewOnScrollBehavior].
  *
  * *Note:* A value will be emitted immediately.
  *
@@ -89,7 +79,7 @@ suspend fun View.bottomViewScrollStateChanges(
  *
  * ```
  * launch {
- *      bottomView.bottomViewScrollStateChanges(scope)
+ *      bottomView.hideOnScrollStateChanges(scope)
  *          .consumeEach { /* handle bottom view scroll state change */ }
  * }
  * ```
@@ -97,12 +87,8 @@ suspend fun View.bottomViewScrollStateChanges(
  * @param scope Root coroutine scope
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  */
-@Deprecated(
-    message = "Use hideOnScrollStateChanges instead",
-    replaceWith = ReplaceWith("hideOnScrollStateChanges(scope, capacity)"),
-)
 @CheckResult
-fun View.bottomViewScrollStateChanges(
+fun View.hideOnScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
@@ -114,42 +100,38 @@ fun View.bottomViewScrollStateChanges(
 
 /**
  * Create a flow which emits the bottom view scroll state change events from [View] on
- * [HideBottomViewOnScrollBehavior].
+ * [HideViewOnScrollBehavior].
  *
  * *Note:* A value will be emitted immediately.
  *
  * Examples:
  *
  * ```
- * bottomView.bottomViewScrollStateChanges()
+ * bottomView.hideOnScrollStateChanges()
  *      .onEach { /* handle bottom view scroll state change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
-@Deprecated(
-    message = "Use hideOnScrollStateChanges instead",
-    replaceWith = ReplaceWith("hideOnScrollStateChanges()"),
-)
 @CheckResult
-fun View.bottomViewScrollStateChanges(): Flow<Int> = channelFlow {
+fun View.hideOnScrollStateChanges(): Flow<Int> = channelFlow {
     val behavior = getBehavior()
     val listener = listener(this, ::trySend)
     behavior.addOnScrollStateChangedListener(listener)
     awaitClose { behavior.removeOnScrollStateChangedListener(listener) }
 }
 
-private fun View.getBehavior(): HideBottomViewOnScrollBehavior<*> {
+private fun View.getBehavior(): HideViewOnScrollBehavior<*> {
     val params = layoutParams as? CoordinatorLayout.LayoutParams
         ?: throw IllegalArgumentException("The view is not in a Coordinator Layout.")
-    return params.behavior as HideBottomViewOnScrollBehavior<*>?
-        ?: throw IllegalStateException("There's no HideBottomViewOnScrollBehavior set on this view.")
+    return params.behavior as HideViewOnScrollBehavior<*>?
+        ?: throw IllegalStateException("There's no HideViewOnScrollBehavior set on this view.")
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
     emitter: (Int) -> Unit,
-) = HideBottomViewOnScrollBehavior.OnScrollStateChangedListener { _, newState ->
+) = HideViewOnScrollBehavior.OnScrollStateChangedListener { _, newState ->
     if (scope.isActive) emitter(newState)
 }

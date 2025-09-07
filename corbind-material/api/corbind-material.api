@@ -58,6 +58,16 @@ public final class ru/ldralighieri/corbind/material/HideBottomViewOnScrollBehavi
 	public static synthetic fun bottomViewScrollStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
+public final class ru/ldralighieri/corbind/material/HideViewOnScrollBehaviorScrollStateChangesKt {
+	public static final fun hideOnScrollStateChanges (Landroid/view/View;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun hideOnScrollStateChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun hideOnScrollStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun hideOnScrollStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun hideOnScrollStateChanges$default (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun hideOnScrollStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun hideOnScrollStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
 public final class ru/ldralighieri/corbind/material/MaskableFrameLayoutMaskChangesKt {
 	public static final fun maskChanges (Lcom/google/android/material/carousel/MaskableFrameLayout;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun maskChanges (Lcom/google/android/material/carousel/MaskableFrameLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

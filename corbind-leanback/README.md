@@ -5,7 +5,7 @@ To add androidx leanback bindings, import `corbind-leanback` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-leanback:1.11.2")
+    implementation("ru.ldralighieri.corbind:corbind-leanback:1.12.0")
 }
 ```
 

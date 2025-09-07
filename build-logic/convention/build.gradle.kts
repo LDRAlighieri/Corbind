@@ -27,9 +27,10 @@ java {
 }
 
 dependencies {
-    implementation(libs.android.gradlePlugin)
+    compileOnly(libs.android.gradlePlugin)
     implementation(libs.kotlin.gradlePlugin)
-    implementation(libs.spotless.gradlePlugin)
+    compileOnly(libs.spotless.gradlePlugin)
+    compileOnly(libs.maven.publish.gradlePlugin)
     implementation(libs.dokka.gradlePlugin)
 }
 
@@ -50,6 +51,11 @@ gradlePlugin {
         register("library") {
             id = "corbind.library"
             implementationClass = "LibraryConventionPlugin"
+        }
+
+        register("mavenPublish") {
+            id = "corbind.maven.publish"
+            implementationClass = "MavenPublishConventionPlugin"
         }
 
         register("spotless") {
