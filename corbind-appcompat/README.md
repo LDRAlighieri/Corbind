@@ -5,7 +5,7 @@ To add androidx appcompat bindings, import `corbind-appcompat` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-appcompat:1.11.2")
+    implementation("ru.ldralighieri.corbind:corbind-appcompat:1.12.0")
 }
 ```
 

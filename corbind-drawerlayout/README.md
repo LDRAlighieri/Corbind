@@ -5,7 +5,7 @@ To add androidx drawerlayout bindings, import `corbind-drawerlayout` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.11.2")
+    implementation("ru.ldralighieri.corbind:corbind-drawerlayout:1.12.0")
 }
 ```
 

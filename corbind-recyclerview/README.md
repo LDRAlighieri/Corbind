@@ -5,7 +5,7 @@ To add androidx recyclerview bindings, import `corbind-recyclerview` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-recyclerview:1.11.2")
+    implementation("ru.ldralighieri.corbind:corbind-recyclerview:1.12.0")
 }
 ```
 

@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
-// TODO описание
 /**
  * Perform an action on the bottom view scroll state change events from [View] on
  * [HideViewOnScrollBehavior].

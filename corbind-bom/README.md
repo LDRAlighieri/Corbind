@@ -5,6 +5,6 @@ Corbind Libraries BOM (Bills of Materials).
 
 ```kotlin
 dependencies {
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.02.01"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.09.00"))
 }
 ```
