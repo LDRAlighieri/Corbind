@@ -3,7 +3,7 @@
 agp = "8.13.2"
 dokka = "2.1.0"
 spotless = "8.1.0"
-mavenPublish = "0.34.0"
+mavenPublish = "0.35.0"
 bcv = "0.18.1"
 gver = "0.53.0"
 
