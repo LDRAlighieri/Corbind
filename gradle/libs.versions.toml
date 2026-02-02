@@ -24,7 +24,7 @@ androidxSwiperefreshlayout = "1.2.0"
 androidxViewpager = "1.1.0"
 androidxViewpager2 = "1.1.0"
 androidxLifecycle = "2.10.0"
-androidxActivity = "1.12.2"
+androidxActivity = "1.12.3"
 androidxFragment = "1.8.9"
 androidxConstraintlayout = "2.2.1"
 
