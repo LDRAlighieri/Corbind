@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 internal fun Project.configureKotlinAndroid(
-    extension: CommonExtension<*, *, *, *, *, *>,
+    commonExtension: CommonExtension,
 ) {
     val compileSdk: String by project
     val minSdk: String by project
@@ -33,10 +33,10 @@ internal fun Project.configureKotlinAndroid(
     val javaLanguageVersion: JavaLanguageVersion =
         JavaLanguageVersion.of(JavaVersion.VERSION_21.majorVersion)
 
-    extension.apply {
+    commonExtension.apply {
         this.compileSdk = compileSdk.toInt()
 
-        defaultConfig {
+        defaultConfig.apply {
             this.minSdk = minSdk.toInt()
         }
     }

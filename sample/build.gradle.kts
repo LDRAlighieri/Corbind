@@ -16,7 +16,6 @@
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
 }
 
 android {
@@ -53,7 +52,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             signingConfig = debug.signingConfig
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
