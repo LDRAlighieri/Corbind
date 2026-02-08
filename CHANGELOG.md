@@ -1,6 +1,14 @@
 # ChangeLog
 
 
+## Version 1.12.1
+
+* Update: minSdk is now 23.
+* Update: Kotlin to v2.3.10.
+* Update: Gradle and AGP to v9.x
+* Update: Minor update of other libraries.
+
+
 ## Version 1.12.0
 
 * Update: minSdk is now 21.
