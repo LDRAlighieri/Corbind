@@ -94,7 +94,7 @@ repositories {
 }
 
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.02.01-SNAPSHOT"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.03.00-SNAPSHOT"))
     implementation("ru.ldralighieri.corbind:{module}")
 }
 ```
@@ -184,7 +184,7 @@ If I forgot something or you have any ideas what can be added or corrected, plea
 ## License
 
 ```
-Copyright 2019-2025 Vladimir Raupov
+Copyright 2019-2026 Vladimir Raupov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
