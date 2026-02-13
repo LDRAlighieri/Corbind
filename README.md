@@ -1,11 +1,11 @@
 ﻿[![Corbind](logo.svg)](https://ldralighieri.github.io/Corbind)
 
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v2.2.10-blue.svg?logo=kotlin)](https://kotlinlang.org)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v2.3.10-blue.svg?logo=kotlin)](https://kotlinlang.org)
 [![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.10.2-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://app.codacy.com/gh/LDRAlighieri/Corbind)
-[![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg)](https://developer.android.com/tools/releases/platforms?hl=ru#5.0)
+[![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg)](https://developer.android.com/tools/releases/platforms?hl=ru#6.0)
 [![Publish status](https://github.com/LDRAlighieri/Corbind/actions/workflows/publish.yml/badge.svg)](https://github.com/LDRAlighieri/Corbind/actions)
 
 [![Google Dev Library](https://img.shields.io/badge/Google_DevLibrary-Corbind-blue)](https://devlibrary.withgoogle.com/products/android/repos/LDRAlighieri-Corbind)
@@ -54,7 +54,7 @@ Please consider giving this repository a star ⭐ if you like the project.
 Platform bindings:
 ```kotlin
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.09.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.02.00"))
     implementation("ru.ldralighieri.corbind:corbind")
 }
 ```
@@ -62,7 +62,7 @@ dependencies {
 AndroidX library bindings:
 ```kotlin
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.09.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.02.00"))
     implementation("ru.ldralighieri.corbind:corbind-activity")
     implementation("ru.ldralighieri.corbind:corbind-appcompat")
     implementation("ru.ldralighieri.corbind:corbind-core")
@@ -82,7 +82,7 @@ dependencies {
 Google 'material' library bindings:
 ```kotlin
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.09.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.02.00"))
     implementation("ru.ldralighieri.corbind:corbind-material")
 }
 ```
@@ -94,7 +94,7 @@ repositories {
 }
 
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2025.10.00-SNAPSHOT"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.02.01-SNAPSHOT"))
     implementation("ru.ldralighieri.corbind:{module}")
 }
 ```

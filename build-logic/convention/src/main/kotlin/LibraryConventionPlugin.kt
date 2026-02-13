@@ -14,32 +14,26 @@
  * limitations under the License.
  */
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.provideDelegate
 import ru.ldralighieri.corbind.configureKotlinAndroid
 
 @Suppress("unused")
 class LibraryConventionPlugin : Plugin<Project> {
+
     override fun apply(target: Project) {
         with(target) {
-            with(pluginManager) {
-                apply("com.android.library")
-                apply("kotlin-android")
-            }
+            pluginManager.apply("com.android.library")
 
             extensions.configure<LibraryExtension> {
-                val targetSdk: String by project
-
                 configureKotlinAndroid(this)
-                defaultConfig.targetSdk = targetSdk.toInt()
 
                 buildTypes {
                     release {
                         isMinifyEnabled = false
-                        proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+                        proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
                     }
                 }
             }

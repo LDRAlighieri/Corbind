@@ -1,14 +1,14 @@
 [versions]
 # Plugins
-agp = "8.13.2"
+agp = "9.0.0"
 dokka = "2.1.0"
 spotless = "8.2.1"
-mavenPublish = "0.35.0"
+mavenPublish = "0.36.0"
 bcv = "0.18.1"
 gver = "0.53.0"
 
 # Kotlin
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 kotlinCoroutines = "1.10.2"
 
 # Androidx
@@ -17,7 +17,7 @@ androidxAnnotation = "1.9.1"
 androidxAppcompat = "1.7.1"
 androidxDrawerlayout = "1.2.0"
 androidxLeanback = "1.2.0"
-androidxNavigation = "2.9.6"
+androidxNavigation = "2.9.7"
 androidxRecyclerview = "1.4.0"
 androidxSlidingpanelayout = "1.2.0"
 androidxSwiperefreshlayout = "1.2.0"

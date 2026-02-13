@@ -22,6 +22,7 @@ import ru.ldralighieri.corbind.libs
 
 @Suppress("unused")
 class SpotlessConventionPlugin : Plugin<Project> {
+
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply("com.diffplug.spotless")
