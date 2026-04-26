@@ -5,7 +5,7 @@ dokka = "2.2.0"
 spotless = "8.4.0"
 mavenPublish = "0.36.0"
 bcv = "0.18.1"
-gver = "0.53.0"
+gver = "0.54.0"
 
 # Kotlin
 kotlin = "2.3.20"
