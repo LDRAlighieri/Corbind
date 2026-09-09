@@ -4,7 +4,7 @@ agp = "9.3.1"
 dokka = "2.2.0"
 spotless = "8.9.0"
 mavenPublish = "0.36.0"
-bcv = "0.18.1"
+bcv = "0.18.2"
 gver = "0.54.0"
 
 # Kotlin
