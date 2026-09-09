@@ -39,6 +39,11 @@ internal fun Project.configureKotlinAndroid(
         defaultConfig.apply {
             this.minSdk = minSdk.toInt()
         }
+
+        compileOptions.apply {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+        }
     }
 
     kotlin {
@@ -46,7 +51,7 @@ internal fun Project.configureKotlinAndroid(
 
         compilerOptions {
             allWarningsAsErrors.set(true)
-            jvmTarget.set(JvmTarget.JVM_21)
+            jvmTarget.set(JvmTarget.JVM_17)
             languageVersion.set(KotlinVersion.KOTLIN_2_2)
             freeCompilerArgs.addAll(
                 listOf(
