@@ -135,8 +135,7 @@ fun RangeSlider.valuesChangeEvents(): InitialValueFlow<RangeSliderChangeEvent> =
 }.asInitialValueFlow(initialValue(this))
 
 @CheckResult
-private fun initialValue(slider: RangeSlider): RangeSliderChangeEvent =
-    RangeSliderChangeEvent(slider, RangeSliderSide.INIT, slider.values, slider.values, false)
+private fun initialValue(slider: RangeSlider): RangeSliderChangeEvent = RangeSliderChangeEvent(slider, RangeSliderSide.INIT, slider.values, slider.values, false)
 
 @CheckResult
 private fun listener(

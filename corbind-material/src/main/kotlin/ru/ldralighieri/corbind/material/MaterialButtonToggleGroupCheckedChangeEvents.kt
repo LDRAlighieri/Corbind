@@ -122,13 +122,12 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  * ```
  */
 @CheckResult
-fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(): Flow<MaterialButtonCheckedChangeEvent> =
-    channelFlow {
-        checkSelectionMode(this@buttonCheckedChangeEvents)
-        val listener = listener(this, ::trySend)
-        addOnButtonCheckedListener(listener)
-        awaitClose { removeOnButtonCheckedListener(listener) }
-    }
+fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(): Flow<MaterialButtonCheckedChangeEvent> = channelFlow {
+    checkSelectionMode(this@buttonCheckedChangeEvents)
+    val listener = listener(this, ::trySend)
+    addOnButtonCheckedListener(listener)
+    awaitClose { removeOnButtonCheckedListener(listener) }
+}
 
 private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
     check(!group.isSingleSelection) {

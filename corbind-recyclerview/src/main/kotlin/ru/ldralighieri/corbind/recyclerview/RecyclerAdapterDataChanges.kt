@@ -117,12 +117,11 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
  * ```
  */
 @CheckResult
-fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): InitialValueFlow<T> =
-    channelFlow {
-        val dataObserver = observer(this, this@dataChanges, ::trySend)
-        registerAdapterDataObserver(dataObserver)
-        awaitClose { unregisterAdapterDataObserver(dataObserver) }
-    }.asInitialValueFlow(this)
+fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): InitialValueFlow<T> = channelFlow {
+    val dataObserver = observer(this, this@dataChanges, ::trySend)
+    registerAdapterDataObserver(dataObserver)
+    awaitClose { unregisterAdapterDataObserver(dataObserver) }
+}.asInitialValueFlow(this)
 
 @CheckResult
 private fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> observer(

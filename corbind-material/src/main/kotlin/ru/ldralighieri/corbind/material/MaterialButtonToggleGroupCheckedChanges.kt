@@ -170,6 +170,7 @@ private fun listener(
                     lastChecked = checkedId
                     emitter(lastChecked)
                 }
+
                 checkedId == lastChecked && !isChecked -> {
                     lastChecked = View.NO_ID
                     emitter(lastChecked)

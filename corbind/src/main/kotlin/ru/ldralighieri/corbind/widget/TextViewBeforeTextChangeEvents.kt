@@ -126,16 +126,14 @@ fun TextView.beforeTextChangeEvents(
  * ```
  */
 @CheckResult
-fun TextView.beforeTextChangeEvents(): InitialValueFlow<TextViewBeforeTextChangeEvent> =
-    channelFlow {
-        val listener = listener(this, this@beforeTextChangeEvents, ::trySend)
-        addTextChangedListener(listener)
-        awaitClose { removeTextChangedListener(listener) }
-    }.asInitialValueFlow(initialValue(textView = this))
+fun TextView.beforeTextChangeEvents(): InitialValueFlow<TextViewBeforeTextChangeEvent> = channelFlow {
+    val listener = listener(this, this@beforeTextChangeEvents, ::trySend)
+    addTextChangedListener(listener)
+    awaitClose { removeTextChangedListener(listener) }
+}.asInitialValueFlow(initialValue(textView = this))
 
 @CheckResult
-private fun initialValue(textView: TextView): TextViewBeforeTextChangeEvent =
-    TextViewBeforeTextChangeEvent(textView, textView.editableText, 0, 0, 0)
+private fun initialValue(textView: TextView): TextViewBeforeTextChangeEvent = TextViewBeforeTextChangeEvent(textView, textView.editableText, 0, 0, 0)
 
 @CheckResult
 private fun listener(

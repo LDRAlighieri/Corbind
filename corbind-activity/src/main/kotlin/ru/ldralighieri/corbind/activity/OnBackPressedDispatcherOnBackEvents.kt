@@ -146,12 +146,11 @@ fun OnBackPressedDispatcher.backEvents(
  *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  */
-fun OnBackPressedDispatcher.backEvents(lifecycleOwner: LifecycleOwner): Flow<OnBackEvent> =
-    channelFlow {
-        val callback = callback(this, ::trySend)
-        addCallback(lifecycleOwner, callback)
-        awaitClose { callback.remove() }
-    }
+fun OnBackPressedDispatcher.backEvents(lifecycleOwner: LifecycleOwner): Flow<OnBackEvent> = channelFlow {
+    val callback = callback(this, ::trySend)
+    addCallback(lifecycleOwner, callback)
+    awaitClose { callback.remove() }
+}
 
 @CheckResult
 private fun callback(
@@ -162,8 +161,7 @@ private fun callback(
     override fun handleOnBackPressed() = onEvent(OnBackPressed)
     override fun handleOnBackCancelled() = onEvent(OnBackCanceled)
     override fun handleOnBackStarted(backEvent: BackEventCompat) = onEvent(OnBackStarted(backEvent))
-    override fun handleOnBackProgressed(backEvent: BackEventCompat) =
-        onEvent(OnBackProgressed(backEvent))
+    override fun handleOnBackProgressed(backEvent: BackEventCompat) = onEvent(OnBackProgressed(backEvent))
 
     private fun onEvent(event: OnBackEvent) {
         if (scope.isActive) emitter(event)

@@ -132,8 +132,7 @@ fun Slider.valueChangeEvents(): InitialValueFlow<SliderChangeEvent> = channelFlo
 }.asInitialValueFlow(initialValue(slider = this))
 
 @CheckResult
-private fun initialValue(slider: Slider): SliderChangeEvent =
-    SliderChangeEvent(slider, slider.value, slider.value, false)
+private fun initialValue(slider: Slider): SliderChangeEvent = SliderChangeEvent(slider, slider.value, slider.value, false)
 
 @CheckResult
 private fun listener(

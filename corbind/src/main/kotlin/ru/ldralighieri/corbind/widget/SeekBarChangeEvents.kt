@@ -179,8 +179,7 @@ fun SeekBar.changeEvents(): InitialValueFlow<SeekBarChangeEvent> = channelFlow {
 }.asInitialValueFlow(initialValue(seekBar = this))
 
 @CheckResult
-private fun initialValue(seekBar: SeekBar): SeekBarChangeEvent =
-    SeekBarProgressChangeEvent(seekBar, seekBar.progress, false)
+private fun initialValue(seekBar: SeekBar): SeekBarChangeEvent = SeekBarProgressChangeEvent(seekBar, seekBar.progress, false)
 
 @CheckResult
 private fun listener(
