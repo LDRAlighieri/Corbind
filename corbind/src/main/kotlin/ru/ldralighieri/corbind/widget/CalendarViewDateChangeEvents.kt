@@ -143,13 +143,12 @@ fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEven
 }.asInitialValueFlow(initialValue(calendar = this))
 
 @CheckResult
-private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent =
-    with(Calendar.getInstance()) {
-        val year = get(Calendar.YEAR)
-        val month = get(Calendar.MONTH)
-        val dayOfMonth = get(Calendar.DAY_OF_MONTH)
-        CalendarViewDateChangeEvent(calendar, year, month, dayOfMonth)
-    }
+private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent = with(Calendar.getInstance()) {
+    val year = get(Calendar.YEAR)
+    val month = get(Calendar.MONTH)
+    val dayOfMonth = get(Calendar.DAY_OF_MONTH)
+    CalendarViewDateChangeEvent(calendar, year, month, dayOfMonth)
+}
 
 @CheckResult
 private fun listener(

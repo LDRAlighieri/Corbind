@@ -113,12 +113,11 @@ fun SearchView.transitionStateChangeEvents(
  * ```
  */
 @CheckResult
-fun SearchView.transitionStateChangeEvents(): Flow<SearchViewTransitionStateChangeEvent> =
-    channelFlow {
-        val listener = listener(this, ::trySend)
-        addTransitionListener(listener)
-        awaitClose { removeTransitionListener(listener) }
-    }
+fun SearchView.transitionStateChangeEvents(): Flow<SearchViewTransitionStateChangeEvent> = channelFlow {
+    val listener = listener(this, ::trySend)
+    addTransitionListener(listener)
+    awaitClose { removeTransitionListener(listener) }
+}
 
 @CheckResult
 private fun listener(

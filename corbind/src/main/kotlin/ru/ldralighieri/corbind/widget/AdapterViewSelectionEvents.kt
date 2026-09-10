@@ -170,24 +170,21 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  * ```
  */
 @CheckResult
-fun <T : Adapter> AdapterView<T>.selectionEvents(): InitialValueFlow<AdapterViewSelectionEvent> =
-    channelFlow {
-        onItemSelectedListener = listener(this, ::trySend)
-        awaitClose { onItemSelectedListener = null }
-    }.asInitialValueFlow(initialValue(adapterView = this))
+fun <T : Adapter> AdapterView<T>.selectionEvents(): InitialValueFlow<AdapterViewSelectionEvent> = channelFlow {
+    onItemSelectedListener = listener(this, ::trySend)
+    awaitClose { onItemSelectedListener = null }
+}.asInitialValueFlow(initialValue(adapterView = this))
 
 @CheckResult
-private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterViewSelectionEvent {
-    return if (adapterView.selectedItemPosition == AdapterView.INVALID_POSITION) {
-        AdapterViewNothingSelectionEvent(adapterView)
-    } else {
-        AdapterViewItemSelectionEvent(
-            view = adapterView,
-            selectedView = adapterView.selectedView,
-            position = adapterView.selectedItemPosition,
-            id = adapterView.selectedItemId,
-        )
-    }
+private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterViewSelectionEvent = if (adapterView.selectedItemPosition == AdapterView.INVALID_POSITION) {
+    AdapterViewNothingSelectionEvent(adapterView)
+} else {
+    AdapterViewItemSelectionEvent(
+        view = adapterView,
+        selectedView = adapterView.selectedView,
+        position = adapterView.selectedItemPosition,
+        id = adapterView.selectedItemId,
+    )
 }
 
 @CheckResult

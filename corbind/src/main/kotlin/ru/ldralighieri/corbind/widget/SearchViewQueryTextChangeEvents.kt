@@ -140,8 +140,7 @@ fun SearchView.queryTextChangeEvents(): InitialValueFlow<SearchViewQueryTextEven
 }.asInitialValueFlow(initialValue(searchView = this))
 
 @CheckResult
-private fun initialValue(searchView: SearchView): SearchViewQueryTextEvent =
-    SearchViewQueryTextEvent(searchView, searchView.query, false)
+private fun initialValue(searchView: SearchView): SearchViewQueryTextEvent = SearchViewQueryTextEvent(searchView, searchView.query, false)
 
 @CheckResult
 private fun listener(
@@ -150,13 +149,9 @@ private fun listener(
     emitter: (SearchViewQueryTextEvent) -> Unit,
 ) = object : SearchView.OnQueryTextListener {
 
-    override fun onQueryTextChange(s: String): Boolean {
-        return onEvent(SearchViewQueryTextEvent(searchView, s, false))
-    }
+    override fun onQueryTextChange(s: String): Boolean = onEvent(SearchViewQueryTextEvent(searchView, s, false))
 
-    override fun onQueryTextSubmit(query: String): Boolean {
-        return onEvent(SearchViewQueryTextEvent(searchView, query, true))
-    }
+    override fun onQueryTextSubmit(query: String): Boolean = onEvent(SearchViewQueryTextEvent(searchView, query, true))
 
     private fun onEvent(event: SearchViewQueryTextEvent): Boolean {
         if (scope.isActive) {

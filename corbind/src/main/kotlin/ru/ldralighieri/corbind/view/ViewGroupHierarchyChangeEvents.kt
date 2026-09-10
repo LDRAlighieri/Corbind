@@ -167,11 +167,9 @@ private fun listener(
     emitter: (ViewGroupHierarchyChangeEvent) -> Unit,
 ) = object : ViewGroup.OnHierarchyChangeListener {
 
-    override fun onChildViewAdded(parent: View, child: View) =
-        onEvent(ViewGroupHierarchyChildViewAddEvent(viewGroup, child))
+    override fun onChildViewAdded(parent: View, child: View) = onEvent(ViewGroupHierarchyChildViewAddEvent(viewGroup, child))
 
-    override fun onChildViewRemoved(parent: View, child: View) =
-        onEvent(ViewGroupHierarchyChildViewRemoveEvent(viewGroup, child))
+    override fun onChildViewRemoved(parent: View, child: View) = onEvent(ViewGroupHierarchyChildViewRemoveEvent(viewGroup, child))
 
     private fun onEvent(event: ViewGroupHierarchyChangeEvent) {
         if (scope.isActive) emitter(event)

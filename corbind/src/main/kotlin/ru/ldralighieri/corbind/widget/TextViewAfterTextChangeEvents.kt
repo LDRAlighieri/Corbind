@@ -132,8 +132,7 @@ fun TextView.afterTextChangeEvents(): InitialValueFlow<TextViewAfterTextChangeEv
 }.asInitialValueFlow(initialValue(textView = this))
 
 @CheckResult
-private fun initialValue(textView: TextView): TextViewAfterTextChangeEvent =
-    TextViewAfterTextChangeEvent(textView, textView.editableText)
+private fun initialValue(textView: TextView): TextViewAfterTextChangeEvent = TextViewAfterTextChangeEvent(textView, textView.editableText)
 
 @CheckResult
 private fun listener(

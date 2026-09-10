@@ -178,13 +178,9 @@ private fun listener(
     emitter: (MenuItemActionViewEvent) -> Unit,
 ) = object : MenuItem.OnActionExpandListener {
 
-    override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-        return onEvent(MenuItemActionViewExpandEvent(item))
-    }
+    override fun onMenuItemActionExpand(item: MenuItem): Boolean = onEvent(MenuItemActionViewExpandEvent(item))
 
-    override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-        return onEvent(MenuItemActionViewCollapseEvent(item))
-    }
+    override fun onMenuItemActionCollapse(item: MenuItem): Boolean = onEvent(MenuItemActionViewCollapseEvent(item))
 
     private fun onEvent(event: MenuItemActionViewEvent): Boolean {
         if (scope.isActive && handled(event)) {

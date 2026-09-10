@@ -114,12 +114,11 @@ fun OnBackPressedDispatcher.backProgressed(
  *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  */
-fun OnBackPressedDispatcher.backProgressed(lifecycleOwner: LifecycleOwner): Flow<Float> =
-    channelFlow {
-        val callback = callback(this, ::trySend)
-        addCallback(lifecycleOwner, callback)
-        awaitClose { callback.remove() }
-    }
+fun OnBackPressedDispatcher.backProgressed(lifecycleOwner: LifecycleOwner): Flow<Float> = channelFlow {
+    val callback = callback(this, ::trySend)
+    addCallback(lifecycleOwner, callback)
+    awaitClose { callback.remove() }
+}
 
 @CheckResult
 private fun callback(

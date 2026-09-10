@@ -140,8 +140,7 @@ fun RatingBar.ratingChangeEvents(): InitialValueFlow<RatingBarChangeEvent> = cha
 }.asInitialValueFlow(initialValue(ratingBar = this))
 
 @CheckResult
-private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent =
-    RatingBarChangeEvent(ratingBar, ratingBar.rating, false)
+private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent = RatingBarChangeEvent(ratingBar, ratingBar.rating, false)
 
 @CheckResult
 private fun listener(
