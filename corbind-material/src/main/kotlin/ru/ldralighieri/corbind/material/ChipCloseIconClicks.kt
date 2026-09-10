@@ -94,7 +94,7 @@ fun Chip.closeIconClicks(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     setOnCloseIconClickListener(listener(scope, ::trySend))
-    invokeOnClose { setOnClickListener(null) }
+    invokeOnClose { setOnCloseIconClickListener(null) }
 }
 
 /**
@@ -115,7 +115,7 @@ fun Chip.closeIconClicks(
 @CheckResult
 fun Chip.closeIconClicks(): Flow<Unit> = channelFlow {
     setOnCloseIconClickListener(listener(this, ::trySend))
-    awaitClose { setOnClickListener(null) }
+    awaitClose { setOnCloseIconClickListener(null) }
 }
 
 @CheckResult
