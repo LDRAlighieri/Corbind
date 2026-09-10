@@ -53,7 +53,7 @@ fun MaterialCardView.checkedChanges(
     events.trySend(isChecked)
     val listener = listener(scope, events::trySend)
     setOnCheckedChangeListener(listener)
-    events.invokeOnClose { setOnCheckedChangeListener(listener) }
+    events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
 /**
@@ -99,7 +99,7 @@ fun MaterialCardView.checkedChanges(
     trySend(isChecked)
     val listener = listener(scope, ::trySend)
     setOnCheckedChangeListener(listener)
-    invokeOnClose { setOnCheckedChangeListener(listener) }
+    invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
 /**

@@ -50,7 +50,7 @@ fun PopupMenu.dismisses(
     }
 
     setOnDismissListener(listener(scope, events::trySend))
-    events.invokeOnClose { setOnMenuItemClickListener(null) }
+    events.invokeOnClose { setOnDismissListener(null) }
 }
 
 /**
@@ -93,7 +93,7 @@ fun PopupMenu.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
     setOnDismissListener(listener(scope, ::trySend))
-    invokeOnClose { setOnMenuItemClickListener(null) }
+    invokeOnClose { setOnDismissListener(null) }
 }
 
 /**
@@ -114,7 +114,7 @@ fun PopupMenu.dismisses(
 @CheckResult
 fun PopupMenu.dismisses(): Flow<Unit> = channelFlow {
     setOnDismissListener(listener(this, ::trySend))
-    awaitClose { setOnMenuItemClickListener(null) }
+    awaitClose { setOnDismissListener(null) }
 }
 
 @CheckResult
