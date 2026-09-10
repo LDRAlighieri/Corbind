@@ -22,7 +22,6 @@ import org.gradle.api.Project
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension,
@@ -52,7 +51,6 @@ internal fun Project.configureKotlinAndroid(
         compilerOptions {
             allWarningsAsErrors.set(true)
             jvmTarget.set(JvmTarget.JVM_17)
-            languageVersion.set(KotlinVersion.KOTLIN_2_2)
             freeCompilerArgs.addAll(
                 listOf(
                     "-opt-in=kotlinx.coroutines.ObsoleteCoroutinesApi"
