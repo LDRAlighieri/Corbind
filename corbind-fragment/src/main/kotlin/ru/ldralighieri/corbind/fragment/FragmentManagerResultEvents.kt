@@ -130,14 +130,13 @@ fun FragmentManager.resultEvents(
  *
  * Example:
  * ```
- * lifecycleScope.launchWhenStarted {
- *      parentFragmentManager.resultEvents(
- *          requestKey = FRAGMENT_REQUEST_KEY,
- *          lifecycleOwner = this@CurrentFragment
- *      )
- *          .onEach { event -> /* handle result event */ }
- *          .launchIn(this@launchWhenStarted) // lifecycle-runtime-ktx
- * }
+ * parentFragmentManager.resultEvents(
+ *     requestKey = FRAGMENT_REQUEST_KEY,
+ *     lifecycleOwner = viewLifecycleOwner,
+ * )
+ *     .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+ *     .onEach { event -> /* handle result event */ }
+ *     .launchIn(viewLifecycleOwner.lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
  * @param requestKey Used to identify the result

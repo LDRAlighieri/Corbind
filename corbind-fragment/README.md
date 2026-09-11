@@ -18,14 +18,13 @@ dependencies {
 ## Simple examples
 
 ```kotlin
-lifecycleScope.launchWhenStarted {
-    parentFragmentManager.resultEvents(
-        requestKey = FRAGMENT_REQUEST_KEY,
-        lifecycleOwner = this@CurrentFragment
-    ) // Flow<FragmentResultEvent>
-        .onEach { event -> /* handle result event */ }
-        .launchIn(this@launchWhenStarted) // lifecycle-runtime-ktx
-}
+parentFragmentManager.resultEvents(
+    requestKey = FRAGMENT_REQUEST_KEY,
+    lifecycleOwner = viewLifecycleOwner,
+) // Flow<FragmentResultEvent>
+    .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+    .onEach { event -> /* handle result event */ }
+    .launchIn(viewLifecycleOwner.lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code
