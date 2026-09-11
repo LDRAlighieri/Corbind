@@ -35,6 +35,13 @@ public final class ru/ldralighieri/corbind/content/ContextReceivesBroadcastKt {
 	public static synthetic fun receivesBroadcast$default (Landroid/content/Context;Lkotlinx/coroutines/CoroutineScope;Landroid/content/IntentFilter;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
+public final class ru/ldralighieri/corbind/internal/InitialValueFlow : kotlinx/coroutines/flow/Flow {
+	public fun <init> (Lkotlinx/coroutines/flow/Flow;)V
+	public final fun asStateFlow (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun collect (Lkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun dropInitialValue ()Lkotlinx/coroutines/flow/Flow;
+}
+
 public final class ru/ldralighieri/corbind/view/MenuItemActionViewCollapseEvent : ru/ldralighieri/corbind/view/MenuItemActionViewEvent {
 	public fun <init> (Landroid/view/MenuItem;)V
 	public final fun component1 ()Landroid/view/MenuItem;

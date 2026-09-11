@@ -29,8 +29,7 @@ plugins {
 // Binary compatibility validator
 apiValidation {
     ignoredProjects.add("sample")
-    ignoredPackages.add("ru/ldralighieri/corbind/internal")
-    ignoredPackages.add("corbind-bom")
+    nonPublicMarkers.add("androidx.annotation.RestrictTo")
 }
 
 // Dependency updates
