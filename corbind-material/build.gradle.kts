@@ -23,9 +23,16 @@ plugins {
 
 android {
     namespace = "ru.ldralighieri.corbind.material"
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
     api(projects.corbind)
     api(libs.material)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
 }
