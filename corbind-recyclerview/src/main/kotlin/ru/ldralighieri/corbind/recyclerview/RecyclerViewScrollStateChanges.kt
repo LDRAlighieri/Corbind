@@ -26,7 +26,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -102,7 +102,7 @@ fun RecyclerView.scrollStateChanges(
  * ```
  */
 @CheckResult
-fun RecyclerView.scrollStateChanges(): Flow<Int> = channelFlow {
+fun RecyclerView.scrollStateChanges(): Flow<Int> = callbackFlow {
     val scrollListener = listener(this, ::trySend)
     addOnScrollListener(scrollListener)
     awaitClose { removeOnScrollListener(scrollListener) }

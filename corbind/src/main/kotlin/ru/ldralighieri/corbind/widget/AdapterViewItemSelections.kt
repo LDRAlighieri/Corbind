@@ -27,7 +27,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -131,7 +131,7 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
  * ```
  */
 @CheckResult
-fun <T : Adapter> AdapterView<T>.itemSelections(): InitialValueFlow<Int> = channelFlow {
+fun <T : Adapter> AdapterView<T>.itemSelections(): InitialValueFlow<Int> = callbackFlow {
     onItemSelectedListener = listener(this, ::trySend)
     awaitClose { onItemSelectedListener = null }
 }.asInitialValueFlow(selectedItemPosition)

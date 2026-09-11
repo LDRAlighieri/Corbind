@@ -26,7 +26,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -167,7 +167,7 @@ fun TabLayout.selectionEvents(
  * ```
  */
 @CheckResult
-fun TabLayout.selectionEvents(): Flow<TabLayoutSelectionEvent> = channelFlow {
+fun TabLayout.selectionEvents(): Flow<TabLayoutSelectionEvent> = callbackFlow {
     setInitialValue(this@selectionEvents, ::trySend)
     val listener = listener(this, this@selectionEvents, ::trySend)
     addOnTabSelectedListener(listener)

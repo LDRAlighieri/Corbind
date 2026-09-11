@@ -28,7 +28,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
@@ -128,7 +128,7 @@ fun View.touches(
 @CheckResult
 fun View.touches(
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
-): Flow<MotionEvent> = channelFlow {
+): Flow<MotionEvent> = callbackFlow {
     setOnTouchListener(listener(this, handled, ::trySend))
     awaitClose { setOnTouchListener(null) }
 }

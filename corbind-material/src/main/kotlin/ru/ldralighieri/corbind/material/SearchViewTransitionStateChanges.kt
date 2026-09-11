@@ -26,7 +26,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -103,7 +103,7 @@ fun SearchView.transitionStateChanges(
  * ```
  */
 @CheckResult
-fun SearchView.transitionStateChanges(): Flow<SearchView.TransitionState> = channelFlow {
+fun SearchView.transitionStateChanges(): Flow<SearchView.TransitionState> = callbackFlow {
     val listener = listener(this, ::trySend)
     addTransitionListener(listener)
     awaitClose { removeTransitionListener(listener) }

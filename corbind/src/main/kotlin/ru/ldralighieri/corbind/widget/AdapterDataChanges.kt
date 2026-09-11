@@ -26,7 +26,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -118,7 +118,7 @@ fun <T : Adapter> T.dataChanges(
  * ```
  */
 @CheckResult
-fun <T : Adapter> T.dataChanges(): InitialValueFlow<T> = channelFlow {
+fun <T : Adapter> T.dataChanges(): InitialValueFlow<T> = callbackFlow {
     val dataSetObserver = observer(this, this@dataChanges, ::trySend)
     registerDataSetObserver(dataSetObserver)
     awaitClose { unregisterDataSetObserver(dataSetObserver) }

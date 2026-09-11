@@ -27,7 +27,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -125,7 +125,7 @@ fun TextView.afterTextChangeEvents(
  * ```
  */
 @CheckResult
-fun TextView.afterTextChangeEvents(): InitialValueFlow<TextViewAfterTextChangeEvent> = channelFlow {
+fun TextView.afterTextChangeEvents(): InitialValueFlow<TextViewAfterTextChangeEvent> = callbackFlow {
     val listener = listener(this, this@afterTextChangeEvents, ::trySend)
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }

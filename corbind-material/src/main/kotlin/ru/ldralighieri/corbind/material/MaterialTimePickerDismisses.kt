@@ -27,7 +27,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -106,7 +106,7 @@ fun MaterialTimePicker.dismisses(
  * ```
  */
 @CheckResult
-fun MaterialTimePicker.dismisses(): Flow<Unit> = channelFlow {
+fun MaterialTimePicker.dismisses(): Flow<Unit> = callbackFlow {
     val listener = listener(this, ::trySend)
     addOnDismissListener(listener)
     awaitClose { removeOnDismissListener(listener) }

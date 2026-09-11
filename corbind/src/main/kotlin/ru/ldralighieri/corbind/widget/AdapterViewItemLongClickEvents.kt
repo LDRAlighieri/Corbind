@@ -28,7 +28,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
@@ -138,7 +138,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
-): Flow<AdapterViewItemLongClickEvent> = channelFlow {
+): Flow<AdapterViewItemLongClickEvent> = callbackFlow {
     onItemLongClickListener = listener(this, handled, ::trySend)
     awaitClose { onItemLongClickListener = null }
 }

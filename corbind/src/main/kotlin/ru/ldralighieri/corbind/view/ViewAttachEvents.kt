@@ -26,7 +26,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -141,7 +141,7 @@ fun View.attachEvents(
  * ```
  */
 @CheckResult
-fun View.attachEvents(): Flow<ViewAttachEvent> = channelFlow {
+fun View.attachEvents(): Flow<ViewAttachEvent> = callbackFlow {
     val listener = listener(this, ::trySend)
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }

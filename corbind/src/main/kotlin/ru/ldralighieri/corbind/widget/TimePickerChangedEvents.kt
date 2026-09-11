@@ -27,7 +27,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -140,7 +140,7 @@ fun TimePicker.timeChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = channelFlow {
+fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = callbackFlow {
     setOnTimeChangedListener(listener(this, ::trySend))
     awaitClose { setOnTimeChangedListener(null) }
 }.asInitialValueFlow(TimeChangedEvent(view = this, hour, minute))

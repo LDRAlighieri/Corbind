@@ -28,7 +28,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -123,7 +123,7 @@ fun View.sideSheetStateChanges(
  * ```
  */
 @CheckResult
-fun View.sideSheetStateChanges(): InitialValueFlow<Int> = channelFlow {
+fun View.sideSheetStateChanges(): InitialValueFlow<Int> = callbackFlow {
     val behavior = getSideSheetBehavior()
     val callback = callback(this, ::trySend)
     behavior.addCallback(callback)

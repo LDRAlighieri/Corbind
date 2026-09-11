@@ -25,7 +25,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -117,7 +117,7 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
  * ```
  */
 @CheckResult
-fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): InitialValueFlow<T> = channelFlow {
+fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): InitialValueFlow<T> = callbackFlow {
     val dataObserver = observer(this, this@dataChanges, ::trySend)
     registerAdapterDataObserver(dataObserver)
     awaitClose { unregisterAdapterDataObserver(dataObserver) }

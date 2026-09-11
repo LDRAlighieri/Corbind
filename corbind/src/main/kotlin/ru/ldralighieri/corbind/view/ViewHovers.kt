@@ -27,7 +27,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
@@ -125,7 +125,7 @@ fun View.hovers(
  * [View.OnHoverListener]
  */
 @CheckResult
-fun View.hovers(handled: (MotionEvent) -> Boolean = AlwaysTrue): Flow<MotionEvent> = channelFlow {
+fun View.hovers(handled: (MotionEvent) -> Boolean = AlwaysTrue): Flow<MotionEvent> = callbackFlow {
     setOnHoverListener(listener(this, handled, ::trySend))
     awaitClose { setOnHoverListener(null) }
 }

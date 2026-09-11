@@ -28,7 +28,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -146,7 +146,7 @@ fun FragmentManager.resultEvents(
 fun FragmentManager.resultEvents(
     requestKey: String,
     lifecycleOwner: LifecycleOwner,
-): Flow<FragmentResultEvent> = channelFlow {
+): Flow<FragmentResultEvent> = callbackFlow {
     val listener = listener(this, ::trySend)
     setFragmentResultListener(requestKey, lifecycleOwner, listener)
     awaitClose { clearFragmentResultListener(requestKey) }

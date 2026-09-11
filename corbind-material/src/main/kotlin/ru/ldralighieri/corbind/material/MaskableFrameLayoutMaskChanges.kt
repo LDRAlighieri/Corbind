@@ -27,7 +27,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -111,7 +111,7 @@ fun MaskableFrameLayout.maskChanges(
  * ```
  */
 @CheckResult
-fun MaskableFrameLayout.maskChanges() = channelFlow {
+fun MaskableFrameLayout.maskChanges() = callbackFlow {
     setOnMaskChangedListener(listener(this, ::trySend))
     awaitClose { setOnMaskChangedListener(null) }
 }

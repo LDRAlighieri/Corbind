@@ -25,7 +25,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -125,7 +125,7 @@ fun Slider.valueChangeEvents(
  * ```
  */
 @CheckResult
-fun Slider.valueChangeEvents(): InitialValueFlow<SliderChangeEvent> = channelFlow {
+fun Slider.valueChangeEvents(): InitialValueFlow<SliderChangeEvent> = callbackFlow {
     val listener = listener(this, ::trySend).apply { previousValue = value }
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }

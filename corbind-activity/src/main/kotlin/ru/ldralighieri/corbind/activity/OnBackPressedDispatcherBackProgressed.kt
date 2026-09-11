@@ -29,7 +29,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -114,7 +114,7 @@ fun OnBackPressedDispatcher.backProgressed(
  *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  */
-fun OnBackPressedDispatcher.backProgressed(lifecycleOwner: LifecycleOwner): Flow<Float> = channelFlow {
+fun OnBackPressedDispatcher.backProgressed(lifecycleOwner: LifecycleOwner): Flow<Float> = callbackFlow {
     val callback = callback(this, ::trySend)
     addCallback(lifecycleOwner, callback)
     awaitClose { callback.remove() }
