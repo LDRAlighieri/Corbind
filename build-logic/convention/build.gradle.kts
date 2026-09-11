@@ -39,6 +39,7 @@ dependencies {
     compileOnly(libs.spotless.gradlePlugin)
     compileOnly(libs.maven.publish.gradlePlugin)
     implementation(libs.dokka.gradlePlugin)
+    implementation(libs.binary.compatibility.validator.gradlePlugin)
 }
 
 tasks {
