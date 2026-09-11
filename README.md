@@ -45,7 +45,7 @@ Please consider giving this repository a star ⭐ if you like the project.
 | [corbind-recyclerview]       | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-recyclerview.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-recyclerview)             |
 | [corbind-slidingpanelayout]  | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-slidingpanelayout.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-slidingpanelayout)   |
 | [corbind-swiperefreshlayout] | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-swiperefreshlayout.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-swiperefreshlayout) |
-| [corbind-viewpager]          | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-viewpager.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-viewpager)                   |
+| [corbind-viewpager] (legacy) | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-viewpager.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-viewpager)                   |
 | [corbind-viewpager2]         | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-viewpager2.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-viewpager2)                 |
 
 
@@ -74,7 +74,7 @@ dependencies {
     implementation("ru.ldralighieri.corbind:corbind-recyclerview")
     implementation("ru.ldralighieri.corbind:corbind-slidingpanelayout")
     implementation("ru.ldralighieri.corbind:corbind-swiperefreshlayout")
-    implementation("ru.ldralighieri.corbind:corbind-viewpager")
+    implementation("ru.ldralighieri.corbind:corbind-viewpager") // legacy
     implementation("ru.ldralighieri.corbind:corbind-viewpager2")
 }
 ```
@@ -103,20 +103,20 @@ dependencies {
 ## List of extensions
 
 You can find a list of extensions in the description of each module:  
-* [corbind]  
-* [corbind-activity]  
-* [corbind-appcompat]  
-* [corbind-core]  
-* [corbind-drawerlayout]  
-* [corbind-fragment]  
-* [corbind-leanback]  
-* [corbind-lifecycle]  
-* [corbind-material]  
-* [corbind-navigation]  
-* [corbind-recyclerview]  
-* [corbind-slidingpanelayout]  
-* [corbind-swiperefreshlayout]  
-* [corbind-viewpager]  
+* [corbind]
+* [corbind-activity]
+* [corbind-appcompat]
+* [corbind-core]
+* [corbind-drawerlayout]
+* [corbind-fragment]
+* [corbind-leanback]
+* [corbind-lifecycle]
+* [corbind-material]
+* [corbind-navigation]
+* [corbind-recyclerview]
+* [corbind-slidingpanelayout]
+* [corbind-swiperefreshlayout]
+* [corbind-viewpager] (legacy)
 * [corbind-viewpager2]
 
 
@@ -131,13 +131,13 @@ findViewById<EditText>(R.id.etName)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
-If you prefer hot [ReceiveChannel][channel] and you need to get a ViewPager page selection events, then the use case will transform in something like this:
+If you prefer hot [ReceiveChannel][channel] and you need to get ViewPager2 page selection events, then the use case will transform in something like this:
 ```kotlin
 launch {
-    findViewById<ViewPager>(R.id.vpSlides)
+    findViewById<ViewPager2>(R.id.vpSlides)
         .pageSelections(scope) // ReceiveChannel<Int>
         .consumeEach {
-            /* handle ViewPager events */
+            /* handle ViewPager2 events */
         }
 }
 ```
@@ -208,6 +208,7 @@ limitations under the License.
 
 [kotlin-coroutine-binding]: https://medium.com/@ldralighieri/kotlin-coroutine-binding-with-flow-support-68499492a89c
 [release-1.7.0]: https://medium.com/@ldralighieri/whats-up-corbind-release-1-7-0-it-s-been-a-long-road-eadf84db19c1
+[viewpager2-migration]: https://developer.android.com/develop/ui/views/animations/vp2-migration
 
 [corbind-bom]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-bom
 [corbind]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind

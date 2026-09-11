@@ -1,6 +1,11 @@
 ﻿
 # corbind-viewpager
 
+> **Legacy module:** `corbind-viewpager` is maintained for compatibility with
+> `androidx.viewpager.widget.ViewPager`. Use [`corbind-viewpager2`][corbind-viewpager2] for new code.
+> No new APIs are planned without a compelling compatibility reason. See the official
+> [ViewPager2 migration guide][viewpager2-migration].
+
 To add androidx viewpager bindings, import `corbind-viewpager` module:
 
 ```kotlin
@@ -28,6 +33,8 @@ vpSlides.pageSelections() // Flow<Int>
 
 More examples in source code
 
+[corbind-viewpager2]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-viewpager2
+[viewpager2-migration]: https://developer.android.com/develop/ui/views/animations/vp2-migration
 [ViewPager_pageScrollEvents]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-viewpager/src/main/kotlin/ru/ldralighieri/corbind/viewpager/ViewPagerPageScrollEvents.kt
 [ViewPager_pageScrollStateChanges]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-viewpager/src/main/kotlin/ru/ldralighieri/corbind/viewpager/ViewPagerPageScrollStateChanges.kt
 [ViewPager_pageSelections]: https://github.com/LDRAlighieri/Corbind/blob/master/corbind-viewpager/src/main/kotlin/ru/ldralighieri/corbind/viewpager/ViewPagerPageSelections.kt
