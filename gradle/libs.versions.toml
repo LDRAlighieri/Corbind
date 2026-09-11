@@ -36,7 +36,7 @@ ktlint = "1.8.0"
 
 # Test
 junit = "4.13.2"
-robolectric = "4.16.1"
+robolectric = "4.17"
 
 
 [plugins]
