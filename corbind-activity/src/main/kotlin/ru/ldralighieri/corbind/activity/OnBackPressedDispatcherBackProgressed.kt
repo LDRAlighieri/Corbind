@@ -16,6 +16,8 @@
 
 package ru.ldralighieri.corbind.activity
 
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
@@ -35,6 +37,9 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on [OnBackPressedDispatcher.dispatchOnBackProgressed] call.
+ *
+ * A committed back is delegated to the next enabled callback or to the dispatcher's fallback. Use
+ * [backEvents] when the complete predictive back gesture lifecycle is needed.
  *
  * @param scope Root coroutine scope
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
@@ -60,6 +65,9 @@ fun OnBackPressedDispatcher.backProgressed(
  * Perform an action on [OnBackPressedDispatcher.dispatchOnBackProgressed] call, inside new
  * [CoroutineScope].
  *
+ * A committed back is delegated to the next enabled callback or to the dispatcher's fallback. Use
+ * [backEvents] when the complete predictive back gesture lifecycle is needed.
+ *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default)
  * @param action An action to perform
@@ -75,6 +83,9 @@ suspend fun OnBackPressedDispatcher.backProgressed(
 /**
  * Create a channel which emits back progress on [OnBackPressedDispatcher.dispatchOnBackProgressed]
  * call.
+ *
+ * A committed back is delegated to the next enabled callback or to the dispatcher's fallback. Use
+ * [backEvents] when the complete predictive back gesture lifecycle is needed.
  *
  * Example:
  *
@@ -103,6 +114,9 @@ fun OnBackPressedDispatcher.backProgressed(
  * Create a flow which emits back progress on [OnBackPressedDispatcher.dispatchOnBackProgressed]
  * call.
  *
+ * A committed back is delegated to the next enabled callback or to the dispatcher's fallback. Use
+ * [backEvents] when the complete predictive back gesture lifecycle is needed.
+ *
  * Example:
  *
  * ```
@@ -121,14 +135,33 @@ fun OnBackPressedDispatcher.backProgressed(lifecycleOwner: LifecycleOwner): Flow
 }
 
 @CheckResult
-private fun callback(
+private fun OnBackPressedDispatcher.callback(
     scope: CoroutineScope,
     emitter: (Float) -> Unit,
-) = object : OnBackPressedCallback(true) {
+): OnBackPressedCallback {
+    val dispatcher = this
 
-    override fun handleOnBackProgressed(backEvent: BackEventCompat) {
-        if (scope.isActive) emitter(backEvent.progress)
+    return object : OnBackPressedCallback(true) {
+        private val mainHandler = Handler(Looper.getMainLooper())
+
+        override fun handleOnBackProgressed(backEvent: BackEventCompat) {
+            if (scope.isActive) emitter(backEvent.progress)
+        }
+
+        override fun handleOnBackPressed() {
+            isEnabled = false
+            // AndroidX finishes the predictive gesture after this callback returns. Redispatch on
+            // the next main-loop turn so it can select the next callback or the fallback.
+            val posted = mainHandler.post {
+                try {
+                    dispatcher.onBackPressed()
+                } finally {
+                    isEnabled = true
+                }
+            }
+            if (!posted) {
+                isEnabled = true
+            }
+        }
     }
-
-    override fun handleOnBackPressed() = Unit
 }

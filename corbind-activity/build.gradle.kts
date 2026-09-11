@@ -28,4 +28,7 @@ android {
 dependencies {
     api(projects.corbind)
     api(libs.androidx.activity)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
 }
