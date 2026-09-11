@@ -34,6 +34,10 @@ material = "1.14.0"
 # Lint
 ktlint = "1.8.0"
 
+# Test
+junit = "4.13.2"
+robolectric = "4.16.1"
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -73,6 +77,10 @@ androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayo
 
 # Google
 material = { module = "com.google.android.material:material", version.ref = "material" }
+
+# Test
+junit = { module = "junit:junit", version.ref = "junit" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 
 # build-logic
