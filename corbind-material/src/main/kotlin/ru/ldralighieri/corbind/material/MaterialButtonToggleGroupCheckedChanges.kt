@@ -55,7 +55,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
 
     checkSelectionMode(this)
     events.trySend(checkedButtonId)
-    val listener = listener(scope, events::trySend)
+    val listener = listener(this, scope, events::trySend)
     addOnButtonCheckedListener(listener)
     events.invokeOnClose { removeOnButtonCheckedListener(listener) }
 }
@@ -106,7 +106,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
 ): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
     checkSelectionMode(this@buttonCheckedChanges)
     trySend(checkedButtonId)
-    val listener = listener(scope, ::trySend)
+    val listener = listener(this@buttonCheckedChanges, scope, ::trySend)
     addOnButtonCheckedListener(listener)
     invokeOnClose { removeOnButtonCheckedListener(listener) }
 }
@@ -140,7 +140,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChanges(): InitialValueFlow<Int> = callbackFlow {
     checkSelectionMode(this@buttonCheckedChanges)
-    val listener = listener(this, ::trySend)
+    val listener = listener(this@buttonCheckedChanges, this, ::trySend)
     addOnButtonCheckedListener(listener)
     awaitClose { removeOnButtonCheckedListener(listener) }
 }.asInitialValueFlow(checkedButtonId)
@@ -154,11 +154,12 @@ private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
 
 @CheckResult
 private fun listener(
+    group: MaterialButtonToggleGroup,
     scope: CoroutineScope,
     emitter: (Int) -> Unit,
 ) = object : MaterialButtonToggleGroup.OnButtonCheckedListener {
 
-    private var lastChecked = View.NO_ID
+    private var lastChecked = group.checkedButtonId
     override fun onButtonChecked(
         group: MaterialButtonToggleGroup,
         checkedId: Int,
