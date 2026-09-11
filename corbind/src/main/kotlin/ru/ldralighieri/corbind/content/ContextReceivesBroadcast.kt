@@ -32,7 +32,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -135,7 +135,7 @@ fun Context.receivesBroadcast(
  *
  * @param intentFilter Selects the Intent broadcasts to be received
  */
-fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = channelFlow {
+fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = callbackFlow {
     val receiver = receiver(this, ::trySend)
 
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {

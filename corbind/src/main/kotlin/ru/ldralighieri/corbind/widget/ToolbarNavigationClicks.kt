@@ -29,7 +29,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -119,7 +119,7 @@ fun Toolbar.navigationClicks(
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
-fun Toolbar.navigationClicks(): Flow<Unit> = channelFlow {
+fun Toolbar.navigationClicks(): Flow<Unit> = callbackFlow {
     setNavigationOnClickListener(listener(this, ::trySend))
     awaitClose { setNavigationOnClickListener(null) }
 }

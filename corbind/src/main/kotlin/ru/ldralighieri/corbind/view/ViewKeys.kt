@@ -27,7 +27,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
@@ -123,7 +123,7 @@ fun View.keys(
  * [View.OnKeyListener]
  */
 @CheckResult
-fun View.keys(handled: (KeyEvent) -> Boolean = AlwaysTrue): Flow<KeyEvent> = channelFlow {
+fun View.keys(handled: (KeyEvent) -> Boolean = AlwaysTrue): Flow<KeyEvent> = callbackFlow {
     setOnKeyListener(listener(this, handled, ::trySend))
     awaitClose { setOnKeyListener(null) }
 }

@@ -25,7 +25,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -118,7 +118,7 @@ fun ViewPager.pageSelections(
  * ```
  */
 @CheckResult
-fun ViewPager.pageSelections(): InitialValueFlow<Int> = channelFlow {
+fun ViewPager.pageSelections(): InitialValueFlow<Int> = callbackFlow {
     val listener = listener(this, ::trySend)
     addOnPageChangeListener(listener)
     awaitClose { removeOnPageChangeListener(listener) }

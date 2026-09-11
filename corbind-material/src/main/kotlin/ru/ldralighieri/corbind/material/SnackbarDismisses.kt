@@ -26,7 +26,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -102,7 +102,7 @@ fun Snackbar.dismisses(
  * ```
  */
 @CheckResult
-fun Snackbar.dismisses(): Flow<Int> = channelFlow {
+fun Snackbar.dismisses(): Flow<Int> = callbackFlow {
     val callback = callback(this, ::trySend)
     addCallback(callback)
     awaitClose { removeCallback(callback) }

@@ -25,7 +25,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -127,7 +127,7 @@ fun View.focusChanges(
  * ```
  */
 @CheckResult
-fun View.focusChanges(): InitialValueFlow<Boolean> = channelFlow {
+fun View.focusChanges(): InitialValueFlow<Boolean> = callbackFlow {
     onFocusChangeListener = listener(this, ::trySend)
     awaitClose { onFocusChangeListener = null }
 }.asInitialValueFlow(hasFocus())

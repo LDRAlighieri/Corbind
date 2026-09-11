@@ -25,7 +25,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -128,7 +128,7 @@ fun RangeSlider.valuesChangeEvents(
  * ```
  */
 @CheckResult
-fun RangeSlider.valuesChangeEvents(): InitialValueFlow<RangeSliderChangeEvent> = channelFlow {
+fun RangeSlider.valuesChangeEvents(): InitialValueFlow<RangeSliderChangeEvent> = callbackFlow {
     val listener = listener(this, ::trySend).apply { previousValues = values }
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }

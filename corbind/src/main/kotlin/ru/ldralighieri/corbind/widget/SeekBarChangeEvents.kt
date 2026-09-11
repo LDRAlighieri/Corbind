@@ -25,7 +25,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -173,7 +173,7 @@ fun SeekBar.changeEvents(
  * ```
  */
 @CheckResult
-fun SeekBar.changeEvents(): InitialValueFlow<SeekBarChangeEvent> = channelFlow {
+fun SeekBar.changeEvents(): InitialValueFlow<SeekBarChangeEvent> = callbackFlow {
     setOnSeekBarChangeListener(listener(this, ::trySend))
     awaitClose { setOnSeekBarChangeListener(null) }
 }.asInitialValueFlow(initialValue(seekBar = this))

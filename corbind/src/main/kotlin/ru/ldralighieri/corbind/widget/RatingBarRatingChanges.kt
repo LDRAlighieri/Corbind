@@ -25,7 +25,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -127,7 +127,7 @@ fun RatingBar.ratingChanges(
  * ```
  */
 @CheckResult
-fun RatingBar.ratingChanges(): InitialValueFlow<Float> = channelFlow {
+fun RatingBar.ratingChanges(): InitialValueFlow<Float> = callbackFlow {
     onRatingBarChangeListener = listener(this, ::trySend)
     awaitClose { onRatingBarChangeListener = null }
 }.asInitialValueFlow(rating)

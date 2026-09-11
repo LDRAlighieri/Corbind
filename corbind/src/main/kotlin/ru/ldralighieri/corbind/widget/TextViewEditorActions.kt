@@ -26,7 +26,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
@@ -125,7 +125,7 @@ fun TextView.editorActions(
  * [TextView.OnEditorActionListener].
  */
 @CheckResult
-fun TextView.editorActions(handled: (Int) -> Boolean = AlwaysTrue): Flow<Int> = channelFlow {
+fun TextView.editorActions(handled: (Int) -> Boolean = AlwaysTrue): Flow<Int> = callbackFlow {
     setOnEditorActionListener(listener(this, handled, ::trySend))
     awaitClose { setOnEditorActionListener(null) }
 }

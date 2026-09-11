@@ -25,7 +25,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
@@ -127,7 +127,7 @@ fun CompoundButton.checkedChanges(
  * ```
  */
 @CheckResult
-fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = channelFlow {
+fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = callbackFlow {
     setOnCheckedChangeListener(listener(this, ::trySend))
     awaitClose { setOnCheckedChangeListener(null) }
 }.asInitialValueFlow(isChecked)

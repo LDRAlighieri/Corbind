@@ -27,7 +27,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -127,7 +127,7 @@ fun NavigationBarView.itemSelections(
  * ```
  */
 @CheckResult
-fun NavigationBarView.itemSelections(): Flow<MenuItem> = channelFlow {
+fun NavigationBarView.itemSelections(): Flow<MenuItem> = callbackFlow {
     setInitialValue(this@itemSelections, ::trySend)
     setOnItemSelectedListener(listener(this, ::trySend))
     awaitClose { setOnItemSelectedListener(null) }

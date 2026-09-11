@@ -28,7 +28,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -127,7 +127,7 @@ fun View.scrollChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = channelFlow {
+fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = callbackFlow {
     setOnScrollChangeListener(listener(this, ::trySend))
     awaitClose { setOnScrollChangeListener(null) }
 }

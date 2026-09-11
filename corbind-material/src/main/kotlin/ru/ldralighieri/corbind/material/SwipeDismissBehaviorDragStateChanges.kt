@@ -28,7 +28,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
@@ -114,7 +114,7 @@ fun View.dragStateChanges(
  * ```
  */
 @CheckResult
-fun View.dragStateChanges(): Flow<Int> = channelFlow {
+fun View.dragStateChanges(): Flow<Int> = callbackFlow {
     val behavior = getBehavior(this@dragStateChanges)
     behavior.listener = listener(this, ::trySend)
     awaitClose { behavior.setListener(null) }
