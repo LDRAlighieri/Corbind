@@ -102,10 +102,10 @@ suspend fun RatingBar.ratingChangeEvents(
 fun RatingBar.ratingChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<RatingBarChangeEvent> = corbindReceiveChannel(scope, capacity) {
     trySend(initialValue(this@ratingChangeEvents))
     onRatingBarChangeListener = listener(scope, ::trySend)
-    invokeOnClose { onRatingBarChangeListener = null }
+    awaitClose { onRatingBarChangeListener = null }
 }
 
 /**

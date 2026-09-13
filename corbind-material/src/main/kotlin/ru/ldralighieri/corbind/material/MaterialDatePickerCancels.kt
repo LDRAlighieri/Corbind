@@ -96,10 +96,10 @@ suspend fun <S> MaterialDatePicker<S>.cancels(
 fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnCancelListener(listener)
-    invokeOnClose { removeOnCancelListener(listener) }
+    awaitClose { removeOnCancelListener(listener) }
 }
 
 /**

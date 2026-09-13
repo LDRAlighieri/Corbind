@@ -83,10 +83,10 @@ suspend fun Snackbar.shown(
 fun Snackbar.shown(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Snackbar> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Snackbar> = corbindReceiveChannel(scope, capacity) {
     val callback = callback(scope, ::trySend)
     addCallback(callback)
-    invokeOnClose { removeCallback(callback) }
+    awaitClose { removeCallback(callback) }
 }
 
 /**

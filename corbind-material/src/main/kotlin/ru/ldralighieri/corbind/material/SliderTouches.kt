@@ -83,10 +83,10 @@ suspend fun Slider.touches(
 fun Slider.touches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnSliderTouchListener(listener)
-    invokeOnClose { removeOnSliderTouchListener(listener) }
+    awaitClose { removeOnSliderTouchListener(listener) }
 }
 
 /**

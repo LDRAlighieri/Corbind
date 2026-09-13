@@ -100,9 +100,9 @@ fun View.keys(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (KeyEvent) -> Boolean = AlwaysTrue,
-): ReceiveChannel<KeyEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<KeyEvent> = corbindReceiveChannel(scope, capacity) {
     setOnKeyListener(listener(scope, handled, ::trySend))
-    invokeOnClose { setOnKeyListener(null) }
+    awaitClose { setOnKeyListener(null) }
 }
 
 /**

@@ -94,12 +94,12 @@ suspend fun MaterialButton.checkedChanges(
 fun MaterialButton.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     checkCheckableState(this@checkedChanges)
     trySend(isChecked)
     val listener = listener(scope, ::trySend)
     addOnCheckedChangeListener(listener)
-    invokeOnClose { removeOnCheckedChangeListener(listener) }
+    awaitClose { removeOnCheckedChangeListener(listener) }
 }
 
 /**

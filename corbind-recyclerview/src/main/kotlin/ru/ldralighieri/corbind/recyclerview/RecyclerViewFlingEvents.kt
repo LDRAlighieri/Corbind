@@ -98,9 +98,9 @@ suspend fun RecyclerView.flingEvents(
 fun RecyclerView.flingEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel(scope, capacity) {
     onFlingListener = listener(scope, this@flingEvents, ::trySend)
-    invokeOnClose { onFlingListener = null }
+    awaitClose { onFlingListener = null }
 }
 
 /**

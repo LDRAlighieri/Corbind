@@ -89,10 +89,10 @@ suspend fun View.draws(
 fun View.draws(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     viewTreeObserver.addOnDrawListener(listener)
-    invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
+    awaitClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
 
 /**

@@ -91,12 +91,12 @@ suspend fun View.stateChanges(
 fun View.stateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBottomSheetBehavior()
     trySend(behavior.state)
     val callback = callback(scope, ::trySend)
     behavior.addBottomSheetCallback(callback)
-    invokeOnClose { behavior.removeBottomSheetCallback(callback) }
+    awaitClose { behavior.removeBottomSheetCallback(callback) }
 }
 
 /**

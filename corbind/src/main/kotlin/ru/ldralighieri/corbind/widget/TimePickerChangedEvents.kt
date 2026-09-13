@@ -107,10 +107,10 @@ suspend fun TimePicker.timeChangeEvents(
 fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<TimeChangedEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<TimeChangedEvent> = corbindReceiveChannel(scope, capacity) {
     trySend(TimeChangedEvent(this@timeChangeEvents, hour, minute))
     setOnTimeChangedListener(listener(scope, ::trySend))
-    invokeOnClose { setOnTimeChangedListener(null) }
+    awaitClose { setOnTimeChangedListener(null) }
 }
 
 /**

@@ -86,11 +86,11 @@ suspend fun View.slides(
 fun View.slides(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBottomSheetBehavior()
     val callback = callback(scope, ::trySend)
     behavior.addBottomSheetCallback(callback)
-    invokeOnClose { behavior.removeBottomSheetCallback(callback) }
+    awaitClose { behavior.removeBottomSheetCallback(callback) }
 }
 
 /**

@@ -94,9 +94,9 @@ suspend fun NestedScrollView.scrollChangeEvents(
 fun NestedScrollView.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(scope, capacity) {
     setOnScrollChangeListener(listener(scope, ::trySend))
-    invokeOnClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
+    awaitClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
 
 /**

@@ -98,10 +98,10 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
 fun <T : Adapter> AdapterView<T>.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     trySend(selectedItemPosition)
     onItemSelectedListener = listener(scope, ::trySend)
-    invokeOnClose { onItemSelectedListener = null }
+    awaitClose { onItemSelectedListener = null }
 }
 
 /**

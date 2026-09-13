@@ -91,9 +91,9 @@ suspend fun SwipeRefreshLayout.refreshes(
 fun SwipeRefreshLayout.refreshes(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     setOnRefreshListener(listener(scope, ::trySend))
-    invokeOnClose { setOnRefreshListener(null) }
+    awaitClose { setOnRefreshListener(null) }
 }
 
 /**

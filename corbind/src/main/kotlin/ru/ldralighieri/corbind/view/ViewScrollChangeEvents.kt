@@ -105,9 +105,9 @@ suspend fun View.scrollChangeEvents(
 fun View.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(scope, capacity) {
     setOnScrollChangeListener(listener(scope, ::trySend))
-    invokeOnClose { setOnScrollChangeListener(null) }
+    awaitClose { setOnScrollChangeListener(null) }
 }
 
 /**

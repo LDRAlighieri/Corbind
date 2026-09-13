@@ -128,9 +128,9 @@ suspend fun View.systemUiVisibilityChanges(
 fun View.systemUiVisibilityChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     setOnSystemUiVisibilityChangeListener(listener(scope, ::trySend))
-    invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
+    awaitClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
 /**

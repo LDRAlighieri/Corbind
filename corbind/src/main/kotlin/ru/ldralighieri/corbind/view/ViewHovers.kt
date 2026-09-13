@@ -102,9 +102,9 @@ fun View.hovers(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
-): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<MotionEvent> = corbindReceiveChannel(scope, capacity) {
     setOnHoverListener(listener(scope, handled, ::trySend))
-    invokeOnClose { setOnHoverListener(null) }
+    awaitClose { setOnHoverListener(null) }
 }
 
 /**

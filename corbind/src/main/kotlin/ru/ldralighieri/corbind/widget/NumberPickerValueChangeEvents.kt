@@ -103,10 +103,10 @@ suspend fun NumberPicker.valueChangeEvents(
 fun NumberPicker.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<NumberPickerValueChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<NumberPickerValueChangeEvent> = corbindReceiveChannel(scope, capacity) {
     trySend(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
     setOnValueChangedListener(listener(scope, ::trySend))
-    invokeOnClose { setOnValueChangedListener(null) }
+    awaitClose { setOnValueChangedListener(null) }
 }
 
 /**

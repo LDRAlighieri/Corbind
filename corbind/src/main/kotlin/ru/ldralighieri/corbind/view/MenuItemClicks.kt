@@ -101,9 +101,9 @@ fun MenuItem.clicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItem) -> Boolean = AlwaysTrue,
-): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<MenuItem> = corbindReceiveChannel(scope, capacity) {
     setOnMenuItemClickListener(listener(scope, handled, ::trySend))
-    invokeOnClose { setOnMenuItemClickListener(null) }
+    awaitClose { setOnMenuItemClickListener(null) }
 }
 
 /**

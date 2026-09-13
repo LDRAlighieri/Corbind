@@ -87,11 +87,11 @@ suspend fun ViewPager2.pageSelections(
 fun ViewPager2.pageSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     trySend(currentItem)
     val callback = callback(scope, ::trySend)
     registerOnPageChangeCallback(callback)
-    invokeOnClose { unregisterOnPageChangeCallback(callback) }
+    awaitClose { unregisterOnPageChangeCallback(callback) }
 }
 
 /**

@@ -97,10 +97,10 @@ suspend fun RadioGroup.checkedChanges(
 fun RadioGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     trySend(checkedRadioButtonId)
     setOnCheckedChangeListener(listener(scope, ::trySend))
-    invokeOnClose { setOnCheckedChangeListener(null) }
+    awaitClose { setOnCheckedChangeListener(null) }
 }
 
 /**

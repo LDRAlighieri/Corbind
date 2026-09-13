@@ -91,9 +91,9 @@ suspend fun MaskableFrameLayout.maskChanges(
 fun MaskableFrameLayout.maskChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<RectF> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<RectF> = corbindReceiveChannel(scope, capacity) {
     setOnMaskChangedListener(listener(scope, ::trySend))
-    invokeOnClose { setOnMaskChangedListener(null) }
+    awaitClose { setOnMaskChangedListener(null) }
 }
 
 /**

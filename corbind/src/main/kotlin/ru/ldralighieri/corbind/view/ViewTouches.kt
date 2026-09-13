@@ -103,9 +103,9 @@ fun View.touches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
-): ReceiveChannel<MotionEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<MotionEvent> = corbindReceiveChannel(scope, capacity) {
     setOnTouchListener(listener(scope, handled, ::trySend))
-    invokeOnClose { setOnTouchListener(null) }
+    awaitClose { setOnTouchListener(null) }
 }
 
 /**

@@ -102,9 +102,9 @@ fun TextInputLayout.endIconLongClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     setEndIconOnLongClickListener(listener(scope, handled, ::trySend))
-    invokeOnClose { setEndIconOnLongClickListener(null) }
+    awaitClose { setEndIconOnLongClickListener(null) }
 }
 
 /**

@@ -92,9 +92,9 @@ suspend fun Chip.closeIconClicks(
 fun Chip.closeIconClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     setOnCloseIconClickListener(listener(scope, ::trySend))
-    invokeOnClose { setOnCloseIconClickListener(null) }
+    awaitClose { setOnCloseIconClickListener(null) }
 }
 
 /**

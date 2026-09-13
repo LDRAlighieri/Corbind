@@ -100,9 +100,9 @@ fun View.drags(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (DragEvent) -> Boolean = AlwaysTrue,
-): ReceiveChannel<DragEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<DragEvent> = corbindReceiveChannel(scope, capacity) {
     setOnDragListener(listener(scope, handled, ::trySend))
-    invokeOnClose { setOnDragListener(null) }
+    awaitClose { setOnDragListener(null) }
 }
 
 /**

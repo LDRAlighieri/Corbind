@@ -93,10 +93,10 @@ suspend fun SearchView.transitionStateChangeEvents(
 fun SearchView.transitionStateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<SearchViewTransitionStateChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<SearchViewTransitionStateChangeEvent> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addTransitionListener(listener)
-    invokeOnClose { removeTransitionListener(listener) }
+    awaitClose { removeTransitionListener(listener) }
 }
 
 /**

@@ -84,10 +84,10 @@ suspend fun <S> MaterialDatePicker<S>.positiveClicks(
 fun <S> MaterialDatePicker<S>.positiveClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<S> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<S> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnPositiveButtonClickListener(listener)
-    invokeOnClose { removeOnPositiveButtonClickListener(listener) }
+    awaitClose { removeOnPositiveButtonClickListener(listener) }
 }
 
 /**

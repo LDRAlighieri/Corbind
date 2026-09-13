@@ -97,9 +97,9 @@ suspend fun Toolbar.navigationClicks(
 fun Toolbar.navigationClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     setNavigationOnClickListener(listener(scope, ::trySend))
-    invokeOnClose { setNavigationOnClickListener(null) }
+    awaitClose { setNavigationOnClickListener(null) }
 }
 
 /**

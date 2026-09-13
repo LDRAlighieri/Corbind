@@ -93,9 +93,9 @@ suspend fun <T : Adapter> AdapterView<T>.itemClicks(
 fun <T : Adapter> AdapterView<T>.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     onItemClickListener = listener(scope, ::trySend)
-    invokeOnClose { onItemClickListener = null }
+    awaitClose { onItemClickListener = null }
 }
 
 /**

@@ -100,9 +100,9 @@ suspend fun AbsListView.scrollEvents(
 fun AbsListView.scrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<AbsListViewScrollEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<AbsListViewScrollEvent> = corbindReceiveChannel(scope, capacity) {
     setOnScrollListener(listener(scope, ::trySend))
-    invokeOnClose { setOnScrollListener(null) }
+    awaitClose { setOnScrollListener(null) }
 }
 
 /**

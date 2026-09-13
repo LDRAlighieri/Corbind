@@ -83,10 +83,10 @@ suspend fun ViewPager.pageScrollStateChanges(
 fun ViewPager.pageScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnPageChangeListener(listener)
-    invokeOnClose { removeOnPageChangeListener(listener) }
+    awaitClose { removeOnPageChangeListener(listener) }
 }
 
 /**

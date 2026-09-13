@@ -128,10 +128,10 @@ suspend fun SeekBar.changeEvents(
 fun SeekBar.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(scope, capacity) {
     trySend(initialValue(this@changeEvents))
     setOnSeekBarChangeListener(listener(scope, ::trySend))
-    invokeOnClose { setOnSeekBarChangeListener(null) }
+    awaitClose { setOnSeekBarChangeListener(null) }
 }
 
 /**

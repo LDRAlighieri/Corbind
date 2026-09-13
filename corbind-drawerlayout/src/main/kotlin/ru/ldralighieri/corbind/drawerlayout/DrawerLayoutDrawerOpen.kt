@@ -94,11 +94,11 @@ fun DrawerLayout.drawerOpens(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     gravity: Int,
-): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     trySend(isDrawerOpen(gravity))
     val listener = listener(scope, gravity, ::trySend)
     addDrawerListener(listener)
-    invokeOnClose { removeDrawerListener(listener) }
+    awaitClose { removeDrawerListener(listener) }
 }
 
 /**

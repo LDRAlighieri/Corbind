@@ -90,10 +90,10 @@ fun OnBackPressedDispatcher.backPresses(
     scope: CoroutineScope,
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     val callback = callback(scope, ::trySend)
     addCallback(lifecycleOwner, callback)
-    invokeOnClose { callback.remove() }
+    awaitClose { callback.remove() }
 }
 
 /**

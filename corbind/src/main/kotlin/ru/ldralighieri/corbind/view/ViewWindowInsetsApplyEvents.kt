@@ -94,9 +94,9 @@ suspend fun View.windowInsetsApplyEvents(
 fun View.windowInsetsApplyEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<WindowInsetsEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<WindowInsetsEvent> = corbindReceiveChannel(scope, capacity) {
     setOnApplyWindowInsetsListener(listener(scope, ::trySend))
-    invokeOnClose { setOnApplyWindowInsetsListener(null) }
+    awaitClose { setOnApplyWindowInsetsListener(null) }
 }
 
 /**

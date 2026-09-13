@@ -88,11 +88,11 @@ suspend fun <T : Adapter> T.dataChanges(
 fun <T : Adapter> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<T> = corbindReceiveChannel(scope, capacity) {
     trySend(this@dataChanges)
     val dataSetObserver = observer(scope, this@dataChanges, ::trySend)
     registerDataSetObserver(dataSetObserver)
-    invokeOnClose { unregisterDataSetObserver(dataSetObserver) }
+    awaitClose { unregisterDataSetObserver(dataSetObserver) }
 }
 
 /**
