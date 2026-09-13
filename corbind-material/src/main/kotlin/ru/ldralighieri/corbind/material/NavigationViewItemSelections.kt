@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on the selected item in [NavigationView].
@@ -96,7 +97,7 @@ fun NavigationView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(scope, capacity) {
-    setInitialValue(this@itemSelections, ::trySend)
+    setInitialValue(this@itemSelections, ::sendInitialValue)
     setNavigationItemSelectedListener(listener(scope, ::trySend))
     awaitClose { setNavigationItemSelectedListener(null) }
 }

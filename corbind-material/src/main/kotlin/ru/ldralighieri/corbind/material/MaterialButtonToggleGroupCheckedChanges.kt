@@ -32,6 +32,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on [MaterialButton] check change in [MaterialButtonToggleGroup].
@@ -105,7 +106,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     checkSelectionMode(this@buttonCheckedChanges)
-    trySend(checkedButtonId)
+    sendInitialValue(checkedButtonId)
     val listener = listener(this@buttonCheckedChanges, scope, ::trySend)
     addOnButtonCheckedListener(listener)
     awaitClose { removeOnButtonCheckedListener(listener) }

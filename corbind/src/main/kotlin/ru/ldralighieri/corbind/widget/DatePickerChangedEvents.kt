@@ -32,6 +32,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class DateChangedEvent(
     val view: DatePicker,
@@ -109,7 +110,7 @@ fun DatePicker.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<DateChangedEvent> = corbindReceiveChannel(scope, capacity) {
-    trySend(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
+    sendInitialValue(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
     setOnDateChangedListener(listener(scope, ::trySend))
     awaitClose { setOnDateChangedListener(null) }
 }

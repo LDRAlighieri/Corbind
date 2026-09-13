@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class NumberPickerValueChangeEvent(
     val picker: NumberPicker,
@@ -104,7 +105,7 @@ fun NumberPicker.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<NumberPickerValueChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    trySend(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
+    sendInitialValue(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
     setOnValueChangedListener(listener(scope, ::trySend))
     awaitClose { setOnValueChangedListener(null) }
 }

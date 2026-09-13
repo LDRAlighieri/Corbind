@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class SearchViewQueryTextEvent(
     val view: SearchView,
@@ -103,7 +104,7 @@ fun SearchView.queryTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(scope, capacity) {
-    trySend(initialValue(this@queryTextChangeEvents))
+    sendInitialValue(initialValue(this@queryTextChangeEvents))
     setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::trySend))
     awaitClose { setOnQueryTextListener(null) }
 }

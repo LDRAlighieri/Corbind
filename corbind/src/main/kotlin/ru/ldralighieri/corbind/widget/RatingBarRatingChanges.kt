@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on rating changes on [RatingBar].
@@ -96,7 +97,7 @@ fun RatingBar.ratingChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
-    trySend(rating)
+    sendInitialValue(rating)
     onRatingBarChangeListener = listener(scope, ::trySend)
     awaitClose { onRatingBarChangeListener = null }
 }

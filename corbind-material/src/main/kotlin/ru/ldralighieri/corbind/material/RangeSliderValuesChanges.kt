@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on values changes on [RangeSlider].
@@ -88,7 +89,7 @@ fun RangeSlider.valuesChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<List<Float>> = corbindReceiveChannel(scope, capacity) {
-    trySend(values)
+    sendInitialValue(values)
     val listener = listener(scope, ::trySend)
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }

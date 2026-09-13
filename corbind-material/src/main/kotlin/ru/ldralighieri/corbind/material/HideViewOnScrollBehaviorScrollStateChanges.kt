@@ -73,8 +73,6 @@ suspend fun View.hideOnScrollStateChanges(
  * Create a channel which emits the bottom view scroll state change events from [View] on
  * [HideViewOnScrollBehavior].
  *
- * *Note:* A value will be emitted immediately.
- *
  * Examples:
  *
  * ```
@@ -101,8 +99,6 @@ fun View.hideOnScrollStateChanges(
 /**
  * Create a flow which emits the bottom view scroll state change events from [View] on
  * [HideViewOnScrollBehavior].
- *
- * *Note:* A value will be emitted immediately.
  *
  * Examples:
  *

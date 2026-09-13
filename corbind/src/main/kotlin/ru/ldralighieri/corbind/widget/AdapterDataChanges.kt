@@ -31,6 +31,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on data change events for [Adapter].
@@ -89,7 +90,7 @@ fun <T : Adapter> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<T> = corbindReceiveChannel(scope, capacity) {
-    trySend(this@dataChanges)
+    sendInitialValue(this@dataChanges)
     val dataSetObserver = observer(scope, this@dataChanges, ::trySend)
     registerDataSetObserver(dataSetObserver)
     awaitClose { unregisterDataSetObserver(dataSetObserver) }

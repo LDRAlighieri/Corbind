@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 sealed interface SeekBarChangeEvent {
     val view: SeekBar
@@ -129,7 +130,7 @@ fun SeekBar.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    trySend(initialValue(this@changeEvents))
+    sendInitialValue(initialValue(this@changeEvents))
     setOnSeekBarChangeListener(listener(scope, ::trySend))
     awaitClose { setOnSeekBarChangeListener(null) }
 }

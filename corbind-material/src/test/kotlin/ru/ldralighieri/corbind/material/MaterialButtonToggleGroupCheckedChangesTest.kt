@@ -109,6 +109,19 @@ class MaterialButtonToggleGroupCheckedChangesTest {
     }
 
     @Test
+    fun `channel with default capacity emits initial selection`() {
+        // given
+        group.check(firstButtonId)
+
+        // when
+        binding = group.buttonCheckedChanges(scope)
+
+        // then
+        assertNext(firstButtonId)
+        assertNoEmission()
+    }
+
+    @Test
     fun `channel emits selection replacement`() {
         // given
         group.check(firstButtonId)
