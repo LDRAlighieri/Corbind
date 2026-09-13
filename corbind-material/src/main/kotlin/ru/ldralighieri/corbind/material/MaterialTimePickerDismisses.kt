@@ -86,10 +86,10 @@ suspend fun MaterialTimePicker.dismisses(
 fun MaterialTimePicker.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnDismissListener(listener)
-    invokeOnClose { removeOnDismissListener(listener) }
+    awaitClose { removeOnDismissListener(listener) }
 }
 
 /**

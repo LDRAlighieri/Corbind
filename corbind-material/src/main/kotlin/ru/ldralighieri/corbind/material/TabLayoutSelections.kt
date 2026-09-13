@@ -86,11 +86,11 @@ suspend fun TabLayout.selections(
 fun TabLayout.selections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(scope, capacity) {
     setInitialValue(this@selections, ::trySend)
     val listener = listener(scope, ::trySend)
     addOnTabSelectedListener(listener)
-    invokeOnClose { removeOnTabSelectedListener(listener) }
+    awaitClose { removeOnTabSelectedListener(listener) }
 }
 
 /**

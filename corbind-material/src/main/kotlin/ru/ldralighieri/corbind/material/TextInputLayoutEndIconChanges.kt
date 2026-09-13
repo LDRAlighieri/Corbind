@@ -86,10 +86,10 @@ suspend fun TextInputLayout.endIconChanges(
 fun TextInputLayout.endIconChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnEndIconChangedListener(listener)
-    invokeOnClose { removeOnEndIconChangedListener(listener) }
+    awaitClose { removeOnEndIconChangedListener(listener) }
 }
 
 /**

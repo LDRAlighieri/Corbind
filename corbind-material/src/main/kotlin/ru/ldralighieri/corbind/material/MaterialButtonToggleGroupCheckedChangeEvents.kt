@@ -99,11 +99,11 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<MaterialButtonCheckedChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<MaterialButtonCheckedChangeEvent> = corbindReceiveChannel(scope, capacity) {
     checkSelectionMode(this@buttonCheckedChangeEvents)
     val listener = listener(scope, ::trySend)
     addOnButtonCheckedListener(listener)
-    invokeOnClose { removeOnButtonCheckedListener(listener) }
+    awaitClose { removeOnButtonCheckedListener(listener) }
 }
 
 /**

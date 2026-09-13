@@ -102,9 +102,9 @@ fun TextInputLayout.startIconLongClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     setStartIconOnLongClickListener(listener(scope, handled, ::trySend))
-    invokeOnClose { setStartIconOnLongClickListener(null) }
+    awaitClose { setStartIconOnLongClickListener(null) }
 }
 
 /**

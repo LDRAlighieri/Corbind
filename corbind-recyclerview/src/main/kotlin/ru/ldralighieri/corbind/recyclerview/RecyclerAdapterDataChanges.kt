@@ -87,11 +87,11 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<T> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<T> = corbindReceiveChannel(scope, capacity) {
     trySend(this@dataChanges)
     val dataObserver = observer(scope, this@dataChanges, ::trySend)
     registerAdapterDataObserver(dataObserver)
-    invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
+    awaitClose { unregisterAdapterDataObserver(dataObserver) }
 }
 
 /**

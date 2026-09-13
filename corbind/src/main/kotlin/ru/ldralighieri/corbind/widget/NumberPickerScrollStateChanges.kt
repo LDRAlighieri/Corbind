@@ -91,9 +91,9 @@ suspend fun NumberPicker.scrollStateChanges(
 fun NumberPicker.scrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     setOnScrollListener(listener(scope, ::trySend))
-    invokeOnClose { setOnScrollListener(null) }
+    awaitClose { setOnScrollListener(null) }
 }
 
 /**

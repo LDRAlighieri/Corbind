@@ -95,10 +95,10 @@ suspend fun CompoundButton.checkedChanges(
 fun CompoundButton.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     trySend(isChecked)
     setOnCheckedChangeListener(listener(scope, ::trySend))
-    invokeOnClose { setOnCheckedChangeListener(null) }
+    awaitClose { setOnCheckedChangeListener(null) }
 }
 
 /**

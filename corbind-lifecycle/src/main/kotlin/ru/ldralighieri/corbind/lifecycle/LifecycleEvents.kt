@@ -83,10 +83,10 @@ suspend fun Lifecycle.events(
 fun Lifecycle.events(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Lifecycle.Event> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Lifecycle.Event> = corbindReceiveChannel(scope, capacity) {
     val observer = observer(scope, ::trySend)
     addObserver(observer)
-    invokeOnClose { removeObserver(observer) }
+    awaitClose { removeObserver(observer) }
 }
 
 /**

@@ -126,10 +126,10 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
 fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(scope, capacity) {
     trySend(initialValue(this@selectionEvents))
     onItemSelectedListener = listener(scope, ::trySend)
-    invokeOnClose { onItemSelectedListener = null }
+    awaitClose { onItemSelectedListener = null }
 }
 
 /**

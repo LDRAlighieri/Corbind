@@ -106,9 +106,9 @@ suspend fun DatePickerDialog.dateSetEvents(
 fun DatePickerDialog.dateSetEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<DatePickerDialogSetEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<DatePickerDialogSetEvent> = corbindReceiveChannel(scope, capacity) {
     setOnDateSetListener(listener(scope, ::trySend))
-    invokeOnClose { setOnDateSetListener(null) }
+    awaitClose { setOnDateSetListener(null) }
 }
 
 /**

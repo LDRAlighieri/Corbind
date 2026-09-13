@@ -109,10 +109,10 @@ suspend fun View.attachEvents(
 fun View.attachEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<ViewAttachEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<ViewAttachEvent> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnAttachStateChangeListener(listener)
-    invokeOnClose { removeOnAttachStateChangeListener(listener) }
+    awaitClose { removeOnAttachStateChangeListener(listener) }
 }
 
 /**

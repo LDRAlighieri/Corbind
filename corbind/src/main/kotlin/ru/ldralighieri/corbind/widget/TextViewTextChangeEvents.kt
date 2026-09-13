@@ -98,11 +98,11 @@ suspend fun TextView.textChangeEvents(
 fun TextView.textChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<TextViewTextChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<TextViewTextChangeEvent> = corbindReceiveChannel(scope, capacity) {
     trySend(initialValue(this@textChangeEvents))
     val listener = listener(scope, this@textChangeEvents, ::trySend)
     addTextChangedListener(listener)
-    invokeOnClose { removeTextChangedListener(listener) }
+    awaitClose { removeTextChangedListener(listener) }
 }
 
 /**

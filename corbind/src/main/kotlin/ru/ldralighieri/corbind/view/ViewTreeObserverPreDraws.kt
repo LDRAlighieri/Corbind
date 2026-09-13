@@ -90,10 +90,10 @@ fun View.preDraws(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     proceedDrawingPass: () -> Boolean,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, proceedDrawingPass, ::trySend)
     viewTreeObserver.addOnPreDrawListener(listener)
-    invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
+    awaitClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
 /**

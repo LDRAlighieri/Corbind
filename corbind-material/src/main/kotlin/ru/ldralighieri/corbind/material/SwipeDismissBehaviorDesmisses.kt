@@ -93,10 +93,10 @@ suspend fun View.dismisses(
 fun View.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<View> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<View> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBehavior(this@dismisses)
     behavior.listener = listener(scope, ::trySend)
-    invokeOnClose { behavior.setListener(null) }
+    awaitClose { behavior.setListener(null) }
 }
 
 /**

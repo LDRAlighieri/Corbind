@@ -123,11 +123,11 @@ suspend fun TabLayout.selectionEvents(
 fun TabLayout.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<TabLayoutSelectionEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<TabLayoutSelectionEvent> = corbindReceiveChannel(scope, capacity) {
     setInitialValue(this@selectionEvents, ::trySend)
     val listener = listener(scope, this@selectionEvents, ::trySend)
     addOnTabSelectedListener(listener)
-    invokeOnClose { removeOnTabSelectedListener(listener) }
+    awaitClose { removeOnTabSelectedListener(listener) }
 }
 
 /**

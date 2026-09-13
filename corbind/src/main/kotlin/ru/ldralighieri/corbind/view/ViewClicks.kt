@@ -91,9 +91,9 @@ suspend fun View.clicks(
 fun View.clicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     setOnClickListener(listener(scope, ::trySend))
-    invokeOnClose { setOnClickListener(null) }
+    awaitClose { setOnClickListener(null) }
 }
 
 /**

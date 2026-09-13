@@ -83,10 +83,10 @@ suspend fun AppBarLayout.offsetChanges(
 fun AppBarLayout.offsetChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnOffsetChangedListener(listener)
-    invokeOnClose { removeOnOffsetChangedListener(listener) }
+    awaitClose { removeOnOffsetChangedListener(listener) }
 }
 
 /**

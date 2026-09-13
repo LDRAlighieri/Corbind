@@ -112,9 +112,9 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
-): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel(scope, capacity) {
     onItemLongClickListener = listener(scope, handled, ::trySend)
-    invokeOnClose { onItemLongClickListener = null }
+    awaitClose { onItemLongClickListener = null }
 }
 
 /**

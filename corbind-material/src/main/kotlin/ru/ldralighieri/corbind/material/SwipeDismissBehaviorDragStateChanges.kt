@@ -92,10 +92,10 @@ suspend fun View.dragStateChanges(
 fun View.dragStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBehavior(this@dragStateChanges)
     behavior.listener = listener(scope, ::trySend)
-    invokeOnClose { behavior.setListener(null) }
+    awaitClose { behavior.setListener(null) }
 }
 
 /**

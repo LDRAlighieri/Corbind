@@ -87,11 +87,11 @@ suspend fun Slider.valueChanges(
 fun Slider.valueChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
     trySend(value)
     val listener = listener(scope, ::trySend)
     addOnChangeListener(listener)
-    invokeOnClose { removeOnChangeListener(listener) }
+    awaitClose { removeOnChangeListener(listener) }
 }
 
 /**

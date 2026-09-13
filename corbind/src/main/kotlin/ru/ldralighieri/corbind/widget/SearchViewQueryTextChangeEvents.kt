@@ -102,10 +102,10 @@ suspend fun SearchView.queryTextChangeEvents(
 fun SearchView.queryTextChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(scope, capacity) {
     trySend(initialValue(this@queryTextChangeEvents))
     setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::trySend))
-    invokeOnClose { setOnQueryTextListener(null) }
+    awaitClose { setOnQueryTextListener(null) }
 }
 
 /**

@@ -118,10 +118,10 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
 fun RecyclerView.childAttachStateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, this@childAttachStateChangeEvents, ::trySend)
     addOnChildAttachStateChangeListener(listener)
-    invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
+    awaitClose { removeOnChildAttachStateChangeListener(listener) }
 }
 
 /**

@@ -128,9 +128,9 @@ suspend fun SearchBar.searchQueryChangeEvents(
 fun SearchBar.searchQueryChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<SearchBarSearchQueryEvent> = corbindReceiveChannel(scope, capacity) {
     setSearchBarListener(listener(scope, this@searchQueryChangeEvents, ::trySend))
-    invokeOnClose { setSearchBarListener(null) }
+    awaitClose { setSearchBarListener(null) }
 }
 
 /**

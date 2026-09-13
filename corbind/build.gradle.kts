@@ -28,4 +28,7 @@ android {
 dependencies {
     api(libs.kotlin.coroutines.android)
     api(libs.androidx.annotation)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
 }

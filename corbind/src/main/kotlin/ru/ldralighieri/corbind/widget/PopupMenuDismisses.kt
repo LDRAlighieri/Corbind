@@ -91,9 +91,9 @@ suspend fun PopupMenu.dismisses(
 fun PopupMenu.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     setOnDismissListener(listener(scope, ::trySend))
-    invokeOnClose { setOnDismissListener(null) }
+    awaitClose { setOnDismissListener(null) }
 }
 
 /**

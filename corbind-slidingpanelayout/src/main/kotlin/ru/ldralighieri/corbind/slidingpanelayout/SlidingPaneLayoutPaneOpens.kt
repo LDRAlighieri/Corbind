@@ -92,11 +92,11 @@ suspend fun SlidingPaneLayout.panelOpens(
 fun SlidingPaneLayout.panelOpens(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     trySend(isOpen)
     val listener = listener(scope, ::trySend)
     addPanelSlideListener(listener)
-    invokeOnClose { removePanelSlideListener(listener) }
+    awaitClose { removePanelSlideListener(listener) }
 }
 
 /**

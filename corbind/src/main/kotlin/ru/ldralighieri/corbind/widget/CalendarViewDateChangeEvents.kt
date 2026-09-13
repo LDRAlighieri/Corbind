@@ -105,10 +105,10 @@ suspend fun CalendarView.dateChangeEvents(
 fun CalendarView.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<CalendarViewDateChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<CalendarViewDateChangeEvent> = corbindReceiveChannel(scope, capacity) {
     trySend(initialValue(this@dateChangeEvents))
     setOnDateChangeListener(listener(scope, ::trySend))
-    invokeOnClose { setOnDateChangeListener(null) }
+    awaitClose { setOnDateChangeListener(null) }
 }
 
 /**

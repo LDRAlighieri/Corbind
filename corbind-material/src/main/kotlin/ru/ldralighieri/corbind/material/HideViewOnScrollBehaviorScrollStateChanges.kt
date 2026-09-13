@@ -91,11 +91,11 @@ suspend fun View.hideOnScrollStateChanges(
 fun View.hideOnScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBehavior()
     val listener = listener(scope, ::trySend)
     behavior.addOnScrollStateChangedListener(listener)
-    invokeOnClose { behavior.removeOnScrollStateChangedListener(listener) }
+    awaitClose { behavior.removeOnScrollStateChangedListener(listener) }
 }
 
 /**

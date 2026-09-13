@@ -101,9 +101,9 @@ fun TextView.editorActions(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (Int) -> Boolean = AlwaysTrue,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     setOnEditorActionListener(listener(scope, handled, ::trySend))
-    invokeOnClose { setOnEditorActionListener(null) }
+    awaitClose { setOnEditorActionListener(null) }
 }
 
 /**

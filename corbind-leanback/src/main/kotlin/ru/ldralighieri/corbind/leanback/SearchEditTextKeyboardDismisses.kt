@@ -92,9 +92,9 @@ suspend fun SearchEditText.keyboardDismisses(
 fun SearchEditText.keyboardDismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     setOnKeyboardDismissListener(listener(scope, ::trySend))
-    invokeOnClose { setOnKeyboardDismissListener(null) }
+    awaitClose { setOnKeyboardDismissListener(null) }
 }
 
 /**

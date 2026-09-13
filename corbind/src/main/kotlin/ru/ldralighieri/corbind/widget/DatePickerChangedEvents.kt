@@ -108,10 +108,10 @@ suspend fun DatePicker.dateChangeEvents(
 fun DatePicker.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<DateChangedEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<DateChangedEvent> = corbindReceiveChannel(scope, capacity) {
     trySend(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
     setOnDateChangedListener(listener(scope, ::trySend))
-    invokeOnClose { setOnDateChangedListener(null) }
+    awaitClose { setOnDateChangedListener(null) }
 }
 
 /**

@@ -95,11 +95,11 @@ suspend fun Slider.valueChangeEvents(
 fun Slider.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<SliderChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<SliderChangeEvent> = corbindReceiveChannel(scope, capacity) {
     val event = initialValue(this@valueChangeEvents).also(::trySend)
     val listener = listener(scope, ::trySend).apply { previousValue = event.previousValue }
     addOnChangeListener(listener)
-    invokeOnClose { removeOnChangeListener(listener) }
+    awaitClose { removeOnChangeListener(listener) }
 }
 
 /**

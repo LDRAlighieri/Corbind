@@ -95,10 +95,10 @@ suspend fun NavController.destinationChangeEvents(
 fun NavController.destinationChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<NavControllerOnDestinationChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<NavControllerOnDestinationChangeEvent> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnDestinationChangedListener(listener)
-    invokeOnClose { removeOnDestinationChangedListener(listener) }
+    awaitClose { removeOnDestinationChangedListener(listener) }
 }
 
 /**

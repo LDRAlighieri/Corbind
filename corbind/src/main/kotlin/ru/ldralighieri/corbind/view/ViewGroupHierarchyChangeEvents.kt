@@ -121,9 +121,9 @@ suspend fun ViewGroup.changeEvents(
 fun ViewGroup.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel(scope, capacity) {
     setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::trySend))
-    invokeOnClose { setOnHierarchyChangeListener(null) }
+    awaitClose { setOnHierarchyChangeListener(null) }
 }
 
 /**

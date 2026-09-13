@@ -95,10 +95,10 @@ suspend fun View.focusChanges(
 fun View.focusChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Boolean> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     trySend(hasFocus())
     onFocusChangeListener = listener(scope, ::trySend)
-    invokeOnClose { onFocusChangeListener = null }
+    awaitClose { onFocusChangeListener = null }
 }
 
 /**

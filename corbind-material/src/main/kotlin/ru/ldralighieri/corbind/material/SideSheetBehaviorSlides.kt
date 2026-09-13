@@ -87,11 +87,11 @@ suspend fun View.sideSheetSlides(
 fun View.sideSheetSlides(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Float> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
     val behavior = getSideSheetBehavior()
     val callback = callback(scope, ::trySend)
     behavior.addCallback(callback)
-    invokeOnClose { behavior.removeCallback(callback) }
+    awaitClose { behavior.removeCallback(callback) }
 }
 
 /**

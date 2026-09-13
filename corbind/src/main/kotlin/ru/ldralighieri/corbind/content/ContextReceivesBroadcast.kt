@@ -106,7 +106,7 @@ fun Context.receivesBroadcast(
     scope: CoroutineScope,
     intentFilter: IntentFilter,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Intent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Intent> = corbindReceiveChannel(scope, capacity) {
     val receiver = receiver(scope, ::trySend)
 
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
@@ -115,7 +115,7 @@ fun Context.receivesBroadcast(
         registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
     }
 
-    invokeOnClose { unregisterReceiver(receiver) }
+    awaitClose { unregisterReceiver(receiver) }
 }
 
 /**

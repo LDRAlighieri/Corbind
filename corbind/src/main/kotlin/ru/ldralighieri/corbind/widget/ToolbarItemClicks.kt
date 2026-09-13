@@ -97,9 +97,9 @@ suspend fun Toolbar.itemClicks(
 fun Toolbar.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<MenuItem> = corbindReceiveChannel(scope, capacity) {
     setOnMenuItemClickListener(listener(scope, ::trySend))
-    invokeOnClose { setOnMenuItemClickListener(null) }
+    awaitClose { setOnMenuItemClickListener(null) }
 }
 
 /**

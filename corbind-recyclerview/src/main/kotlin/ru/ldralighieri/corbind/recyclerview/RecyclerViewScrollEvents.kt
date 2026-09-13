@@ -90,10 +90,10 @@ suspend fun RecyclerView.scrollEvents(
 fun RecyclerView.scrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<RecyclerViewScrollEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<RecyclerViewScrollEvent> = corbindReceiveChannel(scope, capacity) {
     val scrollListener = listener(scope, ::trySend)
     addOnScrollListener(scrollListener)
-    invokeOnClose { removeOnScrollListener(scrollListener) }
+    awaitClose { removeOnScrollListener(scrollListener) }
 }
 
 /**

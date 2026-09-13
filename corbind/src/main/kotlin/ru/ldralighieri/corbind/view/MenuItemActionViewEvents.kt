@@ -127,9 +127,9 @@ fun MenuItem.actionViewEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel(scope, capacity) {
     setOnActionExpandListener(listener(scope, handled, ::trySend))
-    invokeOnClose { setOnActionExpandListener(null) }
+    awaitClose { setOnActionExpandListener(null) }
 }
 
 /**

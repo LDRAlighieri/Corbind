@@ -96,10 +96,10 @@ suspend fun ChipGroup.checkedChanges(
 fun ChipGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<List<Int>> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<List<Int>> = corbindReceiveChannel(scope, capacity) {
     trySend(checkedChipIds)
     setOnCheckedStateChangeListener(listener(scope, ::trySend))
-    invokeOnClose { setOnCheckedStateChangeListener(null) }
+    awaitClose { setOnCheckedStateChangeListener(null) }
 }
 
 /**

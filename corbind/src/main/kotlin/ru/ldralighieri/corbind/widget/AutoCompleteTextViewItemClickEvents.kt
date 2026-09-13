@@ -94,9 +94,9 @@ suspend fun AutoCompleteTextView.itemClickEvents(
 fun AutoCompleteTextView.itemClickEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(scope, capacity) {
     onItemClickListener = listener(scope, ::trySend)
-    invokeOnClose { onItemClickListener = null }
+    awaitClose { onItemClickListener = null }
 }
 
 /**

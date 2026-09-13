@@ -142,6 +142,12 @@ launch {
 }
 ```
 
+The `Job` in the passed `CoroutineScope` owns a hot channel binding. When that job completes, either
+normally or through cancellation, the channel is cancelled and its Android callback is removed.
+Cancelling the returned channel also removes the callback without cancelling the scope. If the scope
+is already cancelled, the callback is not registered. Registration and removal are performed on the
+Android main thread.
+
 And if you just need to perform an action on button click, the easiest way will be:
 ```kotlin
 launch {

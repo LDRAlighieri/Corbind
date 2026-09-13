@@ -92,9 +92,9 @@ suspend fun TextInputLayout.startIconClicks(
 fun TextInputLayout.startIconClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     setStartIconOnClickListener(listener(scope, ::trySend))
-    invokeOnClose { setStartIconOnClickListener(null) }
+    awaitClose { setStartIconOnClickListener(null) }
 }
 
 /**

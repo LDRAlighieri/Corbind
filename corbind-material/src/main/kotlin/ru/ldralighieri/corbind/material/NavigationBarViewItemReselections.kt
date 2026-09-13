@@ -92,9 +92,9 @@ suspend fun NavigationBarView.itemReselections(
 fun NavigationBarView.itemReselections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<MenuItem> = corbindReceiveChannel(scope, capacity) {
     setOnItemReselectedListener(listener(scope, ::trySend))
-    invokeOnClose { setOnItemReselectedListener(null) }
+    awaitClose { setOnItemReselectedListener(null) }
 }
 
 /**

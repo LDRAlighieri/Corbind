@@ -59,10 +59,10 @@ private fun SeekBar.changes(
     scope: CoroutineScope,
     capacity: Int,
     shouldBeFromUser: Boolean?,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     trySend(progress)
     setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, ::trySend))
-    invokeOnClose { setOnSeekBarChangeListener(null) }
+    awaitClose { setOnSeekBarChangeListener(null) }
 }
 
 @CheckResult

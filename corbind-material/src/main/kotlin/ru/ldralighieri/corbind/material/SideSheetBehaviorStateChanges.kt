@@ -92,12 +92,12 @@ suspend fun View.sideSheetStateChanges(
 fun View.sideSheetStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Int> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val behavior = getSideSheetBehavior()
     trySend(behavior.state)
     val callback = callback(scope, ::trySend)
     behavior.addCallback(callback)
-    invokeOnClose { behavior.removeCallback(callback) }
+    awaitClose { behavior.removeCallback(callback) }
 }
 
 /**

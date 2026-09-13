@@ -115,10 +115,10 @@ fun FragmentManager.resultEvents(
     requestKey: String,
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<FragmentResultEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<FragmentResultEvent> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     setFragmentResultListener(requestKey, lifecycleOwner, listener)
-    invokeOnClose { clearFragmentResultListener(requestKey) }
+    awaitClose { clearFragmentResultListener(requestKey) }
 }
 
 /**

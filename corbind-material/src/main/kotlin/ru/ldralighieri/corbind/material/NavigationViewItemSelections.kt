@@ -95,10 +95,10 @@ suspend fun NavigationView.itemSelections(
 fun NavigationView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<MenuItem> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<MenuItem> = corbindReceiveChannel(scope, capacity) {
     setInitialValue(this@itemSelections, ::trySend)
     setNavigationItemSelectedListener(listener(scope, ::trySend))
-    invokeOnClose { setNavigationItemSelectedListener(null) }
+    awaitClose { setNavigationItemSelectedListener(null) }
 }
 
 /**

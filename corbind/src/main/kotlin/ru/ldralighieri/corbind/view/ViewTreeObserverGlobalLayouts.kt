@@ -87,11 +87,11 @@ suspend fun View.globalLayouts(
 fun View.globalLayouts(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     val observer = viewTreeObserver
     observer.addOnGlobalLayoutListener(listener)
-    invokeOnClose {
+    awaitClose {
         removeOnGlobalLayoutListener(observer, listener)
     }
 }

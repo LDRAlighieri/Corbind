@@ -83,10 +83,10 @@ suspend fun View.attaches(
 fun View.attaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, true, ::trySend)
     addOnAttachStateChangeListener(listener)
-    invokeOnClose { removeOnAttachStateChangeListener(listener) }
+    awaitClose { removeOnAttachStateChangeListener(listener) }
 }
 
 /**
@@ -161,10 +161,10 @@ suspend fun View.detaches(
 fun View.detaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<Unit> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, false, ::trySend)
     addOnAttachStateChangeListener(listener)
-    invokeOnClose { removeOnAttachStateChangeListener(listener) }
+    awaitClose { removeOnAttachStateChangeListener(listener) }
 }
 
 /**

@@ -96,10 +96,10 @@ suspend fun View.layoutChangeEvents(
 fun View.layoutChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
-): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel(capacity) {
+): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel(scope, capacity) {
     val listener = listener(scope, ::trySend)
     addOnLayoutChangeListener(listener)
-    invokeOnClose { removeOnLayoutChangeListener(listener) }
+    awaitClose { removeOnLayoutChangeListener(listener) }
 }
 
 /**
