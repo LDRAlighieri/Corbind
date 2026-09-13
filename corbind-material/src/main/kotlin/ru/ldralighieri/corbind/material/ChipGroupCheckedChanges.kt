@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on checked view IDs changes in [ChipGroup].
@@ -97,7 +98,7 @@ fun ChipGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<List<Int>> = corbindReceiveChannel(scope, capacity) {
-    trySend(checkedChipIds)
+    sendInitialValue(checkedChipIds)
     setOnCheckedStateChangeListener(listener(scope, ::trySend))
     awaitClose { setOnCheckedStateChangeListener(null) }
 }

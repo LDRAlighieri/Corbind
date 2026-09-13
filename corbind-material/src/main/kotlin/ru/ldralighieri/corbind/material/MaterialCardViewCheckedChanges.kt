@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on [MaterialCardView] check change.
@@ -96,7 +97,7 @@ fun MaterialCardView.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     checkCheckableState(this@checkedChanges)
-    trySend(isChecked)
+    sendInitialValue(isChecked)
     val listener = listener(scope, ::trySend)
     setOnCheckedChangeListener(listener)
     awaitClose { setOnCheckedChangeListener(null) }

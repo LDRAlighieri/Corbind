@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on value changes on [Slider].
@@ -88,7 +89,7 @@ fun Slider.valueChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
-    trySend(value)
+    sendInitialValue(value)
     val listener = listener(scope, ::trySend)
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }

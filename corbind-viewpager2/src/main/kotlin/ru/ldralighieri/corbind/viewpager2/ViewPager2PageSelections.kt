@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on page selected events on [ViewPager2].
@@ -88,7 +89,7 @@ fun ViewPager2.pageSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
-    trySend(currentItem)
+    sendInitialValue(currentItem)
     val callback = callback(scope, ::trySend)
     registerOnPageChangeCallback(callback)
     awaitClose { unregisterOnPageChangeCallback(callback) }

@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on character sequences for query text changes on [SearchView].
@@ -97,7 +98,7 @@ fun SearchView.queryTextChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(scope, capacity) {
-    trySend(query)
+    sendInitialValue(query)
     setOnQueryTextListener(listener(scope, ::trySend))
     awaitClose { setOnQueryTextListener(null) }
 }

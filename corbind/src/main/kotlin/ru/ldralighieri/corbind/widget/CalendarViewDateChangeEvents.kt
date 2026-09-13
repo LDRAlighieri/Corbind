@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 import java.util.Calendar
 
 data class CalendarViewDateChangeEvent(
@@ -106,7 +107,7 @@ fun CalendarView.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<CalendarViewDateChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    trySend(initialValue(this@dateChangeEvents))
+    sendInitialValue(initialValue(this@dateChangeEvents))
     setOnDateChangeListener(listener(scope, ::trySend))
     awaitClose { setOnDateChangeListener(null) }
 }

@@ -32,6 +32,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class TextViewTextChangeEvent(
     val view: TextView,
@@ -99,7 +100,7 @@ fun TextView.textChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TextViewTextChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    trySend(initialValue(this@textChangeEvents))
+    sendInitialValue(initialValue(this@textChangeEvents))
     val listener = listener(scope, this@textChangeEvents, ::trySend)
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }

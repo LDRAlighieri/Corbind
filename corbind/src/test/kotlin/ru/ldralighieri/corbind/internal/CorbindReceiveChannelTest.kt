@@ -94,6 +94,48 @@ class CorbindReceiveChannelTest {
     }
 
     @Test
+    fun `rendezvous initial value is queued without delaying registration`() {
+        // given
+        val registrations = AtomicInteger()
+        binding = corbindReceiveChannel<String>(scope) {
+            sendInitialValue("initial")
+            registrations.incrementAndGet()
+            awaitClose()
+        }
+
+        idleMainLooper()
+
+        // then
+        assertEquals(1, registrations.get())
+        assertEquals("initial", binding.requireChannel().tryReceive().getOrThrow())
+        assertTrue(binding.requireChannel().tryReceive().isFailure)
+    }
+
+    @Test
+    fun `cancelling channel discards pending initial value and cleans up`() {
+        // given
+        val registrations = AtomicInteger()
+        val cleanups = AtomicInteger()
+        binding = corbindReceiveChannel<String>(scope) {
+            sendInitialValue("initial")
+            registrations.incrementAndGet()
+            awaitClose { cleanups.incrementAndGet() }
+        }
+
+        idleMainLooper()
+        assertEquals(1, registrations.get())
+
+        // when
+        binding.requireChannel().cancel()
+        idleMainLooper()
+
+        // then
+        assertEquals(1, cleanups.get())
+        assertTrue(binding.requireChannel().tryReceive().isClosed)
+        assertTrue(scope.coroutineContext[Job]?.isActive == true)
+    }
+
+    @Test
     fun `already cancelled scope does not register binding`() {
         // given
         val registrations = AtomicInteger()

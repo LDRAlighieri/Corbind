@@ -31,6 +31,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on the open state of the pane of [SlidingPaneLayout].
@@ -93,7 +94,7 @@ fun SlidingPaneLayout.panelOpens(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
-    trySend(isOpen)
+    sendInitialValue(isOpen)
     val listener = listener(scope, ::trySend)
     addPanelSlideListener(listener)
     awaitClose { removePanelSlideListener(listener) }

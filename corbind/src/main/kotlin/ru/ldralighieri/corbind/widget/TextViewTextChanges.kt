@@ -32,6 +32,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on character sequences for text changes on [TextView].
@@ -91,7 +92,7 @@ fun TextView.textChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<CharSequence> = corbindReceiveChannel(scope, capacity) {
-    trySend(text)
+    sendInitialValue(text)
     val listener = listener(scope, ::trySend)
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }

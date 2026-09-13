@@ -32,6 +32,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 sealed interface AdapterViewSelectionEvent {
     val view: AdapterView<*>
@@ -127,7 +128,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(scope, capacity) {
-    trySend(initialValue(this@selectionEvents))
+    sendInitialValue(initialValue(this@selectionEvents))
     onItemSelectedListener = listener(scope, ::trySend)
     awaitClose { onItemSelectedListener = null }
 }

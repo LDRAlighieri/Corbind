@@ -31,6 +31,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on the open state of the [DrawerLayout].
@@ -95,7 +96,7 @@ fun DrawerLayout.drawerOpens(
     capacity: Int = Channel.RENDEZVOUS,
     gravity: Int,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
-    trySend(isDrawerOpen(gravity))
+    sendInitialValue(isDrawerOpen(gravity))
     val listener = listener(scope, gravity, ::trySend)
     addDrawerListener(listener)
     awaitClose { removeDrawerListener(listener) }

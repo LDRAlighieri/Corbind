@@ -32,6 +32,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on the selected position of [AdapterView].
@@ -99,7 +100,7 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
-    trySend(selectedItemPosition)
+    sendInitialValue(selectedItemPosition)
     onItemSelectedListener = listener(scope, ::trySend)
     awaitClose { onItemSelectedListener = null }
 }

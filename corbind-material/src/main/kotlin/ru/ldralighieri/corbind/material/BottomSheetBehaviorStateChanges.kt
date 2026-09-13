@@ -32,6 +32,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on the state change events from [View] on [BottomSheetBehavior].
@@ -93,7 +94,7 @@ fun View.stateChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBottomSheetBehavior()
-    trySend(behavior.state)
+    sendInitialValue(behavior.state)
     val callback = callback(scope, ::trySend)
     behavior.addBottomSheetCallback(callback)
     awaitClose { behavior.removeBottomSheetCallback(callback) }

@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on the selected tab in [TabLayout].
@@ -87,7 +88,7 @@ fun TabLayout.selections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(scope, capacity) {
-    setInitialValue(this@selections, ::trySend)
+    setInitialValue(this@selections, ::sendInitialValue)
     val listener = listener(scope, ::trySend)
     addOnTabSelectedListener(listener)
     awaitClose { removeOnTabSelectedListener(listener) }

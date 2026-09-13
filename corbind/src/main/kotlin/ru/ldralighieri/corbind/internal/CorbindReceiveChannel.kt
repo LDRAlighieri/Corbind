@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.internal
 import androidx.annotation.RestrictTo
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,6 +29,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -64,6 +66,19 @@ fun <T> corbindReceiveChannel(
     parentJob?.cancelChannelOnCompletion(channel, channel as Job)
 
     return channel
+}
+
+/**
+ * Queues an initial value without changing the channel's configured capacity or delaying callback
+ * registration. For a rendezvous channel, the undispatched child suspends in `send` until the first
+ * receiver arrives, while the producer continues registering the callback. Channel ordering keeps
+ * the initial value ahead of later sends. Other capacities retain their regular buffering and
+ * overflow semantics. The child remains owned by the producer Job and is cancelled with the
+ * returned channel.
+ */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+fun <T> ProducerScope<T>.sendInitialValue(value: T) {
+    launch(start = CoroutineStart.UNDISPATCHED) { send(value) }
 }
 
 @OptIn(InternalCoroutinesApi::class)

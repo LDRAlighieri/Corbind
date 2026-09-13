@@ -32,6 +32,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class TimeChangedEvent(
     val view: TimePicker,
@@ -108,7 +109,7 @@ fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TimeChangedEvent> = corbindReceiveChannel(scope, capacity) {
-    trySend(TimeChangedEvent(this@timeChangeEvents, hour, minute))
+    sendInitialValue(TimeChangedEvent(this@timeChangeEvents, hour, minute))
     setOnTimeChangedListener(listener(scope, ::trySend))
     awaitClose { setOnTimeChangedListener(null) }
 }

@@ -30,6 +30,7 @@ import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
  * Perform an action on checked state of [CompoundButton].
@@ -96,7 +97,7 @@ fun CompoundButton.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
-    trySend(isChecked)
+    sendInitialValue(isChecked)
     setOnCheckedChangeListener(listener(scope, ::trySend))
     awaitClose { setOnCheckedChangeListener(null) }
 }
