@@ -112,9 +112,8 @@ private class CompletionHandle {
     }
 }
 
-private fun Throwable?.scopeCancellationException(): CancellationException =
-    when (val cause = this) {
-        is CancellationException -> cause
-        null -> CancellationException("The owning CoroutineScope has completed")
-        else -> CancellationException("The owning CoroutineScope has completed").apply(::initCause)
-    }
+private fun Throwable?.scopeCancellationException(): CancellationException = when (val cause = this) {
+    is CancellationException -> cause
+    null -> CancellationException("The owning CoroutineScope has completed")
+    else -> CancellationException("The owning CoroutineScope has completed").apply(::initCause)
+}
