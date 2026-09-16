@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * can be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun SearchEditText.keyboardDismisses(
@@ -49,7 +51,7 @@ fun SearchEditText.keyboardDismisses(
         for (ignored in channel) action()
     }
 
-    setOnKeyboardDismissListener(listener(scope, events::trySend))
+    setOnKeyboardDismissListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnKeyboardDismissListener(null) }
 }
 
@@ -60,7 +62,8 @@ fun SearchEditText.keyboardDismisses(
  * *Warning:* The created actor uses [SearchEditText.setOnKeyboardDismissListener]. Only one actor
  * can be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun SearchEditText.keyboardDismisses(
@@ -86,14 +89,15 @@ suspend fun SearchEditText.keyboardDismisses(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun SearchEditText.keyboardDismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    setOnKeyboardDismissListener(listener(scope, ::trySend))
+    setOnKeyboardDismissListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnKeyboardDismissListener(null) }
 }
 
@@ -114,14 +118,14 @@ fun SearchEditText.keyboardDismisses(
  */
 @CheckResult
 fun SearchEditText.keyboardDismisses(): Flow<Unit> = callbackFlow {
-    setOnKeyboardDismissListener(listener(this, ::trySend))
+    setOnKeyboardDismissListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnKeyboardDismissListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = SearchEditText.OnKeyboardDismissListener {
     if (scope.isActive) emitter(Unit)
 }

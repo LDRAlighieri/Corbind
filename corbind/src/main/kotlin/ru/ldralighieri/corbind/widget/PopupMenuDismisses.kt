@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun PopupMenu.dismisses(
@@ -49,7 +51,7 @@ fun PopupMenu.dismisses(
         for (ignored in channel) action()
     }
 
-    setOnDismissListener(listener(scope, events::trySend))
+    setOnDismissListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnDismissListener(null) }
 }
 
@@ -59,7 +61,8 @@ fun PopupMenu.dismisses(
  * *Warning:* The created actor uses [PopupMenu.setOnDismissListener]. Only one actor can be used
  * at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun PopupMenu.dismisses(
@@ -85,14 +88,15 @@ suspend fun PopupMenu.dismisses(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun PopupMenu.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    setOnDismissListener(listener(scope, ::trySend))
+    setOnDismissListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnDismissListener(null) }
 }
 
@@ -113,14 +117,14 @@ fun PopupMenu.dismisses(
  */
 @CheckResult
 fun PopupMenu.dismisses(): Flow<Unit> = callbackFlow {
-    setOnDismissListener(listener(this, ::trySend))
+    setOnDismissListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnDismissListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = PopupMenu.OnDismissListener {
     if (scope.isActive) emitter(Unit)
 }

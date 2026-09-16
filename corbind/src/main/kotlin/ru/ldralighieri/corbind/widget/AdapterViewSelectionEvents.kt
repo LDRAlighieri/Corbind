@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -56,7 +57,8 @@ data class AdapterViewNothingSelectionEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun <T : Adapter> AdapterView<T>.selectionEvents(
@@ -68,8 +70,8 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
         for (event in channel) action(event)
     }
 
-    events.trySend(initialValue(this))
-    onItemSelectedListener = listener(scope, events::trySend)
+    events.corbindEventEmitter(scope)(initialValue(this))
+    onItemSelectedListener = listener(scope, events.corbindEventEmitter(scope))
     events.invokeOnClose { onItemSelectedListener = null }
 }
 
@@ -80,7 +82,8 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  * *Warning:* The created actor uses [AdapterView.setOnItemSelectedListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
@@ -121,7 +124,8 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(
@@ -129,7 +133,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<AdapterViewSelectionEvent> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(initialValue(this@selectionEvents))
-    onItemSelectedListener = listener(scope, ::trySend)
+    onItemSelectedListener = listener(scope, corbindEventEmitter())
     awaitClose { onItemSelectedListener = null }
 }
 
@@ -172,7 +176,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.selectionEvents(): InitialValueFlow<AdapterViewSelectionEvent> = callbackFlow {
-    onItemSelectedListener = listener(this, ::trySend)
+    onItemSelectedListener = listener(this, corbindEventEmitter())
     awaitClose { onItemSelectedListener = null }
 }.asInitialValueFlow(initialValue(adapterView = this))
 
@@ -191,7 +195,7 @@ private fun <T : Adapter> initialValue(adapterView: AdapterView<T>): AdapterView
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (AdapterViewSelectionEvent) -> Unit,
+    emitter: (AdapterViewSelectionEvent) -> Boolean,
 ) = object : AdapterView.OnItemSelectedListener {
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {

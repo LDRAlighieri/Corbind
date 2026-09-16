@@ -31,6 +31,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class WindowInsetsEvent(
@@ -42,7 +43,8 @@ data class WindowInsetsEvent(
  * Perform an action when window insets applying on a view in a custom way.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
@@ -55,7 +57,7 @@ fun View.windowInsetsApplyEvents(
         for (insets in channel) action(insets)
     }
 
-    setOnApplyWindowInsetsListener(listener(scope, events::trySend))
+    setOnApplyWindowInsetsListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnApplyWindowInsetsListener(null) }
 }
 
@@ -63,7 +65,8 @@ fun View.windowInsetsApplyEvents(
  * Perform an action when window insets applying on a view in a custom way, inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
@@ -87,7 +90,8 @@ suspend fun View.windowInsetsApplyEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 @CheckResult
@@ -95,7 +99,7 @@ fun View.windowInsetsApplyEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<WindowInsetsEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnApplyWindowInsetsListener(listener(scope, ::trySend))
+    setOnApplyWindowInsetsListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnApplyWindowInsetsListener(null) }
 }
 
@@ -129,7 +133,7 @@ fun View.windowInsetsApplyEvents(
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 @CheckResult
 fun View.windowInsetsApplyEvents(): Flow<WindowInsetsEvent> = callbackFlow {
-    setOnApplyWindowInsetsListener(listener(this, ::trySend))
+    setOnApplyWindowInsetsListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnApplyWindowInsetsListener(null) }
 }
 
@@ -137,7 +141,7 @@ fun View.windowInsetsApplyEvents(): Flow<WindowInsetsEvent> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (WindowInsetsEvent) -> Unit,
+    emitter: (WindowInsetsEvent) -> Boolean,
 ) = View.OnApplyWindowInsetsListener { v, insets ->
     if (scope.isActive) emitter(WindowInsetsEvent(v, insets))
     insets

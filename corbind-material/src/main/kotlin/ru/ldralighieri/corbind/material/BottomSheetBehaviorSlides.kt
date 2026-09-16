@@ -29,13 +29,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on the slide offset events from [View] on [BottomSheetBehavior].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.slides(
@@ -48,7 +50,7 @@ fun View.slides(
     }
 
     val behavior = getBottomSheetBehavior()
-    val callback = callback(scope, events::trySend)
+    val callback = callback(scope, events.corbindEventEmitter(scope))
     behavior.addBottomSheetCallback(callback)
     events.invokeOnClose { behavior.removeBottomSheetCallback(callback) }
 }
@@ -57,7 +59,8 @@ fun View.slides(
  * Perform an action on the slide offset events from [View] on [BottomSheetBehavior], inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.slides(
@@ -80,7 +83,8 @@ suspend fun View.slides(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.slides(
@@ -88,7 +92,7 @@ fun View.slides(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBottomSheetBehavior()
-    val callback = callback(scope, ::trySend)
+    val callback = callback(scope, corbindEventEmitter())
     behavior.addBottomSheetCallback(callback)
     awaitClose { behavior.removeBottomSheetCallback(callback) }
 }
@@ -108,7 +112,7 @@ fun View.slides(
 @CheckResult
 fun View.slides(): Flow<Float> = callbackFlow {
     val behavior = getBottomSheetBehavior()
-    val callback = callback(this, ::trySend)
+    val callback = callback(this, corbindEventEmitter())
     behavior.addBottomSheetCallback(callback)
     awaitClose { behavior.removeBottomSheetCallback(callback) }
 }
@@ -116,7 +120,7 @@ fun View.slides(): Flow<Float> = callbackFlow {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Float) -> Unit,
+    emitter: (Float) -> Boolean,
 ) = object : BottomSheetBehavior.BottomSheetCallback() {
 
     override fun onSlide(bottomSheet: View, slideOffset: Float) {

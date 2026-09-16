@@ -28,13 +28,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on the dismiss events from [Snackbar].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun Snackbar.dismisses(
@@ -46,7 +48,7 @@ fun Snackbar.dismisses(
         for (event in channel) action(event)
     }
 
-    val callback = callback(scope, events::trySend)
+    val callback = callback(scope, events.corbindEventEmitter(scope))
     addCallback(callback)
     events.invokeOnClose { removeCallback(callback) }
 }
@@ -54,7 +56,8 @@ fun Snackbar.dismisses(
 /**
  * Perform an action on the dismiss events from [Snackbar], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun Snackbar.dismisses(
@@ -77,14 +80,15 @@ suspend fun Snackbar.dismisses(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun Snackbar.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
-    val callback = callback(scope, ::trySend)
+    val callback = callback(scope, corbindEventEmitter())
     addCallback(callback)
     awaitClose { removeCallback(callback) }
 }
@@ -103,7 +107,7 @@ fun Snackbar.dismisses(
  */
 @CheckResult
 fun Snackbar.dismisses(): Flow<Int> = callbackFlow {
-    val callback = callback(this, ::trySend)
+    val callback = callback(this, corbindEventEmitter())
     addCallback(callback)
     awaitClose { removeCallback(callback) }
 }
@@ -111,7 +115,7 @@ fun Snackbar.dismisses(): Flow<Int> = callbackFlow {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = object : Snackbar.Callback() {
     override fun onDismissed(transientBottomBar: Snackbar, event: Int) {
         if (scope.isActive) emitter(event)

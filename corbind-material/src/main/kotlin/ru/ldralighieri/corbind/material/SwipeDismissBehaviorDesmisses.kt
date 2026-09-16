@@ -30,6 +30,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.dismisses(
@@ -52,7 +54,7 @@ fun View.dismisses(
     }
 
     val behavior = getBehavior(this)
-    behavior.listener = listener(scope, events::trySend)
+    behavior.listener = listener(scope, events.corbindEventEmitter(scope))
     events.invokeOnClose { behavior.setListener(null) }
 }
 
@@ -63,7 +65,8 @@ fun View.dismisses(
  * *Warning:* The created actor uses [SwipeDismissBehavior.setListener]. Only one actor can be used
  * at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.dismisses(
@@ -87,7 +90,8 @@ suspend fun View.dismisses(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.dismisses(
@@ -95,7 +99,7 @@ fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<View> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBehavior(this@dismisses)
-    behavior.listener = listener(scope, ::trySend)
+    behavior.listener = listener(scope, corbindEventEmitter())
     awaitClose { behavior.setListener(null) }
 }
 
@@ -117,7 +121,7 @@ fun View.dismisses(
 @CheckResult
 fun View.dismisses(): Flow<View> = callbackFlow {
     val behavior = getBehavior(this@dismisses)
-    behavior.listener = listener(this, ::trySend)
+    behavior.listener = listener(this, corbindEventEmitter())
     awaitClose { behavior.setListener(null) }
 }
 
@@ -132,7 +136,7 @@ private fun getBehavior(view: View): SwipeDismissBehavior<*> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (View) -> Unit,
+    emitter: (View) -> Boolean,
 ) = object : SwipeDismissBehavior.OnDismissListener {
 
     override fun onDismiss(view: View) {

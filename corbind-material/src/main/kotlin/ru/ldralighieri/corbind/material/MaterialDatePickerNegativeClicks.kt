@@ -29,13 +29,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on [MaterialDatePicker] negative button click.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun <S> MaterialDatePicker<S>.negativeClicks(
@@ -47,7 +49,7 @@ fun <S> MaterialDatePicker<S>.negativeClicks(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnNegativeButtonClickListener(listener)
     events.invokeOnClose { removeOnNegativeButtonClickListener(listener) }
 }
@@ -55,7 +57,8 @@ fun <S> MaterialDatePicker<S>.negativeClicks(
 /**
  * Perform an action on [MaterialDatePicker] negative button click, inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun <S> MaterialDatePicker<S>.negativeClicks(
@@ -78,14 +81,15 @@ suspend fun <S> MaterialDatePicker<S>.negativeClicks(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun <S> MaterialDatePicker<S>.negativeClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnNegativeButtonClickListener(listener)
     awaitClose { removeOnNegativeButtonClickListener(listener) }
 }
@@ -104,7 +108,7 @@ fun <S> MaterialDatePicker<S>.negativeClicks(
  */
 @CheckResult
 fun <S> MaterialDatePicker<S>.negativeClicks(): Flow<Unit> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnNegativeButtonClickListener(listener)
     awaitClose { removeOnNegativeButtonClickListener(listener) }
 }
@@ -112,7 +116,7 @@ fun <S> MaterialDatePicker<S>.negativeClicks(): Flow<Unit> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = View.OnClickListener {
     if (scope.isActive) emitter(Unit)
 }

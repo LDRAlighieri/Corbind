@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun NumberPicker.scrollStateChanges(
@@ -49,7 +51,7 @@ fun NumberPicker.scrollStateChanges(
         for (state in channel) action(state)
     }
 
-    setOnScrollListener(listener(scope, events::trySend))
+    setOnScrollListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -68,7 +70,8 @@ fun NumberPicker.scrollStateChanges(
  * }
  * ```
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun NumberPicker.scrollStateChanges(
@@ -85,14 +88,15 @@ suspend fun NumberPicker.scrollStateChanges(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun NumberPicker.scrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
-    setOnScrollListener(listener(scope, ::trySend))
+    setOnScrollListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnScrollListener(null) }
 }
 
@@ -113,14 +117,14 @@ fun NumberPicker.scrollStateChanges(
  */
 @CheckResult
 fun NumberPicker.scrollStateChanges(): Flow<Int> = callbackFlow {
-    setOnScrollListener(listener(this, ::trySend))
+    setOnScrollListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnScrollListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = NumberPicker.OnScrollListener { _, scrollState ->
     if (scope.isActive) emitter(scrollState)
 }

@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -39,9 +40,10 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnHoverListener]
+ * [View.OnHoverListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 fun View.hovers(
@@ -54,7 +56,7 @@ fun View.hovers(
         for (motion in channel) action(motion)
     }
 
-    setOnHoverListener(listener(scope, handled, events::trySend))
+    setOnHoverListener(listener(scope, handled, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnHoverListener(null) }
 }
 
@@ -64,9 +66,10 @@ fun View.hovers(
  * *Warning:* The created actor uses [View.setOnHoverListener]. Only one actor can be used at a
  * time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnHoverListener]
+ * [View.OnHoverListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 suspend fun View.hovers(
@@ -93,9 +96,10 @@ suspend fun View.hovers(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnHoverListener]
+ * [View.OnHoverListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.hovers(
@@ -103,7 +107,7 @@ fun View.hovers(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnHoverListener(listener(scope, handled, ::trySend))
+    setOnHoverListener(listener(scope, handled, corbindEventEmitter()))
     awaitClose { setOnHoverListener(null) }
 }
 
@@ -122,11 +126,11 @@ fun View.hovers(
  * ```
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnHoverListener]
+ * [View.OnHoverListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.hovers(handled: (MotionEvent) -> Boolean = AlwaysTrue): Flow<MotionEvent> = callbackFlow {
-    setOnHoverListener(listener(this, handled, ::trySend))
+    setOnHoverListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnHoverListener(null) }
 }
 
@@ -134,11 +138,10 @@ fun View.hovers(handled: (MotionEvent) -> Boolean = AlwaysTrue): Flow<MotionEven
 private fun listener(
     scope: CoroutineScope,
     handled: (MotionEvent) -> Boolean,
-    emitter: (MotionEvent) -> Unit,
+    emitter: (MotionEvent) -> Boolean,
 ) = View.OnHoverListener { _, motionEvent ->
     if (scope.isActive && handled(motionEvent)) {
-        emitter(motionEvent)
-        return@OnHoverListener true
+        return@OnHoverListener emitter(motionEvent)
     }
     return@OnHoverListener false
 }

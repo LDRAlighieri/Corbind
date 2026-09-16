@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class RecyclerViewScrollEvent(
@@ -40,7 +41,8 @@ data class RecyclerViewScrollEvent(
  * Perform an action on [scroll events][RecyclerViewScrollEvent] on [RecyclerView].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun RecyclerView.scrollEvents(
@@ -52,7 +54,7 @@ fun RecyclerView.scrollEvents(
         for (event in channel) action(event)
     }
 
-    val scrollListener = listener(scope, events::trySend)
+    val scrollListener = listener(scope, events.corbindEventEmitter(scope))
     addOnScrollListener(scrollListener)
     events.invokeOnClose { removeOnScrollListener(scrollListener) }
 }
@@ -61,7 +63,8 @@ fun RecyclerView.scrollEvents(
  * Perform an action on [scroll events][RecyclerViewScrollEvent] on [RecyclerView], inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun RecyclerView.scrollEvents(
@@ -84,14 +87,15 @@ suspend fun RecyclerView.scrollEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun RecyclerView.scrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RecyclerViewScrollEvent> = corbindReceiveChannel(scope, capacity) {
-    val scrollListener = listener(scope, ::trySend)
+    val scrollListener = listener(scope, corbindEventEmitter())
     addOnScrollListener(scrollListener)
     awaitClose { removeOnScrollListener(scrollListener) }
 }
@@ -110,7 +114,7 @@ fun RecyclerView.scrollEvents(
  */
 @CheckResult
 fun RecyclerView.scrollEvents(): Flow<RecyclerViewScrollEvent> = callbackFlow {
-    val scrollListener = listener(this, ::trySend)
+    val scrollListener = listener(this, corbindEventEmitter())
     addOnScrollListener(scrollListener)
     awaitClose { removeOnScrollListener(scrollListener) }
 }
@@ -118,7 +122,7 @@ fun RecyclerView.scrollEvents(): Flow<RecyclerViewScrollEvent> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (RecyclerViewScrollEvent) -> Unit,
+    emitter: (RecyclerViewScrollEvent) -> Boolean,
 ) = object : RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

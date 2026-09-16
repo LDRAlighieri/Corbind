@@ -31,6 +31,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -40,7 +41,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -53,7 +55,7 @@ fun Toolbar.itemClicks(
         for (item in channel) action(item)
     }
 
-    setOnMenuItemClickListener(listener(scope, events::trySend))
+    setOnMenuItemClickListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnMenuItemClickListener(null) }
 }
 
@@ -63,7 +65,8 @@ fun Toolbar.itemClicks(
  * *Warning:* The created actor uses [Toolbar.setOnMenuItemClickListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -90,7 +93,8 @@ suspend fun Toolbar.itemClicks(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
@@ -98,7 +102,7 @@ fun Toolbar.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(scope, capacity) {
-    setOnMenuItemClickListener(listener(scope, ::trySend))
+    setOnMenuItemClickListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnMenuItemClickListener(null) }
 }
 
@@ -120,18 +124,17 @@ fun Toolbar.itemClicks(
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
 fun Toolbar.itemClicks(): Flow<MenuItem> = callbackFlow {
-    setOnMenuItemClickListener(listener(this, ::trySend))
+    setOnMenuItemClickListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnMenuItemClickListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MenuItem) -> Unit,
+    emitter: (MenuItem) -> Boolean,
 ) = Toolbar.OnMenuItemClickListener {
     if (scope.isActive) {
-        emitter(it)
-        return@OnMenuItemClickListener true
+        return@OnMenuItemClickListener emitter(it)
     }
     return@OnMenuItemClickListener false
 }

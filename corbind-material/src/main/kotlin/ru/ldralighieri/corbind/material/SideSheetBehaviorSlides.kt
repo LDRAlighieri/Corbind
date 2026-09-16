@@ -30,13 +30,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on the slide offset events from [View] on [SideSheetBehavior].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.sideSheetSlides(
@@ -49,7 +51,7 @@ fun View.sideSheetSlides(
     }
 
     val behavior = getSideSheetBehavior()
-    val callback = callback(scope, events::trySend)
+    val callback = callback(scope, events.corbindEventEmitter(scope))
     behavior.addCallback(callback)
     events.invokeOnClose { behavior.removeCallback(callback) }
 }
@@ -58,7 +60,8 @@ fun View.sideSheetSlides(
  * Perform an action on the slide offset events from [View] on [SideSheetBehavior], inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.sideSheetSlides(
@@ -81,7 +84,8 @@ suspend fun View.sideSheetSlides(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.sideSheetSlides(
@@ -89,7 +93,7 @@ fun View.sideSheetSlides(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
     val behavior = getSideSheetBehavior()
-    val callback = callback(scope, ::trySend)
+    val callback = callback(scope, corbindEventEmitter())
     behavior.addCallback(callback)
     awaitClose { behavior.removeCallback(callback) }
 }
@@ -109,7 +113,7 @@ fun View.sideSheetSlides(
 @CheckResult
 fun View.sideSheetSlides(): Flow<Float> = callbackFlow {
     val behavior = getSideSheetBehavior()
-    val callback = callback(this, ::trySend)
+    val callback = callback(this, corbindEventEmitter())
     behavior.addCallback(callback)
     awaitClose { behavior.removeCallback(callback) }
 }
@@ -117,7 +121,7 @@ fun View.sideSheetSlides(): Flow<Float> = callbackFlow {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Float) -> Unit,
+    emitter: (Float) -> Boolean,
 ) = object : SideSheetCallback() {
 
     override fun onSlide(sheet: View, slideOffset: Float) {

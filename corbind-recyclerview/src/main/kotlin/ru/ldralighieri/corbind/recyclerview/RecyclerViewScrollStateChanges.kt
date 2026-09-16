@@ -28,13 +28,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on scroll state changes on [RecyclerView].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun RecyclerView.scrollStateChanges(
@@ -46,7 +48,7 @@ fun RecyclerView.scrollStateChanges(
         for (state in channel) action(state)
     }
 
-    val scrollListener = listener(scope, events::trySend)
+    val scrollListener = listener(scope, events.corbindEventEmitter(scope))
     addOnScrollListener(scrollListener)
     events.invokeOnClose { removeOnScrollListener(scrollListener) }
 }
@@ -54,7 +56,8 @@ fun RecyclerView.scrollStateChanges(
 /**
  * Perform an action on scroll state changes on [RecyclerView], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun RecyclerView.scrollStateChanges(
@@ -77,14 +80,15 @@ suspend fun RecyclerView.scrollStateChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun RecyclerView.scrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
-    val scrollListener = listener(scope, ::trySend)
+    val scrollListener = listener(scope, corbindEventEmitter())
     addOnScrollListener(scrollListener)
     awaitClose { removeOnScrollListener(scrollListener) }
 }
@@ -103,7 +107,7 @@ fun RecyclerView.scrollStateChanges(
  */
 @CheckResult
 fun RecyclerView.scrollStateChanges(): Flow<Int> = callbackFlow {
-    val scrollListener = listener(this, ::trySend)
+    val scrollListener = listener(this, corbindEventEmitter())
     addOnScrollListener(scrollListener)
     awaitClose { removeOnScrollListener(scrollListener) }
 }
@@ -111,7 +115,7 @@ fun RecyclerView.scrollStateChanges(): Flow<Int> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = object : RecyclerView.OnScrollListener() {
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

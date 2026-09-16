@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -36,7 +37,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * Perform an action on data change events for [RecyclerView.Adapter].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
@@ -48,8 +50,8 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
         for (adapter in channel) action(adapter)
     }
 
-    events.trySend(this)
-    val dataObserver = observer(scope, this, events::trySend)
+    events.corbindEventEmitter(scope)(this)
+    val dataObserver = observer(scope, this, events.corbindEventEmitter(scope))
     registerAdapterDataObserver(dataObserver)
     events.invokeOnClose { unregisterAdapterDataObserver(dataObserver) }
 }
@@ -57,7 +59,8 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
 /**
  * Perform an action on data change events for [RecyclerView.Adapter], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
@@ -82,7 +85,8 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
@@ -90,7 +94,7 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<T> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(this@dataChanges)
-    val dataObserver = observer(scope, this@dataChanges, ::trySend)
+    val dataObserver = observer(scope, this@dataChanges, corbindEventEmitter())
     registerAdapterDataObserver(dataObserver)
     awaitClose { unregisterAdapterDataObserver(dataObserver) }
 }
@@ -119,7 +123,7 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
  */
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): InitialValueFlow<T> = callbackFlow {
-    val dataObserver = observer(this, this@dataChanges, ::trySend)
+    val dataObserver = observer(this, this@dataChanges, corbindEventEmitter())
     registerAdapterDataObserver(dataObserver)
     awaitClose { unregisterAdapterDataObserver(dataObserver) }
 }.asInitialValueFlow(this)
@@ -128,7 +132,7 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): Ini
 private fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> observer(
     scope: CoroutineScope,
     adapter: T,
-    emitter: (T) -> Unit,
+    emitter: (T) -> Boolean,
 ) = object : RecyclerView.AdapterDataObserver() {
 
     override fun onChanged() {

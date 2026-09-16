@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -38,7 +39,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * *Warning:* Perform only when the [MaterialButton] is in checkable state.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun MaterialButton.checkedChanges(
@@ -51,8 +53,8 @@ fun MaterialButton.checkedChanges(
     }
 
     checkCheckableState(this)
-    events.trySend(isChecked)
-    val listener = listener(scope, events::trySend)
+    events.corbindEventEmitter(scope)(isChecked)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnCheckedChangeListener(listener)
     events.invokeOnClose { removeOnCheckedChangeListener(listener) }
 }
@@ -62,7 +64,8 @@ fun MaterialButton.checkedChanges(
  *
  * *Warning:* Perform only when the [MaterialButton] is in checkable state.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun MaterialButton.checkedChanges(
@@ -89,7 +92,8 @@ suspend fun MaterialButton.checkedChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun MaterialButton.checkedChanges(
@@ -98,7 +102,7 @@ fun MaterialButton.checkedChanges(
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     checkCheckableState(this@checkedChanges)
     sendInitialValue(isChecked)
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnCheckedChangeListener(listener)
     awaitClose { removeOnCheckedChangeListener(listener) }
 }
@@ -130,7 +134,7 @@ fun MaterialButton.checkedChanges(
 @CheckResult
 fun MaterialButton.checkedChanges(): InitialValueFlow<Boolean> = callbackFlow {
     checkCheckableState(this@checkedChanges)
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnCheckedChangeListener(listener)
     awaitClose { removeOnCheckedChangeListener(listener) }
 }.asInitialValueFlow(isChecked)
@@ -142,7 +146,7 @@ private fun checkCheckableState(button: MaterialButton) {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit,
+    emitter: (Boolean) -> Boolean,
 ) = MaterialButton.OnCheckedChangeListener { _, isChecked ->
     if (scope.isActive) emitter(isChecked)
 }

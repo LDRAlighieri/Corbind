@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class SearchViewTransitionStateChangeEvent(
@@ -41,7 +42,8 @@ data class SearchViewTransitionStateChangeEvent(
  * [transition state change event][SearchViewTransitionStateChangeEvent] on [SearchView].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun SearchView.transitionStateChangeEvents(
@@ -53,7 +55,7 @@ fun SearchView.transitionStateChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addTransitionListener(listener)
     events.invokeOnClose { removeTransitionListener(listener) }
 }
@@ -63,7 +65,8 @@ fun SearchView.transitionStateChangeEvents(
  * [transition state change event][SearchViewTransitionStateChangeEvent] on [SearchView], inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun SearchView.transitionStateChangeEvents(
@@ -87,14 +90,15 @@ suspend fun SearchView.transitionStateChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun SearchView.transitionStateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SearchViewTransitionStateChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addTransitionListener(listener)
     awaitClose { removeTransitionListener(listener) }
 }
@@ -114,7 +118,7 @@ fun SearchView.transitionStateChangeEvents(
  */
 @CheckResult
 fun SearchView.transitionStateChangeEvents(): Flow<SearchViewTransitionStateChangeEvent> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addTransitionListener(listener)
     awaitClose { removeTransitionListener(listener) }
 }
@@ -122,7 +126,7 @@ fun SearchView.transitionStateChangeEvents(): Flow<SearchViewTransitionStateChan
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (SearchViewTransitionStateChangeEvent) -> Unit,
+    emitter: (SearchViewTransitionStateChangeEvent) -> Boolean,
 ) = SearchView.TransitionListener { searchView, previousState, newState ->
     if (scope.isActive) {
         emitter(SearchViewTransitionStateChangeEvent(searchView, previousState, newState))

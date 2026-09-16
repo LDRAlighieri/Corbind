@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
 
@@ -38,7 +39,8 @@ import ru.ldralighieri.corbind.view.ViewScrollChangeEvent
  * can be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun NestedScrollView.scrollChangeEvents(
@@ -50,7 +52,7 @@ fun NestedScrollView.scrollChangeEvents(
         for (event in channel) action(event)
     }
 
-    setOnScrollChangeListener(listener(scope, events::trySend))
+    setOnScrollChangeListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose {
         setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?)
     }
@@ -62,7 +64,8 @@ fun NestedScrollView.scrollChangeEvents(
  * *Warning:* The created actor uses [NestedScrollView.setOnScrollChangeListener]. Only one actor
  * can be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun NestedScrollView.scrollChangeEvents(
@@ -88,14 +91,15 @@ suspend fun NestedScrollView.scrollChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun NestedScrollView.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnScrollChangeListener(listener(scope, ::trySend))
+    setOnScrollChangeListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
 
@@ -116,14 +120,14 @@ fun NestedScrollView.scrollChangeEvents(
  */
 @CheckResult
 fun NestedScrollView.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = callbackFlow {
-    setOnScrollChangeListener(listener(this, ::trySend))
+    setOnScrollChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnScrollChangeListener(null as NestedScrollView.OnScrollChangeListener?) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewScrollChangeEvent) -> Unit,
+    emitter: (ViewScrollChangeEvent) -> Boolean,
 ) = NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
     if (scope.isActive) {
         emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))

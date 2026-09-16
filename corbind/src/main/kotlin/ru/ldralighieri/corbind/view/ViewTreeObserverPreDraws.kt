@@ -29,13 +29,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on pre-draws on [View].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param proceedDrawingPass Let drawing process proceed
  * @param action An action to perform
  */
@@ -49,7 +51,7 @@ fun View.preDraws(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, proceedDrawingPass, events::trySend)
+    val listener = listener(scope, proceedDrawingPass, events.corbindEventEmitter(scope))
     viewTreeObserver.addOnPreDrawListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
@@ -57,7 +59,8 @@ fun View.preDraws(
 /**
  * Perform an action on pre-draws on [View], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param proceedDrawingPass Let drawing process proceed
  * @param action An action to perform
  */
@@ -82,7 +85,8 @@ suspend fun View.preDraws(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param proceedDrawingPass Let drawing process proceed
  */
 @CheckResult
@@ -91,7 +95,7 @@ fun View.preDraws(
     capacity: Int = Channel.RENDEZVOUS,
     proceedDrawingPass: () -> Boolean,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, proceedDrawingPass, ::trySend)
+    val listener = listener(scope, proceedDrawingPass, corbindEventEmitter())
     viewTreeObserver.addOnPreDrawListener(listener)
     awaitClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
@@ -114,7 +118,7 @@ fun View.preDraws(
 fun View.preDraws(
     proceedDrawingPass: () -> Boolean,
 ): Flow<Unit> = callbackFlow {
-    val listener = listener(this, proceedDrawingPass, ::trySend)
+    val listener = listener(this, proceedDrawingPass, corbindEventEmitter())
     viewTreeObserver.addOnPreDrawListener(listener)
     awaitClose { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
@@ -123,7 +127,7 @@ fun View.preDraws(
 private fun listener(
     scope: CoroutineScope,
     proceedDrawingPass: () -> Boolean,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = ViewTreeObserver.OnPreDrawListener {
     if (scope.isActive) {
         emitter(Unit)

@@ -29,6 +29,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun NavigationBarView.itemSelections(
@@ -51,8 +53,8 @@ fun NavigationBarView.itemSelections(
         for (item in channel) action(item)
     }
 
-    setInitialValue(this, events::trySend)
-    setOnItemSelectedListener(listener(scope, events::trySend))
+    setInitialValue(this, events.corbindEventEmitter(scope))
+    setOnItemSelectedListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnItemSelectedListener(null) }
 }
 
@@ -62,7 +64,8 @@ fun NavigationBarView.itemSelections(
  * *Warning:* The created actor uses [NavigationBarView.setOnItemSelectedListener]. Only one actor can
  * be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun NavigationBarView.itemSelections(
@@ -90,15 +93,19 @@ suspend fun NavigationBarView.itemSelections(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun NavigationBarView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(scope, capacity) {
-    setInitialValue(this@itemSelections, ::sendInitialValue)
-    setOnItemSelectedListener(listener(scope, ::trySend))
+    setInitialValue(this@itemSelections) {
+        sendInitialValue(it)
+        true
+    }
+    setOnItemSelectedListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnItemSelectedListener(null) }
 }
 
@@ -129,14 +136,14 @@ fun NavigationBarView.itemSelections(
  */
 @CheckResult
 fun NavigationBarView.itemSelections(): Flow<MenuItem> = callbackFlow {
-    setInitialValue(this@itemSelections, ::trySend)
-    setOnItemSelectedListener(listener(this, ::trySend))
+    setInitialValue(this@itemSelections, corbindEventEmitter())
+    setOnItemSelectedListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnItemSelectedListener(null) }
 }
 
 private fun setInitialValue(
     navigationBarView: NavigationBarView,
-    emitter: (MenuItem) -> Unit,
+    emitter: (MenuItem) -> Boolean,
 ) {
     val menu = navigationBarView.menu
     for (i in 0 until menu.size()) {
@@ -151,8 +158,10 @@ private fun setInitialValue(
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MenuItem) -> Unit,
+    emitter: (MenuItem) -> Boolean,
 ) = NavigationBarView.OnItemSelectedListener {
-    if (scope.isActive) emitter(it)
-    return@OnItemSelectedListener true
+    if (scope.isActive) {
+        return@OnItemSelectedListener emitter(it)
+    }
+    return@OnItemSelectedListener false
 }

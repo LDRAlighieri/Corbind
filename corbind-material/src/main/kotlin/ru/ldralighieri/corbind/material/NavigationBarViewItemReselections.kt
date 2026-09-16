@@ -29,6 +29,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -38,7 +39,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * can be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun NavigationBarView.itemReselections(
@@ -50,7 +52,7 @@ fun NavigationBarView.itemReselections(
         for (item in channel) action(item)
     }
 
-    setOnItemReselectedListener(listener(scope, events::trySend))
+    setOnItemReselectedListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnItemReselectedListener(null) }
 }
 
@@ -60,7 +62,8 @@ fun NavigationBarView.itemReselections(
  * *Warning:* The created actor uses [NavigationBarView.setOnItemReselectedListener]. Only one actor
  * can be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun NavigationBarView.itemReselections(
@@ -86,14 +89,15 @@ suspend fun NavigationBarView.itemReselections(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun NavigationBarView.itemReselections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<MenuItem> = corbindReceiveChannel(scope, capacity) {
-    setOnItemReselectedListener(listener(scope, ::trySend))
+    setOnItemReselectedListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnItemReselectedListener(null) }
 }
 
@@ -114,14 +118,14 @@ fun NavigationBarView.itemReselections(
  */
 @CheckResult
 fun NavigationBarView.itemReselections(): Flow<MenuItem> = callbackFlow {
-    setOnItemReselectedListener(listener(this, ::trySend))
+    setOnItemReselectedListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnItemReselectedListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MenuItem) -> Unit,
+    emitter: (MenuItem) -> Boolean,
 ) = NavigationBarView.OnItemReselectedListener {
     if (scope.isActive) emitter(it)
 }

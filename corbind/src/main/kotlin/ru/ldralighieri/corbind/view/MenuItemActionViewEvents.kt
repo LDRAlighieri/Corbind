@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 sealed interface MenuItemActionViewEvent {
@@ -50,9 +51,10 @@ data class MenuItemActionViewExpandEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying
- * [MenuItem.OnActionExpandListener]
+ * [MenuItem.OnActionExpandListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 fun MenuItem.actionViewEvents(
@@ -65,7 +67,7 @@ fun MenuItem.actionViewEvents(
         for (event in channel) action(event)
     }
 
-    setOnActionExpandListener(listener(scope, handled, events::trySend))
+    setOnActionExpandListener(listener(scope, handled, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnActionExpandListener(null) }
 }
 
@@ -76,9 +78,10 @@ fun MenuItem.actionViewEvents(
  * *Warning:* The created actor uses [MenuItem.setOnActionExpandListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying
- * [MenuItem.OnActionExpandListener]
+ * [MenuItem.OnActionExpandListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 suspend fun MenuItem.actionViewEvents(
@@ -118,9 +121,10 @@ suspend fun MenuItem.actionViewEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying
- * [MenuItem.OnActionExpandListener]
+ * [MenuItem.OnActionExpandListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun MenuItem.actionViewEvents(
@@ -128,7 +132,7 @@ fun MenuItem.actionViewEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<MenuItemActionViewEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnActionExpandListener(listener(scope, handled, ::trySend))
+    setOnActionExpandListener(listener(scope, handled, corbindEventEmitter()))
     awaitClose { setOnActionExpandListener(null) }
 }
 
@@ -161,13 +165,13 @@ fun MenuItem.actionViewEvents(
  * ```
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
- * [MenuItem.OnActionExpandListener]
+ * [MenuItem.OnActionExpandListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun MenuItem.actionViewEvents(
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
 ): Flow<MenuItemActionViewEvent> = callbackFlow {
-    setOnActionExpandListener(listener(this, handled, ::trySend))
+    setOnActionExpandListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnActionExpandListener(null) }
 }
 
@@ -175,7 +179,7 @@ fun MenuItem.actionViewEvents(
 private fun listener(
     scope: CoroutineScope,
     handled: (MenuItemActionViewEvent) -> Boolean,
-    emitter: (MenuItemActionViewEvent) -> Unit,
+    emitter: (MenuItemActionViewEvent) -> Boolean,
 ) = object : MenuItem.OnActionExpandListener {
 
     override fun onMenuItemActionExpand(item: MenuItem): Boolean = onEvent(MenuItemActionViewExpandEvent(item))
@@ -184,8 +188,7 @@ private fun listener(
 
     private fun onEvent(event: MenuItemActionViewEvent): Boolean {
         if (scope.isActive && handled(event)) {
-            emitter(event)
-            return true
+            return emitter(event)
         }
         return false
     }

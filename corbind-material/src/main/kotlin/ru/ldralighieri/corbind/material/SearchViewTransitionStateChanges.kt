@@ -28,13 +28,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on the transition state change events on [SearchView].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun SearchView.transitionStateChanges(
@@ -46,7 +48,7 @@ fun SearchView.transitionStateChanges(
         for (state in channel) action(state)
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addTransitionListener(listener)
     events.invokeOnClose { removeTransitionListener(listener) }
 }
@@ -55,7 +57,8 @@ fun SearchView.transitionStateChanges(
  * Perform an action on the transition state change events on [SearchView], inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun SearchView.transitionStateChanges(
@@ -78,14 +81,15 @@ suspend fun SearchView.transitionStateChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun SearchView.transitionStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SearchView.TransitionState> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addTransitionListener(listener)
     awaitClose { removeTransitionListener(listener) }
 }
@@ -104,7 +108,7 @@ fun SearchView.transitionStateChanges(
  */
 @CheckResult
 fun SearchView.transitionStateChanges(): Flow<SearchView.TransitionState> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addTransitionListener(listener)
     awaitClose { removeTransitionListener(listener) }
 }
@@ -112,7 +116,7 @@ fun SearchView.transitionStateChanges(): Flow<SearchView.TransitionState> = call
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (SearchView.TransitionState) -> Unit,
+    emitter: (SearchView.TransitionState) -> Boolean,
 ) = SearchView.TransitionListener { _, _, newState ->
     if (scope.isActive) emitter(newState)
 }

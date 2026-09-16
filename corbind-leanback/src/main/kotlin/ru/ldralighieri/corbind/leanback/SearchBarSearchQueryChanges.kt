@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun SearchBar.searchQueryChanges(
@@ -49,7 +51,7 @@ fun SearchBar.searchQueryChanges(
         for (query in channel) action(query)
     }
 
-    setSearchBarListener(listener(scope, events::trySend))
+    setSearchBarListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setSearchBarListener(null) }
 }
 
@@ -60,7 +62,8 @@ fun SearchBar.searchQueryChanges(
  * *Warning:* The created actor uses [SearchBar.setSearchBarListener]. Only one actor can be used at
  * a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun SearchBar.searchQueryChanges(
@@ -86,14 +89,15 @@ suspend fun SearchBar.searchQueryChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun SearchBar.searchQueryChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<String> = corbindReceiveChannel(scope, capacity) {
-    setSearchBarListener(listener(scope, ::trySend))
+    setSearchBarListener(listener(scope, corbindEventEmitter()))
     awaitClose { setSearchBarListener(null) }
 }
 
@@ -114,14 +118,14 @@ fun SearchBar.searchQueryChanges(
  */
 @CheckResult
 fun SearchBar.searchQueryChanges(): Flow<String> = callbackFlow {
-    setSearchBarListener(listener(this, ::trySend))
+    setSearchBarListener(listener(this, corbindEventEmitter()))
     awaitClose { setSearchBarListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (String) -> Unit,
+    emitter: (String) -> Boolean,
 ) = object : SearchBar.SearchBarListener {
 
     override fun onSearchQueryChange(query: String) {

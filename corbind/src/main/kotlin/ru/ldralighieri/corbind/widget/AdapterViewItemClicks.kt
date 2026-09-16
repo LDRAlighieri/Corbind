@@ -30,6 +30,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun <T : Adapter> AdapterView<T>.itemClicks(
@@ -51,7 +53,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
         for (position in channel) action(position)
     }
 
-    onItemClickListener = listener(scope, events::trySend)
+    onItemClickListener = listener(scope, events.corbindEventEmitter(scope))
     events.invokeOnClose { onItemClickListener = null }
 }
 
@@ -61,7 +63,8 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
  * *Warning:* The created actor uses [AdapterView.setOnItemClickListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun <T : Adapter> AdapterView<T>.itemClicks(
@@ -87,14 +90,15 @@ suspend fun <T : Adapter> AdapterView<T>.itemClicks(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
-    onItemClickListener = listener(scope, ::trySend)
+    onItemClickListener = listener(scope, corbindEventEmitter())
     awaitClose { onItemClickListener = null }
 }
 
@@ -115,14 +119,14 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = callbackFlow {
-    onItemClickListener = listener(this, ::trySend)
+    onItemClickListener = listener(this, corbindEventEmitter())
     awaitClose { onItemClickListener = null }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = AdapterView.OnItemClickListener { _, _: View?, position, _ ->
     if (scope.isActive) emitter(position)
 }

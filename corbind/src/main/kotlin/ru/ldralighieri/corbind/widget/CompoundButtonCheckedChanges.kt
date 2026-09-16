@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun CompoundButton.checkedChanges(
@@ -51,8 +53,8 @@ fun CompoundButton.checkedChanges(
         for (checked in channel) action(checked)
     }
 
-    events.trySend(isChecked)
-    setOnCheckedChangeListener(listener(scope, events::trySend))
+    events.corbindEventEmitter(scope)(isChecked)
+    setOnCheckedChangeListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -62,7 +64,8 @@ fun CompoundButton.checkedChanges(
  * *Warning:* The created actor uses [CompoundButton.setOnCheckedChangeListener]. Only one actor can
  * be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun CompoundButton.checkedChanges(
@@ -90,7 +93,8 @@ suspend fun CompoundButton.checkedChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun CompoundButton.checkedChanges(
@@ -98,7 +102,7 @@ fun CompoundButton.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(isChecked)
-    setOnCheckedChangeListener(listener(scope, ::trySend))
+    setOnCheckedChangeListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnCheckedChangeListener(null) }
 }
 
@@ -129,14 +133,14 @@ fun CompoundButton.checkedChanges(
  */
 @CheckResult
 fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = callbackFlow {
-    setOnCheckedChangeListener(listener(this, ::trySend))
+    setOnCheckedChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnCheckedChangeListener(null) }
 }.asInitialValueFlow(isChecked)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit,
+    emitter: (Boolean) -> Boolean,
 ) = CompoundButton.OnCheckedChangeListener { _, isChecked ->
     if (scope.isActive) emitter(isChecked)
 }

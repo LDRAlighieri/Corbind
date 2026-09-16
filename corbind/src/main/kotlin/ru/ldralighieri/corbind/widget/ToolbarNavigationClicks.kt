@@ -31,6 +31,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -40,7 +41,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -53,7 +55,7 @@ fun Toolbar.navigationClicks(
         for (ignored in channel) action()
     }
 
-    setNavigationOnClickListener(listener(scope, events::trySend))
+    setNavigationOnClickListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setNavigationOnClickListener(null) }
 }
 
@@ -63,7 +65,8 @@ fun Toolbar.navigationClicks(
  * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -90,7 +93,8 @@ suspend fun Toolbar.navigationClicks(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
@@ -98,7 +102,7 @@ fun Toolbar.navigationClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    setNavigationOnClickListener(listener(scope, ::trySend))
+    setNavigationOnClickListener(listener(scope, corbindEventEmitter()))
     awaitClose { setNavigationOnClickListener(null) }
 }
 
@@ -120,14 +124,14 @@ fun Toolbar.navigationClicks(
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
 fun Toolbar.navigationClicks(): Flow<Unit> = callbackFlow {
-    setNavigationOnClickListener(listener(this, ::trySend))
+    setNavigationOnClickListener(listener(this, corbindEventEmitter()))
     awaitClose { setNavigationOnClickListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = View.OnClickListener {
     if (scope.isActive) emitter(Unit)
 }

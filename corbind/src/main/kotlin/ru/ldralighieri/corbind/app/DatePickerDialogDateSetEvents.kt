@@ -31,6 +31,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class DatePickerDialogSetEvent(
@@ -47,7 +48,8 @@ data class DatePickerDialogSetEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.N)
@@ -60,7 +62,7 @@ fun DatePickerDialog.dateSetEvents(
         for (event in channel) action(event)
     }
 
-    setOnDateSetListener(listener(scope, events::trySend))
+    setOnDateSetListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnDateSetListener(null) }
 }
 
@@ -71,7 +73,8 @@ fun DatePickerDialog.dateSetEvents(
  * *Warning:* The created actor uses [DatePickerDialog.setOnDateSetListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.N)
@@ -99,7 +102,8 @@ suspend fun DatePickerDialog.dateSetEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @RequiresApi(Build.VERSION_CODES.N)
 @CheckResult
@@ -107,7 +111,7 @@ fun DatePickerDialog.dateSetEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<DatePickerDialogSetEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnDateSetListener(listener(scope, ::trySend))
+    setOnDateSetListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnDateSetListener(null) }
 }
 
@@ -129,14 +133,14 @@ fun DatePickerDialog.dateSetEvents(
 @RequiresApi(Build.VERSION_CODES.N)
 @CheckResult
 fun DatePickerDialog.dateSetEvents(): Flow<DatePickerDialogSetEvent> = callbackFlow {
-    setOnDateSetListener(listener(this, ::trySend))
+    setOnDateSetListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnDateSetListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (DatePickerDialogSetEvent) -> Unit,
+    emitter: (DatePickerDialogSetEvent) -> Boolean,
 ) = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
     if (scope.isActive) {
         emitter(DatePickerDialogSetEvent(view, year, month, dayOfMonth))

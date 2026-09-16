@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -38,9 +39,10 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * *Warning:* The created actor uses [View.setOnKeyListener]. Only one actor can be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnKeyListener]
+ * [View.OnKeyListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 fun View.keys(
@@ -53,7 +55,7 @@ fun View.keys(
         for (key in channel) action(key)
     }
 
-    setOnKeyListener(listener(scope, handled, events::trySend))
+    setOnKeyListener(listener(scope, handled, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnKeyListener(null) }
 }
 
@@ -62,9 +64,10 @@ fun View.keys(
  *
  * *Warning:* The created actor uses [View.setOnKeyListener]. Only one actor can be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnKeyListener]
+ * [View.OnKeyListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 suspend fun View.keys(
@@ -91,9 +94,10 @@ suspend fun View.keys(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnKeyListener]
+ * [View.OnKeyListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.keys(
@@ -101,7 +105,7 @@ fun View.keys(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (KeyEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<KeyEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnKeyListener(listener(scope, handled, ::trySend))
+    setOnKeyListener(listener(scope, handled, corbindEventEmitter()))
     awaitClose { setOnKeyListener(null) }
 }
 
@@ -120,11 +124,11 @@ fun View.keys(
  * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnKeyListener]
+ * [View.OnKeyListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.keys(handled: (KeyEvent) -> Boolean = AlwaysTrue): Flow<KeyEvent> = callbackFlow {
-    setOnKeyListener(listener(this, handled, ::trySend))
+    setOnKeyListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnKeyListener(null) }
 }
 
@@ -132,11 +136,10 @@ fun View.keys(handled: (KeyEvent) -> Boolean = AlwaysTrue): Flow<KeyEvent> = cal
 private fun listener(
     scope: CoroutineScope,
     handled: (KeyEvent) -> Boolean,
-    emitter: (KeyEvent) -> Unit,
+    emitter: (KeyEvent) -> Boolean,
 ) = View.OnKeyListener { _, _, keyEvent ->
     if (scope.isActive && handled(keyEvent)) {
-        emitter(keyEvent)
-        return@OnKeyListener true
+        return@OnKeyListener emitter(keyEvent)
     }
     return@OnKeyListener false
 }

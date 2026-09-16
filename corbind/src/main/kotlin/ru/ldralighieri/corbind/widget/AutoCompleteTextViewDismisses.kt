@@ -30,6 +30,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -52,7 +54,7 @@ fun AutoCompleteTextView.dismisses(
         for (ignored in channel) action()
     }
 
-    setOnDismissListener(listener(scope, events::trySend))
+    setOnDismissListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnDismissListener(null) }
 }
 
@@ -62,7 +64,8 @@ fun AutoCompleteTextView.dismisses(
  * *Warning:* The created actor uses [AutoCompleteTextView.setOnDismissListener]. Only one actor can
  * be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -89,7 +92,8 @@ suspend fun AutoCompleteTextView.dismisses(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @CheckResult
@@ -97,7 +101,7 @@ fun AutoCompleteTextView.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    setOnDismissListener(listener(scope, ::trySend))
+    setOnDismissListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnDismissListener(null) }
 }
 
@@ -119,14 +123,14 @@ fun AutoCompleteTextView.dismisses(
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @CheckResult
 fun AutoCompleteTextView.dismisses(): Flow<Unit> = callbackFlow {
-    setOnDismissListener(listener(this, ::trySend))
+    setOnDismissListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnDismissListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = AutoCompleteTextView.OnDismissListener {
     if (scope.isActive) emitter(Unit)
 }

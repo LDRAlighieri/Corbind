@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun SwipeRefreshLayout.refreshes(
@@ -49,7 +51,7 @@ fun SwipeRefreshLayout.refreshes(
         for (ignored in channel) action()
     }
 
-    setOnRefreshListener(listener(scope, events::trySend))
+    setOnRefreshListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnRefreshListener(null) }
 }
 
@@ -59,7 +61,8 @@ fun SwipeRefreshLayout.refreshes(
  * *Warning:* The created actor uses [SwipeRefreshLayout.setOnRefreshListener]. Only one actor can
  * be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun SwipeRefreshLayout.refreshes(
@@ -85,14 +88,15 @@ suspend fun SwipeRefreshLayout.refreshes(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun SwipeRefreshLayout.refreshes(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    setOnRefreshListener(listener(scope, ::trySend))
+    setOnRefreshListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnRefreshListener(null) }
 }
 
@@ -113,14 +117,14 @@ fun SwipeRefreshLayout.refreshes(
  */
 @CheckResult
 fun SwipeRefreshLayout.refreshes(): Flow<Unit> = callbackFlow {
-    setOnRefreshListener(listener(this, ::trySend))
+    setOnRefreshListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnRefreshListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = SwipeRefreshLayout.OnRefreshListener {
     if (scope.isActive) emitter(Unit)
 }

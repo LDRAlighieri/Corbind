@@ -29,6 +29,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -38,7 +39,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * can be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun TextInputLayout.endIconClicks(
@@ -50,7 +52,7 @@ fun TextInputLayout.endIconClicks(
         for (ignored in channel) action()
     }
 
-    setEndIconOnClickListener(listener(scope, events::trySend))
+    setEndIconOnClickListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setEndIconOnClickListener(null) }
 }
 
@@ -60,7 +62,8 @@ fun TextInputLayout.endIconClicks(
  * *Warning:* The created actor uses [TextInputLayout.setEndIconOnClickListener]. Only one actor can
  * be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun TextInputLayout.endIconClicks(
@@ -86,14 +89,15 @@ suspend fun TextInputLayout.endIconClicks(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun TextInputLayout.endIconClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    setEndIconOnClickListener(listener(scope, ::trySend))
+    setEndIconOnClickListener(listener(scope, corbindEventEmitter()))
     awaitClose { setEndIconOnClickListener(null) }
 }
 
@@ -114,14 +118,14 @@ fun TextInputLayout.endIconClicks(
  */
 @CheckResult
 fun TextInputLayout.endIconClicks(): Flow<Unit> = callbackFlow {
-    setEndIconOnClickListener(listener(this, ::trySend))
+    setEndIconOnClickListener(listener(this, corbindEventEmitter()))
     awaitClose { setEndIconOnClickListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = View.OnClickListener {
     if (scope.isActive) emitter(Unit)
 }

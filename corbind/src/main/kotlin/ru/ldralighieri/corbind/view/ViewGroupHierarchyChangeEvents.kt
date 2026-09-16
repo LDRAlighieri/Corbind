@@ -29,6 +29,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 sealed interface ViewGroupHierarchyChangeEvent {
@@ -53,7 +54,8 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun ViewGroup.changeEvents(
@@ -65,7 +67,7 @@ fun ViewGroup.changeEvents(
         for (event in channel) action(event)
     }
 
-    setOnHierarchyChangeListener(listener(scope, this, events::trySend))
+    setOnHierarchyChangeListener(listener(scope, this, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnHierarchyChangeListener(null) }
 }
 
@@ -76,7 +78,8 @@ fun ViewGroup.changeEvents(
  * *Warning:* The created actor uses [ViewGroup.setOnHierarchyChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun ViewGroup.changeEvents(
@@ -115,14 +118,15 @@ suspend fun ViewGroup.changeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun ViewGroup.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewGroupHierarchyChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnHierarchyChangeListener(listener(scope, this@changeEvents, ::trySend))
+    setOnHierarchyChangeListener(listener(scope, this@changeEvents, corbindEventEmitter()))
     awaitClose { setOnHierarchyChangeListener(null) }
 }
 
@@ -156,7 +160,7 @@ fun ViewGroup.changeEvents(
  */
 @CheckResult
 fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = callbackFlow {
-    setOnHierarchyChangeListener(listener(this, this@changeEvents, ::trySend))
+    setOnHierarchyChangeListener(listener(this, this@changeEvents, corbindEventEmitter()))
     awaitClose { setOnHierarchyChangeListener(null) }
 }
 
@@ -164,7 +168,7 @@ fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = callbackFlow
 private fun listener(
     scope: CoroutineScope,
     viewGroup: ViewGroup,
-    emitter: (ViewGroupHierarchyChangeEvent) -> Unit,
+    emitter: (ViewGroupHierarchyChangeEvent) -> Boolean,
 ) = object : ViewGroup.OnHierarchyChangeListener {
 
     override fun onChildViewAdded(parent: View, child: View) = onEvent(ViewGroupHierarchyChildViewAddEvent(viewGroup, child))

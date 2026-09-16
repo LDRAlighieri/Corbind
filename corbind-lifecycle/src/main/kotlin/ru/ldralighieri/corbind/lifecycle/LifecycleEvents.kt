@@ -29,13 +29,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on any [lifecycle][Lifecycle] event change.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun Lifecycle.events(
@@ -47,7 +49,7 @@ fun Lifecycle.events(
         for (event in channel) action(event)
     }
 
-    val observer = observer(scope, events::trySend)
+    val observer = observer(scope, events.corbindEventEmitter(scope))
     addObserver(observer)
     events.invokeOnClose { removeObserver(observer) }
 }
@@ -55,7 +57,8 @@ fun Lifecycle.events(
 /**
  * Perform an action on any [lifecycle][Lifecycle] event change, inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun Lifecycle.events(
@@ -78,13 +81,14 @@ suspend fun Lifecycle.events(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 fun Lifecycle.events(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Lifecycle.Event> = corbindReceiveChannel(scope, capacity) {
-    val observer = observer(scope, ::trySend)
+    val observer = observer(scope, corbindEventEmitter())
     addObserver(observer)
     awaitClose { removeObserver(observer) }
 }
@@ -103,7 +107,7 @@ fun Lifecycle.events(
  */
 @CheckResult
 fun Lifecycle.events(): Flow<Lifecycle.Event> = callbackFlow {
-    val observer = observer(this, ::trySend)
+    val observer = observer(this, corbindEventEmitter())
     addObserver(observer)
     awaitClose { removeObserver(observer) }
 }
@@ -111,7 +115,7 @@ fun Lifecycle.events(): Flow<Lifecycle.Event> = callbackFlow {
 @CheckResult
 private fun observer(
     scope: CoroutineScope,
-    emitter: (Lifecycle.Event) -> Unit,
+    emitter: (Lifecycle.Event) -> Boolean,
 ) = LifecycleEventObserver { _, event ->
     if (scope.isActive) emitter(event)
 }

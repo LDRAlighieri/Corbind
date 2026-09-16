@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class TextViewEditorActionEvent(
@@ -45,9 +46,10 @@ data class TextViewEditorActionEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [TextView.OnEditorActionListener].
+ * [TextView.OnEditorActionListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 fun TextView.editorActionEvents(
@@ -60,7 +62,7 @@ fun TextView.editorActionEvents(
         for (event in channel) action(event)
     }
 
-    setOnEditorActionListener(listener(scope, handled, events::trySend))
+    setOnEditorActionListener(listener(scope, handled, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnEditorActionListener(null) }
 }
 
@@ -71,9 +73,10 @@ fun TextView.editorActionEvents(
  * *Warning:* The created actor uses [TextView.setOnEditorActionListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [TextView.OnEditorActionListener].
+ * [TextView.OnEditorActionListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 suspend fun TextView.editorActionEvents(
@@ -100,9 +103,10 @@ suspend fun TextView.editorActionEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [TextView.OnEditorActionListener].
+ * [TextView.OnEditorActionListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun TextView.editorActionEvents(
@@ -110,7 +114,7 @@ fun TextView.editorActionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<TextViewEditorActionEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnEditorActionListener(listener(scope, handled, ::trySend))
+    setOnEditorActionListener(listener(scope, handled, corbindEventEmitter()))
     awaitClose { setOnEditorActionListener(null) }
 }
 
@@ -130,13 +134,13 @@ fun TextView.editorActionEvents(
  * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [TextView.OnEditorActionListener].
+ * [TextView.OnEditorActionListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun TextView.editorActionEvents(
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
 ): Flow<TextViewEditorActionEvent> = callbackFlow {
-    setOnEditorActionListener(listener(this, handled, ::trySend))
+    setOnEditorActionListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnEditorActionListener(null) }
 }
 
@@ -144,13 +148,12 @@ fun TextView.editorActionEvents(
 private fun listener(
     scope: CoroutineScope,
     handled: (TextViewEditorActionEvent) -> Boolean,
-    emitter: (TextViewEditorActionEvent) -> Unit,
+    emitter: (TextViewEditorActionEvent) -> Boolean,
 ) = TextView.OnEditorActionListener { v, actionId, keyEvent ->
     if (scope.isActive) {
         val event = TextViewEditorActionEvent(v, actionId, keyEvent)
         if (handled(event)) {
-            emitter(event)
-            return@OnEditorActionListener true
+            return@OnEditorActionListener emitter(event)
         }
     }
     return@OnEditorActionListener false

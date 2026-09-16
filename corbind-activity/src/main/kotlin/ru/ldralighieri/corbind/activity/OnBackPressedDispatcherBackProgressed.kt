@@ -33,6 +33,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -43,7 +44,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  *
  * @param scope Root coroutine scope
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun OnBackPressedDispatcher.backProgressed(
@@ -56,7 +58,7 @@ fun OnBackPressedDispatcher.backProgressed(
         for (progress in channel) action(progress)
     }
 
-    val callback = callback(scope, events::trySend)
+    val callback = callback(scope, events.corbindEventEmitter(scope))
     addCallback(lifecycleOwner, callback)
     events.invokeOnClose { callback.remove() }
 }
@@ -69,7 +71,8 @@ fun OnBackPressedDispatcher.backProgressed(
  * [backEvents] when the complete predictive back gesture lifecycle is needed.
  *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun OnBackPressedDispatcher.backProgressed(
@@ -98,14 +101,15 @@ suspend fun OnBackPressedDispatcher.backProgressed(
  *
  * @param scope Root coroutine scope
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 fun OnBackPressedDispatcher.backProgressed(
     scope: CoroutineScope,
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
-    val callback = callback(scope, ::trySend)
+    val callback = callback(scope, corbindEventEmitter())
     addCallback(lifecycleOwner, callback)
     awaitClose { callback.remove() }
 }
@@ -129,7 +133,7 @@ fun OnBackPressedDispatcher.backProgressed(
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  */
 fun OnBackPressedDispatcher.backProgressed(lifecycleOwner: LifecycleOwner): Flow<Float> = callbackFlow {
-    val callback = callback(this, ::trySend)
+    val callback = callback(this, corbindEventEmitter())
     addCallback(lifecycleOwner, callback)
     awaitClose { callback.remove() }
 }
@@ -137,7 +141,7 @@ fun OnBackPressedDispatcher.backProgressed(lifecycleOwner: LifecycleOwner): Flow
 @CheckResult
 private fun OnBackPressedDispatcher.callback(
     scope: CoroutineScope,
-    emitter: (Float) -> Unit,
+    emitter: (Float) -> Boolean,
 ): OnBackPressedCallback {
     val dispatcher = this
 

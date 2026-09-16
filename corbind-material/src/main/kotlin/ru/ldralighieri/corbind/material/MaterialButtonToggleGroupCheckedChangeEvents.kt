@@ -29,6 +29,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class MaterialButtonCheckedChangeEvent(
@@ -43,7 +44,8 @@ data class MaterialButtonCheckedChangeEvent(
  * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
@@ -56,7 +58,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     }
 
     checkSelectionMode(this@buttonCheckedChangeEvents)
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnButtonCheckedListener(listener)
     events.invokeOnClose { removeOnButtonCheckedListener(listener) }
 }
@@ -67,7 +69,8 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  *
  * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
@@ -93,7 +96,8 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
@@ -101,7 +105,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<MaterialButtonCheckedChangeEvent> = corbindReceiveChannel(scope, capacity) {
     checkSelectionMode(this@buttonCheckedChangeEvents)
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnButtonCheckedListener(listener)
     awaitClose { removeOnButtonCheckedListener(listener) }
 }
@@ -124,7 +128,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(): Flow<MaterialButtonCheckedChangeEvent> = callbackFlow {
     checkSelectionMode(this@buttonCheckedChangeEvents)
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnButtonCheckedListener(listener)
     awaitClose { removeOnButtonCheckedListener(listener) }
 }
@@ -139,7 +143,7 @@ private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (MaterialButtonCheckedChangeEvent) -> Unit,
+    emitter: (MaterialButtonCheckedChangeEvent) -> Boolean,
 ) = MaterialButtonToggleGroup.OnButtonCheckedListener { _, checkedId, isChecked ->
     if (scope.isActive) emitter(MaterialButtonCheckedChangeEvent(checkedId, isChecked))
 }

@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class RecyclerViewFlingEvent(
@@ -43,7 +44,8 @@ data class RecyclerViewFlingEvent(
  * at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun RecyclerView.flingEvents(
@@ -55,7 +57,7 @@ fun RecyclerView.flingEvents(
         for (event in channel) action(event)
     }
 
-    onFlingListener = listener(scope, this, events::trySend)
+    onFlingListener = listener(scope, this, events.corbindEventEmitter(scope))
     events.invokeOnClose { onFlingListener = null }
 }
 
@@ -66,7 +68,8 @@ fun RecyclerView.flingEvents(
  * *Warning:* The created actor uses [RecyclerView.setOnFlingListener]. Only one actor can be used
  * at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun RecyclerView.flingEvents(
@@ -92,14 +95,15 @@ suspend fun RecyclerView.flingEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun RecyclerView.flingEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RecyclerViewFlingEvent> = corbindReceiveChannel(scope, capacity) {
-    onFlingListener = listener(scope, this@flingEvents, ::trySend)
+    onFlingListener = listener(scope, this@flingEvents, corbindEventEmitter())
     awaitClose { onFlingListener = null }
 }
 
@@ -120,7 +124,7 @@ fun RecyclerView.flingEvents(
  */
 @CheckResult
 fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = callbackFlow {
-    onFlingListener = listener(this, this@flingEvents, ::trySend)
+    onFlingListener = listener(this, this@flingEvents, corbindEventEmitter())
     awaitClose { onFlingListener = null }
 }
 
@@ -128,7 +132,7 @@ fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = callbackFlow {
 private fun listener(
     scope: CoroutineScope,
     recyclerView: RecyclerView,
-    emitter: (RecyclerViewFlingEvent) -> Unit,
+    emitter: (RecyclerViewFlingEvent) -> Boolean,
 ) = object : RecyclerView.OnFlingListener() {
 
     override fun onFling(velocityX: Int, velocityY: Int): Boolean {

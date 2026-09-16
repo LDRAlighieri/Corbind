@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -40,7 +41,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun RadioGroup.checkedChanges(
@@ -52,8 +54,8 @@ fun RadioGroup.checkedChanges(
         for (checkedId in channel) action(checkedId)
     }
 
-    events.trySend(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, events::trySend))
+    events.corbindEventEmitter(scope)(checkedRadioButtonId)
+    setOnCheckedChangeListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
 
@@ -63,7 +65,8 @@ fun RadioGroup.checkedChanges(
  * *Warning:* The created actor uses [RadioGroup.setOnCheckedChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun RadioGroup.checkedChanges(
@@ -92,7 +95,8 @@ suspend fun RadioGroup.checkedChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun RadioGroup.checkedChanges(
@@ -100,7 +104,7 @@ fun RadioGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(checkedRadioButtonId)
-    setOnCheckedChangeListener(listener(scope, ::trySend))
+    setOnCheckedChangeListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnCheckedChangeListener(null) }
 }
 
@@ -132,14 +136,14 @@ fun RadioGroup.checkedChanges(
  */
 @CheckResult
 fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = callbackFlow {
-    setOnCheckedChangeListener(listener(this, ::trySend))
+    setOnCheckedChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnCheckedChangeListener(null) }
 }.asInitialValueFlow(checkedRadioButtonId)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = object : RadioGroup.OnCheckedChangeListener {
 
     private var lastChecked = View.NO_ID

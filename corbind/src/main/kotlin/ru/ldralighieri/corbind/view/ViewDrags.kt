@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -38,9 +39,10 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * *Warning:* The created actor uses [View.setOnDragListener]. Only one actor can be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnDragListener]
+ * [View.OnDragListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 fun View.drags(
@@ -53,7 +55,7 @@ fun View.drags(
         for (drag in channel) action(drag)
     }
 
-    setOnDragListener(listener(scope, handled, events::trySend))
+    setOnDragListener(listener(scope, handled, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnDragListener(null) }
 }
 
@@ -62,9 +64,10 @@ fun View.drags(
  *
  * *Warning:* The created actor uses [View.setOnDragListener]. Only one actor can be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnDragListener]
+ * [View.OnDragListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 suspend fun View.drags(
@@ -91,9 +94,10 @@ suspend fun View.drags(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnDragListener]
+ * [View.OnDragListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.drags(
@@ -101,7 +105,7 @@ fun View.drags(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (DragEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<DragEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnDragListener(listener(scope, handled, ::trySend))
+    setOnDragListener(listener(scope, handled, corbindEventEmitter()))
     awaitClose { setOnDragListener(null) }
 }
 
@@ -120,13 +124,13 @@ fun View.drags(
  * ```
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnDragListener]
+ * [View.OnDragListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue,
 ): Flow<DragEvent> = callbackFlow {
-    setOnDragListener(listener(this, handled, ::trySend))
+    setOnDragListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnDragListener(null) }
 }
 
@@ -134,11 +138,10 @@ fun View.drags(
 private fun listener(
     scope: CoroutineScope,
     handled: (DragEvent) -> Boolean,
-    emitter: (DragEvent) -> Unit,
+    emitter: (DragEvent) -> Boolean,
 ) = View.OnDragListener { _, dragEvent ->
     if (scope.isActive && handled(dragEvent)) {
-        emitter(dragEvent)
-        return@OnDragListener true
+        return@OnDragListener emitter(dragEvent)
     }
     return@OnDragListener false
 }
