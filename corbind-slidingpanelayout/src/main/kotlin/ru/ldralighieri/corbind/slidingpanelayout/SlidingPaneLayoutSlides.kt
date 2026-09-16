@@ -29,13 +29,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun SlidingPaneLayout.panelSlides(
@@ -47,7 +49,7 @@ fun SlidingPaneLayout.panelSlides(
         for (slide in channel) action(slide)
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addPanelSlideListener(listener)
     events.invokeOnClose { removePanelSlideListener(listener) }
 }
@@ -59,7 +61,8 @@ fun SlidingPaneLayout.panelSlides(
  * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener]. Only one actor can
  * be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun SlidingPaneLayout.panelSlides(
@@ -82,14 +85,15 @@ suspend fun SlidingPaneLayout.panelSlides(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun SlidingPaneLayout.panelSlides(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addPanelSlideListener(listener)
     awaitClose { removePanelSlideListener(listener) }
 }
@@ -108,7 +112,7 @@ fun SlidingPaneLayout.panelSlides(
  */
 @CheckResult
 fun SlidingPaneLayout.panelSlides(): Flow<Float> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addPanelSlideListener(listener)
     awaitClose { removePanelSlideListener(listener) }
 }
@@ -116,7 +120,7 @@ fun SlidingPaneLayout.panelSlides(): Flow<Float> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Float) -> Unit,
+    emitter: (Float) -> Boolean,
 ) = object : SlidingPaneLayout.PanelSlideListener {
 
     override fun onPanelSlide(panel: View, slideOffset: Float) {

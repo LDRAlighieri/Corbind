@@ -29,6 +29,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -38,7 +39,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * can be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  *
  * @deprecated OnSystemUiVisibilityChangeListener is deprecated. Use [WindowInsets.isVisible] to
@@ -62,7 +64,7 @@ fun View.systemUiVisibilityChanges(
         for (visibility in channel) action(visibility)
     }
 
-    setOnSystemUiVisibilityChangeListener(listener(scope, events::trySend))
+    setOnSystemUiVisibilityChangeListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -72,7 +74,8 @@ fun View.systemUiVisibilityChanges(
  * *Warning:* The created actor uses [View.setOnSystemUiVisibilityChangeListener]. Only one actor
  * can be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  *
  * @deprecated OnSystemUiVisibilityChangeListener is deprecated. Use [WindowInsets.isVisible] to
@@ -110,7 +113,8 @@ suspend fun View.systemUiVisibilityChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  *
  * @deprecated OnSystemUiVisibilityChangeListener is deprecated. Use [WindowInsets.isVisible] to
  * find out about system bar visibilities.
@@ -129,7 +133,7 @@ fun View.systemUiVisibilityChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
-    setOnSystemUiVisibilityChangeListener(listener(scope, ::trySend))
+    setOnSystemUiVisibilityChangeListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -162,7 +166,7 @@ fun View.systemUiVisibilityChanges(
 )
 @CheckResult
 fun View.systemUiVisibilityChanges(): Flow<Int> = callbackFlow {
-    setOnSystemUiVisibilityChangeListener(listener(this, ::trySend))
+    setOnSystemUiVisibilityChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnSystemUiVisibilityChangeListener(null) }
 }
 
@@ -170,7 +174,7 @@ fun View.systemUiVisibilityChanges(): Flow<Int> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = View.OnSystemUiVisibilityChangeListener {
     if (scope.isActive) emitter(it)
 }

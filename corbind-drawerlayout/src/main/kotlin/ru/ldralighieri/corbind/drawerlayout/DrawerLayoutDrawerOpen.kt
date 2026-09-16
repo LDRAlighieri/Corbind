@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * Perform an action on the open state of the [DrawerLayout].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param gravity Gravity of the drawer to check
  * @param action An action to perform
  */
@@ -51,8 +53,8 @@ fun DrawerLayout.drawerOpens(
         for (open in channel) action(open)
     }
 
-    events.trySend(isDrawerOpen(gravity))
-    val listener = listener(scope, gravity, events::trySend)
+    events.corbindEventEmitter(scope)(isDrawerOpen(gravity))
+    val listener = listener(scope, gravity, events.corbindEventEmitter(scope))
     addDrawerListener(listener)
     events.invokeOnClose { removeDrawerListener(listener) }
 }
@@ -60,7 +62,8 @@ fun DrawerLayout.drawerOpens(
 /**
  * Perform an action on the open state of the [DrawerLayout], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param gravity Gravity of the drawer to check
  * @param action An action to perform
  */
@@ -87,7 +90,8 @@ suspend fun DrawerLayout.drawerOpens(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param gravity Gravity of the drawer to check
  */
 @CheckResult
@@ -97,7 +101,7 @@ fun DrawerLayout.drawerOpens(
     gravity: Int,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(isDrawerOpen(gravity))
-    val listener = listener(scope, gravity, ::trySend)
+    val listener = listener(scope, gravity, corbindEventEmitter())
     addDrawerListener(listener)
     awaitClose { removeDrawerListener(listener) }
 }
@@ -128,7 +132,7 @@ fun DrawerLayout.drawerOpens(
  */
 @CheckResult
 fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = callbackFlow {
-    val listener = listener(this, gravity, ::trySend)
+    val listener = listener(this, gravity, corbindEventEmitter())
     addDrawerListener(listener)
     awaitClose { removeDrawerListener(listener) }
 }.asInitialValueFlow(isDrawerOpen(gravity))
@@ -137,7 +141,7 @@ fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = callback
 private fun listener(
     scope: CoroutineScope,
     gravity: Int,
-    emitter: (Boolean) -> Unit,
+    emitter: (Boolean) -> Boolean,
 ) = object : DrawerLayout.DrawerListener {
 
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) = Unit

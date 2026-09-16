@@ -148,6 +148,25 @@ Cancelling the returned channel also removes the callback without cancelling the
 is already cancelled, the callback is not registered. Registration and removal are performed on the
 Android main thread.
 
+Corbind does not silently discard events when a rendezvous or finite channel is temporarily full.
+An event that cannot be delivered immediately waits in a sender coroutine owned by the binding, so
+the Android callback thread is never blocked and sequential callback order is preserved. Pending
+events are discarded when the binding is cancelled. Each waiting event retains a suspended sender;
+for sources that may outpace their consumers indefinitely, select conflation or an explicit drop
+policy instead of allowing an unbounded backlog.
+
+The `capacity` parameter controls immediate buffering. The default `Channel.RENDEZVOUS` policy is
+lossless; `Channel.UNLIMITED` buffers without suspending, while `Channel.CONFLATED` explicitly keeps
+only the latest event. Flow consumers can opt into another policy with `buffer` or `conflate`; an
+explicit drop policy is treated as accepting an event according to that policy. Android listeners
+which report whether an event was handled return `true` only when their predicate accepts the event
+and the configured coroutine policy accepts it.
+
+This contract applies to both discrete events and state-change bindings: preserving every event is
+the default, and conflation or dropping is always an explicit consumer choice. Callback return
+values that control separate platform behavior, such as allowing a pre-draw pass or delegating a
+RecyclerView fling, remain independent from delivery acceptance.
+
 And if you just need to perform an action on button click, the easiest way will be:
 ```kotlin
 launch {

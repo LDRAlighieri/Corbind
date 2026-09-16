@@ -28,13 +28,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on touch tracking events for [RangeSlider].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun RangeSlider.touches(
@@ -46,7 +48,7 @@ fun RangeSlider.touches(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnSliderTouchListener(listener)
     events.invokeOnClose { removeOnSliderTouchListener(listener) }
 }
@@ -54,7 +56,8 @@ fun RangeSlider.touches(
 /**
  * Perform an action on touch tracking events for [RangeSlider], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun RangeSlider.touches(
@@ -77,14 +80,15 @@ suspend fun RangeSlider.touches(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun RangeSlider.touches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnSliderTouchListener(listener)
     awaitClose { removeOnSliderTouchListener(listener) }
 }
@@ -103,7 +107,7 @@ fun RangeSlider.touches(
  */
 @CheckResult
 fun RangeSlider.touches(): Flow<Boolean> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnSliderTouchListener(listener)
     awaitClose { removeOnSliderTouchListener(listener) }
 }
@@ -111,7 +115,7 @@ fun RangeSlider.touches(): Flow<Boolean> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit,
+    emitter: (Boolean) -> Boolean,
 ) = object : RangeSlider.OnSliderTouchListener {
 
     override fun onStartTrackingTouch(slider: RangeSlider) = onEvent(true)

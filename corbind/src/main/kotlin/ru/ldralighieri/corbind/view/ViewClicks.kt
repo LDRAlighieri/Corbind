@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.clicks(
@@ -49,7 +51,7 @@ fun View.clicks(
         for (ignored in channel) action()
     }
 
-    setOnClickListener(listener(scope, events::trySend))
+    setOnClickListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnClickListener(null) }
 }
 
@@ -59,7 +61,8 @@ fun View.clicks(
  * *Warning:* The created actor uses [View.setOnClickListener]. Only one actor can be used at a
  * time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.clicks(
@@ -85,14 +88,15 @@ suspend fun View.clicks(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.clicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    setOnClickListener(listener(scope, ::trySend))
+    setOnClickListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnClickListener(null) }
 }
 
@@ -112,14 +116,14 @@ fun View.clicks(
  */
 @CheckResult
 fun View.clicks(): Flow<Unit> = callbackFlow {
-    setOnClickListener(listener(this, ::trySend))
+    setOnClickListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnClickListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = View.OnClickListener {
     if (scope.isActive) emitter(Unit)
 }

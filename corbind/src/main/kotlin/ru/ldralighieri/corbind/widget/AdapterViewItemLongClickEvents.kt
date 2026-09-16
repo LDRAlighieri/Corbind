@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class AdapterViewItemLongClickEvent(
@@ -47,9 +48,10 @@ data class AdapterViewItemLongClickEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying
- * [AdapterView.OnItemLongClickListener]
+ * [AdapterView.OnItemLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
@@ -62,7 +64,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
         for (event in channel) action(event)
     }
 
-    onItemLongClickListener = listener(scope, handled, events::trySend)
+    onItemLongClickListener = listener(scope, handled, events.corbindEventEmitter(scope))
     events.invokeOnClose { onItemLongClickListener = null }
 }
 
@@ -73,9 +75,10 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
  * *Warning:* The created actor uses [AdapterView.setOnItemLongClickListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying
- * [AdapterView.OnItemLongClickListener]
+ * [AdapterView.OnItemLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
@@ -103,9 +106,10 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying
- * [AdapterView.OnItemLongClickListener]
+ * [AdapterView.OnItemLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
@@ -113,7 +117,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<AdapterViewItemLongClickEvent> = corbindReceiveChannel(scope, capacity) {
-    onItemLongClickListener = listener(scope, handled, ::trySend)
+    onItemLongClickListener = listener(scope, handled, corbindEventEmitter())
     awaitClose { onItemLongClickListener = null }
 }
 
@@ -133,13 +137,13 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
  * ```
  *
  * @param handled Function invoked with each value to determine the return value of the underlying
- * [AdapterView.OnItemLongClickListener]
+ * [AdapterView.OnItemLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
     handled: (AdapterViewItemLongClickEvent) -> Boolean = AlwaysTrue,
 ): Flow<AdapterViewItemLongClickEvent> = callbackFlow {
-    onItemLongClickListener = listener(this, handled, ::trySend)
+    onItemLongClickListener = listener(this, handled, corbindEventEmitter())
     awaitClose { onItemLongClickListener = null }
 }
 
@@ -147,13 +151,12 @@ fun <T : Adapter> AdapterView<T>.itemLongClickEvents(
 private fun listener(
     scope: CoroutineScope,
     handled: (AdapterViewItemLongClickEvent) -> Boolean,
-    emitter: (AdapterViewItemLongClickEvent) -> Unit,
+    emitter: (AdapterViewItemLongClickEvent) -> Boolean,
 ) = AdapterView.OnItemLongClickListener { parent, view: View?, position, id ->
     if (scope.isActive) {
         val event = AdapterViewItemLongClickEvent(parent, view, position, id)
         if (handled(event)) {
-            emitter(event)
-            return@OnItemLongClickListener true
+            return@OnItemLongClickListener emitter(event)
         }
     }
     return@OnItemLongClickListener false

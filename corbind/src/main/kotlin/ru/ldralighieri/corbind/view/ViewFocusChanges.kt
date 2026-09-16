@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.focusChanges(
@@ -51,8 +53,8 @@ fun View.focusChanges(
         for (focus in channel) action(focus)
     }
 
-    events.trySend(hasFocus())
-    onFocusChangeListener = listener(scope, events::trySend)
+    events.corbindEventEmitter(scope)(hasFocus())
+    onFocusChangeListener = listener(scope, events.corbindEventEmitter(scope))
     events.invokeOnClose { onFocusChangeListener = null }
 }
 
@@ -62,7 +64,8 @@ fun View.focusChanges(
  * *Warning:* The created actor uses [View.setOnFocusChangeListener]. Only one actor can be used at
  * a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.focusChanges(
@@ -90,7 +93,8 @@ suspend fun View.focusChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.focusChanges(
@@ -98,7 +102,7 @@ fun View.focusChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(hasFocus())
-    onFocusChangeListener = listener(scope, ::trySend)
+    onFocusChangeListener = listener(scope, corbindEventEmitter())
     awaitClose { onFocusChangeListener = null }
 }
 
@@ -129,14 +133,14 @@ fun View.focusChanges(
  */
 @CheckResult
 fun View.focusChanges(): InitialValueFlow<Boolean> = callbackFlow {
-    onFocusChangeListener = listener(this, ::trySend)
+    onFocusChangeListener = listener(this, corbindEventEmitter())
     awaitClose { onFocusChangeListener = null }
 }.asInitialValueFlow(hasFocus())
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit,
+    emitter: (Boolean) -> Boolean,
 ) = View.OnFocusChangeListener { _, hasFocus ->
     if (scope.isActive) emitter(hasFocus)
 }

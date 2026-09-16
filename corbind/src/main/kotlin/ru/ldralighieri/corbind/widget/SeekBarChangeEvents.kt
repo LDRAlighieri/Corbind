@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -57,7 +58,8 @@ data class SeekBarStopChangeEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun SeekBar.changeEvents(
@@ -69,8 +71,8 @@ fun SeekBar.changeEvents(
         for (event in channel) action(event)
     }
 
-    events.trySend(initialValue(this))
-    setOnSeekBarChangeListener(listener(scope, events::trySend))
+    events.corbindEventEmitter(scope)(initialValue(this))
+    setOnSeekBarChangeListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -81,7 +83,8 @@ fun SeekBar.changeEvents(
  * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun SeekBar.changeEvents(
@@ -123,7 +126,8 @@ suspend fun SeekBar.changeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun SeekBar.changeEvents(
@@ -131,7 +135,7 @@ fun SeekBar.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SeekBarChangeEvent> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(initialValue(this@changeEvents))
-    setOnSeekBarChangeListener(listener(scope, ::trySend))
+    setOnSeekBarChangeListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnSeekBarChangeListener(null) }
 }
 
@@ -175,7 +179,7 @@ fun SeekBar.changeEvents(
  */
 @CheckResult
 fun SeekBar.changeEvents(): InitialValueFlow<SeekBarChangeEvent> = callbackFlow {
-    setOnSeekBarChangeListener(listener(this, ::trySend))
+    setOnSeekBarChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnSeekBarChangeListener(null) }
 }.asInitialValueFlow(initialValue(seekBar = this))
 
@@ -185,7 +189,7 @@ private fun initialValue(seekBar: SeekBar): SeekBarChangeEvent = SeekBarProgress
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (SeekBarChangeEvent) -> Unit,
+    emitter: (SeekBarChangeEvent) -> Boolean,
 ) = object : SeekBar.OnSeekBarChangeListener {
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {

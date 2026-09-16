@@ -31,13 +31,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on draws on [View].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -50,7 +52,7 @@ fun View.draws(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     viewTreeObserver.addOnDrawListener(listener)
     events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -58,7 +60,8 @@ fun View.draws(
 /**
  * Perform an action on draws on [View], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -82,7 +85,8 @@ suspend fun View.draws(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
@@ -90,7 +94,7 @@ fun View.draws(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     viewTreeObserver.addOnDrawListener(listener)
     awaitClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -110,7 +114,7 @@ fun View.draws(
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
 fun View.draws(): Flow<Unit> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     viewTreeObserver.addOnDrawListener(listener)
     awaitClose { viewTreeObserver.removeOnDrawListener(listener) }
 }
@@ -118,7 +122,7 @@ fun View.draws(): Flow<Unit> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = ViewTreeObserver.OnDrawListener {
     if (scope.isActive) emitter(Unit)
 }

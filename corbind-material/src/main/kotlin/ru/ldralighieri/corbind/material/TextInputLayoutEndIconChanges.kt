@@ -28,13 +28,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on [TextInputLayout] end icon mode changes.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun TextInputLayout.endIconChanges(
@@ -46,7 +48,7 @@ fun TextInputLayout.endIconChanges(
         for (mode in channel) action(mode)
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnEndIconChangedListener(listener)
     events.invokeOnClose { removeOnEndIconChangedListener(listener) }
 }
@@ -54,7 +56,8 @@ fun TextInputLayout.endIconChanges(
 /**
  * Perform an action on [TextInputLayout] end icon mode changes, inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun TextInputLayout.endIconChanges(
@@ -80,14 +83,15 @@ suspend fun TextInputLayout.endIconChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun TextInputLayout.endIconChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnEndIconChangedListener(listener)
     awaitClose { removeOnEndIconChangedListener(listener) }
 }
@@ -109,7 +113,7 @@ fun TextInputLayout.endIconChanges(
  */
 @CheckResult
 fun TextInputLayout.endIconChanges(): Flow<Int> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnEndIconChangedListener(listener)
     awaitClose { removeOnEndIconChangedListener(listener) }
 }
@@ -117,7 +121,7 @@ fun TextInputLayout.endIconChanges(): Flow<Int> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = TextInputLayout.OnEndIconChangedListener { _, previousIcon ->
     if (scope.isActive) emitter(previousIcon)
 }

@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun RatingBar.ratingChanges(
@@ -51,8 +53,8 @@ fun RatingBar.ratingChanges(
         for (rating in channel) action(rating)
     }
 
-    events.trySend(rating)
-    onRatingBarChangeListener = listener(scope, events::trySend)
+    events.corbindEventEmitter(scope)(rating)
+    onRatingBarChangeListener = listener(scope, events.corbindEventEmitter(scope))
     events.invokeOnClose { onRatingBarChangeListener = null }
 }
 
@@ -62,7 +64,8 @@ fun RatingBar.ratingChanges(
  * *Warning:* The created actor uses [RatingBar.setOnRatingBarChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun RatingBar.ratingChanges(
@@ -90,7 +93,8 @@ suspend fun RatingBar.ratingChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun RatingBar.ratingChanges(
@@ -98,7 +102,7 @@ fun RatingBar.ratingChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(rating)
-    onRatingBarChangeListener = listener(scope, ::trySend)
+    onRatingBarChangeListener = listener(scope, corbindEventEmitter())
     awaitClose { onRatingBarChangeListener = null }
 }
 
@@ -129,14 +133,14 @@ fun RatingBar.ratingChanges(
  */
 @CheckResult
 fun RatingBar.ratingChanges(): InitialValueFlow<Float> = callbackFlow {
-    onRatingBarChangeListener = listener(this, ::trySend)
+    onRatingBarChangeListener = listener(this, corbindEventEmitter())
     awaitClose { onRatingBarChangeListener = null }
 }.asInitialValueFlow(rating)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Float) -> Unit,
+    emitter: (Float) -> Boolean,
 ) = RatingBar.OnRatingBarChangeListener { _, rating, _ ->
     if (scope.isActive) emitter(rating)
 }

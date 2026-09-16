@@ -30,6 +30,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * [HideViewOnScrollBehavior].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.hideOnScrollStateChanges(
@@ -50,7 +52,7 @@ fun View.hideOnScrollStateChanges(
     }
 
     val behavior = getBehavior()
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     behavior.addOnScrollStateChangedListener(listener)
     events.invokeOnClose { behavior.removeOnScrollStateChangedListener(listener) }
 }
@@ -59,7 +61,8 @@ fun View.hideOnScrollStateChanges(
  * Perform an action on the bottom view scroll state change events from [View] on
  * [HideViewOnScrollBehavior], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.hideOnScrollStateChanges(
@@ -83,7 +86,8 @@ suspend fun View.hideOnScrollStateChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.hideOnScrollStateChanges(
@@ -91,7 +95,7 @@ fun View.hideOnScrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBehavior()
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     behavior.addOnScrollStateChangedListener(listener)
     awaitClose { behavior.removeOnScrollStateChangedListener(listener) }
 }
@@ -112,7 +116,7 @@ fun View.hideOnScrollStateChanges(
 @CheckResult
 fun View.hideOnScrollStateChanges(): Flow<Int> = callbackFlow {
     val behavior = getBehavior()
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     behavior.addOnScrollStateChangedListener(listener)
     awaitClose { behavior.removeOnScrollStateChangedListener(listener) }
 }
@@ -127,7 +131,7 @@ private fun View.getBehavior(): HideViewOnScrollBehavior<*> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = HideViewOnScrollBehavior.OnScrollStateChangedListener { _, newState ->
     if (scope.isActive) emitter(newState)
 }

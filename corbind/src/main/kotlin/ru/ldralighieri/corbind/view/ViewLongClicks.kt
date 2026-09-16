@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -38,9 +39,10 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnLongClickListener]
+ * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 fun View.longClicks(
@@ -53,7 +55,7 @@ fun View.longClicks(
         for (ignored in channel) action()
     }
 
-    setOnLongClickListener(listener(scope, handled, events::trySend))
+    setOnLongClickListener(listener(scope, handled, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnLongClickListener(null) }
 }
 
@@ -63,9 +65,10 @@ fun View.longClicks(
  * *Warning:* The created actor uses [View.setOnLongClickListener]. Only one actor can be used at a
  * time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnLongClickListener]
+ * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 suspend fun View.longClicks(
@@ -92,9 +95,10 @@ suspend fun View.longClicks(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnLongClickListener]
+ * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.longClicks(
@@ -102,7 +106,7 @@ fun View.longClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    setOnLongClickListener(listener(scope, handled, ::trySend))
+    setOnLongClickListener(listener(scope, handled, corbindEventEmitter()))
     awaitClose { setOnLongClickListener(null) }
 }
 
@@ -122,13 +126,13 @@ fun View.longClicks(
  * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnLongClickListener]
+ * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.longClicks(
     handled: () -> Boolean = AlwaysTrue,
 ): Flow<Unit> = callbackFlow {
-    setOnLongClickListener(listener(this, handled, ::trySend))
+    setOnLongClickListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnLongClickListener(null) }
 }
 
@@ -136,11 +140,10 @@ fun View.longClicks(
 private fun listener(
     scope: CoroutineScope,
     handled: () -> Boolean,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = View.OnLongClickListener {
     if (scope.isActive && handled()) {
-        emitter(Unit)
-        return@OnLongClickListener true
+        return@OnLongClickListener emitter(Unit)
     }
     return@OnLongClickListener false
 }

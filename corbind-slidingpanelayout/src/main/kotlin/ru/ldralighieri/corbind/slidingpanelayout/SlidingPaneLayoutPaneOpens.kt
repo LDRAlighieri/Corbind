@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * Perform an action on the open state of the pane of [SlidingPaneLayout].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun SlidingPaneLayout.panelOpens(
@@ -49,8 +51,8 @@ fun SlidingPaneLayout.panelOpens(
         for (event in channel) action(event)
     }
 
-    events.trySend(isOpen)
-    val listener = listener(scope, events::trySend)
+    events.corbindEventEmitter(scope)(isOpen)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addPanelSlideListener(listener)
     events.invokeOnClose { removePanelSlideListener(listener) }
 }
@@ -62,7 +64,8 @@ fun SlidingPaneLayout.panelOpens(
  * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener]. Only one actor can
  * be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun SlidingPaneLayout.panelOpens(
@@ -87,7 +90,8 @@ suspend fun SlidingPaneLayout.panelOpens(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun SlidingPaneLayout.panelOpens(
@@ -95,7 +99,7 @@ fun SlidingPaneLayout.panelOpens(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(isOpen)
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addPanelSlideListener(listener)
     awaitClose { removePanelSlideListener(listener) }
 }
@@ -124,7 +128,7 @@ fun SlidingPaneLayout.panelOpens(
  */
 @CheckResult
 fun SlidingPaneLayout.panelOpens(): InitialValueFlow<Boolean> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addPanelSlideListener(listener)
     awaitClose { removePanelSlideListener(listener) }
 }.asInitialValueFlow(isOpen)
@@ -132,7 +136,7 @@ fun SlidingPaneLayout.panelOpens(): InitialValueFlow<Boolean> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit,
+    emitter: (Boolean) -> Boolean,
 ) = object : SlidingPaneLayout.PanelSlideListener {
 
     override fun onPanelSlide(panel: View, slideOffset: Float) = Unit

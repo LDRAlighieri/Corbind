@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -36,7 +37,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * Perform an action on value changes on [Slider].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun Slider.valueChanges(
@@ -48,8 +50,8 @@ fun Slider.valueChanges(
         for (value in channel) action(value)
     }
 
-    events.trySend(value)
-    val listener = listener(scope, events::trySend)
+    events.corbindEventEmitter(scope)(value)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnChangeListener(listener)
     events.invokeOnClose { removeOnChangeListener(listener) }
 }
@@ -57,7 +59,8 @@ fun Slider.valueChanges(
 /**
  * Perform an action on value changes on [Slider], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun Slider.valueChanges(
@@ -82,7 +85,8 @@ suspend fun Slider.valueChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun Slider.valueChanges(
@@ -90,7 +94,7 @@ fun Slider.valueChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Float> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(value)
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }
 }
@@ -119,7 +123,7 @@ fun Slider.valueChanges(
  */
 @CheckResult
 fun Slider.valueChanges(): InitialValueFlow<Float> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }
 }.asInitialValueFlow(value)
@@ -127,7 +131,7 @@ fun Slider.valueChanges(): InitialValueFlow<Float> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Float) -> Unit,
+    emitter: (Float) -> Boolean,
 ) = Slider.OnChangeListener { _, value, _ ->
     if (scope.isActive) emitter(value)
 }

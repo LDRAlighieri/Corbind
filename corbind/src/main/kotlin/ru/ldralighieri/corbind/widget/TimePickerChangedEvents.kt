@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -47,7 +48,8 @@ data class TimeChangedEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.M)
@@ -60,8 +62,8 @@ fun TimePicker.timeChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.trySend(TimeChangedEvent(this, hour, minute))
-    setOnTimeChangedListener(listener(scope, events::trySend))
+    events.corbindEventEmitter(scope)(TimeChangedEvent(this, hour, minute))
+    setOnTimeChangedListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnTimeChangedListener(null) }
 }
 
@@ -72,7 +74,8 @@ fun TimePicker.timeChangeEvents(
  * *Warning:* The created actor uses [TimePicker.setOnTimeChangedListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.M)
@@ -101,7 +104,8 @@ suspend fun TimePicker.timeChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
@@ -110,7 +114,7 @@ fun TimePicker.timeChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TimeChangedEvent> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(TimeChangedEvent(this@timeChangeEvents, hour, minute))
-    setOnTimeChangedListener(listener(scope, ::trySend))
+    setOnTimeChangedListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnTimeChangedListener(null) }
 }
 
@@ -142,14 +146,14 @@ fun TimePicker.timeChangeEvents(
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = callbackFlow {
-    setOnTimeChangedListener(listener(this, ::trySend))
+    setOnTimeChangedListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnTimeChangedListener(null) }
 }.asInitialValueFlow(TimeChangedEvent(view = this, hour, minute))
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (TimeChangedEvent) -> Unit,
+    emitter: (TimeChangedEvent) -> Boolean,
 ) = TimePicker.OnTimeChangedListener { view, hourOfDay, minute ->
     if (scope.isActive) {
         emitter(TimeChangedEvent(view, hourOfDay, minute))

@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class ViewLayoutChangeEvent(
@@ -46,7 +47,8 @@ data class ViewLayoutChangeEvent(
  * Perform an action on [layout change events][ViewLayoutChangeEvent] for [View].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.layoutChangeEvents(
@@ -58,7 +60,7 @@ fun View.layoutChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnLayoutChangeListener(listener)
     events.invokeOnClose { removeOnLayoutChangeListener(listener) }
 }
@@ -67,7 +69,8 @@ fun View.layoutChangeEvents(
  * Perform an action on [layout change events][ViewLayoutChangeEvent] for [View], inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.layoutChangeEvents(
@@ -90,14 +93,15 @@ suspend fun View.layoutChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.layoutChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewLayoutChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnLayoutChangeListener(listener)
     awaitClose { removeOnLayoutChangeListener(listener) }
 }
@@ -116,7 +120,7 @@ fun View.layoutChangeEvents(
  */
 @CheckResult
 fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnLayoutChangeListener(listener)
     awaitClose { removeOnLayoutChangeListener(listener) }
 }
@@ -124,7 +128,7 @@ fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewLayoutChangeEvent) -> Unit,
+    emitter: (ViewLayoutChangeEvent) -> Boolean,
 ) = View.OnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
     if (scope.isActive) {
         emitter(

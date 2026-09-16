@@ -34,6 +34,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -41,7 +42,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  *
  * @param scope Root coroutine scope
  * @param intentFilter Selects the Intent broadcasts to be received
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun Context.receivesBroadcast(
@@ -54,7 +56,7 @@ fun Context.receivesBroadcast(
         for (intent in channel) action(intent)
     }
 
-    val receiver = receiver(scope, events::trySend)
+    val receiver = receiver(scope, events.corbindEventEmitter(scope))
 
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
         registerReceiver(receiver, intentFilter)
@@ -70,7 +72,8 @@ fun Context.receivesBroadcast(
  * [CoroutineScope].
  *
  * @param intentFilter Selects the Intent broadcasts to be received
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun Context.receivesBroadcast(
@@ -99,7 +102,8 @@ suspend fun Context.receivesBroadcast(
  *
  * @param scope Root coroutine scope
  * @param intentFilter Selects the Intent broadcasts to be received
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun Context.receivesBroadcast(
@@ -107,7 +111,7 @@ fun Context.receivesBroadcast(
     intentFilter: IntentFilter,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Intent> = corbindReceiveChannel(scope, capacity) {
-    val receiver = receiver(scope, ::trySend)
+    val receiver = receiver(scope, corbindEventEmitter())
 
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
         registerReceiver(receiver, intentFilter)
@@ -136,7 +140,7 @@ fun Context.receivesBroadcast(
  * @param intentFilter Selects the Intent broadcasts to be received
  */
 fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = callbackFlow {
-    val receiver = receiver(this, ::trySend)
+    val receiver = receiver(this, corbindEventEmitter())
 
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
         registerReceiver(receiver, intentFilter)
@@ -150,7 +154,7 @@ fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = callba
 @CheckResult
 private fun receiver(
     scope: CoroutineScope,
-    emitter: (Intent) -> Unit,
+    emitter: (Intent) -> Boolean,
 ) = object : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {

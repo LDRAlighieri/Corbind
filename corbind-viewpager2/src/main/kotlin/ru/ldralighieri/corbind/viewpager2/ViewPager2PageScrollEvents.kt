@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class ViewPager2PageScrollEvent(
@@ -41,7 +42,8 @@ data class ViewPager2PageScrollEvent(
  * Perform an action on [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun ViewPager2.pageScrollEvents(
@@ -53,7 +55,7 @@ fun ViewPager2.pageScrollEvents(
         for (event in channel) action(event)
     }
 
-    val callback = callback(scope, this, events::trySend)
+    val callback = callback(scope, this, events.corbindEventEmitter(scope))
     registerOnPageChangeCallback(callback)
     events.invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -62,7 +64,8 @@ fun ViewPager2.pageScrollEvents(
  * Perform an action on [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2], inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun ViewPager2.pageScrollEvents(
@@ -85,14 +88,15 @@ suspend fun ViewPager2.pageScrollEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun ViewPager2.pageScrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewPager2PageScrollEvent> = corbindReceiveChannel(scope, capacity) {
-    val callback = callback(scope, this@pageScrollEvents, ::trySend)
+    val callback = callback(scope, this@pageScrollEvents, corbindEventEmitter())
     registerOnPageChangeCallback(callback)
     awaitClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -111,7 +115,7 @@ fun ViewPager2.pageScrollEvents(
  */
 @CheckResult
 fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = callbackFlow {
-    val callback = callback(this, this@pageScrollEvents, ::trySend)
+    val callback = callback(this, this@pageScrollEvents, corbindEventEmitter())
     registerOnPageChangeCallback(callback)
     awaitClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -120,7 +124,7 @@ fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = callbackFlo
 private fun callback(
     scope: CoroutineScope,
     viewPager: ViewPager2,
-    emitter: (ViewPager2PageScrollEvent) -> Unit,
+    emitter: (ViewPager2PageScrollEvent) -> Boolean,
 ) = object : ViewPager2.OnPageChangeCallback() {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {

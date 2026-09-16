@@ -30,13 +30,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.dragStateChanges(
@@ -49,7 +51,7 @@ fun View.dragStateChanges(
     }
 
     val behavior = getBehavior(this)
-    behavior.listener = listener(scope, events::trySend)
+    behavior.listener = listener(scope, events.corbindEventEmitter(scope))
     events.invokeOnClose { behavior.setListener(null) }
 }
 
@@ -60,7 +62,8 @@ fun View.dragStateChanges(
  * *Warning:* The created actor uses [SwipeDismissBehavior.setListener]. Only one actor can be used
  * at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.dragStateChanges(
@@ -86,7 +89,8 @@ suspend fun View.dragStateChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.dragStateChanges(
@@ -94,7 +98,7 @@ fun View.dragStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val behavior = getBehavior(this@dragStateChanges)
-    behavior.listener = listener(scope, ::trySend)
+    behavior.listener = listener(scope, corbindEventEmitter())
     awaitClose { behavior.setListener(null) }
 }
 
@@ -116,7 +120,7 @@ fun View.dragStateChanges(
 @CheckResult
 fun View.dragStateChanges(): Flow<Int> = callbackFlow {
     val behavior = getBehavior(this@dragStateChanges)
-    behavior.listener = listener(this, ::trySend)
+    behavior.listener = listener(this, corbindEventEmitter())
     awaitClose { behavior.setListener(null) }
 }
 
@@ -131,7 +135,7 @@ private fun getBehavior(view: View): SwipeDismissBehavior<*> {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = object : SwipeDismissBehavior.OnDismissListener {
 
     override fun onDismiss(view: View) = Unit

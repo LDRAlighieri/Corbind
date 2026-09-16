@@ -29,6 +29,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 sealed interface RecyclerViewChildAttachStateChangeEvent {
@@ -51,7 +52,8 @@ data class RecyclerViewChildDetachEvent(
  * on [RecyclerView].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun RecyclerView.childAttachStateChangeEvents(
@@ -66,7 +68,7 @@ fun RecyclerView.childAttachStateChangeEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, this, events::trySend)
+    val listener = listener(scope, this, events.corbindEventEmitter(scope))
     addOnChildAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
 }
@@ -75,7 +77,8 @@ fun RecyclerView.childAttachStateChangeEvents(
  * Perform an action on [child attach state change events][RecyclerViewChildAttachStateChangeEvent]
  * on [RecyclerView], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun RecyclerView.childAttachStateChangeEvents(
@@ -112,14 +115,15 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RecyclerViewChildAttachStateChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, this@childAttachStateChangeEvents, ::trySend)
+    val listener = listener(scope, this@childAttachStateChangeEvents, corbindEventEmitter())
     addOnChildAttachStateChangeListener(listener)
     awaitClose { removeOnChildAttachStateChangeListener(listener) }
 }
@@ -152,7 +156,7 @@ fun RecyclerView.childAttachStateChangeEvents(
  */
 @CheckResult
 fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachStateChangeEvent> = callbackFlow {
-    val listener = listener(this, this@childAttachStateChangeEvents, ::trySend)
+    val listener = listener(this, this@childAttachStateChangeEvents, corbindEventEmitter())
     addOnChildAttachStateChangeListener(listener)
     awaitClose { removeOnChildAttachStateChangeListener(listener) }
 }
@@ -161,7 +165,7 @@ fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachSta
 private fun listener(
     scope: CoroutineScope,
     recyclerView: RecyclerView,
-    emitter: (RecyclerViewChildAttachStateChangeEvent) -> Unit,
+    emitter: (RecyclerViewChildAttachStateChangeEvent) -> Boolean,
 ) = object : RecyclerView.OnChildAttachStateChangeListener {
 
     override fun onChildViewAttachedToWindow(childView: View) {

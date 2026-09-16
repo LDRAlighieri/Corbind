@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -46,7 +47,8 @@ data class RangeSliderChangeEvent(
  * Perform an action on [values change events][RangeSliderChangeEvent] on [RangeSlider].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun RangeSlider.valuesChangeEvents(
@@ -58,8 +60,8 @@ fun RangeSlider.valuesChangeEvents(
         for (event in channel) action(event)
     }
 
-    val event = initialValue(this@valuesChangeEvents).also { events.trySend(it) }
-    val listener = listener(scope, events::trySend).apply { previousValues = event.previousValues }
+    val event = initialValue(this@valuesChangeEvents).also { events.corbindEventEmitter(scope)(it) }
+    val listener = listener(scope, events.corbindEventEmitter(scope)).apply { previousValues = event.previousValues }
     addOnChangeListener(listener)
     events.invokeOnClose { removeOnChangeListener(listener) }
 }
@@ -68,7 +70,8 @@ fun RangeSlider.valuesChangeEvents(
  * Perform an action on [values change events][RangeSliderChangeEvent] on [RangeSlider], inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun RangeSlider.valuesChangeEvents(
@@ -93,7 +96,8 @@ suspend fun RangeSlider.valuesChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun RangeSlider.valuesChangeEvents(
@@ -101,7 +105,7 @@ fun RangeSlider.valuesChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RangeSliderChangeEvent> = corbindReceiveChannel(scope, capacity) {
     val event = initialValue(this@valuesChangeEvents).also(::sendInitialValue)
-    val listener = listener(scope, ::trySend).apply { previousValues = event.previousValues }
+    val listener = listener(scope, corbindEventEmitter()).apply { previousValues = event.previousValues }
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }
 }
@@ -130,7 +134,7 @@ fun RangeSlider.valuesChangeEvents(
  */
 @CheckResult
 fun RangeSlider.valuesChangeEvents(): InitialValueFlow<RangeSliderChangeEvent> = callbackFlow {
-    val listener = listener(this, ::trySend).apply { previousValues = values }
+    val listener = listener(this, corbindEventEmitter()).apply { previousValues = values }
     addOnChangeListener(listener)
     awaitClose { removeOnChangeListener(listener) }
 }.asInitialValueFlow(initialValue(this))
@@ -141,7 +145,7 @@ private fun initialValue(slider: RangeSlider): RangeSliderChangeEvent = RangeSli
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (RangeSliderChangeEvent) -> Unit,
+    emitter: (RangeSliderChangeEvent) -> Boolean,
 ) = object : RangeSlider.OnChangeListener {
 
     var previousValues: List<Float> = mutableListOf()

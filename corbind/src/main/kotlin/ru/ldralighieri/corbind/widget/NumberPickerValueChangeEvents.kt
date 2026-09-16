@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -45,7 +46,8 @@ data class NumberPickerValueChangeEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun NumberPicker.valueChangeEvents(
@@ -57,8 +59,8 @@ fun NumberPicker.valueChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.trySend(NumberPickerValueChangeEvent(this, value, value))
-    setOnValueChangedListener(listener(scope, events::trySend))
+    events.corbindEventEmitter(scope)(NumberPickerValueChangeEvent(this, value, value))
+    setOnValueChangedListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnValueChangedListener(null) }
 }
 
@@ -69,7 +71,8 @@ fun NumberPicker.valueChangeEvents(
  * *Warning:* The created actor uses [NumberPicker.setOnValueChangedListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun NumberPicker.valueChangeEvents(
@@ -98,7 +101,8 @@ suspend fun NumberPicker.valueChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun NumberPicker.valueChangeEvents(
@@ -106,7 +110,7 @@ fun NumberPicker.valueChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<NumberPickerValueChangeEvent> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(NumberPickerValueChangeEvent(this@valueChangeEvents, value, value))
-    setOnValueChangedListener(listener(scope, ::trySend))
+    setOnValueChangedListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnValueChangedListener(null) }
 }
 
@@ -138,14 +142,14 @@ fun NumberPicker.valueChangeEvents(
  */
 @CheckResult
 fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEvent> = callbackFlow {
-    setOnValueChangedListener(listener(this, ::trySend))
+    setOnValueChangedListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnValueChangedListener(null) }
 }.asInitialValueFlow(NumberPickerValueChangeEvent(picker = this, value, value))
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (NumberPickerValueChangeEvent) -> Unit,
+    emitter: (NumberPickerValueChangeEvent) -> Boolean,
 ) = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
     if (scope.isActive) {
         emitter(NumberPickerValueChangeEvent(picker, oldVal, newVal))

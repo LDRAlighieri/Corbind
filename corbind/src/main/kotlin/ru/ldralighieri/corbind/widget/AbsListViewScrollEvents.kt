@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class AbsListViewScrollEvent(
@@ -45,7 +46,8 @@ data class AbsListViewScrollEvent(
  * at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun AbsListView.scrollEvents(
@@ -57,7 +59,7 @@ fun AbsListView.scrollEvents(
         for (event in channel) action(event)
     }
 
-    setOnScrollListener(listener(scope, events::trySend))
+    setOnScrollListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnScrollListener(null) }
 }
 
@@ -68,7 +70,8 @@ fun AbsListView.scrollEvents(
  * *Warning:* The created actor uses [AbsListView.setOnScrollListener]. Only one actor can be used
  * at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun AbsListView.scrollEvents(
@@ -94,14 +97,15 @@ suspend fun AbsListView.scrollEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun AbsListView.scrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<AbsListViewScrollEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnScrollListener(listener(scope, ::trySend))
+    setOnScrollListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnScrollListener(null) }
 }
 
@@ -122,14 +126,14 @@ fun AbsListView.scrollEvents(
  */
 @CheckResult
 fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = callbackFlow {
-    setOnScrollListener(listener(this, ::trySend))
+    setOnScrollListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnScrollListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (AbsListViewScrollEvent) -> Unit,
+    emitter: (AbsListViewScrollEvent) -> Boolean,
 ) = object : AbsListView.OnScrollListener {
 
     private var currentScrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE

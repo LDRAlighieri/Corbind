@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -48,7 +49,8 @@ data class DateChangedEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.O)
@@ -61,8 +63,8 @@ fun DatePicker.dateChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.trySend(DateChangedEvent(this, year, month, dayOfMonth))
-    setOnDateChangedListener(listener(scope, events::trySend))
+    events.corbindEventEmitter(scope)(DateChangedEvent(this, year, month, dayOfMonth))
+    setOnDateChangedListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnDateChangedListener(null) }
 }
 
@@ -73,7 +75,8 @@ fun DatePicker.dateChangeEvents(
  * *Warning:* The created actor uses [DatePicker.setOnDateChangedListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.O)
@@ -102,7 +105,8 @@ suspend fun DatePicker.dateChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult
@@ -111,7 +115,7 @@ fun DatePicker.dateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<DateChangedEvent> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(DateChangedEvent(this@dateChangeEvents, year, month, dayOfMonth))
-    setOnDateChangedListener(listener(scope, ::trySend))
+    setOnDateChangedListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnDateChangedListener(null) }
 }
 
@@ -143,14 +147,14 @@ fun DatePicker.dateChangeEvents(
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult
 fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> = callbackFlow {
-    setOnDateChangedListener(listener(this, ::trySend))
+    setOnDateChangedListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnDateChangedListener(null) }
 }.asInitialValueFlow(DateChangedEvent(view = this, year, month, dayOfMonth))
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (DateChangedEvent) -> Unit,
+    emitter: (DateChangedEvent) -> Boolean,
 ) = DatePicker.OnDateChangedListener { view, year, monthOfYear, dayOfMonth ->
     if (scope.isActive) {
         emitter(DateChangedEvent(view, year, monthOfYear, dayOfMonth))

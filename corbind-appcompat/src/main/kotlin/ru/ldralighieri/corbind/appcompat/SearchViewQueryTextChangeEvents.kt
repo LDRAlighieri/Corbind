@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -45,7 +46,8 @@ data class SearchViewQueryTextEvent(
  * at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun SearchView.queryTextChangeEvents(
@@ -57,8 +59,8 @@ fun SearchView.queryTextChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.trySend(SearchViewQueryTextEvent(this, query, false))
-    setOnQueryTextListener(listener(scope, this, events::trySend))
+    events.corbindEventEmitter(scope)(SearchViewQueryTextEvent(this, query, false))
+    setOnQueryTextListener(listener(scope, this, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnQueryTextListener(null) }
 }
 
@@ -69,7 +71,8 @@ fun SearchView.queryTextChangeEvents(
  * *Warning:* The created actor uses [SearchView.setOnQueryTextListener]. Only one actor can be used
  * at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun SearchView.queryTextChangeEvents(
@@ -97,7 +100,8 @@ suspend fun SearchView.queryTextChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun SearchView.queryTextChangeEvents(
@@ -105,7 +109,7 @@ fun SearchView.queryTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<SearchViewQueryTextEvent> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(SearchViewQueryTextEvent(this@queryTextChangeEvents, query, false))
-    setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, ::trySend))
+    setOnQueryTextListener(listener(scope, this@queryTextChangeEvents, corbindEventEmitter()))
     awaitClose { setOnQueryTextListener(null) }
 }
 
@@ -136,7 +140,7 @@ fun SearchView.queryTextChangeEvents(
  */
 @CheckResult
 fun SearchView.queryTextChangeEvents(): InitialValueFlow<SearchViewQueryTextEvent> = callbackFlow {
-    setOnQueryTextListener(listener(this, this@queryTextChangeEvents, ::trySend))
+    setOnQueryTextListener(listener(this, this@queryTextChangeEvents, corbindEventEmitter()))
     awaitClose { setOnQueryTextListener(null) }
 }.asInitialValueFlow(SearchViewQueryTextEvent(view = this, query, false))
 
@@ -144,7 +148,7 @@ fun SearchView.queryTextChangeEvents(): InitialValueFlow<SearchViewQueryTextEven
 private fun listener(
     scope: CoroutineScope,
     searchView: SearchView,
-    emitter: (SearchViewQueryTextEvent) -> Unit,
+    emitter: (SearchViewQueryTextEvent) -> Boolean,
 ) = object : SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(s: String): Boolean = onEvent(SearchViewQueryTextEvent(searchView, s, false))
@@ -153,8 +157,7 @@ private fun listener(
 
     private fun onEvent(event: SearchViewQueryTextEvent): Boolean {
         if (scope.isActive) {
-            emitter(event)
-            return true
+            return emitter(event)
         }
         return false
     }

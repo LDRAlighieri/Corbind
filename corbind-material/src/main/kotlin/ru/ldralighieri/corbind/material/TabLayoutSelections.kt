@@ -28,6 +28,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -35,7 +36,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * Perform an action on the selected tab in [TabLayout].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun TabLayout.selections(
@@ -47,8 +49,8 @@ fun TabLayout.selections(
         for (tab in channel) action(tab)
     }
 
-    setInitialValue(this, events::trySend)
-    val listener = listener(scope, events::trySend)
+    setInitialValue(this, events.corbindEventEmitter(scope))
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnTabSelectedListener(listener)
     events.invokeOnClose { removeOnTabSelectedListener(listener) }
 }
@@ -56,7 +58,8 @@ fun TabLayout.selections(
 /**
  * Perform an action on the selected tab in [TabLayout], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun TabLayout.selections(
@@ -81,15 +84,19 @@ suspend fun TabLayout.selections(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun TabLayout.selections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TabLayout.Tab> = corbindReceiveChannel(scope, capacity) {
-    setInitialValue(this@selections, ::sendInitialValue)
-    val listener = listener(scope, ::trySend)
+    setInitialValue(this@selections) {
+        sendInitialValue(it)
+        true
+    }
+    val listener = listener(scope, corbindEventEmitter())
     addOnTabSelectedListener(listener)
     awaitClose { removeOnTabSelectedListener(listener) }
 }
@@ -118,15 +125,15 @@ fun TabLayout.selections(
  */
 @CheckResult
 fun TabLayout.selections(): Flow<TabLayout.Tab> = callbackFlow {
-    setInitialValue(this@selections, ::trySend)
-    val listener = listener(this, ::trySend)
+    setInitialValue(this@selections, corbindEventEmitter())
+    val listener = listener(this, corbindEventEmitter())
     addOnTabSelectedListener(listener)
     awaitClose { removeOnTabSelectedListener(listener) }
 }
 
 private fun setInitialValue(
     tabLayout: TabLayout,
-    emitter: (TabLayout.Tab) -> Unit,
+    emitter: (TabLayout.Tab) -> Boolean,
 ) {
     val index = tabLayout.selectedTabPosition
     if (index != -1) emitter(tabLayout.getTabAt(index)!!)
@@ -135,7 +142,7 @@ private fun setInitialValue(
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (TabLayout.Tab) -> Unit,
+    emitter: (TabLayout.Tab) -> Boolean,
 ) = object : TabLayout.OnTabSelectedListener {
 
     override fun onTabSelected(tab: TabLayout.Tab) {

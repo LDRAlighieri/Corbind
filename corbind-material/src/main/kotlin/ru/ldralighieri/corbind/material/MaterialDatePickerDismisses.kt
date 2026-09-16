@@ -29,13 +29,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action whenever the [MaterialDatePicker] is dismissed, no matter how it is dismissed.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun <S> MaterialDatePicker<S>.dismisses(
@@ -47,7 +49,7 @@ fun <S> MaterialDatePicker<S>.dismisses(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnDismissListener(listener)
     events.invokeOnClose { removeOnDismissListener(listener) }
 }
@@ -56,7 +58,8 @@ fun <S> MaterialDatePicker<S>.dismisses(
  * Perform an action whenever the [MaterialDatePicker] is dismissed, no matter how it is dismissed.
  * Inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun <S> MaterialDatePicker<S>.dismisses(
@@ -80,14 +83,15 @@ suspend fun <S> MaterialDatePicker<S>.dismisses(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun <S> MaterialDatePicker<S>.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnDismissListener(listener)
     awaitClose { removeOnDismissListener(listener) }
 }
@@ -107,7 +111,7 @@ fun <S> MaterialDatePicker<S>.dismisses(
  */
 @CheckResult
 fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnDismissListener(listener)
     awaitClose { removeOnDismissListener(listener) }
 }
@@ -115,7 +119,7 @@ fun <S> MaterialDatePicker<S>.dismisses(): Flow<Unit> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = DialogInterface.OnDismissListener {
     if (scope.isActive) emitter(Unit)
 }

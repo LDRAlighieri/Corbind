@@ -30,6 +30,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class ViewScrollChangeEvent(
@@ -47,7 +48,8 @@ data class ViewScrollChangeEvent(
  * a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.M)
@@ -60,7 +62,7 @@ fun View.scrollChangeEvents(
         for (event in channel) action(event)
     }
 
-    setOnScrollChangeListener(listener(scope, events::trySend))
+    setOnScrollChangeListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnScrollChangeListener(null) }
 }
 
@@ -71,7 +73,8 @@ fun View.scrollChangeEvents(
  * *Warning:* The created actor uses [View.setOnScrollChangeListener]. Only one actor can be used at
  * a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.M)
@@ -98,7 +101,8 @@ suspend fun View.scrollChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
@@ -106,7 +110,7 @@ fun View.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<ViewScrollChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnScrollChangeListener(listener(scope, ::trySend))
+    setOnScrollChangeListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnScrollChangeListener(null) }
 }
 
@@ -128,14 +132,14 @@ fun View.scrollChangeEvents(
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = callbackFlow {
-    setOnScrollChangeListener(listener(this, ::trySend))
+    setOnScrollChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnScrollChangeListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (ViewScrollChangeEvent) -> Unit,
+    emitter: (ViewScrollChangeEvent) -> Boolean,
 ) = View.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
     if (scope.isActive) {
         emitter(ViewScrollChangeEvent(v, scrollX, scrollY, oldScrollX, oldScrollY))

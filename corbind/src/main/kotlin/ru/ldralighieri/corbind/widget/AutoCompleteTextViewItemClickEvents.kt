@@ -30,6 +30,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun AutoCompleteTextView.itemClickEvents(
@@ -51,7 +53,7 @@ fun AutoCompleteTextView.itemClickEvents(
         for (event in channel) action(event)
     }
 
-    onItemClickListener = listener(scope, events::trySend)
+    onItemClickListener = listener(scope, events.corbindEventEmitter(scope))
     events.invokeOnClose { onItemClickListener = null }
 }
 
@@ -62,7 +64,8 @@ fun AutoCompleteTextView.itemClickEvents(
  * *Warning:* The created actor uses [AdapterView.setOnItemClickListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun AutoCompleteTextView.itemClickEvents(
@@ -88,14 +91,15 @@ suspend fun AutoCompleteTextView.itemClickEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun AutoCompleteTextView.itemClickEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<AdapterViewItemClickEvent> = corbindReceiveChannel(scope, capacity) {
-    onItemClickListener = listener(scope, ::trySend)
+    onItemClickListener = listener(scope, corbindEventEmitter())
     awaitClose { onItemClickListener = null }
 }
 
@@ -116,14 +120,14 @@ fun AutoCompleteTextView.itemClickEvents(
  */
 @CheckResult
 fun AutoCompleteTextView.itemClickEvents(): Flow<AdapterViewItemClickEvent> = callbackFlow {
-    onItemClickListener = listener(this, ::trySend)
+    onItemClickListener = listener(this, corbindEventEmitter())
     awaitClose { onItemClickListener = null }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (AdapterViewItemClickEvent) -> Unit,
+    emitter: (AdapterViewItemClickEvent) -> Boolean,
 ) = AdapterView.OnItemClickListener { parent, view: View?, position, id ->
     if (scope.isActive) {
         emitter(AdapterViewItemClickEvent(parent, view, position, id))

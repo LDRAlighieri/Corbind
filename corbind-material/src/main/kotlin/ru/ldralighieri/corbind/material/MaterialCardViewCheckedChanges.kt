@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -38,7 +39,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * *Warning:* Perform only when the [MaterialCardView] is in checkable state.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun MaterialCardView.checkedChanges(
@@ -51,8 +53,8 @@ fun MaterialCardView.checkedChanges(
     }
 
     checkCheckableState(this)
-    events.trySend(isChecked)
-    val listener = listener(scope, events::trySend)
+    events.corbindEventEmitter(scope)(isChecked)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     setOnCheckedChangeListener(listener)
     events.invokeOnClose { setOnCheckedChangeListener(null) }
 }
@@ -62,7 +64,8 @@ fun MaterialCardView.checkedChanges(
  *
  * *Warning:* Perform only when the [MaterialCardView] is in checkable state.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun MaterialCardView.checkedChanges(
@@ -89,7 +92,8 @@ suspend fun MaterialCardView.checkedChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun MaterialCardView.checkedChanges(
@@ -98,7 +102,7 @@ fun MaterialCardView.checkedChanges(
 ): ReceiveChannel<Boolean> = corbindReceiveChannel(scope, capacity) {
     checkCheckableState(this@checkedChanges)
     sendInitialValue(isChecked)
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     setOnCheckedChangeListener(listener)
     awaitClose { setOnCheckedChangeListener(null) }
 }
@@ -130,7 +134,7 @@ fun MaterialCardView.checkedChanges(
 @CheckResult
 fun MaterialCardView.checkedChanges(): InitialValueFlow<Boolean> = callbackFlow {
     checkCheckableState(this@checkedChanges)
-    setOnCheckedChangeListener(listener(this, ::trySend))
+    setOnCheckedChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnCheckedChangeListener(null) }
 }.asInitialValueFlow(isChecked)
 
@@ -141,7 +145,7 @@ private fun checkCheckableState(card: MaterialCardView) {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Boolean) -> Unit,
+    emitter: (Boolean) -> Boolean,
 ) = MaterialCardView.OnCheckedChangeListener { _, isChecked ->
     if (scope.isActive) emitter(isChecked)
 }

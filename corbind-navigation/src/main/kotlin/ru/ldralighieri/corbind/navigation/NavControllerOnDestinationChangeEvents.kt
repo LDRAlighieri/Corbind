@@ -30,6 +30,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class NavControllerOnDestinationChangeEvent(
@@ -43,7 +44,8 @@ data class NavControllerOnDestinationChangeEvent(
  * [NavController].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun NavController.destinationChangeEvents(
@@ -56,7 +58,7 @@ fun NavController.destinationChangeEvents(
             for (event in channel) action(event)
         }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnDestinationChangedListener(listener)
     events.invokeOnClose { removeOnDestinationChangedListener(listener) }
 }
@@ -65,7 +67,8 @@ fun NavController.destinationChangeEvents(
  * Perform an action on [destination change events][NavControllerOnDestinationChangeEvent] on
  * [NavController], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun NavController.destinationChangeEvents(
@@ -89,14 +92,15 @@ suspend fun NavController.destinationChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun NavController.destinationChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<NavControllerOnDestinationChangeEvent> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnDestinationChangedListener(listener)
     awaitClose { removeOnDestinationChangedListener(listener) }
 }
@@ -116,7 +120,7 @@ fun NavController.destinationChangeEvents(
  */
 @CheckResult
 fun NavController.destinationChangeEvents(): Flow<NavControllerOnDestinationChangeEvent> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnDestinationChangedListener(listener)
     awaitClose { removeOnDestinationChangedListener(listener) }
 }
@@ -124,7 +128,7 @@ fun NavController.destinationChangeEvents(): Flow<NavControllerOnDestinationChan
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (NavControllerOnDestinationChangeEvent) -> Unit,
+    emitter: (NavControllerOnDestinationChangeEvent) -> Boolean,
 ) = NavController.OnDestinationChangedListener { controller, destination, arguments ->
     if (scope.isActive) {
         emitter(NavControllerOnDestinationChangeEvent(controller, destination, arguments))

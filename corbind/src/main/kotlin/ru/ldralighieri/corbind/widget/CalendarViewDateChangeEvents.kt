@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 import java.util.Calendar
@@ -47,7 +48,8 @@ data class CalendarViewDateChangeEvent(
  * used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun CalendarView.dateChangeEvents(
@@ -59,8 +61,8 @@ fun CalendarView.dateChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.trySend(initialValue(this))
-    setOnDateChangeListener(listener(scope, events::trySend))
+    events.corbindEventEmitter(scope)(initialValue(this))
+    setOnDateChangeListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnDateChangeListener(null) }
 }
 
@@ -71,7 +73,8 @@ fun CalendarView.dateChangeEvents(
  * *Warning:* The created actor uses [CalendarView.setOnDateChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun CalendarView.dateChangeEvents(
@@ -100,7 +103,8 @@ suspend fun CalendarView.dateChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun CalendarView.dateChangeEvents(
@@ -108,7 +112,7 @@ fun CalendarView.dateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<CalendarViewDateChangeEvent> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(initialValue(this@dateChangeEvents))
-    setOnDateChangeListener(listener(scope, ::trySend))
+    setOnDateChangeListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnDateChangeListener(null) }
 }
 
@@ -139,7 +143,7 @@ fun CalendarView.dateChangeEvents(
  */
 @CheckResult
 fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> = callbackFlow {
-    setOnDateChangeListener(listener(this, ::trySend))
+    setOnDateChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnDateChangeListener(null) }
 }.asInitialValueFlow(initialValue(calendar = this))
 
@@ -154,7 +158,7 @@ private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent = 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (CalendarViewDateChangeEvent) -> Unit,
+    emitter: (CalendarViewDateChangeEvent) -> Boolean,
 ) = CalendarView.OnDateChangeListener { view, year, month, dayOfMonth ->
     if (scope.isActive) {
         emitter(CalendarViewDateChangeEvent(view, year, month, dayOfMonth))

@@ -29,6 +29,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun <S> MaterialDatePicker<S>.cancels(
@@ -51,7 +53,7 @@ fun <S> MaterialDatePicker<S>.cancels(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnCancelListener(listener)
     events.invokeOnClose { removeOnCancelListener(listener) }
 }
@@ -63,7 +65,8 @@ fun <S> MaterialDatePicker<S>.cancels(
  * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
  * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun <S> MaterialDatePicker<S>.cancels(
@@ -90,14 +93,15 @@ suspend fun <S> MaterialDatePicker<S>.cancels(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnCancelListener(listener)
     awaitClose { removeOnCancelListener(listener) }
 }
@@ -120,7 +124,7 @@ fun <S> MaterialDatePicker<S>.cancels(
  */
 @CheckResult
 fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnCancelListener(listener)
     awaitClose { removeOnCancelListener(listener) }
 }
@@ -128,7 +132,7 @@ fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = DialogInterface.OnCancelListener {
     if (scope.isActive) emitter(Unit)
 }

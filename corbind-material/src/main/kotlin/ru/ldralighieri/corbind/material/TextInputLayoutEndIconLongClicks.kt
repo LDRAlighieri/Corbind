@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -39,9 +40,10 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * clicks. Only one actor can be used for a view at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnLongClickListener]
+ * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 fun TextInputLayout.endIconLongClicks(
@@ -54,7 +56,7 @@ fun TextInputLayout.endIconLongClicks(
         for (ignored in channel) action()
     }
 
-    setEndIconOnLongClickListener(listener(scope, handled, events::trySend))
+    setEndIconOnLongClickListener(listener(scope, handled, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setEndIconOnLongClickListener(null) }
 }
 
@@ -64,9 +66,10 @@ fun TextInputLayout.endIconLongClicks(
  * *Warning:* The created actor uses [TextInputLayout.setEndIconOnLongClickListener]. Only one actor
  * can be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnLongClickListener]
+ * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 suspend fun TextInputLayout.endIconLongClicks(
@@ -93,9 +96,10 @@ suspend fun TextInputLayout.endIconLongClicks(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnLongClickListener]
+ * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun TextInputLayout.endIconLongClicks(
@@ -103,7 +107,7 @@ fun TextInputLayout.endIconLongClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    setEndIconOnLongClickListener(listener(scope, handled, ::trySend))
+    setEndIconOnLongClickListener(listener(scope, handled, corbindEventEmitter()))
     awaitClose { setEndIconOnLongClickListener(null) }
 }
 
@@ -123,13 +127,13 @@ fun TextInputLayout.endIconLongClicks(
  * ```
  *
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
- * [View.OnLongClickListener]
+ * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun TextInputLayout.endIconLongClicks(
     handled: () -> Boolean = AlwaysTrue,
 ): Flow<Unit> = callbackFlow {
-    setEndIconOnLongClickListener(listener(this, handled, ::trySend))
+    setEndIconOnLongClickListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setEndIconOnLongClickListener(null) }
 }
 
@@ -137,11 +141,10 @@ fun TextInputLayout.endIconLongClicks(
 private fun listener(
     scope: CoroutineScope,
     handled: () -> Boolean,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = View.OnLongClickListener {
     if (scope.isActive && handled()) {
-        emitter(Unit)
-        return@OnLongClickListener true
+        return@OnLongClickListener emitter(Unit)
     }
     return@OnLongClickListener false
 }

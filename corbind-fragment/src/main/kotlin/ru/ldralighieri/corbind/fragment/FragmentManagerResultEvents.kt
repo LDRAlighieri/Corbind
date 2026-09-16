@@ -30,6 +30,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 data class FragmentResultEvent(
@@ -47,7 +48,8 @@ data class FragmentResultEvent(
  * @param scope Root coroutine scope
  * @param requestKey Used to identify the result
  * @param lifecycleOwner The LifecycleOwner for handling the result
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun FragmentManager.resultEvents(
@@ -61,7 +63,7 @@ fun FragmentManager.resultEvents(
         for (event in channel) action(event)
     }
 
-    val listener = listener(scope, events::trySend)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     setFragmentResultListener(requestKey, lifecycleOwner, listener)
     events.invokeOnClose { clearFragmentResultListener(requestKey) }
 }
@@ -75,7 +77,8 @@ fun FragmentManager.resultEvents(
  *
  * @param requestKey Used to identify the result
  * @param lifecycleOwner The LifecycleOwner for handling the result
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun FragmentManager.resultEvents(
@@ -116,7 +119,7 @@ fun FragmentManager.resultEvents(
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<FragmentResultEvent> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     setFragmentResultListener(requestKey, lifecycleOwner, listener)
     awaitClose { clearFragmentResultListener(requestKey) }
 }
@@ -146,7 +149,7 @@ fun FragmentManager.resultEvents(
     requestKey: String,
     lifecycleOwner: LifecycleOwner,
 ): Flow<FragmentResultEvent> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     setFragmentResultListener(requestKey, lifecycleOwner, listener)
     awaitClose { clearFragmentResultListener(requestKey) }
 }
@@ -154,7 +157,7 @@ fun FragmentManager.resultEvents(
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (FragmentResultEvent) -> Unit,
+    emitter: (FragmentResultEvent) -> Boolean,
 ) = { requestKey: String, bundle: Bundle ->
     if (scope.isActive) emitter(FragmentResultEvent(requestKey, bundle))
 }

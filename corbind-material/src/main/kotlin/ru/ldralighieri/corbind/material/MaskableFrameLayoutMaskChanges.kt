@@ -29,6 +29,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -37,7 +38,8 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * *Warning:* The created actor uses [OnMaskChangedListener]. Only one actor can be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun MaskableFrameLayout.maskChanges(
@@ -49,7 +51,7 @@ fun MaskableFrameLayout.maskChanges(
         for (changes in channel) action(changes)
     }
 
-    setOnMaskChangedListener(listener(scope, events::trySend))
+    setOnMaskChangedListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnMaskChangedListener(null) }
 }
 
@@ -59,7 +61,8 @@ fun MaskableFrameLayout.maskChanges(
  *
  * *Warning:* The created actor uses [OnMaskChangedListener]. Only one actor can be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun MaskableFrameLayout.maskChanges(
@@ -85,14 +88,15 @@ suspend fun MaskableFrameLayout.maskChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun MaskableFrameLayout.maskChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<RectF> = corbindReceiveChannel(scope, capacity) {
-    setOnMaskChangedListener(listener(scope, ::trySend))
+    setOnMaskChangedListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnMaskChangedListener(null) }
 }
 
@@ -112,14 +116,14 @@ fun MaskableFrameLayout.maskChanges(
  */
 @CheckResult
 fun MaskableFrameLayout.maskChanges() = callbackFlow {
-    setOnMaskChangedListener(listener(this, ::trySend))
+    setOnMaskChangedListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnMaskChangedListener(null) }
 }
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (RectF) -> Unit,
+    emitter: (RectF) -> Boolean,
 ) = OnMaskChangedListener { maskRect ->
     if (scope.isActive) emitter(maskRect)
 }

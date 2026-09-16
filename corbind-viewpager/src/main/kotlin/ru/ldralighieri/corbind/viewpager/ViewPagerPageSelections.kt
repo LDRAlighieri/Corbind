@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -36,7 +37,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * Perform an action on page selected events on [ViewPager].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun ViewPager.pageSelections(
@@ -48,8 +50,8 @@ fun ViewPager.pageSelections(
         for (position in channel) action(position)
     }
 
-    events.trySend(currentItem)
-    val listener = listener(scope, events::trySend)
+    events.corbindEventEmitter(scope)(currentItem)
+    val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnPageChangeListener(listener)
     events.invokeOnClose { removeOnPageChangeListener(listener) }
 }
@@ -57,7 +59,8 @@ fun ViewPager.pageSelections(
 /**
  * Perform an action on page selected events on [ViewPager], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun ViewPager.pageSelections(
@@ -82,7 +85,8 @@ suspend fun ViewPager.pageSelections(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
 ==
  */
 @CheckResult
@@ -91,7 +95,7 @@ fun ViewPager.pageSelections(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(currentItem)
-    val listener = listener(scope, ::trySend)
+    val listener = listener(scope, corbindEventEmitter())
     addOnPageChangeListener(listener)
     awaitClose { removeOnPageChangeListener(listener) }
 }
@@ -120,7 +124,7 @@ fun ViewPager.pageSelections(
  */
 @CheckResult
 fun ViewPager.pageSelections(): InitialValueFlow<Int> = callbackFlow {
-    val listener = listener(this, ::trySend)
+    val listener = listener(this, corbindEventEmitter())
     addOnPageChangeListener(listener)
     awaitClose { removeOnPageChangeListener(listener) }
 }.asInitialValueFlow(currentItem)
@@ -128,7 +132,7 @@ fun ViewPager.pageSelections(): InitialValueFlow<Int> = callbackFlow {
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = object : ViewPager.OnPageChangeListener {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit

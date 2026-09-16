@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -43,7 +44,8 @@ data class TextViewAfterTextChangeEvent(
  * Perform an action [after text change events][TextViewAfterTextChangeEvent] for [TextView].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun TextView.afterTextChangeEvents(
@@ -55,8 +57,8 @@ fun TextView.afterTextChangeEvents(
         for (event in channel) action(event)
     }
 
-    events.trySend(initialValue(this))
-    val listener = listener(scope, this, events::trySend)
+    events.corbindEventEmitter(scope)(initialValue(this))
+    val listener = listener(scope, this, events.corbindEventEmitter(scope))
     addTextChangedListener(listener)
     events.invokeOnClose { removeTextChangedListener(listener) }
 }
@@ -65,7 +67,8 @@ fun TextView.afterTextChangeEvents(
  * Perform an action [after text change events][TextViewAfterTextChangeEvent] for [TextView], inside
  * new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun TextView.afterTextChangeEvents(
@@ -90,7 +93,8 @@ suspend fun TextView.afterTextChangeEvents(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun TextView.afterTextChangeEvents(
@@ -98,7 +102,7 @@ fun TextView.afterTextChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<TextViewAfterTextChangeEvent> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(initialValue(this@afterTextChangeEvents))
-    val listener = listener(scope, this@afterTextChangeEvents, ::trySend)
+    val listener = listener(scope, this@afterTextChangeEvents, corbindEventEmitter())
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }
 }
@@ -127,7 +131,7 @@ fun TextView.afterTextChangeEvents(
  */
 @CheckResult
 fun TextView.afterTextChangeEvents(): InitialValueFlow<TextViewAfterTextChangeEvent> = callbackFlow {
-    val listener = listener(this, this@afterTextChangeEvents, ::trySend)
+    val listener = listener(this, this@afterTextChangeEvents, corbindEventEmitter())
     addTextChangedListener(listener)
     awaitClose { removeTextChangedListener(listener) }
 }.asInitialValueFlow(initialValue(textView = this))
@@ -139,7 +143,7 @@ private fun initialValue(textView: TextView): TextViewAfterTextChangeEvent = Tex
 private fun listener(
     scope: CoroutineScope,
     textView: TextView,
-    emitter: (TextViewAfterTextChangeEvent) -> Unit,
+    emitter: (TextViewAfterTextChangeEvent) -> Boolean,
 ) = object : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit

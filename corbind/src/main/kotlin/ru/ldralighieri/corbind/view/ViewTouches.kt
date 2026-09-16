@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
@@ -40,9 +41,10 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnTouchListener]
+ * [View.OnTouchListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 fun View.touches(
@@ -55,7 +57,7 @@ fun View.touches(
         for (motion in channel) action(motion)
     }
 
-    setOnTouchListener(listener(scope, handled, events::trySend))
+    setOnTouchListener(listener(scope, handled, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnTouchListener(null) }
 }
 
@@ -65,9 +67,10 @@ fun View.touches(
  * *Warning:* The created actor uses [View.setOnTouchListener]. Only one actor can be used at a
  * time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnTouchListener]
+ * [View.OnTouchListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
 suspend fun View.touches(
@@ -94,9 +97,10 @@ suspend fun View.touches(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnTouchListener]
+ * [View.OnTouchListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.touches(
@@ -104,7 +108,7 @@ fun View.touches(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
 ): ReceiveChannel<MotionEvent> = corbindReceiveChannel(scope, capacity) {
-    setOnTouchListener(listener(scope, handled, ::trySend))
+    setOnTouchListener(listener(scope, handled, corbindEventEmitter()))
     awaitClose { setOnTouchListener(null) }
 }
 
@@ -123,13 +127,13 @@ fun View.touches(
  * ```
  *
  * @param handled Predicate invoked with each value to determine the return value of the underlying
- * [View.OnTouchListener]
+ * [View.OnTouchListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
 fun View.touches(
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
 ): Flow<MotionEvent> = callbackFlow {
-    setOnTouchListener(listener(this, handled, ::trySend))
+    setOnTouchListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnTouchListener(null) }
 }
 
@@ -138,12 +142,11 @@ fun View.touches(
 private fun listener(
     scope: CoroutineScope,
     handled: (MotionEvent) -> Boolean,
-    emitter: (MotionEvent) -> Unit,
+    emitter: (MotionEvent) -> Boolean,
 ) = View.OnTouchListener { _, motionEvent ->
 
     if (scope.isActive && handled(motionEvent)) {
-        emitter(motionEvent)
-        return@OnTouchListener true
+        return@OnTouchListener emitter(motionEvent)
     }
     return@OnTouchListener false
 }

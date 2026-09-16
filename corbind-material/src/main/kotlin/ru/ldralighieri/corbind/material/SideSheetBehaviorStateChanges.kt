@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * Perform an action on the state change events from [View] on [SideSheetBehavior].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.sideSheetStateChanges(
@@ -52,8 +54,8 @@ fun View.sideSheetStateChanges(
     }
 
     val behavior = getSideSheetBehavior()
-    events.trySend(behavior.state)
-    val callback = callback(scope, events::trySend)
+    events.corbindEventEmitter(scope)(behavior.state)
+    val callback = callback(scope, events.corbindEventEmitter(scope))
     behavior.addCallback(callback)
     events.invokeOnClose { behavior.removeCallback(callback) }
 }
@@ -62,7 +64,8 @@ fun View.sideSheetStateChanges(
  * Perform an action on the state change events from [View] on [SideSheetBehavior], inside new
  * [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.sideSheetStateChanges(
@@ -87,7 +90,8 @@ suspend fun View.sideSheetStateChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.sideSheetStateChanges(
@@ -96,7 +100,7 @@ fun View.sideSheetStateChanges(
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
     val behavior = getSideSheetBehavior()
     sendInitialValue(behavior.state)
-    val callback = callback(scope, ::trySend)
+    val callback = callback(scope, corbindEventEmitter())
     behavior.addCallback(callback)
     awaitClose { behavior.removeCallback(callback) }
 }
@@ -126,7 +130,7 @@ fun View.sideSheetStateChanges(
 @CheckResult
 fun View.sideSheetStateChanges(): InitialValueFlow<Int> = callbackFlow {
     val behavior = getSideSheetBehavior()
-    val callback = callback(this, ::trySend)
+    val callback = callback(this, corbindEventEmitter())
     behavior.addCallback(callback)
     awaitClose { behavior.removeCallback(callback) }
 }.asInitialValueFlow(getSideSheetBehavior().state)
@@ -141,7 +145,7 @@ internal fun View.getSideSheetBehavior(): SideSheetBehavior<*> {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = object : SideSheetCallback() {
 
     override fun onStateChanged(sheet: View, newState: Int) {

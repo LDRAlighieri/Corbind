@@ -28,13 +28,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on scroll state change events on [ViewPager2].
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun ViewPager2.pageScrollStateChanges(
@@ -46,7 +48,7 @@ fun ViewPager2.pageScrollStateChanges(
         for (state in channel) action(state)
     }
 
-    val callback = callback(scope, events::trySend)
+    val callback = callback(scope, events.corbindEventEmitter(scope))
     registerOnPageChangeCallback(callback)
     events.invokeOnClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -54,7 +56,8 @@ fun ViewPager2.pageScrollStateChanges(
 /**
  * Perform an action on scroll state change events on [ViewPager2], inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun ViewPager2.pageScrollStateChanges(
@@ -77,14 +80,15 @@ suspend fun ViewPager2.pageScrollStateChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun ViewPager2.pageScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Int> = corbindReceiveChannel(scope, capacity) {
-    val callback = callback(scope, ::trySend)
+    val callback = callback(scope, corbindEventEmitter())
     registerOnPageChangeCallback(callback)
     awaitClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -103,7 +107,7 @@ fun ViewPager2.pageScrollStateChanges(
  */
 @CheckResult
 fun ViewPager2.pageScrollStateChanges(): Flow<Int> = callbackFlow {
-    val callback = callback(this, ::trySend)
+    val callback = callback(this, corbindEventEmitter())
     registerOnPageChangeCallback(callback)
     awaitClose { unregisterOnPageChangeCallback(callback) }
 }
@@ -111,7 +115,7 @@ fun ViewPager2.pageScrollStateChanges(): Flow<Int> = callbackFlow {
 @CheckResult
 private fun callback(
     scope: CoroutineScope,
-    emitter: (Int) -> Unit,
+    emitter: (Int) -> Boolean,
 ) = object : ViewPager2.OnPageChangeCallback() {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit

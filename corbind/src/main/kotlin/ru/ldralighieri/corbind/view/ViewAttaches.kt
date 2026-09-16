@@ -28,13 +28,15 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 
 /**
  * Perform an action on [View] attach events.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.attaches(
@@ -46,7 +48,7 @@ fun View.attaches(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, true, events::trySend)
+    val listener = listener(scope, true, events.corbindEventEmitter(scope))
     addOnAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -54,7 +56,8 @@ fun View.attaches(
 /**
  * Perform an action on [View] attach events, inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.attaches(
@@ -77,14 +80,15 @@ suspend fun View.attaches(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.attaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, true, ::trySend)
+    val listener = listener(scope, true, corbindEventEmitter())
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -103,7 +107,7 @@ fun View.attaches(
  */
 @CheckResult
 fun View.attaches(): Flow<Unit> = callbackFlow {
-    val listener = listener(this, true, ::trySend)
+    val listener = listener(this, true, corbindEventEmitter())
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -112,7 +116,8 @@ fun View.attaches(): Flow<Unit> = callbackFlow {
  * Perform an action on [View] detach events.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun View.detaches(
@@ -124,7 +129,7 @@ fun View.detaches(
         for (ignored in channel) action()
     }
 
-    val listener = listener(scope, false, events::trySend)
+    val listener = listener(scope, false, events.corbindEventEmitter(scope))
     addOnAttachStateChangeListener(listener)
     events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -132,7 +137,8 @@ fun View.detaches(
 /**
  * Perform an action on [View] detach events, inside new [CoroutineScope].
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun View.detaches(
@@ -155,14 +161,15 @@ suspend fun View.detaches(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun View.detaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<Unit> = corbindReceiveChannel(scope, capacity) {
-    val listener = listener(scope, false, ::trySend)
+    val listener = listener(scope, false, corbindEventEmitter())
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -181,7 +188,7 @@ fun View.detaches(
  */
 @CheckResult
 fun View.detaches(): Flow<Unit> = callbackFlow {
-    val listener = listener(this, false, ::trySend)
+    val listener = listener(this, false, corbindEventEmitter())
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
 }
@@ -190,7 +197,7 @@ fun View.detaches(): Flow<Unit> = callbackFlow {
 private fun listener(
     scope: CoroutineScope,
     callOnAttach: Boolean,
-    emitter: (Unit) -> Unit,
+    emitter: (Unit) -> Boolean,
 ) = object : View.OnAttachStateChangeListener {
 
     override fun onViewDetachedFromWindow(v: View) {

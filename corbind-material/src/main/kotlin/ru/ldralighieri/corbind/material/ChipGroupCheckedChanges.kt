@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
@@ -39,7 +40,8 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * be used at a time.
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 fun ChipGroup.checkedChanges(
@@ -51,8 +53,8 @@ fun ChipGroup.checkedChanges(
         for (checkedId in channel) action(checkedId)
     }
 
-    events.trySend(checkedChipIds)
-    setOnCheckedStateChangeListener(listener(scope, events::trySend))
+    events.corbindEventEmitter(scope)(checkedChipIds)
+    setOnCheckedStateChangeListener(listener(scope, events.corbindEventEmitter(scope)))
     events.invokeOnClose { setOnCheckedStateChangeListener(null) }
 }
 
@@ -62,7 +64,8 @@ fun ChipGroup.checkedChanges(
  * *Warning:* The created actor uses [ChipGroup.setOnCheckedStateChangeListener]. Only one actor can
  * be used at a time.
  *
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
 suspend fun ChipGroup.checkedChanges(
@@ -91,7 +94,8 @@ suspend fun ChipGroup.checkedChanges(
  * ```
  *
  * @param scope Root coroutine scope
- * @param capacity Capacity of the channel's buffer (no buffer by default)
+ * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
+ * events wait for delivery without blocking the Android callback thread.
  */
 @CheckResult
 fun ChipGroup.checkedChanges(
@@ -99,7 +103,7 @@ fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
 ): ReceiveChannel<List<Int>> = corbindReceiveChannel(scope, capacity) {
     sendInitialValue(checkedChipIds)
-    setOnCheckedStateChangeListener(listener(scope, ::trySend))
+    setOnCheckedStateChangeListener(listener(scope, corbindEventEmitter()))
     awaitClose { setOnCheckedStateChangeListener(null) }
 }
 
@@ -131,14 +135,14 @@ fun ChipGroup.checkedChanges(
  */
 @CheckResult
 fun ChipGroup.checkedChanges(): InitialValueFlow<List<Int>> = callbackFlow {
-    setOnCheckedStateChangeListener(listener(this, ::trySend))
+    setOnCheckedStateChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnCheckedStateChangeListener(null) }
 }.asInitialValueFlow(checkedChipIds)
 
 @CheckResult
 private fun listener(
     scope: CoroutineScope,
-    emitter: (List<Int>) -> Unit,
+    emitter: (List<Int>) -> Boolean,
 ) = ChipGroup.OnCheckedStateChangeListener { _, checkedIds ->
     if (scope.isActive) emitter(checkedIds)
 }
