@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -134,9 +135,11 @@ fun MaterialCardView.checkedChanges(
 @CheckResult
 fun MaterialCardView.checkedChanges(): InitialValueFlow<Boolean> = callbackFlow {
     checkCheckableState(this@checkedChanges)
-    setOnCheckedChangeListener(listener(this, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnCheckedChangeListener(listener(this, emitter))
+    emitter.sendInitialValue(isChecked)
     awaitClose { setOnCheckedChangeListener(null) }
-}.asInitialValueFlow(isChecked)
+}.asInitialValueFlow()
 
 private fun checkCheckableState(card: MaterialCardView) {
     check(card.isCheckable) { "The MaterialCardView is not checkable." }

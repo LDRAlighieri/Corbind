@@ -32,6 +32,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -124,10 +125,12 @@ fun <T : Adapter> T.dataChanges(
  */
 @CheckResult
 fun <T : Adapter> T.dataChanges(): InitialValueFlow<T> = callbackFlow {
-    val dataSetObserver = observer(this, this@dataChanges, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    val dataSetObserver = observer(this, this@dataChanges, emitter)
     registerDataSetObserver(dataSetObserver)
+    emitter.sendInitialValue(this@dataChanges)
     awaitClose { unregisterDataSetObserver(dataSetObserver) }
-}.asInitialValueFlow(this)
+}.asInitialValueFlow()
 
 @CheckResult
 private fun <T : Adapter> observer(

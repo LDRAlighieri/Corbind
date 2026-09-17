@@ -33,6 +33,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -145,10 +146,12 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
 @CheckResult
 fun MaterialButtonToggleGroup.buttonCheckedChanges(): InitialValueFlow<Int> = callbackFlow {
     checkSelectionMode(this@buttonCheckedChanges)
-    val listener = listener(this@buttonCheckedChanges, this, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    val listener = listener(this@buttonCheckedChanges, this, emitter)
     addOnButtonCheckedListener(listener)
+    emitter.sendInitialValue(checkedButtonId)
     awaitClose { removeOnButtonCheckedListener(listener) }
-}.asInitialValueFlow(checkedButtonId)
+}.asInitialValueFlow()
 
 private fun checkSelectionMode(group: MaterialButtonToggleGroup) {
     check(group.isSingleSelection) {

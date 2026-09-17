@@ -32,6 +32,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -132,10 +133,12 @@ fun DrawerLayout.drawerOpens(
  */
 @CheckResult
 fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = callbackFlow {
-    val listener = listener(this, gravity, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    val listener = listener(this, gravity, emitter)
     addDrawerListener(listener)
+    emitter.sendInitialValue(this@drawerOpens.isDrawerOpen(gravity))
     awaitClose { removeDrawerListener(listener) }
-}.asInitialValueFlow(isDrawerOpen(gravity))
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(

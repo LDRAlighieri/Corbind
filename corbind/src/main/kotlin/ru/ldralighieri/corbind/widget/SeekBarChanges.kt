@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 private fun SeekBar.changes(
@@ -69,9 +70,11 @@ private fun SeekBar.changes(
 
 @CheckResult
 private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> = callbackFlow {
-    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnSeekBarChangeListener(listener(this, shouldBeFromUser, emitter))
+    emitter.sendInitialValue(progress)
     awaitClose { setOnSeekBarChangeListener(null) }
-}.asInitialValueFlow(progress)
+}.asInitialValueFlow()
 
 /**
  * Perform an action on progress value changes on [SeekBar].

@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -133,9 +134,11 @@ fun CompoundButton.checkedChanges(
  */
 @CheckResult
 fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = callbackFlow {
-    setOnCheckedChangeListener(listener(this, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnCheckedChangeListener(listener(this, emitter))
+    emitter.sendInitialValue(isChecked)
     awaitClose { setOnCheckedChangeListener(null) }
-}.asInitialValueFlow(isChecked)
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(

@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class SliderChangeEvent(
@@ -131,13 +132,22 @@ fun Slider.valueChangeEvents(
  */
 @CheckResult
 fun Slider.valueChangeEvents(): InitialValueFlow<SliderChangeEvent> = callbackFlow {
-    val listener = listener(this, corbindEventEmitter()).apply { previousValue = value }
+    val emitter = initialValueFlowEmitter()
+    val listener = listener(this, emitter).apply {
+        previousValue = this@valueChangeEvents.value
+    }
     addOnChangeListener(listener)
+    val event = initialValue(this@valueChangeEvents)
+    listener.previousValue = event.previousValue
+    emitter.sendInitialValue(event)
     awaitClose { removeOnChangeListener(listener) }
-}.asInitialValueFlow(initialValue(slider = this))
+}.asInitialValueFlow()
 
 @CheckResult
-private fun initialValue(slider: Slider): SliderChangeEvent = SliderChangeEvent(slider, slider.value, slider.value, false)
+private fun initialValue(slider: Slider): SliderChangeEvent {
+    val value = slider.value
+    return SliderChangeEvent(slider, value, value, false)
+}
 
 @CheckResult
 private fun listener(

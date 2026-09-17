@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class NumberPickerValueChangeEvent(
@@ -142,9 +143,11 @@ fun NumberPicker.valueChangeEvents(
  */
 @CheckResult
 fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEvent> = callbackFlow {
-    setOnValueChangedListener(listener(this, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnValueChangedListener(listener(this, emitter))
+    emitter.sendInitialValue(NumberPickerValueChangeEvent(picker = this@valueChangeEvents, value, value))
     awaitClose { setOnValueChangedListener(null) }
-}.asInitialValueFlow(NumberPickerValueChangeEvent(picker = this, value, value))
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(

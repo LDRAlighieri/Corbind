@@ -33,6 +33,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class TextViewTextChangeEvent(
@@ -134,10 +135,12 @@ fun TextView.textChangeEvents(
  */
 @CheckResult
 fun TextView.textChangeEvents(): InitialValueFlow<TextViewTextChangeEvent> = callbackFlow {
-    val listener = listener(this, this@textChangeEvents, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    val listener = listener(this, this@textChangeEvents, emitter)
     addTextChangedListener(listener)
+    emitter.sendInitialValue(initialValue(textView = this@textChangeEvents))
     awaitClose { removeTextChangedListener(listener) }
-}.asInitialValueFlow(initialValue(textView = this))
+}.asInitialValueFlow()
 
 @CheckResult
 private fun initialValue(textView: TextView): TextViewTextChangeEvent = TextViewTextChangeEvent(textView, textView.editableText, 0, 0, 0)

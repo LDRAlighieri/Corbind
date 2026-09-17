@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -133,9 +134,11 @@ fun View.focusChanges(
  */
 @CheckResult
 fun View.focusChanges(): InitialValueFlow<Boolean> = callbackFlow {
-    onFocusChangeListener = listener(this, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    onFocusChangeListener = listener(this, emitter)
+    emitter.sendInitialValue(hasFocus())
     awaitClose { onFocusChangeListener = null }
-}.asInitialValueFlow(hasFocus())
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(

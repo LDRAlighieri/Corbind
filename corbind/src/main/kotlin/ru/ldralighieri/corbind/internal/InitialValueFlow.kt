@@ -18,17 +18,71 @@ package ru.ldralighieri.corbind.internal
 
 import androidx.annotation.RestrictTo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
+import java.util.ArrayDeque
 
 class InitialValueFlow<T>(private val flow: Flow<T>) : Flow<T> by flow {
     fun dropInitialValue(): Flow<T> = drop(1)
     suspend fun asStateFlow(scope: CoroutineScope): StateFlow<T> = stateIn(scope)
 }
 
+/**
+ * Buffers callback values until the initial value has been queued. This keeps the initial snapshot
+ * first even if listener registration invokes its callback synchronously or from another thread.
+ */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+class InitialValueFlowEmitter<T> internal constructor(
+    private val scope: ProducerScope<T>,
+) : (T) -> Boolean {
+
+    private val eventEmitter = scope.corbindEventEmitter()
+    private val pendingValues = ArrayDeque<PendingValue<T>>()
+    private var initialValueSent = false
+
+    override fun invoke(value: T): Boolean = synchronized(this) {
+        when {
+            !scope.isActive -> false
+
+            initialValueSent -> eventEmitter(value)
+
+            else -> {
+                pendingValues.addLast(PendingValue(value))
+                true
+            }
+        }
+    }
+
+    fun sendInitialValue(value: T) {
+        synchronized(this) {
+            check(!initialValueSent) { "Initial value has already been sent" }
+            scope.sendInitialValue(value)
+            while (pendingValues.isNotEmpty()) {
+                eventEmitter(pendingValues.removeFirst().value)
+            }
+            initialValueSent = true
+        }
+    }
+
+    private data class PendingValue<T>(val value: T)
+}
+
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+fun <T> ProducerScope<T>.initialValueFlowEmitter(): InitialValueFlowEmitter<T> = InitialValueFlowEmitter(this)
+
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+fun <T> Flow<T>.asInitialValueFlow(): InitialValueFlow<T> = InitialValueFlow(this)
+
+/** Binary compatibility bridge for previously compiled Corbind integration modules. */
+@Deprecated(
+    message = "Initial values must be emitted from inside the callbackFlow builder.",
+    level = DeprecationLevel.HIDDEN,
+)
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 fun <T> Flow<T>.asInitialValueFlow(value: T): InitialValueFlow<T> = InitialValueFlow(
     onStart { emit(value) },

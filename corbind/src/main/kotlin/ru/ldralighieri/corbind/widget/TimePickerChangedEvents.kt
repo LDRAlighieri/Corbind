@@ -33,6 +33,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class TimeChangedEvent(
@@ -146,9 +147,11 @@ fun TimePicker.timeChangeEvents(
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = callbackFlow {
-    setOnTimeChangedListener(listener(this, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnTimeChangedListener(listener(this, emitter))
+    emitter.sendInitialValue(TimeChangedEvent(view = this@timeChangeEvents, hour, minute))
     awaitClose { setOnTimeChangedListener(null) }
-}.asInitialValueFlow(TimeChangedEvent(view = this, hour, minute))
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(

@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class SearchViewQueryTextEvent(
@@ -140,9 +141,11 @@ fun SearchView.queryTextChangeEvents(
  */
 @CheckResult
 fun SearchView.queryTextChangeEvents(): InitialValueFlow<SearchViewQueryTextEvent> = callbackFlow {
-    setOnQueryTextListener(listener(this, this@queryTextChangeEvents, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnQueryTextListener(listener(this, this@queryTextChangeEvents, emitter))
+    emitter.sendInitialValue(initialValue(searchView = this@queryTextChangeEvents))
     awaitClose { setOnQueryTextListener(null) }
-}.asInitialValueFlow(initialValue(searchView = this))
+}.asInitialValueFlow()
 
 @CheckResult
 private fun initialValue(searchView: SearchView): SearchViewQueryTextEvent = SearchViewQueryTextEvent(searchView, searchView.query, false)

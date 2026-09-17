@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -123,10 +124,12 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
  */
 @CheckResult
 fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(): InitialValueFlow<T> = callbackFlow {
-    val dataObserver = observer(this, this@dataChanges, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter<T>()
+    val dataObserver = observer(this, this@dataChanges, emitter)
     registerAdapterDataObserver(dataObserver)
+    emitter.sendInitialValue(this@dataChanges)
     awaitClose { unregisterAdapterDataObserver(dataObserver) }
-}.asInitialValueFlow(this)
+}.asInitialValueFlow()
 
 @CheckResult
 private fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> observer(

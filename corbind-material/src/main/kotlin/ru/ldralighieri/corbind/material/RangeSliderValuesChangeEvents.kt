@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 enum class RangeSliderSide { INIT, LEFT, RIGHT }
@@ -134,13 +135,22 @@ fun RangeSlider.valuesChangeEvents(
  */
 @CheckResult
 fun RangeSlider.valuesChangeEvents(): InitialValueFlow<RangeSliderChangeEvent> = callbackFlow {
-    val listener = listener(this, corbindEventEmitter()).apply { previousValues = values }
+    val emitter = initialValueFlowEmitter()
+    val listener = listener(this, emitter).apply {
+        previousValues = this@valuesChangeEvents.values
+    }
     addOnChangeListener(listener)
+    val event = initialValue(this@valuesChangeEvents)
+    listener.previousValues = event.previousValues
+    emitter.sendInitialValue(event)
     awaitClose { removeOnChangeListener(listener) }
-}.asInitialValueFlow(initialValue(this))
+}.asInitialValueFlow()
 
 @CheckResult
-private fun initialValue(slider: RangeSlider): RangeSliderChangeEvent = RangeSliderChangeEvent(slider, RangeSliderSide.INIT, slider.values, slider.values, false)
+private fun initialValue(slider: RangeSlider): RangeSliderChangeEvent {
+    val values = slider.values
+    return RangeSliderChangeEvent(slider, RangeSliderSide.INIT, values, values, false)
+}
 
 @CheckResult
 private fun listener(

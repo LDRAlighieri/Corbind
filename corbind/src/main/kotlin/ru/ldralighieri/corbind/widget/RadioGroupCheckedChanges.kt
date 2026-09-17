@@ -32,6 +32,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -136,9 +137,11 @@ fun RadioGroup.checkedChanges(
  */
 @CheckResult
 fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = callbackFlow {
-    setOnCheckedChangeListener(listener(this, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnCheckedChangeListener(listener(this, emitter))
+    emitter.sendInitialValue(checkedRadioButtonId)
     awaitClose { setOnCheckedChangeListener(null) }
-}.asInitialValueFlow(checkedRadioButtonId)
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(
