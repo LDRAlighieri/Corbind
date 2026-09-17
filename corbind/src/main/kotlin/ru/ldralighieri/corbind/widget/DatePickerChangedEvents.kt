@@ -33,6 +33,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class DateChangedEvent(
@@ -147,9 +148,11 @@ fun DatePicker.dateChangeEvents(
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult
 fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> = callbackFlow {
-    setOnDateChangedListener(listener(this, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnDateChangedListener(listener(this, emitter))
+    emitter.sendInitialValue(DateChangedEvent(view = this@dateChangeEvents, year, month, dayOfMonth))
     awaitClose { setOnDateChangedListener(null) }
-}.asInitialValueFlow(DateChangedEvent(view = this, year, month, dayOfMonth))
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(

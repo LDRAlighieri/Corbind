@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class RatingBarChangeEvent(
@@ -140,9 +141,11 @@ fun RatingBar.ratingChangeEvents(
  */
 @CheckResult
 fun RatingBar.ratingChangeEvents(): InitialValueFlow<RatingBarChangeEvent> = callbackFlow {
-    onRatingBarChangeListener = listener(this, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    onRatingBarChangeListener = listener(this, emitter)
+    emitter.sendInitialValue(initialValue(ratingBar = this@ratingChangeEvents))
     awaitClose { onRatingBarChangeListener = null }
-}.asInitialValueFlow(initialValue(ratingBar = this))
+}.asInitialValueFlow()
 
 @CheckResult
 private fun initialValue(ratingBar: RatingBar): RatingBarChangeEvent = RatingBarChangeEvent(ratingBar, ratingBar.rating, false)

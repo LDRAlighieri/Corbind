@@ -33,6 +33,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -137,9 +138,11 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
  */
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemSelections(): InitialValueFlow<Int> = callbackFlow {
-    onItemSelectedListener = listener(this, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    onItemSelectedListener = listener(this, emitter)
+    emitter.sendInitialValue(selectedItemPosition)
     awaitClose { onItemSelectedListener = null }
-}.asInitialValueFlow(selectedItemPosition)
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(

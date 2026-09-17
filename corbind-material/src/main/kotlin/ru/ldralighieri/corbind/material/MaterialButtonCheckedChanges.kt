@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -134,10 +135,12 @@ fun MaterialButton.checkedChanges(
 @CheckResult
 fun MaterialButton.checkedChanges(): InitialValueFlow<Boolean> = callbackFlow {
     checkCheckableState(this@checkedChanges)
-    val listener = listener(this, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    val listener = listener(this, emitter)
     addOnCheckedChangeListener(listener)
+    emitter.sendInitialValue(isChecked)
     awaitClose { removeOnCheckedChangeListener(listener) }
-}.asInitialValueFlow(isChecked)
+}.asInitialValueFlow()
 
 private fun checkCheckableState(button: MaterialButton) {
     check(button.isCheckable) { "The MaterialButton is not in checkable state" }

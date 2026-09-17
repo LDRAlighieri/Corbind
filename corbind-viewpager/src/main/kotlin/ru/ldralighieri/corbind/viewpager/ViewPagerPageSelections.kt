@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -124,10 +125,12 @@ fun ViewPager.pageSelections(
  */
 @CheckResult
 fun ViewPager.pageSelections(): InitialValueFlow<Int> = callbackFlow {
-    val listener = listener(this, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    val listener = listener(this, emitter)
     addOnPageChangeListener(listener)
+    emitter.sendInitialValue(this@pageSelections.currentItem)
     awaitClose { removeOnPageChangeListener(listener) }
-}.asInitialValueFlow(currentItem)
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(

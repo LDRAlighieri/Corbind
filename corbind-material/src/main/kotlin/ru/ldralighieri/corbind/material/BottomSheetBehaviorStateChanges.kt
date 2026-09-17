@@ -33,6 +33,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -129,10 +130,12 @@ fun View.stateChanges(
 @CheckResult
 fun View.stateChanges(): InitialValueFlow<Int> = callbackFlow {
     val behavior = getBottomSheetBehavior()
-    val callback = callback(this, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    val callback = callback(this, emitter)
     behavior.addBottomSheetCallback(callback)
+    emitter.sendInitialValue(behavior.state)
     awaitClose { behavior.removeBottomSheetCallback(callback) }
-}.asInitialValueFlow(getBottomSheetBehavior().state)
+}.asInitialValueFlow()
 
 internal fun View.getBottomSheetBehavior(): BottomSheetBehavior<*> {
     val params = layoutParams as? CoordinatorLayout.LayoutParams

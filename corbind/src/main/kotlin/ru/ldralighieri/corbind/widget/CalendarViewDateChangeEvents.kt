@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 import java.util.Calendar
 
@@ -143,9 +144,11 @@ fun CalendarView.dateChangeEvents(
  */
 @CheckResult
 fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> = callbackFlow {
-    setOnDateChangeListener(listener(this, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnDateChangeListener(listener(this, emitter))
+    emitter.sendInitialValue(initialValue(calendar = this@dateChangeEvents))
     awaitClose { setOnDateChangeListener(null) }
-}.asInitialValueFlow(initialValue(calendar = this))
+}.asInitialValueFlow()
 
 @CheckResult
 private fun initialValue(calendar: CalendarView): CalendarViewDateChangeEvent = with(Calendar.getInstance()) {

@@ -31,6 +31,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -135,9 +136,11 @@ fun ChipGroup.checkedChanges(
  */
 @CheckResult
 fun ChipGroup.checkedChanges(): InitialValueFlow<List<Int>> = callbackFlow {
-    setOnCheckedStateChangeListener(listener(this, corbindEventEmitter()))
+    val emitter = initialValueFlowEmitter()
+    setOnCheckedStateChangeListener(listener(this, emitter))
+    emitter.sendInitialValue(checkedChipIds)
     awaitClose { setOnCheckedStateChangeListener(null) }
-}.asInitialValueFlow(checkedChipIds)
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(

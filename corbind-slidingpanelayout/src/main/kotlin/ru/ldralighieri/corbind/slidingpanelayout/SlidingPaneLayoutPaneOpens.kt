@@ -32,6 +32,7 @@ import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -128,10 +129,12 @@ fun SlidingPaneLayout.panelOpens(
  */
 @CheckResult
 fun SlidingPaneLayout.panelOpens(): InitialValueFlow<Boolean> = callbackFlow {
-    val listener = listener(this, corbindEventEmitter())
+    val emitter = initialValueFlowEmitter()
+    val listener = listener(this, emitter)
     addPanelSlideListener(listener)
+    emitter.sendInitialValue(this@panelOpens.isOpen)
     awaitClose { removePanelSlideListener(listener) }
-}.asInitialValueFlow(isOpen)
+}.asInitialValueFlow()
 
 @CheckResult
 private fun listener(
