@@ -5,6 +5,11 @@ on:
     branches:
       - master
 
+concurrency:
+  group: publish
+  queue: max
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
