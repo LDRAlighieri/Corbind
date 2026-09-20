@@ -5,8 +5,20 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  queue: max
+  cancel-in-progress: false
+
 jobs:
+  verify:
+    uses: ./.github/workflows/build.yml
+
   deploy:
+    needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -22,21 +34,6 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
-
-      - name: Check build-logic
-        run: ./gradlew check -p build-logic
-
-      - name: Check spotless
-        run: ./gradlew spotlessCheck --no-configuration-cache
-
-      - name: Run tests
-        run: ./gradlew test
-
-      - name: Check binary compatibility
-        run: ./gradlew apiCheck
-
-      - name: Build and verify all modules
-        run: ./gradlew build
 
       - name: Deploy to Sonatype
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
