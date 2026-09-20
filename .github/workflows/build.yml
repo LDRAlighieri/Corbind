@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
       - name: Checkout
@@ -33,5 +33,5 @@ jobs:
       - name: Check binary compatibility
         run: ./gradlew apiCheck
 
-      - name: Build the sample app to verify it works
-        run: ./gradlew sample:assemble
+      - name: Build and verify all modules
+        run: ./gradlew build
