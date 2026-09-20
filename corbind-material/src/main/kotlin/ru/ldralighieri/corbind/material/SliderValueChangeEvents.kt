@@ -158,7 +158,9 @@ private fun listener(
     var previousValue: Float = Float.NaN
     override fun onValueChange(slider: Slider, value: Float, fromUser: Boolean) {
         if (scope.isActive) {
-            emitter(SliderChangeEvent(slider, value, previousValue, fromUser))
+            val event = SliderChangeEvent(slider, value, previousValue, fromUser)
+            previousValue = value
+            emitter(event)
         }
     }
 }

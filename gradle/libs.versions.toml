@@ -37,6 +37,7 @@ ktlint = "1.8.0"
 # Test
 junit = "4.13.2"
 robolectric = "4.17"
+turbine = "1.2.1"
 
 
 [plugins]
@@ -81,6 +82,7 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 # Test
 junit = { module = "junit:junit", version.ref = "junit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 
 # build-logic

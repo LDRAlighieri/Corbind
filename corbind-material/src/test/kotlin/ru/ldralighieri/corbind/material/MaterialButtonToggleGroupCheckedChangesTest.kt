@@ -16,21 +16,21 @@
 
 package ru.ldralighieri.corbind.material
 
+import android.content.Context
 import android.os.Build
 import android.os.Looper
 import android.view.ContextThemeWrapper
 import android.view.View
+import app.cash.turbine.test
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -152,22 +152,34 @@ class MaterialButtonToggleGroupCheckedChangesTest {
     }
 
     @Test
-    fun `flow emits clear after initial selection`() {
+    fun `flow emits clear after initial selection`() = runBlocking {
         // given
-        val emissions = Channel<Int>(Channel.UNLIMITED)
         group.check(firstButtonId)
-        val collection = scope.launch(start = CoroutineStart.UNDISPATCHED) {
-            group.buttonCheckedChanges().collect { emissions.trySend(it) }
+        group.buttonCheckedChanges().test {
+            assertEquals(firstButtonId, awaitItem())
+
+            // when
+            group.clearChecked()
+
+            // then
+            assertEquals(View.NO_ID, awaitItem())
+            expectNoEvents()
         }
-        assertEquals(firstButtonId, emissions.tryReceive().getOrThrow())
+    }
 
-        // when
-        group.clearChecked()
+    @Test
+    fun `flow reads state when collection starts`() = runBlocking {
+        materialButtonToggleGroupCheckedChangesFixture(materialTestContext()).assertStateAtCollection()
+    }
 
-        // then
-        assertEquals(View.NO_ID, emissions.tryReceive().getOrThrow())
-        assertTrue(emissions.tryReceive().isFailure)
-        collection.cancel()
+    @Test
+    fun `each flow collection reads a fresh state`() = runBlocking {
+        materialButtonToggleGroupCheckedChangesFixture(materialTestContext()).assertFreshStatePerCollection()
+    }
+
+    @Test
+    fun `flow callback follows initial value`() = runBlocking {
+        materialButtonToggleGroupCheckedChangesFixture(materialTestContext()).assertCallbackAfterInitialValue()
     }
 
     private fun bindChannel() {
@@ -181,4 +193,23 @@ class MaterialButtonToggleGroupCheckedChangesTest {
     private fun assertNoEmission() {
         assertTrue(binding?.tryReceive()?.isFailure == true)
     }
+}
+
+private fun materialButtonToggleGroupCheckedChangesFixture(
+    context: Context,
+): PerFileInitialValueFlowFixture {
+    val firstId = View.generateViewId()
+    val secondId = View.generateViewId()
+    val group = MaterialButtonToggleGroup(context).apply {
+        isSingleSelection = true
+        addView(MaterialButton(context).apply { id = firstId })
+        addView(MaterialButton(context).apply { id = secondId })
+    }
+    return PerFileFixture(
+        group.buttonCheckedChanges(),
+        listOf(View.NO_ID, firstId, secondId),
+        { checkedId ->
+            if (checkedId == View.NO_ID) group.clearChecked() else group.check(checkedId)
+        },
+    )
 }
