@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.search.SearchView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on the transition state change events on [SearchView].
@@ -39,18 +42,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun SearchView.transitionStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SearchView.TransitionState) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<SearchView.TransitionState>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addTransitionListener(listener)
-    events.invokeOnClose { removeTransitionListener(listener) }
+    events.invokeOnCloseOnMain { removeTransitionListener(listener) }
 }
 
 /**
@@ -61,6 +68,7 @@ fun SearchView.transitionStateChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun SearchView.transitionStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SearchView.TransitionState) -> Unit,
@@ -107,7 +115,7 @@ fun SearchView.transitionStateChanges(
  * ```
  */
 @CheckResult
-fun SearchView.transitionStateChanges(): Flow<SearchView.TransitionState> = callbackFlow {
+fun SearchView.transitionStateChanges(): Flow<SearchView.TransitionState> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     addTransitionListener(listener)
     awaitClose { removeTransitionListener(listener) }

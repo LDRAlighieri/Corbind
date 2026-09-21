@@ -20,6 +20,7 @@ import androidx.activity.BackEventCompat
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +30,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 sealed interface OnBackEvent
 data object OnBackPressed : OnBackEvent
@@ -49,19 +52,23 @@ data class OnBackProgressed(val backEvent: BackEventCompat) : OnBackEvent
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun OnBackPressedDispatcher.backEvents(
     scope: CoroutineScope,
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (OnBackEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<OnBackEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     val callback = callback(scope, events.corbindEventEmitter(scope))
     addCallback(lifecycleOwner, callback)
-    events.invokeOnClose { callback.remove() }
+    events.invokeOnCloseOnMain { callback.remove() }
 }
 
 /**
@@ -72,6 +79,7 @@ fun OnBackPressedDispatcher.backEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun OnBackPressedDispatcher.backEvents(
     lifecycleOwner: LifecycleOwner,
     capacity: Int = Channel.RENDEZVOUS,
@@ -150,7 +158,7 @@ fun OnBackPressedDispatcher.backEvents(
  *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  */
-fun OnBackPressedDispatcher.backEvents(lifecycleOwner: LifecycleOwner): Flow<OnBackEvent> = callbackFlow {
+fun OnBackPressedDispatcher.backEvents(lifecycleOwner: LifecycleOwner): Flow<OnBackEvent> = corbindCallbackFlow {
     val callback = callback(this, corbindEventEmitter())
     addCallback(lifecycleOwner, callback)
     awaitClose { callback.remove() }

@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.view
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on pre-draws on [View].
@@ -41,19 +44,23 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * @param proceedDrawingPass Let drawing process proceed
  * @param action An action to perform
  */
+@MainThread
 fun View.preDraws(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     proceedDrawingPass: () -> Boolean,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     val listener = listener(scope, proceedDrawingPass, events.corbindEventEmitter(scope))
     viewTreeObserver.addOnPreDrawListener(listener)
-    events.invokeOnClose { viewTreeObserver.removeOnPreDrawListener(listener) }
+    events.invokeOnCloseOnMain { viewTreeObserver.removeOnPreDrawListener(listener) }
 }
 
 /**
@@ -64,6 +71,7 @@ fun View.preDraws(
  * @param proceedDrawingPass Let drawing process proceed
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.preDraws(
     capacity: Int = Channel.RENDEZVOUS,
     proceedDrawingPass: () -> Boolean,
@@ -117,7 +125,7 @@ fun View.preDraws(
 @CheckResult
 fun View.preDraws(
     proceedDrawingPass: () -> Boolean,
-): Flow<Unit> = callbackFlow {
+): Flow<Unit> = corbindCallbackFlow {
     val listener = listener(this, proceedDrawingPass, corbindEventEmitter())
     viewTreeObserver.addOnPreDrawListener(listener)
     awaitClose { viewTreeObserver.removeOnPreDrawListener(listener) }

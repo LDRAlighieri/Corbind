@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.CalendarView
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 import java.util.Calendar
 
@@ -53,18 +56,22 @@ data class CalendarViewDateChangeEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun CalendarView.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CalendarViewDateChangeEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<CalendarViewDateChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     events.corbindEventEmitter(scope)(initialValue(this))
     setOnDateChangeListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnDateChangeListener(null) }
+    events.invokeOnCloseOnMain { setOnDateChangeListener(null) }
 }
 
 /**
@@ -78,6 +85,7 @@ fun CalendarView.dateChangeEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun CalendarView.dateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CalendarViewDateChangeEvent) -> Unit,
@@ -143,7 +151,7 @@ fun CalendarView.dateChangeEvents(
  * ```
  */
 @CheckResult
-fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> = callbackFlow {
+fun CalendarView.dateChangeEvents(): InitialValueFlow<CalendarViewDateChangeEvent> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     setOnDateChangeListener(listener(this, emitter))
     emitter.sendInitialValue(initialValue(calendar = this@dateChangeEvents))

@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.view
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 sealed interface ViewGroupHierarchyChangeEvent {
     val view: ViewGroup
@@ -58,17 +61,21 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun ViewGroup.changeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewGroupHierarchyChangeEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<ViewGroupHierarchyChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     setOnHierarchyChangeListener(listener(scope, this, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnHierarchyChangeListener(null) }
+    events.invokeOnCloseOnMain { setOnHierarchyChangeListener(null) }
 }
 
 /**
@@ -82,6 +89,7 @@ fun ViewGroup.changeEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun ViewGroup.changeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewGroupHierarchyChangeEvent) -> Unit,
@@ -159,7 +167,7 @@ fun ViewGroup.changeEvents(
  * ```
  */
 @CheckResult
-fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = callbackFlow {
+fun ViewGroup.changeEvents(): Flow<ViewGroupHierarchyChangeEvent> = corbindCallbackFlow {
     setOnHierarchyChangeListener(listener(this, this@changeEvents, corbindEventEmitter()))
     awaitClose { setOnHierarchyChangeListener(null) }
 }

@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.behavior.SwipeDismissBehavior
 import kotlinx.coroutines.CoroutineScope
@@ -28,10 +29,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on the dismiss events from [View] on [SwipeDismissBehavior].
@@ -44,18 +47,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun View.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (View) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<View>(Dispatchers.Main.immediate, capacity) {
         for (view in channel) action(view)
     }
 
     val behavior = getBehavior(this)
     behavior.listener = listener(scope, events.corbindEventEmitter(scope))
-    events.invokeOnClose { behavior.setListener(null) }
+    events.invokeOnCloseOnMain { behavior.setListener(null) }
 }
 
 /**
@@ -69,6 +76,7 @@ fun View.dismisses(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (View) -> Unit,
@@ -119,7 +127,7 @@ fun View.dismisses(
  * ```
  */
 @CheckResult
-fun View.dismisses(): Flow<View> = callbackFlow {
+fun View.dismisses(): Flow<View> = corbindCallbackFlow {
     val behavior = getBehavior(this@dismisses)
     behavior.listener = listener(this, corbindEventEmitter())
     awaitClose { behavior.setListener(null) }

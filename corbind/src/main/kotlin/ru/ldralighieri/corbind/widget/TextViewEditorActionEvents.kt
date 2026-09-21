@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.widget
 import android.view.KeyEvent
 import android.widget.TextView
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,11 +28,13 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class TextViewEditorActionEvent(
     val view: TextView,
@@ -52,18 +55,22 @@ data class TextViewEditorActionEvent(
  * [TextView.OnEditorActionListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 fun TextView.editorActionEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
     action: suspend (TextViewEditorActionEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<TextViewEditorActionEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     setOnEditorActionListener(listener(scope, handled, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnEditorActionListener(null) }
+    events.invokeOnCloseOnMain { setOnEditorActionListener(null) }
 }
 
 /**
@@ -79,6 +86,7 @@ fun TextView.editorActionEvents(
  * [TextView.OnEditorActionListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 suspend fun TextView.editorActionEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
@@ -139,7 +147,7 @@ fun TextView.editorActionEvents(
 @CheckResult
 fun TextView.editorActionEvents(
     handled: (TextViewEditorActionEvent) -> Boolean = AlwaysTrue,
-): Flow<TextViewEditorActionEvent> = callbackFlow {
+): Flow<TextViewEditorActionEvent> = corbindCallbackFlow {
     setOnEditorActionListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnEditorActionListener(null) }
 }

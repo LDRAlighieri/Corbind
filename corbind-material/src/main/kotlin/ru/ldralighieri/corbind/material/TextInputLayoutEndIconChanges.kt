@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [TextInputLayout] end icon mode changes.
@@ -39,18 +42,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun TextInputLayout.endIconChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (mode in channel) action(mode)
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnEndIconChangedListener(listener)
-    events.invokeOnClose { removeOnEndIconChangedListener(listener) }
+    events.invokeOnCloseOnMain { removeOnEndIconChangedListener(listener) }
 }
 
 /**
@@ -60,6 +67,7 @@ fun TextInputLayout.endIconChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun TextInputLayout.endIconChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -112,7 +120,7 @@ fun TextInputLayout.endIconChanges(
  * ```
  */
 @CheckResult
-fun TextInputLayout.endIconChanges(): Flow<Int> = callbackFlow {
+fun TextInputLayout.endIconChanges(): Flow<Int> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     addOnEndIconChangedListener(listener)
     awaitClose { removeOnEndIconChangedListener(listener) }

@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.CompoundButton
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -45,18 +48,22 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun CompoundButton.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (checked in channel) action(checked)
     }
 
     events.corbindEventEmitter(scope)(isChecked)
     setOnCheckedChangeListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnCheckedChangeListener(null) }
+    events.invokeOnCloseOnMain { setOnCheckedChangeListener(null) }
 }
 
 /**
@@ -69,6 +76,7 @@ fun CompoundButton.checkedChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun CompoundButton.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit,
@@ -133,7 +141,7 @@ fun CompoundButton.checkedChanges(
  * ```
  */
 @CheckResult
-fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = callbackFlow {
+fun CompoundButton.checkedChanges(): InitialValueFlow<Boolean> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     setOnCheckedChangeListener(listener(this, emitter))
     emitter.sendInitialValue(isChecked)

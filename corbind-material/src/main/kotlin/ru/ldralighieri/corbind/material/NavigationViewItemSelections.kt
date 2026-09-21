@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.MenuItem
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -44,18 +47,22 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun NavigationView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<MenuItem>(Dispatchers.Main.immediate, capacity) {
         for (item in channel) action(item)
     }
 
     setInitialValue(this, events.corbindEventEmitter(scope))
     setNavigationItemSelectedListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setNavigationItemSelectedListener(null) }
+    events.invokeOnCloseOnMain { setNavigationItemSelectedListener(null) }
 }
 
 /**
@@ -68,6 +75,7 @@ fun NavigationView.itemSelections(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun NavigationView.itemSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit,
@@ -135,7 +143,7 @@ fun NavigationView.itemSelections(
  * ```
  */
 @CheckResult
-fun NavigationView.itemSelections(): Flow<MenuItem> = callbackFlow {
+fun NavigationView.itemSelections(): Flow<MenuItem> = corbindCallbackFlow {
     setInitialValue(this@itemSelections, corbindEventEmitter())
     setNavigationItemSelectedListener(listener(this, corbindEventEmitter()))
     awaitClose { setNavigationItemSelectedListener(null) }

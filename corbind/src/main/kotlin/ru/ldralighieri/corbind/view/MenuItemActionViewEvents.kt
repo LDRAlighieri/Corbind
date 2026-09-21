@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.MenuItem
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -26,11 +27,13 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 sealed interface MenuItemActionViewEvent {
     val menuItem: MenuItem
@@ -57,18 +60,22 @@ data class MenuItemActionViewExpandEvent(
  * [MenuItem.OnActionExpandListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 fun MenuItem.actionViewEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
     action: suspend (MenuItemActionViewEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<MenuItemActionViewEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     setOnActionExpandListener(listener(scope, handled, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnActionExpandListener(null) }
+    events.invokeOnCloseOnMain { setOnActionExpandListener(null) }
 }
 
 /**
@@ -84,6 +91,7 @@ fun MenuItem.actionViewEvents(
  * [MenuItem.OnActionExpandListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 suspend fun MenuItem.actionViewEvents(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
@@ -170,7 +178,7 @@ fun MenuItem.actionViewEvents(
 @CheckResult
 fun MenuItem.actionViewEvents(
     handled: (MenuItemActionViewEvent) -> Boolean = AlwaysTrue,
-): Flow<MenuItemActionViewEvent> = callbackFlow {
+): Flow<MenuItemActionViewEvent> = corbindCallbackFlow {
     setOnActionExpandListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnActionExpandListener(null) }
 }

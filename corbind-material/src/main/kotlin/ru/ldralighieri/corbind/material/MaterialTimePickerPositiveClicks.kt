@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.timepicker.MaterialTimePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [MaterialTimePicker] positive button click.
@@ -40,18 +43,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun MaterialTimePicker.positiveClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnPositiveButtonClickListener(listener)
-    events.invokeOnClose { removeOnPositiveButtonClickListener(listener) }
+    events.invokeOnCloseOnMain { removeOnPositiveButtonClickListener(listener) }
 }
 
 /**
@@ -61,6 +68,7 @@ fun MaterialTimePicker.positiveClicks(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun MaterialTimePicker.positiveClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
@@ -107,7 +115,7 @@ fun MaterialTimePicker.positiveClicks(
  * ```
  */
 @CheckResult
-fun MaterialTimePicker.positiveClicks(): Flow<Unit> = callbackFlow {
+fun MaterialTimePicker.positiveClicks(): Flow<Unit> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     addOnPositiveButtonClickListener(listener)
     awaitClose { removeOnPositiveButtonClickListener(listener) }

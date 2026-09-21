@@ -20,6 +20,7 @@ import android.os.Build
 import android.view.View
 import android.widget.Toolbar
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +30,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [Toolbar] navigation click events.
@@ -46,17 +49,21 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+@MainThread
 fun Toolbar.navigationClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     setNavigationOnClickListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setNavigationOnClickListener(null) }
+    events.invokeOnCloseOnMain { setNavigationOnClickListener(null) }
 }
 
 /**
@@ -70,6 +77,7 @@ fun Toolbar.navigationClicks(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+@MainThread
 suspend fun Toolbar.navigationClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
@@ -123,7 +131,7 @@ fun Toolbar.navigationClicks(
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
-fun Toolbar.navigationClicks(): Flow<Unit> = callbackFlow {
+fun Toolbar.navigationClicks(): Flow<Unit> = corbindCallbackFlow {
     setNavigationOnClickListener(listener(this, corbindEventEmitter()))
     awaitClose { setNavigationOnClickListener(null) }
 }

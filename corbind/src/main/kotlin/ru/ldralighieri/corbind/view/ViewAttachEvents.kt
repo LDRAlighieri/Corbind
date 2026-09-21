@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 sealed interface ViewAttachEvent {
     val view: View
@@ -51,18 +54,22 @@ data class ViewAttachDetachedEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun View.attachEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewAttachEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<ViewAttachEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnAttachStateChangeListener(listener)
-    events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
+    events.invokeOnCloseOnMain { removeOnAttachStateChangeListener(listener) }
 }
 
 /**
@@ -73,6 +80,7 @@ fun View.attachEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.attachEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewAttachEvent) -> Unit,
@@ -145,7 +153,7 @@ fun View.attachEvents(
  * ```
  */
 @CheckResult
-fun View.attachEvents(): Flow<ViewAttachEvent> = callbackFlow {
+fun View.attachEvents(): Flow<ViewAttachEvent> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }

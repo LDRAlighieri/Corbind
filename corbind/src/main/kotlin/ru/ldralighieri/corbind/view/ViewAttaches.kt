@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [View] attach events.
@@ -39,18 +42,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun View.attaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     val listener = listener(scope, true, events.corbindEventEmitter(scope))
     addOnAttachStateChangeListener(listener)
-    events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
+    events.invokeOnCloseOnMain { removeOnAttachStateChangeListener(listener) }
 }
 
 /**
@@ -60,6 +67,7 @@ fun View.attaches(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.attaches(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
@@ -106,7 +114,7 @@ fun View.attaches(
  * ```
  */
 @CheckResult
-fun View.attaches(): Flow<Unit> = callbackFlow {
+fun View.attaches(): Flow<Unit> = corbindCallbackFlow {
     val listener = listener(this, true, corbindEventEmitter())
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }
@@ -120,18 +128,22 @@ fun View.attaches(): Flow<Unit> = callbackFlow {
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun View.detaches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     val listener = listener(scope, false, events.corbindEventEmitter(scope))
     addOnAttachStateChangeListener(listener)
-    events.invokeOnClose { removeOnAttachStateChangeListener(listener) }
+    events.invokeOnCloseOnMain { removeOnAttachStateChangeListener(listener) }
 }
 
 /**
@@ -141,6 +153,7 @@ fun View.detaches(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.detaches(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
@@ -187,7 +200,7 @@ fun View.detaches(
  * ```
  */
 @CheckResult
-fun View.detaches(): Flow<Unit> = callbackFlow {
+fun View.detaches(): Flow<Unit> = corbindCallbackFlow {
     val listener = listener(this, false, corbindEventEmitter())
     addOnAttachStateChangeListener(listener)
     awaitClose { removeOnAttachStateChangeListener(listener) }

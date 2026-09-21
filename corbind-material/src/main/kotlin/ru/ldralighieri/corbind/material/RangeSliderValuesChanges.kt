@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.slider.RangeSlider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -42,11 +45,15 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun RangeSlider.valuesChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (List<Float>) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<List<Float>>(Dispatchers.Main.immediate, capacity) {
         for (values in channel) action(values)
     }
@@ -54,7 +61,7 @@ fun RangeSlider.valuesChanges(
     events.corbindEventEmitter(scope)(values)
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnChangeListener(listener)
-    events.invokeOnClose { removeOnChangeListener(listener) }
+    events.invokeOnCloseOnMain { removeOnChangeListener(listener) }
 }
 
 /**
@@ -64,6 +71,7 @@ fun RangeSlider.valuesChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun RangeSlider.valuesChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (List<Float>) -> Unit,
@@ -123,7 +131,7 @@ fun RangeSlider.valuesChanges(
  * ```
  */
 @CheckResult
-fun RangeSlider.valuesChanges(): InitialValueFlow<List<Float>> = callbackFlow {
+fun RangeSlider.valuesChanges(): InitialValueFlow<List<Float>> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     val listener = listener(this, emitter)
     addOnChangeListener(listener)

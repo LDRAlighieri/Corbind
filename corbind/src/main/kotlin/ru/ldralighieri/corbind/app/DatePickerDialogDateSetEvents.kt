@@ -20,6 +20,7 @@ import android.app.DatePickerDialog
 import android.os.Build
 import android.widget.DatePicker
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +30,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class DatePickerDialogSetEvent(
     val view: DatePicker,
@@ -53,17 +56,21 @@ data class DatePickerDialogSetEvent(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.N)
+@MainThread
 fun DatePickerDialog.dateSetEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (DatePickerDialogSetEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<DatePickerDialogSetEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     setOnDateSetListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnDateSetListener(null) }
+    events.invokeOnCloseOnMain { setOnDateSetListener(null) }
 }
 
 /**
@@ -78,6 +85,7 @@ fun DatePickerDialog.dateSetEvents(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.N)
+@MainThread
 suspend fun DatePickerDialog.dateSetEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (DatePickerDialogSetEvent) -> Unit,
@@ -132,7 +140,7 @@ fun DatePickerDialog.dateSetEvents(
  */
 @RequiresApi(Build.VERSION_CODES.N)
 @CheckResult
-fun DatePickerDialog.dateSetEvents(): Flow<DatePickerDialogSetEvent> = callbackFlow {
+fun DatePickerDialog.dateSetEvents(): Flow<DatePickerDialogSetEvent> = corbindCallbackFlow {
     setOnDateSetListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnDateSetListener(null) }
 }

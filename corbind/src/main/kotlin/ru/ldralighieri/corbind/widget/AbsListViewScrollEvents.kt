@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.AbsListView
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class AbsListViewScrollEvent(
     val view: AbsListView,
@@ -50,17 +53,21 @@ data class AbsListViewScrollEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun AbsListView.scrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AbsListViewScrollEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<AbsListViewScrollEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     setOnScrollListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnScrollListener(null) }
+    events.invokeOnCloseOnMain { setOnScrollListener(null) }
 }
 
 /**
@@ -74,6 +81,7 @@ fun AbsListView.scrollEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun AbsListView.scrollEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (AbsListViewScrollEvent) -> Unit,
@@ -125,7 +133,7 @@ fun AbsListView.scrollEvents(
  * ```
  */
 @CheckResult
-fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = callbackFlow {
+fun AbsListView.scrollEvents(): Flow<AbsListViewScrollEvent> = corbindCallbackFlow {
     setOnScrollListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnScrollListener(null) }
 }

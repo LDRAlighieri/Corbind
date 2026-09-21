@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.widget
 import android.os.Build
 import android.widget.TimePicker
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,13 +28,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class TimeChangedEvent(
@@ -54,18 +57,22 @@ data class TimeChangedEvent(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.M)
+@MainThread
 fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TimeChangedEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<TimeChangedEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     events.corbindEventEmitter(scope)(TimeChangedEvent(this, hour, minute))
     setOnTimeChangedListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnTimeChangedListener(null) }
+    events.invokeOnCloseOnMain { setOnTimeChangedListener(null) }
 }
 
 /**
@@ -80,6 +87,7 @@ fun TimePicker.timeChangeEvents(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.M)
+@MainThread
 suspend fun TimePicker.timeChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TimeChangedEvent) -> Unit,
@@ -146,7 +154,7 @@ fun TimePicker.timeChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = callbackFlow {
+fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     setOnTimeChangedListener(listener(this, emitter))
     emitter.sendInitialValue(TimeChangedEvent(view = this@timeChangeEvents, hour, minute))

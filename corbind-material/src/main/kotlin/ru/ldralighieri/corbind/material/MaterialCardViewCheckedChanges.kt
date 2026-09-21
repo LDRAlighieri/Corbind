@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -44,11 +47,15 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun MaterialCardView.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (checked in channel) action(checked)
     }
@@ -57,7 +64,7 @@ fun MaterialCardView.checkedChanges(
     events.corbindEventEmitter(scope)(isChecked)
     val listener = listener(scope, events.corbindEventEmitter(scope))
     setOnCheckedChangeListener(listener)
-    events.invokeOnClose { setOnCheckedChangeListener(null) }
+    events.invokeOnCloseOnMain { setOnCheckedChangeListener(null) }
 }
 
 /**
@@ -69,6 +76,7 @@ fun MaterialCardView.checkedChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun MaterialCardView.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit,
@@ -133,7 +141,7 @@ fun MaterialCardView.checkedChanges(
  * ```
  */
 @CheckResult
-fun MaterialCardView.checkedChanges(): InitialValueFlow<Boolean> = callbackFlow {
+fun MaterialCardView.checkedChanges(): InitialValueFlow<Boolean> = corbindCallbackFlow {
     checkCheckableState(this@checkedChanges)
     val emitter = initialValueFlowEmitter()
     setOnCheckedChangeListener(listener(this, emitter))

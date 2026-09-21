@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import kotlinx.coroutines.CoroutineScope
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class MaterialButtonCheckedChangeEvent(
     val checkedId: Int,
@@ -48,11 +51,15 @@ data class MaterialButtonCheckedChangeEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MaterialButtonCheckedChangeEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<MaterialButtonCheckedChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
@@ -60,7 +67,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     checkSelectionMode(this@buttonCheckedChangeEvents)
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnButtonCheckedListener(listener)
-    events.invokeOnClose { removeOnButtonCheckedListener(listener) }
+    events.invokeOnCloseOnMain { removeOnButtonCheckedListener(listener) }
 }
 
 /**
@@ -73,6 +80,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MaterialButtonCheckedChangeEvent) -> Unit,
@@ -126,7 +134,7 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  * ```
  */
 @CheckResult
-fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(): Flow<MaterialButtonCheckedChangeEvent> = callbackFlow {
+fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(): Flow<MaterialButtonCheckedChangeEvent> = corbindCallbackFlow {
     checkSelectionMode(this@buttonCheckedChangeEvents)
     val listener = listener(this, corbindEventEmitter())
     addOnButtonCheckedListener(listener)

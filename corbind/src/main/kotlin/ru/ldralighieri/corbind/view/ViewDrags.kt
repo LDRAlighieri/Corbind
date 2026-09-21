@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.view
 import android.view.DragEvent
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,11 +28,13 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [DragEvent] for [View].
@@ -45,18 +48,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * [View.OnDragListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 fun View.drags(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (DragEvent) -> Boolean = AlwaysTrue,
     action: suspend (DragEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<DragEvent>(Dispatchers.Main.immediate, capacity) {
         for (drag in channel) action(drag)
     }
 
     setOnDragListener(listener(scope, handled, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnDragListener(null) }
+    events.invokeOnCloseOnMain { setOnDragListener(null) }
 }
 
 /**
@@ -70,6 +77,7 @@ fun View.drags(
  * [View.OnDragListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.drags(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (DragEvent) -> Boolean = AlwaysTrue,
@@ -129,7 +137,7 @@ fun View.drags(
 @CheckResult
 fun View.drags(
     handled: (DragEvent) -> Boolean = AlwaysTrue,
-): Flow<DragEvent> = callbackFlow {
+): Flow<DragEvent> = corbindCallbackFlow {
     setOnDragListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnDragListener(null) }
 }

@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.viewpager
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.viewpager.widget.ViewPager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -42,11 +45,15 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun ViewPager.pageSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (position in channel) action(position)
     }
@@ -54,7 +61,7 @@ fun ViewPager.pageSelections(
     events.corbindEventEmitter(scope)(currentItem)
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnPageChangeListener(listener)
-    events.invokeOnClose { removeOnPageChangeListener(listener) }
+    events.invokeOnCloseOnMain { removeOnPageChangeListener(listener) }
 }
 
 /**
@@ -64,6 +71,7 @@ fun ViewPager.pageSelections(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun ViewPager.pageSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -124,7 +132,7 @@ fun ViewPager.pageSelections(
  * ```
  */
 @CheckResult
-fun ViewPager.pageSelections(): InitialValueFlow<Int> = callbackFlow {
+fun ViewPager.pageSelections(): InitialValueFlow<Int> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     val listener = listener(this, emitter)
     addOnPageChangeListener(listener)

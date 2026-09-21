@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.CoroutineScope
@@ -27,13 +28,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -44,11 +47,15 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun View.stateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
     }
@@ -57,7 +64,7 @@ fun View.stateChanges(
     events.corbindEventEmitter(scope)(behavior.state)
     val callback = callback(scope, events.corbindEventEmitter(scope))
     behavior.addBottomSheetCallback(callback)
-    events.invokeOnClose { behavior.removeBottomSheetCallback(callback) }
+    events.invokeOnCloseOnMain { behavior.removeBottomSheetCallback(callback) }
 }
 
 /**
@@ -68,6 +75,7 @@ fun View.stateChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.stateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -128,7 +136,7 @@ fun View.stateChanges(
  * ```
  */
 @CheckResult
-fun View.stateChanges(): InitialValueFlow<Int> = callbackFlow {
+fun View.stateChanges(): InitialValueFlow<Int> = corbindCallbackFlow {
     val behavior = getBottomSheetBehavior()
     val emitter = initialValueFlowEmitter()
     val callback = callback(this, emitter)

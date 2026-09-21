@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.PopupMenu
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [PopupMenu] dismiss events.
@@ -42,17 +45,21 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun PopupMenu.dismisses(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     setOnDismissListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnDismissListener(null) }
+    events.invokeOnCloseOnMain { setOnDismissListener(null) }
 }
 
 /**
@@ -65,6 +72,7 @@ fun PopupMenu.dismisses(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun PopupMenu.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
@@ -116,7 +124,7 @@ fun PopupMenu.dismisses(
  * ```
  */
 @CheckResult
-fun PopupMenu.dismisses(): Flow<Unit> = callbackFlow {
+fun PopupMenu.dismisses(): Flow<Unit> = corbindCallbackFlow {
     setOnDismissListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnDismissListener(null) }
 }

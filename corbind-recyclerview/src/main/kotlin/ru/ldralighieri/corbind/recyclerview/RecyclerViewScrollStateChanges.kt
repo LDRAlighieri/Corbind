@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.recyclerview
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on scroll state changes on [RecyclerView].
@@ -39,18 +42,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun RecyclerView.scrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
     }
 
     val scrollListener = listener(scope, events.corbindEventEmitter(scope))
     addOnScrollListener(scrollListener)
-    events.invokeOnClose { removeOnScrollListener(scrollListener) }
+    events.invokeOnCloseOnMain { removeOnScrollListener(scrollListener) }
 }
 
 /**
@@ -60,6 +67,7 @@ fun RecyclerView.scrollStateChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun RecyclerView.scrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -106,7 +114,7 @@ fun RecyclerView.scrollStateChanges(
  * ```
  */
 @CheckResult
-fun RecyclerView.scrollStateChanges(): Flow<Int> = callbackFlow {
+fun RecyclerView.scrollStateChanges(): Flow<Int> = corbindCallbackFlow {
     val scrollListener = listener(this, corbindEventEmitter())
     addOnScrollListener(scrollListener)
     awaitClose { removeOnScrollListener(scrollListener) }

@@ -20,6 +20,7 @@ import android.os.Build
 import android.view.MenuItem
 import android.widget.Toolbar
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +30,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on the clicked item in [Toolbar] menu.
@@ -46,17 +49,21 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+@MainThread
 fun Toolbar.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<MenuItem>(Dispatchers.Main.immediate, capacity) {
         for (item in channel) action(item)
     }
 
     setOnMenuItemClickListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnMenuItemClickListener(null) }
+    events.invokeOnCloseOnMain { setOnMenuItemClickListener(null) }
 }
 
 /**
@@ -70,6 +77,7 @@ fun Toolbar.itemClicks(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+@MainThread
 suspend fun Toolbar.itemClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit,
@@ -123,7 +131,7 @@ fun Toolbar.itemClicks(
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
-fun Toolbar.itemClicks(): Flow<MenuItem> = callbackFlow {
+fun Toolbar.itemClicks(): Flow<MenuItem> = corbindCallbackFlow {
     setOnMenuItemClickListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnMenuItemClickListener(null) }
 }

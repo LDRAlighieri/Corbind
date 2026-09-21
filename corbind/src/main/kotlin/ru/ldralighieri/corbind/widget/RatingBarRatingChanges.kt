@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.RatingBar
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -45,18 +48,22 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun RatingBar.ratingChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Float>(Dispatchers.Main.immediate, capacity) {
         for (rating in channel) action(rating)
     }
 
     events.corbindEventEmitter(scope)(rating)
     onRatingBarChangeListener = listener(scope, events.corbindEventEmitter(scope))
-    events.invokeOnClose { onRatingBarChangeListener = null }
+    events.invokeOnCloseOnMain { onRatingBarChangeListener = null }
 }
 
 /**
@@ -69,6 +76,7 @@ fun RatingBar.ratingChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun RatingBar.ratingChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit,
@@ -133,7 +141,7 @@ fun RatingBar.ratingChanges(
  * ```
  */
 @CheckResult
-fun RatingBar.ratingChanges(): InitialValueFlow<Float> = callbackFlow {
+fun RatingBar.ratingChanges(): InitialValueFlow<Float> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     onRatingBarChangeListener = listener(this, emitter)
     emitter.sendInitialValue(rating)

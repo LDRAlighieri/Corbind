@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.widget
 import android.os.Build
 import android.widget.DatePicker
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,13 +28,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class DateChangedEvent(
@@ -55,18 +58,22 @@ data class DateChangedEvent(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.O)
+@MainThread
 fun DatePicker.dateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (DateChangedEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<DateChangedEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     events.corbindEventEmitter(scope)(DateChangedEvent(this, year, month, dayOfMonth))
     setOnDateChangedListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnDateChangedListener(null) }
+    events.invokeOnCloseOnMain { setOnDateChangedListener(null) }
 }
 
 /**
@@ -81,6 +88,7 @@ fun DatePicker.dateChangeEvents(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.O)
+@MainThread
 suspend fun DatePicker.dateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (DateChangedEvent) -> Unit,
@@ -147,7 +155,7 @@ fun DatePicker.dateChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @CheckResult
-fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> = callbackFlow {
+fun DatePicker.dateChangeEvents(): InitialValueFlow<DateChangedEvent> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     setOnDateChangedListener(listener(this, emitter))
     emitter.sendInitialValue(DateChangedEvent(view = this@dateChangeEvents, year, month, dayOfMonth))

@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.widget
 import android.view.MenuItem
 import android.widget.PopupMenu
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on clicked item in [PopupMenu].
@@ -43,17 +46,21 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun PopupMenu.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<MenuItem>(Dispatchers.Main.immediate, capacity) {
         for (item in channel) action(item)
     }
 
     setOnMenuItemClickListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnMenuItemClickListener(null) }
+    events.invokeOnCloseOnMain { setOnMenuItemClickListener(null) }
 }
 
 /**
@@ -66,6 +73,7 @@ fun PopupMenu.itemClicks(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun PopupMenu.itemClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit,
@@ -117,7 +125,7 @@ fun PopupMenu.itemClicks(
  * ```
  */
 @CheckResult
-fun PopupMenu.itemClicks(): Flow<MenuItem> = callbackFlow {
+fun PopupMenu.itemClicks(): Flow<MenuItem> = corbindCallbackFlow {
     setOnMenuItemClickListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnMenuItemClickListener(null) }
 }

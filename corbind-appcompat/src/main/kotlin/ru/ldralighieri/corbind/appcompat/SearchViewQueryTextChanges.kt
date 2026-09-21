@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.appcompat
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.appcompat.widget.SearchView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -45,18 +48,22 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun SearchView.queryTextChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CharSequence) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<CharSequence>(Dispatchers.Main.immediate, capacity) {
         for (chars in channel) action(chars)
     }
 
     events.corbindEventEmitter(scope)(query)
     setOnQueryTextListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnQueryTextListener(null) }
+    events.invokeOnCloseOnMain { setOnQueryTextListener(null) }
 }
 
 /**
@@ -70,6 +77,7 @@ fun SearchView.queryTextChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun SearchView.queryTextChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CharSequence) -> Unit,
@@ -134,7 +142,7 @@ fun SearchView.queryTextChanges(
  * ```
  */
 @CheckResult
-fun SearchView.queryTextChanges(): InitialValueFlow<CharSequence> = callbackFlow {
+fun SearchView.queryTextChanges(): InitialValueFlow<CharSequence> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     setOnQueryTextListener(listener(this, emitter))
     emitter.sendInitialValue(this@queryTextChanges.query)

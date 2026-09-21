@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.view
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on a new system UI visibility for [View].
@@ -55,17 +58,21 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
         imports = ["ru.ldralighieri.corbind.view.windowInsetsApplyEvents"],
     ),
 )
+@MainThread
 fun View.systemUiVisibilityChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (visibility in channel) action(visibility)
     }
 
     setOnSystemUiVisibilityChangeListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnSystemUiVisibilityChangeListener(null) }
+    events.invokeOnCloseOnMain { setOnSystemUiVisibilityChangeListener(null) }
 }
 
 /**
@@ -90,6 +97,7 @@ fun View.systemUiVisibilityChanges(
         imports = ["ru.ldralighieri.corbind.view.windowInsetsApplyEvents"],
     ),
 )
+@MainThread
 suspend fun View.systemUiVisibilityChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -165,7 +173,7 @@ fun View.systemUiVisibilityChanges(
     ),
 )
 @CheckResult
-fun View.systemUiVisibilityChanges(): Flow<Int> = callbackFlow {
+fun View.systemUiVisibilityChanges(): Flow<Int> = corbindCallbackFlow {
     setOnSystemUiVisibilityChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnSystemUiVisibilityChangeListener(null) }
 }

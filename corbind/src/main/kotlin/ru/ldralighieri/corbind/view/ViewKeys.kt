@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.view
 import android.view.KeyEvent
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,11 +28,13 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on key events for [View].
@@ -45,18 +48,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * [View.OnKeyListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 fun View.keys(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (KeyEvent) -> Boolean = AlwaysTrue,
     action: suspend (KeyEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<KeyEvent>(Dispatchers.Main.immediate, capacity) {
         for (key in channel) action(key)
     }
 
     setOnKeyListener(listener(scope, handled, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnKeyListener(null) }
+    events.invokeOnCloseOnMain { setOnKeyListener(null) }
 }
 
 /**
@@ -70,6 +77,7 @@ fun View.keys(
  * [View.OnKeyListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.keys(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (KeyEvent) -> Boolean = AlwaysTrue,
@@ -127,7 +135,7 @@ fun View.keys(
  * [View.OnKeyListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
-fun View.keys(handled: (KeyEvent) -> Boolean = AlwaysTrue): Flow<KeyEvent> = callbackFlow {
+fun View.keys(handled: (KeyEvent) -> Boolean = AlwaysTrue): Flow<KeyEvent> = corbindCallbackFlow {
     setOnKeyListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnKeyListener(null) }
 }

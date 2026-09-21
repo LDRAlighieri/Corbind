@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -40,11 +43,15 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun TabLayout.selections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TabLayout.Tab) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<TabLayout.Tab>(Dispatchers.Main.immediate, capacity) {
         for (tab in channel) action(tab)
     }
@@ -52,7 +59,7 @@ fun TabLayout.selections(
     setInitialValue(this, events.corbindEventEmitter(scope))
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnTabSelectedListener(listener)
-    events.invokeOnClose { removeOnTabSelectedListener(listener) }
+    events.invokeOnCloseOnMain { removeOnTabSelectedListener(listener) }
 }
 
 /**
@@ -62,6 +69,7 @@ fun TabLayout.selections(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun TabLayout.selections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (TabLayout.Tab) -> Unit,
@@ -124,7 +132,7 @@ fun TabLayout.selections(
  * ```
  */
 @CheckResult
-fun TabLayout.selections(): Flow<TabLayout.Tab> = callbackFlow {
+fun TabLayout.selections(): Flow<TabLayout.Tab> = corbindCallbackFlow {
     setInitialValue(this@selections, corbindEventEmitter())
     val listener = listener(this, corbindEventEmitter())
     addOnTabSelectedListener(listener)

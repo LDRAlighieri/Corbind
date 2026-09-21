@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on touch tracking events for [Slider].
@@ -39,18 +42,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun Slider.touches(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnSliderTouchListener(listener)
-    events.invokeOnClose { removeOnSliderTouchListener(listener) }
+    events.invokeOnCloseOnMain { removeOnSliderTouchListener(listener) }
 }
 
 /**
@@ -60,6 +67,7 @@ fun Slider.touches(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun Slider.touches(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Boolean) -> Unit,
@@ -106,7 +114,7 @@ fun Slider.touches(
  * ```
  */
 @CheckResult
-fun Slider.touches(): Flow<Boolean> = callbackFlow {
+fun Slider.touches(): Flow<Boolean> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     addOnSliderTouchListener(listener)
     awaitClose { removeOnSliderTouchListener(listener) }
