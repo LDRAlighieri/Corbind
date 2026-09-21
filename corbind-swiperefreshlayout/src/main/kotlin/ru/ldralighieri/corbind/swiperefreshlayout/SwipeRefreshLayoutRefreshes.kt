@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.swiperefreshlayout
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on refresh events on [SwipeRefreshLayout].
@@ -42,17 +45,21 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun SwipeRefreshLayout.refreshes(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     setOnRefreshListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnRefreshListener(null) }
+    events.invokeOnCloseOnMain { setOnRefreshListener(null) }
 }
 
 /**
@@ -65,6 +72,7 @@ fun SwipeRefreshLayout.refreshes(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun SwipeRefreshLayout.refreshes(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
@@ -116,7 +124,7 @@ fun SwipeRefreshLayout.refreshes(
  * ```
  */
 @CheckResult
-fun SwipeRefreshLayout.refreshes(): Flow<Unit> = callbackFlow {
+fun SwipeRefreshLayout.refreshes(): Flow<Unit> = corbindCallbackFlow {
     setOnRefreshListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnRefreshListener(null) }
 }

@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.viewpager2
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class ViewPager2PageScrollEvent(
     val viewPager: ViewPager2,
@@ -46,18 +49,22 @@ data class ViewPager2PageScrollEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun ViewPager2.pageScrollEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewPager2PageScrollEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<ViewPager2PageScrollEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     val callback = callback(scope, this, events.corbindEventEmitter(scope))
     registerOnPageChangeCallback(callback)
-    events.invokeOnClose { unregisterOnPageChangeCallback(callback) }
+    events.invokeOnCloseOnMain { unregisterOnPageChangeCallback(callback) }
 }
 
 /**
@@ -68,6 +75,7 @@ fun ViewPager2.pageScrollEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun ViewPager2.pageScrollEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewPager2PageScrollEvent) -> Unit,
@@ -114,7 +122,7 @@ fun ViewPager2.pageScrollEvents(
  * ```
  */
 @CheckResult
-fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = callbackFlow {
+fun ViewPager2.pageScrollEvents(): Flow<ViewPager2PageScrollEvent> = corbindCallbackFlow {
     val callback = callback(this, this@pageScrollEvents, corbindEventEmitter())
     registerOnPageChangeCallback(callback)
     awaitClose { unregisterOnPageChangeCallback(callback) }

@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.fragment
 
 import android.os.Bundle
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.CoroutineScope
@@ -28,10 +29,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class FragmentResultEvent(
     val requestKey: String,
@@ -52,6 +55,7 @@ data class FragmentResultEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun FragmentManager.resultEvents(
     scope: CoroutineScope,
     requestKey: String,
@@ -59,13 +63,16 @@ fun FragmentManager.resultEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (FragmentResultEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<FragmentResultEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     setFragmentResultListener(requestKey, lifecycleOwner, listener)
-    events.invokeOnClose { clearFragmentResultListener(requestKey) }
+    events.invokeOnCloseOnMain { clearFragmentResultListener(requestKey) }
 }
 
 /**
@@ -81,6 +88,7 @@ fun FragmentManager.resultEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun FragmentManager.resultEvents(
     requestKey: String,
     lifecycleOwner: LifecycleOwner,
@@ -148,7 +156,7 @@ fun FragmentManager.resultEvents(
 fun FragmentManager.resultEvents(
     requestKey: String,
     lifecycleOwner: LifecycleOwner,
-): Flow<FragmentResultEvent> = callbackFlow {
+): Flow<FragmentResultEvent> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     setFragmentResultListener(requestKey, lifecycleOwner, listener)
     awaitClose { clearFragmentResultListener(requestKey) }

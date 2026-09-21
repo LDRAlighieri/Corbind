@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.SeekBar
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -25,30 +26,37 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
+@MainThread
 private fun SeekBar.changes(
     scope: CoroutineScope,
     capacity: Int,
     shouldBeFromUser: Boolean?,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (progress in channel) action(progress)
     }
 
     events.corbindEventEmitter(scope)(progress)
     setOnSeekBarChangeListener(listener(scope, shouldBeFromUser, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnSeekBarChangeListener(null) }
+    events.invokeOnCloseOnMain { setOnSeekBarChangeListener(null) }
 }
 
+@MainThread
 private suspend fun SeekBar.changes(
     capacity: Int,
     shouldBeFromUser: Boolean?,
@@ -69,7 +77,7 @@ private fun SeekBar.changes(
 }
 
 @CheckResult
-private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> = callbackFlow {
+private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     setOnSeekBarChangeListener(listener(this, shouldBeFromUser, emitter))
     emitter.sendInitialValue(progress)
@@ -87,6 +95,7 @@ private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> =
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun SeekBar.changes(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
@@ -103,6 +112,7 @@ fun SeekBar.changes(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun SeekBar.changes(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -174,6 +184,7 @@ fun SeekBar.changes(): InitialValueFlow<Int> = changes(null)
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun SeekBar.userChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
@@ -191,6 +202,7 @@ fun SeekBar.userChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun SeekBar.userChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -262,6 +274,7 @@ fun SeekBar.userChanges(): InitialValueFlow<Int> = changes(true)
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun SeekBar.systemChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
@@ -279,6 +292,7 @@ fun SeekBar.systemChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun SeekBar.systemChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,

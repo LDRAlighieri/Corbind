@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [Chip] close icon click events.
@@ -43,17 +46,21 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun Chip.closeIconClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     setOnCloseIconClickListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnCloseIconClickListener(null) }
+    events.invokeOnCloseOnMain { setOnCloseIconClickListener(null) }
 }
 
 /**
@@ -66,6 +73,7 @@ fun Chip.closeIconClicks(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun Chip.closeIconClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
@@ -117,7 +125,7 @@ fun Chip.closeIconClicks(
  * ```
  */
 @CheckResult
-fun Chip.closeIconClicks(): Flow<Unit> = callbackFlow {
+fun Chip.closeIconClicks(): Flow<Unit> = corbindCallbackFlow {
     setOnCloseIconClickListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnCloseIconClickListener(null) }
 }

@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.MenuItem
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.navigation.NavigationBarView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -44,18 +47,22 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun NavigationBarView.itemSelections(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<MenuItem>(Dispatchers.Main.immediate, capacity) {
         for (item in channel) action(item)
     }
 
     setInitialValue(this, events.corbindEventEmitter(scope))
     setOnItemSelectedListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnItemSelectedListener(null) }
+    events.invokeOnCloseOnMain { setOnItemSelectedListener(null) }
 }
 
 /**
@@ -68,6 +75,7 @@ fun NavigationBarView.itemSelections(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun NavigationBarView.itemSelections(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (MenuItem) -> Unit,
@@ -135,7 +143,7 @@ fun NavigationBarView.itemSelections(
  * ```
  */
 @CheckResult
-fun NavigationBarView.itemSelections(): Flow<MenuItem> = callbackFlow {
+fun NavigationBarView.itemSelections(): Flow<MenuItem> = corbindCallbackFlow {
     setInitialValue(this@itemSelections, corbindEventEmitter())
     setOnItemSelectedListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnItemSelectedListener(null) }

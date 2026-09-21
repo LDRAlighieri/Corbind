@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.lifecycle
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import kotlinx.coroutines.CoroutineScope
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on any [lifecycle][Lifecycle] event change.
@@ -40,18 +43,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun Lifecycle.events(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Lifecycle.Event) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Lifecycle.Event>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     val observer = observer(scope, events.corbindEventEmitter(scope))
     addObserver(observer)
-    events.invokeOnClose { removeObserver(observer) }
+    events.invokeOnCloseOnMain { removeObserver(observer) }
 }
 
 /**
@@ -61,6 +68,7 @@ fun Lifecycle.events(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun Lifecycle.events(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Lifecycle.Event) -> Unit,
@@ -106,7 +114,7 @@ fun Lifecycle.events(
  * ```
  */
 @CheckResult
-fun Lifecycle.events(): Flow<Lifecycle.Event> = callbackFlow {
+fun Lifecycle.events(): Flow<Lifecycle.Event> = corbindCallbackFlow {
     val observer = observer(this, corbindEventEmitter())
     addObserver(observer)
     awaitClose { removeObserver(observer) }

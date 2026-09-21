@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -42,11 +45,15 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun Slider.valueChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Float>(Dispatchers.Main.immediate, capacity) {
         for (value in channel) action(value)
     }
@@ -54,7 +61,7 @@ fun Slider.valueChanges(
     events.corbindEventEmitter(scope)(value)
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnChangeListener(listener)
-    events.invokeOnClose { removeOnChangeListener(listener) }
+    events.invokeOnCloseOnMain { removeOnChangeListener(listener) }
 }
 
 /**
@@ -64,6 +71,7 @@ fun Slider.valueChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun Slider.valueChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit,
@@ -123,7 +131,7 @@ fun Slider.valueChanges(
  * ```
  */
 @CheckResult
-fun Slider.valueChanges(): InitialValueFlow<Float> = callbackFlow {
+fun Slider.valueChanges(): InitialValueFlow<Float> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     val listener = listener(this, emitter)
     addOnChangeListener(listener)

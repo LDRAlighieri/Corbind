@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.leanback
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.leanback.widget.SearchBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 sealed interface SearchBarSearchQueryEvent {
     val view: SearchBar
@@ -62,17 +65,21 @@ data class SearchBarSearchQuerySubmittedEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun SearchBar.searchQueryChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SearchBarSearchQueryEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<SearchBarSearchQueryEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     setSearchBarListener(listener(scope, this, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setSearchBarListener(null) }
+    events.invokeOnCloseOnMain { setSearchBarListener(null) }
 }
 
 /**
@@ -86,6 +93,7 @@ fun SearchBar.searchQueryChangeEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun SearchBar.searchQueryChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (SearchBarSearchQueryEvent) -> Unit,
@@ -168,7 +176,7 @@ fun SearchBar.searchQueryChangeEvents(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  */
 @CheckResult
-fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> = callbackFlow {
+fun SearchBar.searchQueryChangeEvents(): Flow<SearchBarSearchQueryEvent> = corbindCallbackFlow {
     setSearchBarListener(listener(this, this@searchQueryChangeEvents, corbindEventEmitter()))
     awaitClose { setSearchBarListener(null) }
 }

@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.recyclerview
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class RecyclerViewFlingEvent(
     val view: RecyclerView,
@@ -48,17 +51,21 @@ data class RecyclerViewFlingEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun RecyclerView.flingEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewFlingEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<RecyclerViewFlingEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     onFlingListener = listener(scope, this, events.corbindEventEmitter(scope))
-    events.invokeOnClose { onFlingListener = null }
+    events.invokeOnCloseOnMain { onFlingListener = null }
 }
 
 /**
@@ -72,6 +79,7 @@ fun RecyclerView.flingEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun RecyclerView.flingEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewFlingEvent) -> Unit,
@@ -123,7 +131,7 @@ fun RecyclerView.flingEvents(
  * ```
  */
 @CheckResult
-fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = callbackFlow {
+fun RecyclerView.flingEvents(): Flow<RecyclerViewFlingEvent> = corbindCallbackFlow {
     onFlingListener = listener(this, this@flingEvents, corbindEventEmitter())
     awaitClose { onFlingListener = null }
 }

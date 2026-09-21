@@ -20,6 +20,7 @@ import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +30,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on draws on [View].
@@ -43,18 +46,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+@MainThread
 fun View.draws(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     viewTreeObserver.addOnDrawListener(listener)
-    events.invokeOnClose { viewTreeObserver.removeOnDrawListener(listener) }
+    events.invokeOnCloseOnMain { viewTreeObserver.removeOnDrawListener(listener) }
 }
 
 /**
@@ -65,6 +72,7 @@ fun View.draws(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+@MainThread
 suspend fun View.draws(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
@@ -113,7 +121,7 @@ fun View.draws(
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
-fun View.draws(): Flow<Unit> = callbackFlow {
+fun View.draws(): Flow<Unit> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     viewTreeObserver.addOnDrawListener(listener)
     awaitClose { viewTreeObserver.removeOnDrawListener(listener) }

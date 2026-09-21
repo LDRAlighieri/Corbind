@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.view
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,11 +28,13 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on hover events for [View].
@@ -46,18 +49,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * [View.OnHoverListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 fun View.hovers(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
     action: suspend (MotionEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<MotionEvent>(Dispatchers.Main.immediate, capacity) {
         for (motion in channel) action(motion)
     }
 
     setOnHoverListener(listener(scope, handled, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnHoverListener(null) }
+    events.invokeOnCloseOnMain { setOnHoverListener(null) }
 }
 
 /**
@@ -72,6 +79,7 @@ fun View.hovers(
  * [View.OnHoverListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.hovers(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MotionEvent) -> Boolean = AlwaysTrue,
@@ -129,7 +137,7 @@ fun View.hovers(
  * [View.OnHoverListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  */
 @CheckResult
-fun View.hovers(handled: (MotionEvent) -> Boolean = AlwaysTrue): Flow<MotionEvent> = callbackFlow {
+fun View.hovers(handled: (MotionEvent) -> Boolean = AlwaysTrue): Flow<MotionEvent> = corbindCallbackFlow {
     setOnHoverListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnHoverListener(null) }
 }

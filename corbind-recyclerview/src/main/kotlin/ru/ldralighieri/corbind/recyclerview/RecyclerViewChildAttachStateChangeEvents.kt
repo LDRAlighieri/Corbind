@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.recyclerview
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 sealed interface RecyclerViewChildAttachStateChangeEvent {
     val view: RecyclerView
@@ -56,11 +59,15 @@ data class RecyclerViewChildDetachEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun RecyclerView.childAttachStateChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<RecyclerViewChildAttachStateChangeEvent>(
         Dispatchers.Main.immediate,
         capacity,
@@ -70,7 +77,7 @@ fun RecyclerView.childAttachStateChangeEvents(
 
     val listener = listener(scope, this, events.corbindEventEmitter(scope))
     addOnChildAttachStateChangeListener(listener)
-    events.invokeOnClose { removeOnChildAttachStateChangeListener(listener) }
+    events.invokeOnCloseOnMain { removeOnChildAttachStateChangeListener(listener) }
 }
 
 /**
@@ -81,6 +88,7 @@ fun RecyclerView.childAttachStateChangeEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun RecyclerView.childAttachStateChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RecyclerViewChildAttachStateChangeEvent) -> Unit,
@@ -155,7 +163,7 @@ fun RecyclerView.childAttachStateChangeEvents(
  * ```
  */
 @CheckResult
-fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachStateChangeEvent> = callbackFlow {
+fun RecyclerView.childAttachStateChangeEvents(): Flow<RecyclerViewChildAttachStateChangeEvent> = corbindCallbackFlow {
     val listener = listener(this, this@childAttachStateChangeEvents, corbindEventEmitter())
     addOnChildAttachStateChangeListener(listener)
     awaitClose { removeOnChildAttachStateChangeListener(listener) }

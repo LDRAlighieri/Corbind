@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.MenuItem
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -26,11 +27,13 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [MenuItem] click events.
@@ -45,18 +48,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * [MenuItem.OnMenuItemClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 fun MenuItem.clicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItem) -> Boolean = AlwaysTrue,
     action: suspend (MenuItem) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<MenuItem>(Dispatchers.Main.immediate, capacity) {
         for (item in channel) action(item)
     }
 
     setOnMenuItemClickListener(listener(scope, handled, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnMenuItemClickListener(null) }
+    events.invokeOnCloseOnMain { setOnMenuItemClickListener(null) }
 }
 
 /**
@@ -71,6 +78,7 @@ fun MenuItem.clicks(
  * [MenuItem.OnMenuItemClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 suspend fun MenuItem.clicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: (MenuItem) -> Boolean = AlwaysTrue,
@@ -131,7 +139,7 @@ fun MenuItem.clicks(
 @CheckResult
 fun MenuItem.clicks(
     handled: (MenuItem) -> Boolean = AlwaysTrue,
-): Flow<MenuItem> = callbackFlow {
+): Flow<MenuItem> = corbindCallbackFlow {
     setOnMenuItemClickListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnMenuItemClickListener(null) }
 }

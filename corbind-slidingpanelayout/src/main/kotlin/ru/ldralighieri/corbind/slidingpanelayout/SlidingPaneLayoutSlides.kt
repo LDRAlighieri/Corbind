@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.slidingpanelayout
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout].
@@ -40,18 +43,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun SlidingPaneLayout.panelSlides(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Float>(Dispatchers.Main.immediate, capacity) {
         for (slide in channel) action(slide)
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addPanelSlideListener(listener)
-    events.invokeOnClose { removePanelSlideListener(listener) }
+    events.invokeOnCloseOnMain { removePanelSlideListener(listener) }
 }
 
 /**
@@ -65,6 +72,7 @@ fun SlidingPaneLayout.panelSlides(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun SlidingPaneLayout.panelSlides(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Float) -> Unit,
@@ -111,7 +119,7 @@ fun SlidingPaneLayout.panelSlides(
  * ```
  */
 @CheckResult
-fun SlidingPaneLayout.panelSlides(): Flow<Float> = callbackFlow {
+fun SlidingPaneLayout.panelSlides(): Flow<Float> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     addPanelSlideListener(listener)
     awaitClose { removePanelSlideListener(listener) }

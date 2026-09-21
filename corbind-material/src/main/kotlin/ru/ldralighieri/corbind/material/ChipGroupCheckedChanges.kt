@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.material
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -45,18 +48,22 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun ChipGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (List<Int>) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<List<Int>>(Dispatchers.Main.immediate, capacity) {
         for (checkedId in channel) action(checkedId)
     }
 
     events.corbindEventEmitter(scope)(checkedChipIds)
     setOnCheckedStateChangeListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnCheckedStateChangeListener(null) }
+    events.invokeOnCloseOnMain { setOnCheckedStateChangeListener(null) }
 }
 
 /**
@@ -69,6 +76,7 @@ fun ChipGroup.checkedChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun ChipGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (List<Int>) -> Unit,
@@ -135,7 +143,7 @@ fun ChipGroup.checkedChanges(
  * ```
  */
 @CheckResult
-fun ChipGroup.checkedChanges(): InitialValueFlow<List<Int>> = callbackFlow {
+fun ChipGroup.checkedChanges(): InitialValueFlow<List<Int>> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     setOnCheckedStateChangeListener(listener(this, emitter))
     emitter.sendInitialValue(checkedChipIds)

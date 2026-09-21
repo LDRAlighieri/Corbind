@@ -20,6 +20,7 @@ import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +30,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class WindowInsetsEvent(
     val view: View,
@@ -48,17 +51,21 @@ data class WindowInsetsEvent(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
+@MainThread
 fun View.windowInsetsApplyEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (WindowInsetsEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<WindowInsetsEvent>(Dispatchers.Main.immediate, capacity) {
         for (insets in channel) action(insets)
     }
 
     setOnApplyWindowInsetsListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnApplyWindowInsetsListener(null) }
+    events.invokeOnCloseOnMain { setOnApplyWindowInsetsListener(null) }
 }
 
 /**
@@ -70,6 +77,7 @@ fun View.windowInsetsApplyEvents(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
+@MainThread
 suspend fun View.windowInsetsApplyEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (WindowInsetsEvent) -> Unit,
@@ -132,7 +140,7 @@ fun View.windowInsetsApplyEvents(
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 @CheckResult
-fun View.windowInsetsApplyEvents(): Flow<WindowInsetsEvent> = callbackFlow {
+fun View.windowInsetsApplyEvents(): Flow<WindowInsetsEvent> = corbindCallbackFlow {
     setOnApplyWindowInsetsListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnApplyWindowInsetsListener(null) }
 }

@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -26,10 +27,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class ViewLayoutChangeEvent(
     val view: View,
@@ -51,18 +54,22 @@ data class ViewLayoutChangeEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun View.layoutChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewLayoutChangeEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<ViewLayoutChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnLayoutChangeListener(listener)
-    events.invokeOnClose { removeOnLayoutChangeListener(listener) }
+    events.invokeOnCloseOnMain { removeOnLayoutChangeListener(listener) }
 }
 
 /**
@@ -73,6 +80,7 @@ fun View.layoutChangeEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.layoutChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewLayoutChangeEvent) -> Unit,
@@ -119,7 +127,7 @@ fun View.layoutChangeEvents(
  * ```
  */
 @CheckResult
-fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = callbackFlow {
+fun View.layoutChangeEvents(): Flow<ViewLayoutChangeEvent> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     addOnLayoutChangeListener(listener)
     awaitClose { removeOnLayoutChangeListener(listener) }

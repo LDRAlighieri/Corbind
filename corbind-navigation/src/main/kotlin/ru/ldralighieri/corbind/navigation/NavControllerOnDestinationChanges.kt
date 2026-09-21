@@ -17,6 +17,7 @@
 package ru.ldralighieri.corbind.navigation
 
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import kotlinx.coroutines.CoroutineScope
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on destination change on [NavController].
@@ -40,18 +43,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun NavController.destinationChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (NavDestination) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<NavDestination>(Dispatchers.Main.immediate, capacity) {
         for (destination in channel) action(destination)
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnDestinationChangedListener(listener)
-    events.invokeOnClose { removeOnDestinationChangedListener(listener) }
+    events.invokeOnCloseOnMain { removeOnDestinationChangedListener(listener) }
 }
 
 /**
@@ -61,6 +68,7 @@ fun NavController.destinationChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun NavController.destinationChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (NavDestination) -> Unit,
@@ -107,7 +115,7 @@ fun NavController.destinationChanges(
  * ```
  */
 @CheckResult
-fun NavController.destinationChanges(): Flow<NavDestination> = callbackFlow {
+fun NavController.destinationChanges(): Flow<NavDestination> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     addOnDestinationChangedListener(listener)
     awaitClose { removeOnDestinationChangedListener(listener) }

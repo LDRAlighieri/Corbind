@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.view
 import android.os.Build
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,10 +29,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 data class ViewScrollChangeEvent(
     val view: View,
@@ -53,17 +56,21 @@ data class ViewScrollChangeEvent(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.M)
+@MainThread
 fun View.scrollChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewScrollChangeEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<ViewScrollChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     setOnScrollChangeListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnScrollChangeListener(null) }
+    events.invokeOnCloseOnMain { setOnScrollChangeListener(null) }
 }
 
 /**
@@ -78,6 +85,7 @@ fun View.scrollChangeEvents(
  * @param action An action to perform
  */
 @RequiresApi(Build.VERSION_CODES.M)
+@MainThread
 suspend fun View.scrollChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (ViewScrollChangeEvent) -> Unit,
@@ -131,7 +139,7 @@ fun View.scrollChangeEvents(
  */
 @RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
-fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = callbackFlow {
+fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = corbindCallbackFlow {
     setOnScrollChangeListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnScrollChangeListener(null) }
 }

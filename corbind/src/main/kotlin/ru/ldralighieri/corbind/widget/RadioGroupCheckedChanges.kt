@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.widget
 import android.view.View
 import android.widget.RadioGroup
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -26,13 +27,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -46,18 +49,22 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun RadioGroup.checkedChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (checkedId in channel) action(checkedId)
     }
 
     events.corbindEventEmitter(scope)(checkedRadioButtonId)
     setOnCheckedChangeListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnCheckedChangeListener(null) }
+    events.invokeOnCloseOnMain { setOnCheckedChangeListener(null) }
 }
 
 /**
@@ -70,6 +77,7 @@ fun RadioGroup.checkedChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun RadioGroup.checkedChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -136,7 +144,7 @@ fun RadioGroup.checkedChanges(
  * ```
  */
 @CheckResult
-fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = callbackFlow {
+fun RadioGroup.checkedChanges(): InitialValueFlow<Int> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     setOnCheckedChangeListener(listener(this, emitter))
     emitter.sendInitialValue(checkedRadioButtonId)

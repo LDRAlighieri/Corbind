@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.content.DialogInterface
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action when the user cancels the [MaterialDatePicker] via back button or a touch
@@ -44,18 +47,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun <S> MaterialDatePicker<S>.cancels(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addOnCancelListener(listener)
-    events.invokeOnClose { removeOnCancelListener(listener) }
+    events.invokeOnCloseOnMain { removeOnCancelListener(listener) }
 }
 
 /**
@@ -69,6 +76,7 @@ fun <S> MaterialDatePicker<S>.cancels(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun <S> MaterialDatePicker<S>.cancels(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend () -> Unit,
@@ -123,7 +131,7 @@ fun <S> MaterialDatePicker<S>.cancels(
  * ```
  */
 @CheckResult
-fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = callbackFlow {
+fun <S> MaterialDatePicker<S>.cancels(): Flow<Unit> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())
     addOnCancelListener(listener)
     awaitClose { removeOnCancelListener(listener) }

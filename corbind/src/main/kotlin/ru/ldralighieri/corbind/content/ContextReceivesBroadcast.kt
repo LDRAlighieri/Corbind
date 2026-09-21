@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -32,10 +33,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action when the the Intent broadcasts by the selected filter.
@@ -46,12 +49,16 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun Context.receivesBroadcast(
     scope: CoroutineScope,
     intentFilter: IntentFilter,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Intent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Intent>(Dispatchers.Main.immediate, capacity) {
         for (intent in channel) action(intent)
     }
@@ -64,7 +71,7 @@ fun Context.receivesBroadcast(
         registerReceiver(receiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
     }
 
-    events.invokeOnClose { unregisterReceiver(receiver) }
+    events.invokeOnCloseOnMain { unregisterReceiver(receiver) }
 }
 
 /**
@@ -76,6 +83,7 @@ fun Context.receivesBroadcast(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun Context.receivesBroadcast(
     intentFilter: IntentFilter,
     capacity: Int = Channel.RENDEZVOUS,
@@ -139,7 +147,7 @@ fun Context.receivesBroadcast(
  *
  * @param intentFilter Selects the Intent broadcasts to be received
  */
-fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = callbackFlow {
+fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = corbindCallbackFlow {
     val receiver = receiver(this, corbindEventEmitter())
 
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {

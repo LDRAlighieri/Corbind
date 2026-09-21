@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.view
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -26,11 +27,13 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [View] long click events.
@@ -45,18 +48,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 fun View.longClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     setOnLongClickListener(listener(scope, handled, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnLongClickListener(null) }
+    events.invokeOnCloseOnMain { setOnLongClickListener(null) }
 }
 
 /**
@@ -71,6 +78,7 @@ fun View.longClicks(
  * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 suspend fun View.longClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
@@ -131,7 +139,7 @@ fun View.longClicks(
 @CheckResult
 fun View.longClicks(
     handled: () -> Boolean = AlwaysTrue,
-): Flow<Unit> = callbackFlow {
+): Flow<Unit> = corbindCallbackFlow {
     setOnLongClickListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setOnLongClickListener(null) }
 }

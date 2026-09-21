@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.drawerlayout
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.drawerlayout.widget.DrawerLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,13 +27,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -44,12 +47,16 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * @param gravity Gravity of the drawer to check
  * @param action An action to perform
  */
+@MainThread
 fun DrawerLayout.drawerOpens(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     gravity: Int,
     action: suspend (Boolean) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Boolean>(Dispatchers.Main.immediate, capacity) {
         for (open in channel) action(open)
     }
@@ -57,7 +64,7 @@ fun DrawerLayout.drawerOpens(
     events.corbindEventEmitter(scope)(isDrawerOpen(gravity))
     val listener = listener(scope, gravity, events.corbindEventEmitter(scope))
     addDrawerListener(listener)
-    events.invokeOnClose { removeDrawerListener(listener) }
+    events.invokeOnCloseOnMain { removeDrawerListener(listener) }
 }
 
 /**
@@ -68,6 +75,7 @@ fun DrawerLayout.drawerOpens(
  * @param gravity Gravity of the drawer to check
  * @param action An action to perform
  */
+@MainThread
 suspend fun DrawerLayout.drawerOpens(
     capacity: Int = Channel.RENDEZVOUS,
     gravity: Int,
@@ -132,7 +140,7 @@ fun DrawerLayout.drawerOpens(
  * @param gravity Gravity of the drawer to check
  */
 @CheckResult
-fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = callbackFlow {
+fun DrawerLayout.drawerOpens(gravity: Int): InitialValueFlow<Boolean> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     val listener = listener(this, gravity, emitter)
     addDrawerListener(listener)

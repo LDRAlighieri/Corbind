@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.graphics.RectF
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.carousel.MaskableFrameLayout
 import com.google.android.material.carousel.OnMaskChangedListener
 import kotlinx.coroutines.CoroutineScope
@@ -27,10 +28,12 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action when changes in a [mask's][MaskableFrameLayout] [RectF] occur.
@@ -42,17 +45,21 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun MaskableFrameLayout.maskChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RectF) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<RectF>(Dispatchers.Main.immediate, capacity) {
         for (changes in channel) action(changes)
     }
 
     setOnMaskChangedListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnMaskChangedListener(null) }
+    events.invokeOnCloseOnMain { setOnMaskChangedListener(null) }
 }
 
 /**
@@ -65,6 +72,7 @@ fun MaskableFrameLayout.maskChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun MaskableFrameLayout.maskChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (RectF) -> Unit,
@@ -115,7 +123,7 @@ fun MaskableFrameLayout.maskChanges(
  * ```
  */
 @CheckResult
-fun MaskableFrameLayout.maskChanges() = callbackFlow {
+fun MaskableFrameLayout.maskChanges() = corbindCallbackFlow {
     setOnMaskChangedListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnMaskChangedListener(null) }
 }

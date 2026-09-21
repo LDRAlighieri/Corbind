@@ -20,6 +20,7 @@ import android.view.View
 import android.widget.Adapter
 import android.widget.AdapterView
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -28,11 +29,13 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on position of item long clicks for [AdapterView].
@@ -47,18 +50,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * [AdapterView.OnItemLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (position in channel) action(position)
     }
 
     onItemLongClickListener = listener(scope, handled, events.corbindEventEmitter(scope))
-    events.invokeOnClose { onItemLongClickListener = null }
+    events.invokeOnCloseOnMain { onItemLongClickListener = null }
 }
 
 /**
@@ -73,6 +80,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
  * [AdapterView.OnItemLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
@@ -133,7 +141,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 @CheckResult
 fun <T : Adapter> AdapterView<T>.itemLongClicks(
     handled: () -> Boolean = AlwaysTrue,
-): Flow<Int> = callbackFlow {
+): Flow<Int> = corbindCallbackFlow {
     onItemLongClickListener = listener(this, handled, corbindEventEmitter())
     awaitClose { onItemLongClickListener = null }
 }

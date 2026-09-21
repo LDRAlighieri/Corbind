@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,11 +28,13 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.AlwaysTrue
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on [TextInputLayout] start icon long click events.
@@ -46,18 +49,22 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 fun TextInputLayout.startIconLongClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
     action: suspend () -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Unit>(Dispatchers.Main.immediate, capacity) {
         for (ignored in channel) action()
     }
 
     setStartIconOnLongClickListener(listener(scope, handled, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setStartIconOnLongClickListener(null) }
+    events.invokeOnCloseOnMain { setStartIconOnLongClickListener(null) }
 }
 
 /**
@@ -72,6 +79,7 @@ fun TextInputLayout.startIconLongClicks(
  * [View.OnLongClickListener]. The listener handles the event only when it is also accepted by the configured delivery policy.
  * @param action An action to perform
  */
+@MainThread
 suspend fun TextInputLayout.startIconLongClicks(
     capacity: Int = Channel.RENDEZVOUS,
     handled: () -> Boolean = AlwaysTrue,
@@ -132,7 +140,7 @@ fun TextInputLayout.startIconLongClicks(
 @CheckResult
 fun TextInputLayout.startIconLongClicks(
     handled: () -> Boolean = AlwaysTrue,
-): Flow<Unit> = callbackFlow {
+): Flow<Unit> = corbindCallbackFlow {
     setStartIconOnLongClickListener(listener(this, handled, corbindEventEmitter()))
     awaitClose { setStartIconOnLongClickListener(null) }
 }

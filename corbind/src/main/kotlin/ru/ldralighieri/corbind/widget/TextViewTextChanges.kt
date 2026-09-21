@@ -20,6 +20,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.TextView
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -27,13 +28,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
@@ -44,11 +47,15 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun TextView.textChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CharSequence) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<CharSequence>(Dispatchers.Main.immediate, capacity) {
         for (chars in channel) action(chars)
     }
@@ -56,7 +63,7 @@ fun TextView.textChanges(
     events.corbindEventEmitter(scope)(text)
     val listener = listener(scope, events.corbindEventEmitter(scope))
     addTextChangedListener(listener)
-    events.invokeOnClose { removeTextChangedListener(listener) }
+    events.invokeOnCloseOnMain { removeTextChangedListener(listener) }
 }
 
 /**
@@ -67,6 +74,7 @@ fun TextView.textChanges(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun TextView.textChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (CharSequence) -> Unit,
@@ -126,7 +134,7 @@ fun TextView.textChanges(
  * ```
  */
 @CheckResult
-fun TextView.textChanges(): InitialValueFlow<CharSequence> = callbackFlow {
+fun TextView.textChanges(): InitialValueFlow<CharSequence> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     val listener = listener(this, emitter)
     addTextChangedListener(listener)

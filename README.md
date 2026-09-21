@@ -148,6 +148,15 @@ Cancelling the returned channel also removes the callback without cancelling the
 is already cancelled, the callback is not registered. Registration and removal are performed on the
 Android main thread.
 
+Cold `Flow` bindings may be collected from any dispatcher. Corbind always performs their Android
+callback registration and removal on the main thread, even when a downstream `flowOn` requests a
+background dispatcher. Cancelling collection before main-thread registration prevents the callback
+from being installed.
+
+The synchronous action overloads are marked `@MainThread` and validate this contract at runtime;
+call them only from the Android main thread. Their callback removal is dispatched to the main thread
+even when the owning scope is cancelled elsewhere.
+
 Corbind does not silently discard events when a rendezvous or finite channel is temporarily full.
 An event that cannot be delivered immediately waits in a sender coroutine owned by the binding, so
 the Android callback thread is never blocked and sequential callback order is preserved. Pending

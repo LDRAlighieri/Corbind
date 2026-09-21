@@ -20,6 +20,7 @@ package ru.ldralighieri.corbind.material
 
 import android.view.View
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import kotlinx.coroutines.CoroutineScope
@@ -30,10 +31,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on the bottom view scroll state change events from [View] on
@@ -48,11 +51,15 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
     message = "Use hideOnScrollStateChanges instead",
     replaceWith = ReplaceWith("hideOnScrollStateChanges(scope, capacity, action)"),
 )
+@MainThread
 fun View.bottomViewScrollStateChanges(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (state in channel) action(state)
     }
@@ -60,7 +67,7 @@ fun View.bottomViewScrollStateChanges(
     val behavior = getBehavior()
     val listener = listener(scope, events.corbindEventEmitter(scope))
     behavior.addOnScrollStateChangedListener(listener)
-    events.invokeOnClose { behavior.removeOnScrollStateChangedListener(listener) }
+    events.invokeOnCloseOnMain { behavior.removeOnScrollStateChangedListener(listener) }
 }
 
 /**
@@ -75,6 +82,7 @@ fun View.bottomViewScrollStateChanges(
     message = "Use hideOnScrollStateChanges instead",
     replaceWith = ReplaceWith("hideOnScrollStateChanges(capacity, action)"),
 )
+@MainThread
 suspend fun View.bottomViewScrollStateChanges(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -132,7 +140,7 @@ fun View.bottomViewScrollStateChanges(
     replaceWith = ReplaceWith("hideOnScrollStateChanges()"),
 )
 @CheckResult
-fun View.bottomViewScrollStateChanges(): Flow<Int> = callbackFlow {
+fun View.bottomViewScrollStateChanges(): Flow<Int> = corbindCallbackFlow {
     val behavior = getBehavior()
     val listener = listener(this, corbindEventEmitter())
     behavior.addOnScrollStateChangedListener(listener)

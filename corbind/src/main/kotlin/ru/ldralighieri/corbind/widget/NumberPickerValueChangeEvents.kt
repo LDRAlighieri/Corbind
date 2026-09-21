@@ -18,6 +18,7 @@ package ru.ldralighieri.corbind.widget
 
 import android.widget.NumberPicker
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -25,13 +26,15 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
 import ru.ldralighieri.corbind.internal.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.initialValueFlowEmitter
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 data class NumberPickerValueChangeEvent(
@@ -51,18 +54,22 @@ data class NumberPickerValueChangeEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun NumberPicker.valueChangeEvents(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (NumberPickerValueChangeEvent) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<NumberPickerValueChangeEvent>(Dispatchers.Main.immediate, capacity) {
         for (event in channel) action(event)
     }
 
     events.corbindEventEmitter(scope)(NumberPickerValueChangeEvent(this, value, value))
     setOnValueChangedListener(listener(scope, events.corbindEventEmitter(scope)))
-    events.invokeOnClose { setOnValueChangedListener(null) }
+    events.invokeOnCloseOnMain { setOnValueChangedListener(null) }
 }
 
 /**
@@ -76,6 +83,7 @@ fun NumberPicker.valueChangeEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun NumberPicker.valueChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (NumberPickerValueChangeEvent) -> Unit,
@@ -142,7 +150,7 @@ fun NumberPicker.valueChangeEvents(
  * ```
  */
 @CheckResult
-fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEvent> = callbackFlow {
+fun NumberPicker.valueChangeEvents(): InitialValueFlow<NumberPickerValueChangeEvent> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()
     setOnValueChangedListener(listener(this, emitter))
     emitter.sendInitialValue(NumberPickerValueChangeEvent(picker = this@valueChangeEvents, value, value))

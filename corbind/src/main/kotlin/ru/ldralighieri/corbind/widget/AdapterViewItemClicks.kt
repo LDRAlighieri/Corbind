@@ -20,6 +20,7 @@ import android.view.View
 import android.widget.Adapter
 import android.widget.AdapterView
 import androidx.annotation.CheckResult
+import androidx.annotation.MainThread
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -28,10 +29,12 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.internal.checkMainThread
+import ru.ldralighieri.corbind.internal.corbindCallbackFlow
 import ru.ldralighieri.corbind.internal.corbindEventEmitter
 import ru.ldralighieri.corbind.internal.corbindReceiveChannel
+import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
  * Perform an action on the position of item clicks for [AdapterView].
@@ -44,17 +47,21 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 fun <T : Adapter> AdapterView<T>.itemClicks(
     scope: CoroutineScope,
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
 ) {
+    checkMainThread()
+    if (!scope.isActive) return
+
     val events = scope.actor<Int>(Dispatchers.Main.immediate, capacity) {
         for (position in channel) action(position)
     }
 
     onItemClickListener = listener(scope, events.corbindEventEmitter(scope))
-    events.invokeOnClose { onItemClickListener = null }
+    events.invokeOnCloseOnMain { onItemClickListener = null }
 }
 
 /**
@@ -67,6 +74,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
+@MainThread
 suspend fun <T : Adapter> AdapterView<T>.itemClicks(
     capacity: Int = Channel.RENDEZVOUS,
     action: suspend (Int) -> Unit,
@@ -118,7 +126,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
  * ```
  */
 @CheckResult
-fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = callbackFlow {
+fun <T : Adapter> AdapterView<T>.itemClicks(): Flow<Int> = corbindCallbackFlow {
     onItemClickListener = listener(this, corbindEventEmitter())
     awaitClose { onItemClickListener = null }
 }
