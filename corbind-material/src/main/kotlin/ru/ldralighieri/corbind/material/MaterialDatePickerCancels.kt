@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
  * the user clicks the cancel button, use `negativeClicks` extension instead.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -67,7 +67,7 @@ fun <S> MaterialDatePicker<S>.cancels(
 
 /**
  * Perform an action when the user cancels the [MaterialDatePicker] via back button or a touch
- * outside the view, inside new [CoroutineScope].
+ * outside the view, in a new [CoroutineScope].
  *
  * *Note:* It is not called when the user clicks the cancel button. To add a listener for use when
  * the user clicks the cancel button, use `negativeClicks` extension instead.
@@ -100,7 +100,7 @@ suspend fun <S> MaterialDatePicker<S>.cancels(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

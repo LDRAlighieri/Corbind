@@ -38,11 +38,11 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
- * Perform an action on [MaterialCardView] check change.
+ * Perform an action on [MaterialCardView] checked state changes.
  *
- * *Warning:* Perform only when the [MaterialCardView] is in checkable state.
+ * *Warning:* Requires a checkable [MaterialCardView]; otherwise throws [IllegalStateException].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -68,9 +68,9 @@ fun MaterialCardView.checkedChanges(
 }
 
 /**
- * Perform an action on [MaterialCardView] check change, inside new [CoroutineScope].
+ * Perform an action on [MaterialCardView] checked state changes, in a new [CoroutineScope].
  *
- * *Warning:* Perform only when the [MaterialCardView] is in checkable state.
+ * *Warning:* Requires a checkable [MaterialCardView]; otherwise throws [IllegalStateException].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -85,11 +85,11 @@ suspend fun MaterialCardView.checkedChanges(
 }
 
 /**
- * Create a channel which emits on [MaterialCardView] check change.
+ * Create a channel that emits [MaterialCardView] checked state changes.
  *
- * *Warning:* Emits only when the [MaterialCardView] is in checkable state.
+ * *Warning:* Requires a checkable [MaterialCardView]; otherwise throws [IllegalStateException].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -100,7 +100,7 @@ suspend fun MaterialCardView.checkedChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -117,11 +117,11 @@ fun MaterialCardView.checkedChanges(
 }
 
 /**
- * Create a flow which emits on [MaterialCardView] check change.
+ * Create a flow that emits [MaterialCardView] checked state changes.
  *
- * *Warning:* Emits only when the [MaterialCardView] is in checkable state.
+ * *Warning:* Requires a checkable [MaterialCardView]; otherwise throws [IllegalStateException].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

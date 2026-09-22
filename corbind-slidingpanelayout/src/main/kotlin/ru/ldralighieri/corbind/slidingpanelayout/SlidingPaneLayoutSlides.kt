@@ -38,7 +38,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on the slide offset of the pane of [SlidingPaneLayout].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -62,11 +62,8 @@ fun SlidingPaneLayout.panelSlides(
 }
 
 /**
- * Perform an action on the slide offset of the pane of [SlidingPaneLayout], inside new
+ * Perform an action on the slide offset of the pane of [SlidingPaneLayout], in a new
  * [CoroutineScope].
- *
- * *Warning:* The actor channel uses [SlidingPaneLayout.setPanelSlideListener]. Only one actor can
- * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -92,7 +89,7 @@ suspend fun SlidingPaneLayout.panelSlides(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

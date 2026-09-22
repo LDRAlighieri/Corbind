@@ -38,12 +38,12 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
- * Perform an action on checked view IDs changes in [ChipGroup].
+ * Perform an action on changes to the checked view IDs in [ChipGroup].
  *
  * *Warning:* The created actor uses [ChipGroup.setOnCheckedStateChangeListener]. Only one actor can
  * be used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -67,7 +67,7 @@ fun ChipGroup.checkedChanges(
 }
 
 /**
- * Perform an action on checked view IDs changes in [ChipGroup], inside new [CoroutineScope].
+ * Perform an action on changes to the checked view IDs in [ChipGroup], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [ChipGroup.setOnCheckedStateChangeListener]. Only one actor can
  * be used at a time.
@@ -85,12 +85,12 @@ suspend fun ChipGroup.checkedChanges(
 }
 
 /**
- * Create a channel of the checked view IDs changes in [ChipGroup].
+ * Create a channel that emits changes to the checked view IDs in [ChipGroup].
  *
  * *Warning:* The created channel uses [ChipGroup.setOnCheckedStateChangeListener]. Only one channel
  * can be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  * *Note:* When the selection is cleared, checkedIds will be an empty list.
  *
  * Example:
@@ -102,7 +102,7 @@ suspend fun ChipGroup.checkedChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -117,12 +117,12 @@ fun ChipGroup.checkedChanges(
 }
 
 /**
- * Create a flow of the checked view IDs changes in [ChipGroup].
+ * Create a flow that emits changes to the checked view IDs in [ChipGroup].
  *
  * *Warning:* The created flow uses [ChipGroup.setOnCheckedStateChangeListener]. Only one flow can
  * be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  * *Note:* When the selection is cleared, checkedIds will be an empty list.
  *
  * Examples:

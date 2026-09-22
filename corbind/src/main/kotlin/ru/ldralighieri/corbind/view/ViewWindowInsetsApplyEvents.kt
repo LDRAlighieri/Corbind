@@ -43,9 +43,9 @@ data class WindowInsetsEvent(
 )
 
 /**
- * Perform an action when window insets applying on a view in a custom way.
+ * Perform an action when window insets are dispatched to a [View].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -69,7 +69,7 @@ fun View.windowInsetsApplyEvents(
 }
 
 /**
- * Perform an action when window insets applying on a view in a custom way, inside new
+ * Perform an action when window insets are dispatched to a [View], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -86,7 +86,7 @@ suspend fun View.windowInsetsApplyEvents(
 }
 
 /**
- * Create a flow which emits when window insets applying on a view in a custom way.
+ * Create a channel that emits when window insets are dispatched to a [View].
  *
  * Example:
  *
@@ -97,7 +97,7 @@ suspend fun View.windowInsetsApplyEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -112,7 +112,7 @@ fun View.windowInsetsApplyEvents(
 }
 
 /**
- * Create a flow which emits when window insets applying on a view in a custom way.
+ * Create a flow that emits when window insets are dispatched to a [View].
  *
  * Example:
  *

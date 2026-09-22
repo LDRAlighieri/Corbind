@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
 /**
  * Perform an action on the open state of the [DrawerLayout].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param gravity Gravity of the drawer to check
@@ -68,7 +68,7 @@ fun DrawerLayout.drawerOpens(
 }
 
 /**
- * Perform an action on the open state of the [DrawerLayout], inside new [CoroutineScope].
+ * Perform an action on the open state of the [DrawerLayout], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -87,7 +87,7 @@ suspend fun DrawerLayout.drawerOpens(
 /**
  * Create a channel of the open state of the [DrawerLayout].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -98,7 +98,7 @@ suspend fun DrawerLayout.drawerOpens(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param gravity Gravity of the drawer to check
@@ -118,7 +118,7 @@ fun DrawerLayout.drawerOpens(
 /**
  * Create a flow of the open state of the [DrawerLayout].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

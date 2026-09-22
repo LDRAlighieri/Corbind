@@ -50,7 +50,7 @@ data class RangeSliderChangeEvent(
 /**
  * Perform an action on [values change events][RangeSliderChangeEvent] on [RangeSlider].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -75,7 +75,7 @@ fun RangeSlider.valuesChangeEvents(
 }
 
 /**
- * Perform an action on [values change events][RangeSliderChangeEvent] on [RangeSlider], inside new
+ * Perform an action on [values change events][RangeSliderChangeEvent] on [RangeSlider], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -93,7 +93,7 @@ suspend fun RangeSlider.valuesChangeEvents(
 /**
  * Create a channel of [values change events][RangeSliderChangeEvent] on [RangeSlider].
  *
- * *Note:* A values will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -104,7 +104,7 @@ suspend fun RangeSlider.valuesChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -122,7 +122,7 @@ fun RangeSlider.valuesChangeEvents(
 /**
  * Create a flow of [values change events][RangeSliderChangeEvent] on [RangeSlider].
  *
- * *Note:* A values will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

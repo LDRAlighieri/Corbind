@@ -38,7 +38,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on any [lifecycle][Lifecycle] event change.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -62,7 +62,7 @@ fun Lifecycle.events(
 }
 
 /**
- * Perform an action on any [lifecycle][Lifecycle] event change, inside new [CoroutineScope].
+ * Perform an action on any [lifecycle][Lifecycle] event change, in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -77,7 +77,7 @@ suspend fun Lifecycle.events(
 }
 
 /**
- * Create a channel which emits on any [lifecycle][Lifecycle] event change.
+ * Create a channel that emits any [lifecycle][Lifecycle] event change.
  *
  * Example:
  *
@@ -88,7 +88,7 @@ suspend fun Lifecycle.events(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -102,7 +102,7 @@ fun Lifecycle.events(
 }
 
 /**
- * Create a flow which emits on any [lifecycle][Lifecycle] event change.
+ * Create a flow that emits any [lifecycle][Lifecycle] event change.
  *
  * Example:
  *

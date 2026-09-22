@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
 /**
  * Perform an action on character sequences for text changes on [TextView].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -67,7 +67,7 @@ fun TextView.textChanges(
 }
 
 /**
- * Perform an action on character sequences for text changes on [TextView], inside new
+ * Perform an action on character sequences for text changes on [TextView], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -85,7 +85,7 @@ suspend fun TextView.textChanges(
 /**
  * Create a channel of character sequences for text changes on [TextView].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -96,7 +96,7 @@ suspend fun TextView.textChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -114,7 +114,7 @@ fun TextView.textChanges(
 /**
  * Create a flow of character sequences for text changes on [TextView].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

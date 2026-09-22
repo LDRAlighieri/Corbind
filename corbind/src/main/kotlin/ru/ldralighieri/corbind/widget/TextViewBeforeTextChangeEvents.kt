@@ -48,9 +48,9 @@ data class TextViewBeforeTextChangeEvent(
 )
 
 /**
- * Perform an action [before text change events][TextViewBeforeTextChangeEvent] for [TextView].
+ * Perform an action on [before text change events][TextViewBeforeTextChangeEvent] for [TextView].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -75,8 +75,8 @@ fun TextView.beforeTextChangeEvents(
 }
 
 /**
- * Perform an action [before text change events][TextViewBeforeTextChangeEvent] for [TextView],
- * inside new [CoroutineScope].
+ * Perform an action on [before text change events][TextViewBeforeTextChangeEvent] for [TextView],
+ * in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -93,7 +93,7 @@ suspend fun TextView.beforeTextChangeEvents(
 /**
  * Create a channel of [before text change events][TextViewBeforeTextChangeEvent] for [TextView].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * ```
  * launch {
@@ -102,7 +102,7 @@ suspend fun TextView.beforeTextChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -120,7 +120,7 @@ fun TextView.beforeTextChangeEvents(
 /**
  * Create a flow of [before text change events][TextViewBeforeTextChangeEvent] for [TextView].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

@@ -38,9 +38,10 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
- * Perform an action on data change events for [RecyclerView.Adapter].
+ * Perform an action when `AdapterDataObserver.onChanged()` reports a full data set change for
+ * [RecyclerView.Adapter].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -65,7 +66,8 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
 }
 
 /**
- * Perform an action on data change events for [RecyclerView.Adapter], inside new [CoroutineScope].
+ * Perform an action when `AdapterDataObserver.onChanged()` reports a full data set change for
+ * [RecyclerView.Adapter], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -80,9 +82,10 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
 }
 
 /**
- * Create a channel of data change events for [RecyclerView.Adapter].
+ * Create a channel that emits [RecyclerView.Adapter] when `AdapterDataObserver.onChanged()` reports
+ * a full data set change.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -93,7 +96,7 @@ suspend fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChange
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -109,9 +112,10 @@ fun <T : RecyclerView.Adapter<out RecyclerView.ViewHolder>> T.dataChanges(
 }
 
 /**
- * Create a flow of data change events for [RecyclerView.Adapter].
+ * Create a flow that emits [RecyclerView.Adapter] when `AdapterDataObserver.onChanged()` reports a
+ * full data set change.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

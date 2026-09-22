@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [AdapterView.setOnItemLongClickListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked each occurrence to determine the return value of the underlying
@@ -69,7 +69,7 @@ fun <T : Adapter> AdapterView<T>.itemLongClicks(
 }
 
 /**
- * Perform an action on position of item long clicks for [AdapterView], inside new [CoroutineScope].
+ * Perform an action on position of item long clicks for [AdapterView], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [AdapterView.setOnItemLongClickListener]. Only one actor can be
  * used at a time.
@@ -99,12 +99,12 @@ suspend fun <T : Adapter> AdapterView<T>.itemLongClicks(
  *
  * ```
  * launch {
- *      view.hovers(scope)
+ *      adapterView.itemLongClicks(scope)
  *          .consumeEach { /* handle item long click */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked each occurrence to determine the return value of the underlying

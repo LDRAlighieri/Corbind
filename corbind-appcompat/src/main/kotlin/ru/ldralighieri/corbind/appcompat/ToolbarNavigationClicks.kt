@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -64,7 +64,7 @@ fun Toolbar.navigationClicks(
 }
 
 /**
- * Perform an action on [Toolbar] navigation click events, inside new [CoroutineScope].
+ * Perform an action on [Toolbar] navigation click events, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [Toolbar.setNavigationOnClickListener]. Only one actor can be
  * used at a time.
@@ -82,7 +82,7 @@ suspend fun Toolbar.navigationClicks(
 }
 
 /**
- * Create a channel which emits on [Toolbar] navigation click events.
+ * Create a channel that emits [Toolbar] navigation click events.
  *
  * *Warning:* The created channel uses [Toolbar.setNavigationOnClickListener]. Only one channel can
  * be used at a time.
@@ -96,7 +96,7 @@ suspend fun Toolbar.navigationClicks(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -110,7 +110,7 @@ fun Toolbar.navigationClicks(
 }
 
 /**
- * Create a flow which emits on [Toolbar] navigation click events.
+ * Create a flow that emits [Toolbar] navigation click events.
  *
  * *Warning:* The created flow uses [Toolbar.setNavigationOnClickListener]. Only one flow can be
  * used at a time.

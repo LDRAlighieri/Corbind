@@ -36,11 +36,11 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
- * Perform an action when changes in a [mask's][MaskableFrameLayout] [RectF] occur.
+ * Perform an action when a [MaskableFrameLayout] mask rectangle changes.
  *
  * *Warning:* The created actor uses [OnMaskChangedListener]. Only one actor can be used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -63,7 +63,7 @@ fun MaskableFrameLayout.maskChanges(
 }
 
 /**
- * Perform an action when changes in a [mask's][MaskableFrameLayout] [RectF] occur, inside new
+ * Perform an action when a [MaskableFrameLayout] mask rectangle changes, in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [OnMaskChangedListener]. Only one actor can be used at a time.
@@ -81,7 +81,7 @@ suspend fun MaskableFrameLayout.maskChanges(
 }
 
 /**
- * Create a channel which emits when changes in a [mask's][MaskableFrameLayout] [RectF] occur.
+ * Create a channel that emits changes to a [MaskableFrameLayout] mask rectangle.
  *
  * *Warning:* The created channel uses [OnMaskChangedListener]. Only one channel can be used at a
  * time.
@@ -95,7 +95,7 @@ suspend fun MaskableFrameLayout.maskChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -109,7 +109,7 @@ fun MaskableFrameLayout.maskChanges(
 }
 
 /**
- * Create a flow which emits when changes in a [mask's][MaskableFrameLayout] [RectF] occur.
+ * Create a flow that emits changes to a [MaskableFrameLayout] mask rectangle.
  *
  * *Warning:* The created flow uses [OnMaskChangedListener]. Only one flow can be used at a time.
  *

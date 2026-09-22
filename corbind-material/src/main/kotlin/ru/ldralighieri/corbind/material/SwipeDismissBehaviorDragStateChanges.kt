@@ -39,7 +39,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -63,8 +63,8 @@ fun View.dragStateChanges(
 }
 
 /**
- * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior], inside
- * new [CoroutineScope].
+ * Perform an action on the drag state change events from [View] on [SwipeDismissBehavior], in a new
+ * [CoroutineScope].
  *
  * *Warning:* The created actor uses [SwipeDismissBehavior.setListener]. Only one actor can be used
  * at a time.
@@ -91,12 +91,12 @@ suspend fun View.dragStateChanges(
  *
  * ```
  * launch {
- *      swipeDismissBehavior.dragStateChanges(scope)
+ *      swipeDismissView.dragStateChanges(scope)
  *          .consumeEach { /* handle drag state change */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -119,7 +119,7 @@ fun View.dragStateChanges(
  * Example:
  *
  * ```
- * swipeDismissBehavior.dragStateChanges()
+ * swipeDismissView.dragStateChanges()
  *      .onEach { /* handle drag state change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx

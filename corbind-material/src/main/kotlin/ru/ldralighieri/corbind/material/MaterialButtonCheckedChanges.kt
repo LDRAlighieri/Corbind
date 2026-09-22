@@ -38,11 +38,11 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
- * Perform an action on [MaterialButton] check state change.
+ * Perform an action on [MaterialButton] check state changes.
  *
- * *Warning:* Perform only when the [MaterialButton] is in checkable state.
+ * *Warning:* Requires a checkable [MaterialButton]; otherwise throws [IllegalStateException].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -68,9 +68,9 @@ fun MaterialButton.checkedChanges(
 }
 
 /**
- * Perform an action on [MaterialButton] check state change, inside new [CoroutineScope].
+ * Perform an action on [MaterialButton] check state changes, in a new [CoroutineScope].
  *
- * *Warning:* Perform only when the [MaterialButton] is in checkable state.
+ * *Warning:* Requires a checkable [MaterialButton]; otherwise throws [IllegalStateException].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -85,11 +85,11 @@ suspend fun MaterialButton.checkedChanges(
 }
 
 /**
- * Create a channel which emits on [MaterialButton] check state change.
+ * Create a channel that emits [MaterialButton] check state changes.
  *
- * *Warning:* Emits only when the [MaterialButton] is in checkable state.
+ * *Warning:* Requires a checkable [MaterialButton]; otherwise throws [IllegalStateException].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -100,7 +100,7 @@ suspend fun MaterialButton.checkedChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -117,11 +117,11 @@ fun MaterialButton.checkedChanges(
 }
 
 /**
- * Create a flow which emits on [MaterialButton] check state change.
+ * Create a flow that emits [MaterialButton] check state changes.
  *
- * *Warning:* Emits only when the [MaterialButton] is in checkable state.
+ * *Warning:* Requires a checkable [MaterialButton]; otherwise throws [IllegalStateException].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

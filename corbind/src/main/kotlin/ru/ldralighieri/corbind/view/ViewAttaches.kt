@@ -37,7 +37,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on [View] attach events.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -61,7 +61,7 @@ fun View.attaches(
 }
 
 /**
- * Perform an action on [View] attach events, inside new [CoroutineScope].
+ * Perform an action on [View] attach events, in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -76,7 +76,7 @@ suspend fun View.attaches(
 }
 
 /**
- * Create a channel which emits on [View] attach events.
+ * Create a channel that emits [View] attach events.
  *
  * Example:
  *
@@ -87,7 +87,7 @@ suspend fun View.attaches(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -102,7 +102,7 @@ fun View.attaches(
 }
 
 /**
- * Create a flow which emits on [View] attach events.
+ * Create a flow that emits [View] attach events.
  *
  * Example:
  *
@@ -123,7 +123,7 @@ fun View.attaches(): Flow<Unit> = corbindCallbackFlow {
 /**
  * Perform an action on [View] detach events.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -147,7 +147,7 @@ fun View.detaches(
 }
 
 /**
- * Perform an action on [View] detach events, inside new [CoroutineScope].
+ * Perform an action on [View] detach events, in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -162,7 +162,7 @@ suspend fun View.detaches(
 }
 
 /**
- * Create a channel which emits on [View] detach events.
+ * Create a channel that emits [View] detach events.
  *
  * Example:
  *
@@ -173,7 +173,7 @@ suspend fun View.detaches(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -188,7 +188,7 @@ fun View.detaches(
 }
 
 /**
- * Create a flow which emits on [View] detach events.
+ * Create a flow that emits [View] detach events.
  *
  * Example:
  *

@@ -50,7 +50,7 @@ data class ViewScrollChangeEvent(
  * *Warning:* The created actor uses [View.setOnScrollChangeListener]. Only one actor can be used at
  * a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -74,7 +74,7 @@ fun View.scrollChangeEvents(
 }
 
 /**
- * Perform an action on [scroll change events][ViewScrollChangeEvent] for [View], inside new
+ * Perform an action on [scroll change events][ViewScrollChangeEvent] for [View], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnScrollChangeListener]. Only one actor can be used at
@@ -108,7 +108,7 @@ suspend fun View.scrollChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

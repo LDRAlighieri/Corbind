@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [TextView.setOnEditorActionListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -67,7 +67,7 @@ fun TextView.editorActions(
 }
 
 /**
- * Perform an action on editor actions on [TextView], inside new [CoroutineScope].
+ * Perform an action on editor actions on [TextView], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [TextView.setOnEditorActionListener]. Only one actor can be
  * used at a time.
@@ -97,12 +97,12 @@ suspend fun TextView.editorActions(
  *
  * ```
  * launch {
- *      view.hovers(scope)
+ *      textView.editorActions(scope)
  *          .consumeEach { /* handle action */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying

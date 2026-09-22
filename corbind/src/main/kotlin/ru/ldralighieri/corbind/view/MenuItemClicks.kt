@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [MenuItem.setOnMenuItemClickListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -67,7 +67,7 @@ fun MenuItem.clicks(
 }
 
 /**
- * Perform an action on [MenuItem] click events, inside new [CoroutineScope].
+ * Perform an action on [MenuItem] click events, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [MenuItem.setOnMenuItemClickListener]. Only one actor can be
  * used at a time.
@@ -88,7 +88,7 @@ suspend fun MenuItem.clicks(
 }
 
 /**
- * Create a channel which emits on [MenuItem] click events.
+ * Create a channel that emits [MenuItem] click events.
  *
  * *Warning:* The created channel uses [MenuItem.setOnMenuItemClickListener]. Only one channel can
  * be used at a time.
@@ -97,12 +97,12 @@ suspend fun MenuItem.clicks(
  *
  * ```
  * launch {
- *      datePickerDialog.dateSetEvents(scope)
+ *      menuItem.clicks(scope)
  *          .consumeEach { /* handle click */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -119,7 +119,7 @@ fun MenuItem.clicks(
 }
 
 /**
- * Create a flow which emits on [MenuItem] click events.
+ * Create a flow that emits [MenuItem] click events.
  *
  * *Warning:* The created flow uses [MenuItem.setOnMenuItemClickListener]. Only one flow can be used
  * at a time.

@@ -37,10 +37,10 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
- * Perform an action on the bottom view scroll state change events from [View] on
+ * Perform an action on the scroll state change events from [View] on
  * [HideViewOnScrollBehavior].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -65,8 +65,8 @@ fun View.hideOnScrollStateChanges(
 }
 
 /**
- * Perform an action on the bottom view scroll state change events from [View] on
- * [HideViewOnScrollBehavior], inside new [CoroutineScope].
+ * Perform an action on the scroll state change events from [View] on
+ * [HideViewOnScrollBehavior], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -81,7 +81,7 @@ suspend fun View.hideOnScrollStateChanges(
 }
 
 /**
- * Create a channel which emits the bottom view scroll state change events from [View] on
+ * Create a channel which emits the scroll state change events from [View] on
  * [HideViewOnScrollBehavior].
  *
  * Examples:
@@ -93,7 +93,7 @@ suspend fun View.hideOnScrollStateChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -109,7 +109,7 @@ fun View.hideOnScrollStateChanges(
 }
 
 /**
- * Create a flow which emits the bottom view scroll state change events from [View] on
+ * Create a flow which emits the scroll state change events from [View] on
  * [HideViewOnScrollBehavior].
  *
  * Examples:

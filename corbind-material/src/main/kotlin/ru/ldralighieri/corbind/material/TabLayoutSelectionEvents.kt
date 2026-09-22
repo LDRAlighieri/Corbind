@@ -59,7 +59,7 @@ data class TabLayoutSelectionUnselectedEvent(
  * Perform an action on selection, reselection, and unselection [events][TabLayoutSelectionEvent]
  * for the tabs in [TabLayout].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -85,7 +85,7 @@ fun TabLayout.selectionEvents(
 
 /**
  * Perform an action on selection, reselection, and unselection [events][TabLayoutSelectionEvent]
- * for the tabs in [TabLayout], inside new [CoroutineScope].
+ * for the tabs in [TabLayout], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -103,7 +103,7 @@ suspend fun TabLayout.selectionEvents(
  * Create a channel which emits selection, reselection, and unselection
  * [events][TabLayoutSelectionEvent] for the tabs in [TabLayout].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *
@@ -128,7 +128,7 @@ suspend fun TabLayout.selectionEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -150,7 +150,7 @@ fun TabLayout.selectionEvents(
  * Create a flow which emits selection, reselection, and unselection
  * [events][TabLayoutSelectionEvent] for the tabs in [TabLayout].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

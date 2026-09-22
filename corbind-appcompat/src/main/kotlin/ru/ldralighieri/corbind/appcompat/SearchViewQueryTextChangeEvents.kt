@@ -49,7 +49,7 @@ data class SearchViewQueryTextEvent(
  * *Warning:* The created actor uses [SearchView.setOnQueryTextListener]. Only one actor can be used
  * at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -73,7 +73,7 @@ fun SearchView.queryTextChangeEvents(
 }
 
 /**
- * Perform an action on [query text events][SearchViewQueryTextEvent] on [SearchView], inside new
+ * Perform an action on [query text events][SearchViewQueryTextEvent] on [SearchView], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [SearchView.setOnQueryTextListener]. Only one actor can be used
@@ -97,7 +97,7 @@ suspend fun SearchView.queryTextChangeEvents(
  * *Warning:* The created channel uses [SearchView.setOnQueryTextListener]. Only one channel can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -108,7 +108,7 @@ suspend fun SearchView.queryTextChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -128,7 +128,7 @@ fun SearchView.queryTextChangeEvents(
  * *Warning:* The created flow uses [SearchView.setOnQueryTextListener]. Only one flow can be used
  * at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

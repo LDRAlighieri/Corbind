@@ -56,7 +56,7 @@ data class ViewGroupHierarchyChildViewRemoveEvent(
  * *Warning:* The created actor uses [ViewGroup.setOnHierarchyChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -80,7 +80,7 @@ fun ViewGroup.changeEvents(
 
 /**
  * Perform an action on [hierarchy change events][ViewGroupHierarchyChangeEvent] for [ViewGroup],
- * inside new [CoroutineScope].
+ * in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [ViewGroup.setOnHierarchyChangeListener]. Only one actor can be
  * used at a time.
@@ -125,7 +125,7 @@ suspend fun ViewGroup.changeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

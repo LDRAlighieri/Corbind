@@ -40,13 +40,13 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
- * Perform an action on [MaterialButton] check change in [MaterialButtonToggleGroup].
+ * Perform an action when the checked button changes in [MaterialButtonToggleGroup].
  *
- * *Warning:* Only in single selection mode, use `buttonCheckedChangeEvents` extension instead.
+ * *Warning:* Requires single-selection mode. Use `buttonCheckedChangeEvents` for multiple selection.
  *
- * *Note:* The action is performed only on [MaterialButton] check events.
+ * *Note:* The current checked button ID is passed to [action] before later changes.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -72,12 +72,12 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
 }
 
 /**
- * Perform an action on [MaterialButton] check change in [MaterialButtonToggleGroup], inside new
- * [CoroutineScope]
+ * Perform an action when the checked button changes in [MaterialButtonToggleGroup], in a new
+ * [CoroutineScope].
  *
- * *Warning:* Only in single selection mode, use `buttonCheckedChangeEvents` extension instead.
+ * *Warning:* Requires single-selection mode. Use `buttonCheckedChangeEvents` for multiple selection.
  *
- * *Note:* The action is performed only on [MaterialButton] check events.
+ * *Note:* The current checked button ID is passed to [action] before later changes.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -92,12 +92,11 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChanges(
 }
 
 /**
- * Create a channel which emits on [MaterialButton] check change in [MaterialButtonToggleGroup]
+ * Create a channel that emits checked button ID changes in [MaterialButtonToggleGroup].
  *
- * *Warning:* Only in single selection mode, use `buttonCheckedChanges` extension instead.
+ * *Warning:* Requires single-selection mode. Use `buttonCheckedChangeEvents` for multiple selection.
  *
- * *Note:* Flow emits only on [MaterialButton] check events.
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  * *Note:* When the selection is cleared, [View.NO_ID] will be emitted.
  *
  * Example:
@@ -109,7 +108,7 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -126,12 +125,11 @@ fun MaterialButtonToggleGroup.buttonCheckedChanges(
 }
 
 /**
- * Create a flow which emits on [MaterialButton] check change in [MaterialButtonToggleGroup]
+ * Create a flow that emits checked button ID changes in [MaterialButtonToggleGroup].
  *
- * *Warning:* Only in single selection mode, use `buttonCheckedChanges` extension instead.
+ * *Warning:* Requires single-selection mode. Use `buttonCheckedChangeEvents` for multiple selection.
  *
- * *Note:* Flow emits only on [MaterialButton] check events.
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  * *Note:* When the selection is cleared, [View.NO_ID] will be emitted.
  *
  * Examples:

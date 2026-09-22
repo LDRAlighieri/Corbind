@@ -50,7 +50,7 @@ data class DatePickerDialogSetEvent(
  * *Warning:* The created actor uses [DatePickerDialog.setOnDateSetListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -74,8 +74,8 @@ fun DatePickerDialog.dateSetEvents(
 }
 
 /**
- * Perform an action on [date set events][DatePickerDialogSetEvent] on [DatePickerDialog], inside
- * new [CoroutineScope].
+ * Perform an action on [date set events][DatePickerDialogSetEvent] on [DatePickerDialog], in a new
+ * [CoroutineScope].
  *
  * *Warning:* The created actor uses [DatePickerDialog.setOnDateSetListener]. Only one actor can be
  * used at a time.
@@ -94,7 +94,7 @@ suspend fun DatePickerDialog.dateSetEvents(
 }
 
 /**
- * Create a channel which emits on [date set events][DatePickerDialogSetEvent] on
+ * Create a channel that emits [date set events][DatePickerDialogSetEvent] on
  * [DatePickerDialog].
  *
  * *Warning:* The created channel uses [DatePickerDialog.setOnDateSetListener]. Only one channel can
@@ -109,7 +109,7 @@ suspend fun DatePickerDialog.dateSetEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -124,7 +124,7 @@ fun DatePickerDialog.dateSetEvents(
 }
 
 /**
- * Create a flow which emits on [date set events][DatePickerDialogSetEvent] on [DatePickerDialog].
+ * Create a flow that emits [date set events][DatePickerDialogSetEvent] on [DatePickerDialog].
  *
  * *Warning:* The created flow uses [DatePickerDialog.setOnDateSetListener]. Only one flow can be
  * used at a time.

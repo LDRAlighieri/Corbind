@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  *
  * *Warning:* The created actor uses [View.setOnKeyListener]. Only one actor can be used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -67,7 +67,7 @@ fun View.keys(
 }
 
 /**
- * Perform an action on key events for [View], inside new [CoroutineScope].
+ * Perform an action on key events for [View], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnKeyListener]. Only one actor can be used at a time.
  *
@@ -101,7 +101,7 @@ suspend fun View.keys(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying

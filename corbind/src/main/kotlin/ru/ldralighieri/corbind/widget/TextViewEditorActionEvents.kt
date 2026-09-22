@@ -48,7 +48,7 @@ data class TextViewEditorActionEvent(
  * *Warning:* The created actor uses [TextView.setOnEditorActionListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -74,7 +74,7 @@ fun TextView.editorActionEvents(
 }
 
 /**
- * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView], inside new
+ * Perform an action on [editor action events][TextViewEditorActionEvent] on [TextView], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [TextView.setOnEditorActionListener]. Only one actor can be
@@ -110,7 +110,7 @@ suspend fun TextView.editorActionEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying

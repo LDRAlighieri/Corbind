@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
 /**
  * Perform an action on the state change events from [View] on [SideSheetBehavior].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -69,7 +69,7 @@ fun View.sideSheetStateChanges(
 }
 
 /**
- * Perform an action on the state change events from [View] on [SideSheetBehavior], inside new
+ * Perform an action on the state change events from [View] on [SideSheetBehavior], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -87,18 +87,18 @@ suspend fun View.sideSheetStateChanges(
 /**
  * Create a channel which emits the state change events from [View] on [SideSheetBehavior].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
  * ```
  * launch {
- *      sideSheetBehavior.sideSheetStateChanges(scope)
+ *      sideSheetView.sideSheetStateChanges(scope)
  *          .consumeEach { /* handle state change */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -117,19 +117,19 @@ fun View.sideSheetStateChanges(
 /**
  * Create a flow which emits the state change events from [View] on [SideSheetBehavior].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *
  * ```
  * // handle initial value
- * sideSheetBehavior.sideSheetStateChanges()
+ * sideSheetView.sideSheetStateChanges()
  *      .onEach { /* handle state change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
- * sideSheetBehavior.sideSheetStateChanges()
+ * sideSheetView.sideSheetStateChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle state change */ }
  *      .flowWithLifecycle(lifecycle)

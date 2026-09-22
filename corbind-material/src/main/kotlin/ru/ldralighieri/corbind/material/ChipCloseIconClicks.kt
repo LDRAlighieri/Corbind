@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [Chip.setOnCloseIconClickListener]. Only one actor can be used
  * at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -64,7 +64,7 @@ fun Chip.closeIconClicks(
 }
 
 /**
- * Perform an action on [Chip] close icon click events, inside new [CoroutineScope].
+ * Perform an action on [Chip] close icon click events, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [Chip.setOnCloseIconClickListener]. Only one actor can be used
  * at a time.
@@ -82,7 +82,7 @@ suspend fun Chip.closeIconClicks(
 }
 
 /**
- * Create a channel which emits on [Chip] close icon click events.
+ * Create a channel that emits [Chip] close icon click events.
  *
  * *Warning:* The created channel uses [Chip.setOnCloseIconClickListener]. Only one channel can be
  * used at a time.
@@ -96,7 +96,7 @@ suspend fun Chip.closeIconClicks(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -110,7 +110,7 @@ fun Chip.closeIconClicks(
 }
 
 /**
- * Create a flow which emits on [Chip] close icon click events.
+ * Create a flow that emits [Chip] close icon click events.
  *
  * *Warning:* The created flow uses [Chip.setOnCloseIconClickListener]. Only one flow can be used at
  * a time.

@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * *Warning:* The created actor uses [NavigationView.setNavigationItemSelectedListener]. Only one
  * actor can be used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -66,7 +66,7 @@ fun NavigationView.itemSelections(
 }
 
 /**
- * Perform an action on the selected item in [NavigationView], inside new [CoroutineScope].
+ * Perform an action on the selected item in [NavigationView], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [NavigationView.setNavigationItemSelectedListener]. Only one
  * actor can be used at a time.
@@ -89,7 +89,7 @@ suspend fun NavigationView.itemSelections(
  * *Warning:* The created channel uses [NavigationView.setNavigationItemSelectedListener]. Only one
  * channel can be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -100,7 +100,7 @@ suspend fun NavigationView.itemSelections(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -123,7 +123,7 @@ fun NavigationView.itemSelections(
  * *Warning:* The created flow uses [NavigationView.setNavigationItemSelectedListener]. Only one
  * flow can be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

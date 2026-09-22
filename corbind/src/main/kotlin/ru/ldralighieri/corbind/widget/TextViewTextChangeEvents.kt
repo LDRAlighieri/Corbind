@@ -50,7 +50,7 @@ data class TextViewTextChangeEvent(
 /**
  * Perform an action on [text change events][TextViewTextChangeEvent] for [TextView].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -75,7 +75,7 @@ fun TextView.textChangeEvents(
 }
 
 /**
- * Perform an action on [text change events][TextViewTextChangeEvent] for [TextView], inside new
+ * Perform an action on [text change events][TextViewTextChangeEvent] for [TextView], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -93,7 +93,7 @@ suspend fun TextView.textChangeEvents(
 /**
  * Create a channel of [text change events][TextViewTextChangeEvent] for [TextView].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -104,7 +104,7 @@ suspend fun TextView.textChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -122,7 +122,7 @@ fun TextView.textChangeEvents(
 /**
  * Create a flow of [text change events][TextViewTextChangeEvent] for [TextView].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

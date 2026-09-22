@@ -46,7 +46,7 @@ data class NavControllerOnDestinationChangeEvent(
  * Perform an action on [destination change events][NavControllerOnDestinationChangeEvent] on
  * [NavController].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -72,7 +72,7 @@ fun NavController.destinationChangeEvents(
 
 /**
  * Perform an action on [destination change events][NavControllerOnDestinationChangeEvent] on
- * [NavController], inside new [CoroutineScope].
+ * [NavController], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -99,7 +99,7 @@ suspend fun NavController.destinationChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

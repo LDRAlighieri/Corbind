@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [Toolbar.setOnMenuItemClickListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -67,7 +67,7 @@ fun Toolbar.itemClicks(
 }
 
 /**
- * Perform an action on the clicked item in [Toolbar] menu, inside new [CoroutineScope].
+ * Perform an action on the clicked item in [Toolbar] menu, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [Toolbar.setOnMenuItemClickListener]. Only one actor can be
  * used at a time.
@@ -100,7 +100,7 @@ suspend fun Toolbar.itemClicks(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

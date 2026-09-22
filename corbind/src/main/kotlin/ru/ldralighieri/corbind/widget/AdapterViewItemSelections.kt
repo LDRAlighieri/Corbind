@@ -45,7 +45,7 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * *Warning:* The created actor uses [AdapterView.setOnItemSelectedListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -69,7 +69,7 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
 }
 
 /**
- * Perform an action on the selected position of [AdapterView], inside new [CoroutineScope].
+ * Perform an action on the selected position of [AdapterView], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [AdapterView.setOnItemSelectedListener]. Only one actor can be
  * used at a time.
@@ -88,12 +88,12 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
 
 /**
  * Create a channel of the selected position of [AdapterView]. If nothing is selected,
- * [AdapterView.INVALID_POSITION] will be emitted
+ * [AdapterView.INVALID_POSITION] will be emitted.
  *
  * *Warning:* The created channel uses [AdapterView.setOnItemSelectedListener]. Only one channel can
  * be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -104,7 +104,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemSelections(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -120,12 +120,12 @@ fun <T : Adapter> AdapterView<T>.itemSelections(
 
 /**
  * Create a flow of the selected position of [AdapterView]. If nothing is selected,
- * [AdapterView.INVALID_POSITION] will be emitted
+ * [AdapterView.INVALID_POSITION] will be emitted.
  *
  * *Warning:* The created flow uses [AdapterView.setOnItemSelectedListener]. Only one flow can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

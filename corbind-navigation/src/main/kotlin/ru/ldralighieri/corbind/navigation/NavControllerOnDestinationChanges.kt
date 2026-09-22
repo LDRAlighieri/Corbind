@@ -38,7 +38,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on destination change on [NavController].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -62,7 +62,7 @@ fun NavController.destinationChanges(
 }
 
 /**
- * Perform an action on destination change on [NavController], inside new [CoroutineScope].
+ * Perform an action on destination change on [NavController], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -88,7 +88,7 @@ suspend fun NavController.destinationChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

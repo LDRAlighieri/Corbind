@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [View.setOnLongClickListener]. Only one actor can be used at a
  * time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -67,7 +67,7 @@ fun View.longClicks(
 }
 
 /**
- * Perform an action on [View] long click events, inside new [CoroutineScope].
+ * Perform an action on [View] long click events, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnLongClickListener]. Only one actor can be used at a
  * time.
@@ -88,7 +88,7 @@ suspend fun View.longClicks(
 }
 
 /**
- * Create a channel which emits on [View] long click events.
+ * Create a channel that emits [View] long click events.
  *
  * *Warning:* The created channel uses [View.setOnLongClickListener]. Only one channel can be used
  * at a time.
@@ -102,7 +102,7 @@ suspend fun View.longClicks(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -119,7 +119,7 @@ fun View.longClicks(
 }
 
 /**
- * Create a flow which emits on [View] long click events.
+ * Create a flow that emits [View] long click events.
  *
  * *Warning:* The created flow uses [View.setOnLongClickListener]. Only one flow can be used at a
  * time.

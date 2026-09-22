@@ -142,39 +142,14 @@ launch {
 }
 ```
 
-The `Job` in the passed `CoroutineScope` owns a hot channel binding. When that job completes, either
-normally or through cancellation, the channel is cancelled and its Android callback is removed.
-Cancelling the returned channel also removes the callback without cancelling the scope. If the scope
-is already cancelled, the callback is not registered. Registration and removal are performed on the
-Android main thread.
+Hot channel bindings live with the passed `CoroutineScope`'s `Job`; cancelling the returned channel
+also removes its listener without cancelling the scope. Cold `Flow` bindings may be collected on any
+dispatcher. Android listeners are registered and removed on the main thread, and already-cancelled
+bindings register nothing. Synchronous action overloads must be called on the main thread.
 
-Cold `Flow` bindings may be collected from any dispatcher. Corbind always performs their Android
-callback registration and removal on the main thread, even when a downstream `flowOn` requests a
-background dispatcher. Cancelling collection before main-thread registration prevents the callback
-from being installed.
-
-The synchronous action overloads are marked `@MainThread` and validate this contract at runtime;
-call them only from the Android main thread. Their callback removal is dispatched to the main thread
-even when the owning scope is cancelled elsewhere.
-
-Corbind does not silently discard events when a rendezvous or finite channel is temporarily full.
-An event that cannot be delivered immediately waits in a sender coroutine owned by the binding, so
-the Android callback thread is never blocked and sequential callback order is preserved. Pending
-events are discarded when the binding is cancelled. Each waiting event retains a suspended sender;
-for sources that may outpace their consumers indefinitely, select conflation or an explicit drop
-policy instead of allowing an unbounded backlog.
-
-The `capacity` parameter controls immediate buffering. The default `Channel.RENDEZVOUS` policy is
-lossless; `Channel.UNLIMITED` buffers without suspending, while `Channel.CONFLATED` explicitly keeps
-only the latest event. Flow consumers can opt into another policy with `buffer` or `conflate`; an
-explicit drop policy is treated as accepting an event according to that policy. Android listeners
-which report whether an event was handled return `true` only when their predicate accepts the event
-and the configured coroutine policy accepts it.
-
-This contract applies to both discrete events and state-change bindings: preserving every event is
-the default, and conflation or dropping is always an explicit consumer choice. Callback return
-values that control separate platform behavior, such as allowing a pre-draw pass or delegating a
-RecyclerView fling, remain independent from delivery acceptance.
+By default, `Channel.RENDEZVOUS` preserves events in order without blocking Android callbacks. Slow
+consumers can accumulate pending sends; use `Channel.CONFLATED` or an explicit drop policy when a
+source may outpace its consumer. For flows, choose a policy with `buffer` or `conflate`.
 
 And if you just need to perform an action on button click, the easiest way will be:
 ```kotlin

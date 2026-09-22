@@ -37,9 +37,9 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
- * Perform an action on [OnBackPressedDispatcher.onBackPressed] call.
+ * Perform an action when [OnBackPressedDispatcher.onBackPressed] is called.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -65,7 +65,7 @@ fun OnBackPressedDispatcher.backPresses(
 }
 
 /**
- * Perform an action on [OnBackPressedDispatcher.onBackPressed] call, inside new [CoroutineScope].
+ * Perform an action when [OnBackPressedDispatcher.onBackPressed] is called, in a new [CoroutineScope].
  *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -82,7 +82,7 @@ suspend fun OnBackPressedDispatcher.backPresses(
 }
 
 /**
- * Create a channel which emits on [OnBackPressedDispatcher.onBackPressed] call.
+ * Create a channel that emits an event when [OnBackPressedDispatcher.onBackPressed] is called.
  *
  * Example:
  *
@@ -93,7 +93,7 @@ suspend fun OnBackPressedDispatcher.backPresses(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -109,7 +109,7 @@ fun OnBackPressedDispatcher.backPresses(
 }
 
 /**
- * Create a flow which emits on [OnBackPressedDispatcher.onBackPressed] call.
+ * Create a flow that emits an event when [OnBackPressedDispatcher.onBackPressed] is called.
  *
  * Example:
  *

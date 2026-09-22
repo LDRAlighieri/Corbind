@@ -43,7 +43,7 @@ data class RecyclerViewScrollEvent(
 /**
  * Perform an action on [scroll events][RecyclerViewScrollEvent] on [RecyclerView].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -67,7 +67,7 @@ fun RecyclerView.scrollEvents(
 }
 
 /**
- * Perform an action on [scroll events][RecyclerViewScrollEvent] on [RecyclerView], inside new
+ * Perform an action on [scroll events][RecyclerViewScrollEvent] on [RecyclerView], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -94,7 +94,7 @@ suspend fun RecyclerView.scrollEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

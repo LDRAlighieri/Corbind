@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
 /**
  * Perform an action on the open state of the pane of [SlidingPaneLayout].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -66,11 +66,8 @@ fun SlidingPaneLayout.panelOpens(
 }
 
 /**
- * Perform an action on the open state of the pane of [SlidingPaneLayout], inside new
+ * Perform an action on the open state of the pane of [SlidingPaneLayout], in a new
  * [CoroutineScope].
- *
- * *Warning:* The created actor uses [SlidingPaneLayout.setPanelSlideListener]. Only one actor can
- * be used at a time.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -87,7 +84,7 @@ suspend fun SlidingPaneLayout.panelOpens(
 /**
  * Create a channel of the open state of the pane of [SlidingPaneLayout].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -98,7 +95,7 @@ suspend fun SlidingPaneLayout.panelOpens(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -116,7 +113,7 @@ fun SlidingPaneLayout.panelOpens(
 /**
  * Create a flow of the open state of the pane of [SlidingPaneLayout].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

@@ -44,7 +44,7 @@ data class ViewPager2PageScrollEvent(
 /**
  * Perform an action on [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -68,7 +68,7 @@ fun ViewPager2.pageScrollEvents(
 }
 
 /**
- * Perform an action on [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2], inside new
+ * Perform an action on [page scroll events][ViewPager2PageScrollEvent] on [ViewPager2], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -95,7 +95,7 @@ suspend fun ViewPager2.pageScrollEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

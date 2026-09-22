@@ -36,9 +36,9 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
- * Perform an action on [MaterialTimePicker] negative button click.
+ * Perform an action on [MaterialTimePicker] negative button clicks.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -62,7 +62,7 @@ fun MaterialTimePicker.negativeClicks(
 }
 
 /**
- * Perform an action on [MaterialTimePicker] negative button click, inside new [CoroutineScope].
+ * Perform an action on [MaterialTimePicker] negative button clicks, in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -77,7 +77,7 @@ suspend fun MaterialTimePicker.negativeClicks(
 }
 
 /**
- * Create a channel which emits on [MaterialTimePicker] negative button click.
+ * Create a channel that emits [MaterialTimePicker] negative button clicks.
  *
  * Example:
  *
@@ -88,7 +88,7 @@ suspend fun MaterialTimePicker.negativeClicks(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -103,7 +103,7 @@ fun MaterialTimePicker.negativeClicks(
 }
 
 /**
- * Create a flow which emits on [MaterialTimePicker] negative button click.
+ * Create a flow that emits [MaterialTimePicker] negative button clicks.
  *
  * Example:
  *

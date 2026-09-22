@@ -38,7 +38,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on [View] global layout events.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -65,7 +65,7 @@ fun View.globalLayouts(
 }
 
 /**
- * Perform an action on [View] global layout events, inside new [CoroutineScope].
+ * Perform an action on [View] global layout events, in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -80,7 +80,7 @@ suspend fun View.globalLayouts(
 }
 
 /**
- * Create a channel which emits on [View] global layout events.
+ * Create a channel that emits [View] global layout events.
  *
  * Example:
  *
@@ -91,7 +91,7 @@ suspend fun View.globalLayouts(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -109,7 +109,7 @@ fun View.globalLayouts(
 }
 
 /**
- * Create a flow which emits on [View] global layout events.
+ * Create a flow that emits [View] global layout events.
  *
  * Example:
  *

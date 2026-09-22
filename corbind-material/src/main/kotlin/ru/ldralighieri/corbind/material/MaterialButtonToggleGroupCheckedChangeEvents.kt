@@ -44,9 +44,9 @@ data class MaterialButtonCheckedChangeEvent(
  * Perform an action on [check change event][MaterialButtonCheckedChangeEvent] on [MaterialButton]
  * in [MaterialButtonToggleGroup].
  *
- * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead
+ * *Warning:* Requires multiple-selection mode. Use `buttonCheckedChanges` for single selection.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -72,9 +72,9 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 
 /**
  * Perform an action on [check change event][MaterialButtonCheckedChangeEvent] on [MaterialButton]
- * in [MaterialButtonToggleGroup], inside new [CoroutineScope].
+ * in [MaterialButtonToggleGroup], in a new [CoroutineScope].
  *
- * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
+ * *Warning:* Requires multiple-selection mode. Use `buttonCheckedChanges` for single selection.
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -89,10 +89,10 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 }
 
 /**
- * Create a channel which emits on [check change event][MaterialButtonCheckedChangeEvent] on
- * [MaterialButton] in [MaterialButtonToggleGroup]
+ * Create a channel that emits [check change events][MaterialButtonCheckedChangeEvent] for buttons
+ * in [MaterialButtonToggleGroup].
  *
- * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
+ * *Warning:* Requires multiple-selection mode. Use `buttonCheckedChanges` for single selection.
  *
  * Example:
  *
@@ -103,7 +103,7 @@ suspend fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -119,10 +119,10 @@ fun MaterialButtonToggleGroup.buttonCheckedChangeEvents(
 }
 
 /**
- * Create a flow which emits on [check change event][MaterialButtonCheckedChangeEvent] on
- * [MaterialButton] in [MaterialButtonToggleGroup]
+ * Create a flow that emits [check change events][MaterialButtonCheckedChangeEvent] for buttons in
+ * [MaterialButtonToggleGroup].
  *
- * *Warning:* Only *not* in single selection mode, use `buttonCheckedChanges` extension instead.
+ * *Warning:* Requires multiple-selection mode. Use `buttonCheckedChanges` for single selection.
  *
  * Example:
  *

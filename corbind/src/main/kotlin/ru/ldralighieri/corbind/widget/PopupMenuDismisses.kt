@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [PopupMenu.setOnDismissListener]. Only one actor can be used
  * at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -63,7 +63,7 @@ fun PopupMenu.dismisses(
 }
 
 /**
- * Perform an action on [PopupMenu] dismiss events, inside new [CoroutineScope].
+ * Perform an action on [PopupMenu] dismiss events, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [PopupMenu.setOnDismissListener]. Only one actor can be used
  * at a time.
@@ -81,7 +81,7 @@ suspend fun PopupMenu.dismisses(
 }
 
 /**
- * Create a channel which emits on [PopupMenu] dismiss events
+ * Create a channel that emits [PopupMenu] dismiss events.
  *
  * *Warning:* The created channel uses [PopupMenu.setOnDismissListener]. Only one channel can be
  * used at a time.
@@ -95,7 +95,7 @@ suspend fun PopupMenu.dismisses(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -109,7 +109,7 @@ fun PopupMenu.dismisses(
 }
 
 /**
- * Create a flow which emits on [PopupMenu] dismiss events
+ * Create a flow that emits [PopupMenu] dismiss events.
  *
  * *Warning:* The created flow uses [PopupMenu.setOnDismissListener]. Only one flow can be used at
  * a time.

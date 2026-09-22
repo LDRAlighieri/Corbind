@@ -39,12 +39,12 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
- * Perform an action on checked view ID changes in [RadioGroup].
+ * Perform an action on changes to the checked view ID in [RadioGroup].
  *
  * *Warning:* The created actor uses [RadioGroup.setOnCheckedChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -68,7 +68,7 @@ fun RadioGroup.checkedChanges(
 }
 
 /**
- * Perform an action on checked view ID changes in [RadioGroup], inside new [CoroutineScope].
+ * Perform an action on changes to the checked view ID in [RadioGroup], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [RadioGroup.setOnCheckedChangeListener]. Only one actor can be
  * used at a time.
@@ -86,13 +86,13 @@ suspend fun RadioGroup.checkedChanges(
 }
 
 /**
- * Create a channel of the checked view ID changes in [RadioGroup].
+ * Create a channel that emits changes to the checked view ID in [RadioGroup].
  *
  * *Warning:* The created channel uses [RadioGroup.setOnCheckedChangeListener]. Only one channel can
  * be used at a time.
  *
- * *Note:* A value will be emitted immediately. When the selection is cleared, checkedId is
- * [View.NO_ID]
+ * *Note:* An initial value is emitted before subsequent events. When the selection is cleared, the emitted ID is
+ * [View.NO_ID].
  *
  * Example:
  *
@@ -103,7 +103,7 @@ suspend fun RadioGroup.checkedChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -118,13 +118,13 @@ fun RadioGroup.checkedChanges(
 }
 
 /**
- * Create a flow of the checked view ID changes in [RadioGroup].
+ * Create a flow that emits changes to the checked view ID in [RadioGroup].
  *
  * *Warning:* The created flow uses [RadioGroup.setOnCheckedChangeListener]. Only one flow can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately. When the selection is cleared, checkedId is
- * [View.NO_ID]
+ * *Note:* An initial value is emitted before subsequent events. When the selection is cleared, the emitted ID is
+ * [View.NO_ID].
  *
  * Examples:
  *

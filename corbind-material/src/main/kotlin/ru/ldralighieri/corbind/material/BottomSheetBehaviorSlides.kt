@@ -38,7 +38,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on the slide offset events from [View] on [BottomSheetBehavior].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -63,7 +63,7 @@ fun View.slides(
 }
 
 /**
- * Perform an action on the slide offset events from [View] on [BottomSheetBehavior], inside new
+ * Perform an action on the slide offset events from [View] on [BottomSheetBehavior], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -85,12 +85,12 @@ suspend fun View.slides(
  *
  * ```
  * launch {
- *      bottomSheetBehavior.slides(scope)
+ *      bottomSheetView.slides(scope)
  *          .consumeEach { /* handle slide offset */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -111,7 +111,7 @@ fun View.slides(
  * Example:
  *
  * ```
- * bottomSheetBehavior.slides()
+ * bottomSheetView.slides()
  *      .onEach { /* handle slide offset */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx

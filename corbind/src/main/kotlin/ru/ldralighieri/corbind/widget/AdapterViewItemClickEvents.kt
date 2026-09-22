@@ -49,7 +49,7 @@ data class AdapterViewItemClickEvent(
  * *Warning:* The created actor uses [AdapterView.setOnItemClickListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -72,8 +72,8 @@ fun <T : Adapter> AdapterView<T>.itemClickEvents(
 }
 
 /**
- * Perform an action on the [item click events][AdapterViewItemClickEvent] for [AdapterView], inside
- * new [CoroutineScope].
+ * Perform an action on the [item click events][AdapterViewItemClickEvent] for [AdapterView], in a new
+ * [CoroutineScope].
  *
  * *Warning:* The created actor uses [AdapterView.setOnItemClickListener]. Only one actor can be
  * used at a time.
@@ -105,7 +105,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemClickEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

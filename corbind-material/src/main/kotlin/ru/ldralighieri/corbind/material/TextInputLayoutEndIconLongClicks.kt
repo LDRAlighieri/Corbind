@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [TextInputLayout.setEndIconOnLongClickListener] to emit long
  * clicks. Only one actor can be used for a view at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -68,7 +68,7 @@ fun TextInputLayout.endIconLongClicks(
 }
 
 /**
- * Perform an action on [TextInputLayout] end icon long click events, inside new [CoroutineScope].
+ * Perform an action on [TextInputLayout] end icon long click events, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [TextInputLayout.setEndIconOnLongClickListener]. Only one actor
  * can be used at a time.
@@ -89,7 +89,7 @@ suspend fun TextInputLayout.endIconLongClicks(
 }
 
 /**
- * Create a channel which emits on [TextInputLayout] end icon long click events.
+ * Create a channel that emits [TextInputLayout] end icon long click events.
  *
  * *Warning:* The created channel uses [TextInputLayout.setEndIconOnLongClickListener]. Only one
  * channel can be used at a time.
@@ -103,7 +103,7 @@ suspend fun TextInputLayout.endIconLongClicks(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked each occurrence to determine the return value of the underlying
@@ -120,7 +120,7 @@ fun TextInputLayout.endIconLongClicks(
 }
 
 /**
- * Create a flow which emits on [TextInputLayout] end icon long click events.
+ * Create a flow that emits [TextInputLayout] end icon long click events.
  *
  * *Warning:* The created flow uses [TextInputLayout.setEndIconOnLongClickListener]. Only one flow
  * can be used at a time.

@@ -85,12 +85,12 @@ private fun SeekBar.changes(shouldBeFromUser: Boolean?): InitialValueFlow<Int> =
 }.asInitialValueFlow()
 
 /**
- * Perform an action on progress value changes on [SeekBar].
+ * Perform an action on progress changes on [SeekBar].
  *
  * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -103,7 +103,7 @@ fun SeekBar.changes(
 ) = changes(scope, capacity, null, action)
 
 /**
- * Perform an action on progress value changes on [SeekBar] inside new [CoroutineScope].
+ * Perform an action on progress changes on [SeekBar], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
  * used at a time.
@@ -119,12 +119,12 @@ suspend fun SeekBar.changes(
 ) = changes(capacity, null, action)
 
 /**
- * Create a channel of progress value changes on [SeekBar].
+ * Create a channel of progress changes on [SeekBar].
  *
  * *Warning:* The created channel uses [SeekBar.setOnSeekBarChangeListener]. Only one channel can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -135,7 +135,7 @@ suspend fun SeekBar.changes(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -146,12 +146,12 @@ fun SeekBar.changes(
 ): ReceiveChannel<Int> = changes(scope, capacity, null)
 
 /**
- * Create a flow of progress value changes on [SeekBar].
+ * Create a flow of progress changes on [SeekBar].
  *
  * *Warning:* The created flow uses [SeekBar.setOnSeekBarChangeListener]. Only one flow can be used
  * at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *
@@ -174,12 +174,12 @@ fun SeekBar.changes(
 fun SeekBar.changes(): InitialValueFlow<Int> = changes(null)
 
 /**
- * Perform an action on progress value changes on [SeekBar] that were made only from the user.
+ * Perform an action on progress changes on [SeekBar] made by the user.
  *
  * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -192,8 +192,8 @@ fun SeekBar.userChanges(
 ) = changes(scope, capacity, true, action)
 
 /**
- * Perform an action on progress value changes on [SeekBar] that were made only from the user inside
- * new [CoroutineScope].
+ * Perform an action on progress changes on [SeekBar] made by the user, in a new
+ * [CoroutineScope].
  *
  * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
  * used at a time.
@@ -209,23 +209,23 @@ suspend fun SeekBar.userChanges(
 ) = changes(capacity, true, action)
 
 /**
- * Create a channel of progress value changes on [SeekBar] that were made only from the user.
+ * Create a channel of progress changes on [SeekBar] made by the user.
  *
  * *Warning:* The created channel uses [SeekBar.setOnSeekBarChangeListener]. Only one channel can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
  * ```
  * launch {
  *      seekBar.userChanges(scope)
- *          .consumeEach { /* handle progress value change made from user */ }
+ *          .consumeEach { /* handle user progress change */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -236,26 +236,26 @@ fun SeekBar.userChanges(
 ): ReceiveChannel<Int> = changes(scope, capacity, true)
 
 /**
- * Create a flow of progress value changes on [SeekBar] that were made only from the user.
+ * Create a flow of progress changes on [SeekBar] made by the user.
  *
  * *Warning:* The created flow uses [SeekBar.setOnSeekBarChangeListener]. Only one flow can be used
  * at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *
  * ```
  * // handle initial value
  * seekBar.userChanges()
- *      .onEach { /* handle progress value change made from user */ }
+ *      .onEach { /* handle user progress change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * seekBar.userChanges()
  *      .dropInitialValue()
- *      .onEach { /* handle progress value change made from user */ }
+ *      .onEach { /* handle user progress change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
@@ -264,12 +264,12 @@ fun SeekBar.userChanges(
 fun SeekBar.userChanges(): InitialValueFlow<Int> = changes(true)
 
 /**
- * Perform an action on progress value changes on [SeekBar] that were made only from the system.
+ * Perform an action on progress changes on [SeekBar] made programmatically.
  *
  * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -282,8 +282,8 @@ fun SeekBar.systemChanges(
 ) = changes(scope, capacity, false, action)
 
 /**
- * Perform an action on progress value changes on [SeekBar] that were made only from the system inside
- * new [CoroutineScope].
+ * Perform an action on progress changes on [SeekBar] made programmatically, in a new
+ * [CoroutineScope].
  *
  * *Warning:* The created actor uses [SeekBar.setOnSeekBarChangeListener]. Only one actor can be
  * used at a time.
@@ -299,23 +299,23 @@ suspend fun SeekBar.systemChanges(
 ) = changes(capacity, false, action)
 
 /**
- * Create a channel of progress value changes on [SeekBar] that were made only from the system.
+ * Create a channel of progress changes on [SeekBar] made programmatically.
  *
  * *Warning:* The created channel uses [SeekBar.setOnSeekBarChangeListener]. Only one channel can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
  * ```
  * launch {
  *      seekBar.systemChanges(scope)
- *          .consumeEach { /* handle progress value change made from system */ }
+ *          .consumeEach { /* handle programmatic progress change */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -326,26 +326,26 @@ fun SeekBar.systemChanges(
 ): ReceiveChannel<Int> = changes(scope, capacity, false)
 
 /**
- * Create a flow of progress value changes on [SeekBar] that were made only from the system.
+ * Create a flow of progress changes on [SeekBar] made programmatically.
  *
  * *Warning:* The created flow uses [SeekBar.setOnSeekBarChangeListener]. Only one flow can be used
  * at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *
  * ```
  * // handle initial value
  * seekBar.systemChanges()
- *      .onEach { /* handle progress value change made from system */ }
+ *      .onEach { /* handle programmatic progress change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
  * seekBar.systemChanges()
  *      .dropInitialValue()
- *      .onEach { /* handle progress value change made from system */ }
+ *      .onEach { /* handle programmatic progress change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```

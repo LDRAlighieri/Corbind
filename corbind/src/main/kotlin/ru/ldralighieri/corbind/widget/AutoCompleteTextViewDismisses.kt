@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [AutoCompleteTextView.setOnDismissListener]. Only one actor can
  * be used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -66,7 +66,7 @@ fun AutoCompleteTextView.dismisses(
 }
 
 /**
- * Perform an action on [AutoCompleteTextView] dismiss events, inside new [CoroutineScope].
+ * Perform an action on [AutoCompleteTextView] dismiss events, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [AutoCompleteTextView.setOnDismissListener]. Only one actor can
  * be used at a time.
@@ -85,7 +85,7 @@ suspend fun AutoCompleteTextView.dismisses(
 }
 
 /**
- * Create a channel which emits on [AutoCompleteTextView] dismiss events
+ * Create a channel that emits [AutoCompleteTextView] dismiss events.
  *
  * *Warning:* The created channel uses [AutoCompleteTextView.setOnDismissListener]. Only one channel
  * can be used at a time.
@@ -99,7 +99,7 @@ suspend fun AutoCompleteTextView.dismisses(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -114,7 +114,7 @@ fun AutoCompleteTextView.dismisses(
 }
 
 /**
- * Create a flow which emits on [AutoCompleteTextView] dismiss events
+ * Create a flow that emits [AutoCompleteTextView] dismiss events.
  *
  * *Warning:* The created flow uses [AutoCompleteTextView.setOnDismissListener]. Only one flow can
  * be used at a time.

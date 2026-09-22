@@ -48,7 +48,7 @@ data class AbsListViewScrollEvent(
  * *Warning:* The created actor uses [AbsListView.setOnScrollListener]. Only one actor can be used
  * at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -71,7 +71,7 @@ fun AbsListView.scrollEvents(
 }
 
 /**
- * Perform an action on [scroll events][AbsListViewScrollEvent] on [AbsListView], inside new
+ * Perform an action on [scroll events][AbsListViewScrollEvent] on [AbsListView], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [AbsListView.setOnScrollListener]. Only one actor can be used
@@ -104,7 +104,7 @@ suspend fun AbsListView.scrollEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

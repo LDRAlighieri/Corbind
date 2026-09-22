@@ -38,9 +38,9 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 import ru.ldralighieri.corbind.internal.sendInitialValue
 
 /**
- * Perform an action on values changes on [RangeSlider].
+ * Perform an action on value changes on [RangeSlider].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -65,7 +65,7 @@ fun RangeSlider.valuesChanges(
 }
 
 /**
- * Perform an action on rating changes on [RangeSlider], inside new [CoroutineScope].
+ * Perform an action on value changes on [RangeSlider], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -80,9 +80,9 @@ suspend fun RangeSlider.valuesChanges(
 }
 
 /**
- * Create a channel of the values changes on [RangeSlider].
+ * Create a channel that emits value changes on [RangeSlider].
  *
- * *Note:* A values will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -93,7 +93,7 @@ suspend fun RangeSlider.valuesChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -109,9 +109,9 @@ fun RangeSlider.valuesChanges(
 }
 
 /**
- * Create a flow of the values changes on [RangeSlider].
+ * Create a flow that emits value changes on [RangeSlider].
  *
- * *Note:* A values will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

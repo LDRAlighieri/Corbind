@@ -45,9 +45,9 @@ data class SliderChangeEvent(
 )
 
 /**
- * Perform an action on [value change events][SliderChangeEvent] changes on [Slider].
+ * Perform an action on [value change events][SliderChangeEvent] on [Slider].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -72,7 +72,7 @@ fun Slider.valueChangeEvents(
 }
 
 /**
- * Perform an action on [value change events][SliderChangeEvent] changes on [Slider], inside new
+ * Perform an action on [value change events][SliderChangeEvent] on [Slider], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -90,7 +90,7 @@ suspend fun Slider.valueChangeEvents(
 /**
  * Create a channel of [value change events][SliderChangeEvent] on [Slider].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -101,7 +101,7 @@ suspend fun Slider.valueChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -119,7 +119,7 @@ fun Slider.valueChangeEvents(
 /**
  * Create a flow of the [value change events][SliderChangeEvent] on [Slider].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

@@ -43,12 +43,11 @@ data class FragmentResultEvent(
 
 /**
  * Perform an action on any results set by setFragmentResult using the [requestKey], once the given
- * [lifecycleOwner][LifecycleOwner] is at least in the STARTED state
+ * [lifecycleOwner][LifecycleOwner] is at least in the STARTED state.
  *
- * *Warning:* The created actor uses [FragmentManager.setFragmentResultListener]. Only one flow can
- * be used at a time
+ * *Warning:* Only one binding for a given [requestKey] can be active at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param requestKey Used to identify the result
  * @param lifecycleOwner The LifecycleOwner for handling the result
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -76,11 +75,10 @@ fun FragmentManager.resultEvents(
 }
 
 /**
- * Perform an action inside new [CoroutineScope] on any results set by setFragmentResult using the
- * [requestKey], once the given [lifecycleOwner][LifecycleOwner] is at least in the STARTED state
+ * Perform an action in a new [CoroutineScope] on any results set by setFragmentResult using the
+ * [requestKey], once the given [lifecycleOwner][LifecycleOwner] is at least in the STARTED state.
  *
- * *Warning:* The created actor uses [FragmentManager.setFragmentResultListener]. Only one flow can
- * be used at a time
+ * *Warning:* Only one binding for a given [requestKey] can be active at a time.
  *
  * @param requestKey Used to identify the result
  * @param lifecycleOwner The LifecycleOwner for handling the result
@@ -100,10 +98,9 @@ suspend fun FragmentManager.resultEvents(
 
 /**
  * Create a channel which emits any results set by setFragmentResult using the [requestKey], once
- * the given [lifecycleOwner][LifecycleOwner] is at least in the STARTED state
+ * the given [lifecycleOwner][LifecycleOwner] is at least in the STARTED state.
  *
- * *Warning:* The created channel uses [FragmentManager.setFragmentResultListener]. Only one flow
- * can be used at a time
+ * *Warning:* Only one binding for a given [requestKey] can be active at a time.
  *
  * Example:
  *
@@ -117,7 +114,7 @@ suspend fun FragmentManager.resultEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param requestKey Used to identify the result
  * @param lifecycleOwner The LifecycleOwner for handling the result
  */
@@ -134,10 +131,9 @@ fun FragmentManager.resultEvents(
 
 /**
  * Create a flow which emits any results set by setFragmentResult using the [requestKey], once the
- * given [lifecycleOwner][LifecycleOwner] is at least in the STARTED state
+ * given [lifecycleOwner][LifecycleOwner] is at least in the STARTED state.
  *
- * *Warning:* The created flow uses [FragmentManager.setFragmentResultListener]. Only one flow can
- * be used at a time
+ * *Warning:* Only one binding for a given [requestKey] can be active at a time.
  *
  * Example:
  * ```

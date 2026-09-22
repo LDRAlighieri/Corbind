@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [SearchBar.setNavigationOnClickListener]. Only one actor can
  * be used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -67,7 +67,7 @@ fun SearchBar.navigationClicks(
 }
 
 /**
- * Perform an action on [SearchBar] navigation click events, inside new [CoroutineScope].
+ * Perform an action on [SearchBar] navigation click events, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [SearchBar.setNavigationOnClickListener]. Only one actor can
  * be used at a time.
@@ -86,7 +86,7 @@ suspend fun SearchBar.navigationClicks(
 }
 
 /**
- * Create a channel which emits on [SearchBar] navigation click events.
+ * Create a channel that emits [SearchBar] navigation click events.
  *
  * *Warning:* The created channel uses [SearchBar.setNavigationOnClickListener]. Only one channel
  * can be used at a time.
@@ -100,7 +100,7 @@ suspend fun SearchBar.navigationClicks(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -115,7 +115,7 @@ fun SearchBar.navigationClicks(
 }
 
 /**
- * Create a flow which emits on [SearchBar] navigation click events.
+ * Create a flow that emits [SearchBar] navigation click events.
  *
  * *Warning:* The created flow uses [SearchBar.setNavigationOnClickListener]. Only one flow can be
  * used at a time.

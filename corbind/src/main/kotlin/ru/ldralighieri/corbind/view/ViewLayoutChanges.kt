@@ -37,7 +37,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on [View] layout changes.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -61,7 +61,7 @@ fun View.layoutChanges(
 }
 
 /**
- * Perform an action on [View] layout changes, inside new [CoroutineScope].
+ * Perform an action on [View] layout changes, in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -76,7 +76,7 @@ suspend fun View.layoutChanges(
 }
 
 /**
- * Create a channel which emits on [View] layout changes.
+ * Create a channel that emits [View] layout changes.
  *
  * Example:
  *
@@ -87,7 +87,7 @@ suspend fun View.layoutChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -102,7 +102,7 @@ fun View.layoutChanges(
 }
 
 /**
- * Create a flow which emits on [View] layout changes.
+ * Create a flow that emits [View] layout changes.
  *
  * ```
  * view.layoutChanges()

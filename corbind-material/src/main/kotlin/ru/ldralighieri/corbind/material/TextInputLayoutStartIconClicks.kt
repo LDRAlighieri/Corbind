@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
  * can be used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -64,7 +64,7 @@ fun TextInputLayout.startIconClicks(
 }
 
 /**
- * Perform an action on [TextInputLayout] start icon click events, inside new [CoroutineScope].
+ * Perform an action on [TextInputLayout] start icon click events, in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [TextInputLayout.setStartIconOnClickListener]. Only one actor
  * can be used at a time.
@@ -82,7 +82,7 @@ suspend fun TextInputLayout.startIconClicks(
 }
 
 /**
- * Create a channel which emits on [TextInputLayout] start icon click events.
+ * Create a channel that emits [TextInputLayout] start icon click events.
  *
  * *Warning:* The created channel uses [TextInputLayout.setStartIconOnClickListener]. Only one
  * channel can be used at a time.
@@ -96,7 +96,7 @@ suspend fun TextInputLayout.startIconClicks(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

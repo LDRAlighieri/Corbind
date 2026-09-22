@@ -53,7 +53,7 @@ data class MenuItemActionViewExpandEvent(
  * *Warning:* The created actor uses [MenuItem.setOnActionExpandListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying
@@ -79,7 +79,7 @@ fun MenuItem.actionViewEvents(
 }
 
 /**
- * Perform an action on [action view events][MenuItemActionViewEvent] for [MenuItem], inside new
+ * Perform an action on [action view events][MenuItemActionViewEvent] for [MenuItem], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [MenuItem.setOnActionExpandListener]. Only one actor can be
@@ -128,7 +128,7 @@ suspend fun MenuItem.actionViewEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Function invoked with each value to determine the return value of the underlying

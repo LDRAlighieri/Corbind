@@ -49,7 +49,7 @@ data class ViewAttachDetachedEvent(
 /**
  * Perform an action on [attach and detach events][ViewAttachEvent] on [View].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -73,7 +73,7 @@ fun View.attachEvents(
 }
 
 /**
- * Perform an action on [attach and detach events][ViewAttachEvent] on [View], inside new
+ * Perform an action on [attach and detach events][ViewAttachEvent] on [View], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -113,7 +113,7 @@ suspend fun View.attachEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

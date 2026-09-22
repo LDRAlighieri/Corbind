@@ -51,7 +51,7 @@ data class CalendarViewDateChangeEvent(
  * *Warning:* The created actor uses [CalendarView.setOnDateChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -75,8 +75,8 @@ fun CalendarView.dateChangeEvents(
 }
 
 /**
- * Perform an action on [date change events][CalendarViewDateChangeEvent] on [CalendarView], inside
- * new [CoroutineScope].
+ * Perform an action on [date change events][CalendarViewDateChangeEvent] on [CalendarView], in a new
+ * [CoroutineScope].
  *
  * *Warning:* The created actor uses [CalendarView.setOnDateChangeListener]. Only one actor can be
  * used at a time.
@@ -94,13 +94,13 @@ suspend fun CalendarView.dateChangeEvents(
 }
 
 /**
- * Create a channel which emits on [date change events][CalendarViewDateChangeEvent] on
+ * Create a channel that emits [date change events][CalendarViewDateChangeEvent] on
  * [CalendarView].
  *
  * *Warning:* The created channel uses [CalendarView.setOnDateChangeListener]. Only one channel can
  * be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -111,7 +111,7 @@ suspend fun CalendarView.dateChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -126,12 +126,12 @@ fun CalendarView.dateChangeEvents(
 }
 
 /**
- * Create a flow which emits on [date change events][CalendarViewDateChangeEvent] on [CalendarView].
+ * Create a flow that emits [date change events][CalendarViewDateChangeEvent] on [CalendarView].
  *
  * *Warning:* The created flow uses [CalendarView.setOnDateChangeListener]. Only one flow can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

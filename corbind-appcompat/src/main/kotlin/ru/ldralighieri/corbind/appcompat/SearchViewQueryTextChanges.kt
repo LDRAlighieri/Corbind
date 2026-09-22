@@ -43,7 +43,7 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
  * *Warning:* The created actor uses [SearchView.setOnQueryTextListener]. Only one actor can be used
  * at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -67,7 +67,7 @@ fun SearchView.queryTextChanges(
 }
 
 /**
- * Perform an action on character sequences for query text changes on [SearchView], inside new
+ * Perform an action on character sequences for query text changes on [SearchView], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [SearchView.setOnQueryTextListener]. Only one actor can be used
@@ -91,7 +91,7 @@ suspend fun SearchView.queryTextChanges(
  * *Warning:* The created channel uses [SearchView.setOnQueryTextListener]. Only one channel can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -102,7 +102,7 @@ suspend fun SearchView.queryTextChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -122,7 +122,7 @@ fun SearchView.queryTextChanges(
  * *Warning:* The created flow uses [SearchView.setOnQueryTextListener]. Only one flow can be used
  * at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

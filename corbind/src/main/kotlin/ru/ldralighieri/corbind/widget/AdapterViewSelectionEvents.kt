@@ -60,7 +60,7 @@ data class AdapterViewNothingSelectionEvent(
  * *Warning:* The created actor uses [AdapterView.setOnItemSelectedListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -84,7 +84,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
 }
 
 /**
- * Perform an action on [selection events][AdapterViewSelectionEvent] for [AdapterView], inside new
+ * Perform an action on [selection events][AdapterViewSelectionEvent] for [AdapterView], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [AdapterView.setOnItemSelectedListener]. Only one actor can be
@@ -108,7 +108,7 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
  * *Warning:* The created channel uses [AdapterView.setOnItemSelectedListener]. Only one channel can
  * be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *
@@ -132,7 +132,7 @@ suspend fun <T : Adapter> AdapterView<T>.selectionEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -152,7 +152,7 @@ fun <T : Adapter> AdapterView<T>.selectionEvents(
  * *Warning:* The created flow uses [AdapterView.setOnItemSelectedListener]. Only one flow can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

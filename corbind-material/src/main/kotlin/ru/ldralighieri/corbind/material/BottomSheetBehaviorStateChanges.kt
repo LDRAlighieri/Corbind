@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
 /**
  * Perform an action on the state change events from [View] on [BottomSheetBehavior].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -68,7 +68,7 @@ fun View.stateChanges(
 }
 
 /**
- * Perform an action on the state change events from [View] on [BottomSheetBehavior], inside new
+ * Perform an action on the state change events from [View] on [BottomSheetBehavior], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -86,18 +86,18 @@ suspend fun View.stateChanges(
 /**
  * Create a channel which emits the state change events from [View] on [BottomSheetBehavior].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
  * ```
  * launch {
- *      bottomSheetBehavior.stateChanges(scope)
+ *      bottomSheetView.stateChanges(scope)
  *          .consumeEach { /* handle state change */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -116,19 +116,19 @@ fun View.stateChanges(
 /**
  * Create a flow which emits the state change events from [View] on [BottomSheetBehavior].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *
  * ```
  * // handle initial value
- * bottomSheetBehavior.stateChanges()
+ * bottomSheetView.stateChanges()
  *      .onEach { /* handle state change */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  *
  * // drop initial value
- * bottomSheetBehavior.stateChanges()
+ * bottomSheetView.stateChanges()
  *      .dropInitialValue()
  *      .onEach { /* handle state change */ }
  *      .flowWithLifecycle(lifecycle)

@@ -41,10 +41,10 @@ import ru.ldralighieri.corbind.internal.corbindReceiveChannel
 import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 
 /**
- * Perform an action when the the Intent broadcasts by the selected filter.
+ * Perform an action when a broadcast intent matches [intentFilter].
  *
- * @param scope Root coroutine scope
- * @param intentFilter Selects the Intent broadcasts to be received
+ * @param scope Coroutine scope that owns the binding
+ * @param intentFilter Selects which broadcast intents to receive
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -75,10 +75,10 @@ fun Context.receivesBroadcast(
 }
 
 /**
- * Perform an action when the the Intent broadcasts by the selected filter, inside new
+ * Perform an action when a broadcast intent matches [intentFilter], in a new
  * [CoroutineScope].
  *
- * @param intentFilter Selects the Intent broadcasts to be received
+ * @param intentFilter Selects which broadcast intents to receive
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -93,13 +93,13 @@ suspend fun Context.receivesBroadcast(
 }
 
 /**
- * Create a channel which emits the Intent broadcasts by the selected filter.
+ * Create a channel that emits broadcast intents matching [intentFilter].
  *
  * Example:
  *
  * ```
  * launch {
- *      materialDatePicker
+ *      context
  *          .receivesBroadcast(
  *              scope,
  *              IntentFilter(NfcAdapter.ACTION_ADAPTER_STATE_CHANGED)
@@ -108,8 +108,8 @@ suspend fun Context.receivesBroadcast(
  * }
  * ```
  *
- * @param scope Root coroutine scope
- * @param intentFilter Selects the Intent broadcasts to be received
+ * @param scope Coroutine scope that owns the binding
+ * @param intentFilter Selects which broadcast intents to receive
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -131,7 +131,7 @@ fun Context.receivesBroadcast(
 }
 
 /**
- * Create a flow which emits the Intent broadcasts by the selected filter.
+ * Create a flow that emits broadcast intents matching [intentFilter].
  *
  * Example:
  *
@@ -145,7 +145,7 @@ fun Context.receivesBroadcast(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  *
- * @param intentFilter Selects the Intent broadcasts to be received
+ * @param intentFilter Selects which broadcast intents to receive
  */
 fun Context.receivesBroadcast(intentFilter: IntentFilter): Flow<Intent> = corbindCallbackFlow {
     val receiver = receiver(this, corbindEventEmitter())

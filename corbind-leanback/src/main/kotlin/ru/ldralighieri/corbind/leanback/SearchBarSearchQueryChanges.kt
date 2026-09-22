@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [SearchBar.setSearchBarListener]. Only one actor can be used at
  * a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -63,7 +63,7 @@ fun SearchBar.searchQueryChanges(
 }
 
 /**
- * Perform an action on String values for search query changes on [SearchBar], inside new
+ * Perform an action on String values for search query changes on [SearchBar], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [SearchBar.setSearchBarListener]. Only one actor can be used at
@@ -91,12 +91,12 @@ suspend fun SearchBar.searchQueryChanges(
  *
  * ```
  * launch {
- *      absListView.scrollEvents(scope)
+ *      searchBar.searchQueryChanges(scope)
  *          .consumeEach { /* handle query change */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

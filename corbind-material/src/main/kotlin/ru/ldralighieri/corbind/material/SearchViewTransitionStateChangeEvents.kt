@@ -44,7 +44,7 @@ data class SearchViewTransitionStateChangeEvent(
  * Perform an action on the
  * [transition state change event][SearchViewTransitionStateChangeEvent] on [SearchView].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -69,7 +69,7 @@ fun SearchView.transitionStateChangeEvents(
 
 /**
  * Perform an action on the
- * [transition state change event][SearchViewTransitionStateChangeEvent] on [SearchView], inside new
+ * [transition state change event][SearchViewTransitionStateChangeEvent] on [SearchView], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -97,7 +97,7 @@ suspend fun SearchView.transitionStateChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

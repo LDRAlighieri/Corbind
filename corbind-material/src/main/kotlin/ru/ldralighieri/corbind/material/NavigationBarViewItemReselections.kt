@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [NavigationBarView.setOnItemReselectedListener]. Only one actor
  * can be used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -64,7 +64,7 @@ fun NavigationBarView.itemReselections(
 }
 
 /**
- * Perform an action on the reselected item in [NavigationBarView], inside new [CoroutineScope].
+ * Perform an action on the reselected item in [NavigationBarView], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [NavigationBarView.setOnItemReselectedListener]. Only one actor
  * can be used at a time.
@@ -96,7 +96,7 @@ suspend fun NavigationBarView.itemReselections(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

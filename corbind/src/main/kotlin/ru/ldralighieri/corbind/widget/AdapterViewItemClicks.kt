@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * *Warning:* The created actor uses [AdapterView.setOnItemClickListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -65,7 +65,7 @@ fun <T : Adapter> AdapterView<T>.itemClicks(
 }
 
 /**
- * Perform an action on the position of item clicks for [AdapterView], inside new [CoroutineScope].
+ * Perform an action on the position of item clicks for [AdapterView], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [AdapterView.setOnItemClickListener]. Only one actor can be
  * used at a time.
@@ -97,7 +97,7 @@ suspend fun <T : Adapter> AdapterView<T>.itemClicks(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

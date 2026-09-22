@@ -45,7 +45,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * A committed back is delegated to the next enabled callback or to the dispatcher's fallback. Use
  * [backEvents] when the complete predictive back gesture lifecycle is needed.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -71,7 +71,7 @@ fun OnBackPressedDispatcher.backProgressed(
 }
 
 /**
- * Perform an action on [OnBackPressedDispatcher.dispatchOnBackProgressed] call, inside new
+ * Perform an action on [OnBackPressedDispatcher.dispatchOnBackProgressed] call, in a new
  * [CoroutineScope].
  *
  * A committed back is delegated to the next enabled callback or to the dispatcher's fallback. Use
@@ -107,7 +107,7 @@ suspend fun OnBackPressedDispatcher.backProgressed(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.

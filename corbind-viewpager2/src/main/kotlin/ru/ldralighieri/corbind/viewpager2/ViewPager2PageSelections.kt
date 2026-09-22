@@ -40,7 +40,7 @@ import ru.ldralighieri.corbind.internal.sendInitialValue
 /**
  * Perform an action on page selected events on [ViewPager2].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -65,7 +65,7 @@ fun ViewPager2.pageSelections(
 }
 
 /**
- * Perform an action on page selected events on [ViewPager2], inside new [CoroutineScope].
+ * Perform an action on page selected events on [ViewPager2], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -82,18 +82,18 @@ suspend fun ViewPager2.pageSelections(
 /**
  * Create a channel of page selected events on [ViewPager2].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
  * ```
  * launch {
- *      viewPager.pageSelections(scope)
+ *      viewPager2.pageSelections(scope)
  *          .consumeEach { /* handle selected page */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -111,7 +111,7 @@ fun ViewPager2.pageSelections(
 /**
  * Create a flow of page selected events on [ViewPager2].
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

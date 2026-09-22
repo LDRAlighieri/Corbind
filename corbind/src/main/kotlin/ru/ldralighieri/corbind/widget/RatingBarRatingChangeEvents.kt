@@ -49,7 +49,7 @@ data class RatingBarChangeEvent(
  * *Warning:* The created actor uses [RatingBar.setOnRatingBarChangeListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -73,7 +73,7 @@ fun RatingBar.ratingChangeEvents(
 }
 
 /**
- * Perform an action on [rating change events][RatingBarChangeEvent] on [RatingBar], inside new
+ * Perform an action on [rating change events][RatingBarChangeEvent] on [RatingBar], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [RatingBar.setOnRatingBarChangeListener]. Only one actor can be
@@ -97,7 +97,7 @@ suspend fun RatingBar.ratingChangeEvents(
  * *Warning:* The created channel uses [RatingBar.setOnRatingBarChangeListener]. Only one channel
  * can be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -108,7 +108,7 @@ suspend fun RatingBar.ratingChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -128,7 +128,7 @@ fun RatingBar.ratingChangeEvents(
  * *Warning:* The created flow uses [RatingBar.setOnRatingBarChangeListener]. Only one flow can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

@@ -37,7 +37,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on [TextInputLayout] end icon mode changes.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -61,7 +61,7 @@ fun TextInputLayout.endIconChanges(
 }
 
 /**
- * Perform an action on [TextInputLayout] end icon mode changes, inside new [CoroutineScope].
+ * Perform an action on [TextInputLayout] end icon mode changes, in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -76,10 +76,9 @@ suspend fun TextInputLayout.endIconChanges(
 }
 
 /**
- * Create a channel which emits on [TextInputLayout] end icon mode changes.
+ * Create a channel that emits [TextInputLayout] end icon mode changes.
  *
- * *Note:* Emitted value is the [TextInputLayout.EndIconMode] the [TextInputLayout] previously had
- * set
+ * *Note:* The emitted value is the previous [TextInputLayout.EndIconMode].
  *
  * Example:
  *
@@ -90,7 +89,7 @@ suspend fun TextInputLayout.endIconChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -105,10 +104,9 @@ fun TextInputLayout.endIconChanges(
 }
 
 /**
- * Create a flow which emits on [TextInputLayout] end icon mode changes.
+ * Create a flow that emits [TextInputLayout] end icon mode changes.
  *
- * *Note:* Emitted value is the [TextInputLayout.EndIconMode] the [TextInputLayout] previously had
- * set
+ * *Note:* The emitted value is the previous [TextInputLayout.EndIconMode].
  *
  * Example:
  *

@@ -49,7 +49,7 @@ data class NumberPickerValueChangeEvent(
  * *Warning:* The created actor uses [NumberPicker.setOnValueChangedListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -74,7 +74,7 @@ fun NumberPicker.valueChangeEvents(
 
 /**
  * Perform an action on [value change events][NumberPickerValueChangeEvent] on [NumberPicker],
- * inside new [CoroutineScope].
+ * in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [NumberPicker.setOnValueChangedListener]. Only one actor can be
  * used at a time.
@@ -92,13 +92,13 @@ suspend fun NumberPicker.valueChangeEvents(
 }
 
 /**
- * Create a channel which emits on [value change events][NumberPickerValueChangeEvent] on
+ * Create a channel that emits [value change events][NumberPickerValueChangeEvent] on
  * [NumberPicker].
  *
  * *Warning:* The created channel uses [NumberPicker.setOnValueChangedListener]. Only one channel
  * can be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -109,7 +109,7 @@ suspend fun NumberPicker.valueChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -124,13 +124,13 @@ fun NumberPicker.valueChangeEvents(
 }
 
 /**
- * Create a flow which emits on [value change events][NumberPickerValueChangeEvent] on
+ * Create a flow that emits [value change events][NumberPickerValueChangeEvent] on
  * [NumberPicker].
  *
  * *Warning:* The created flow uses [NumberPicker.setOnValueChangedListener]. Only one flow can be
  * used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

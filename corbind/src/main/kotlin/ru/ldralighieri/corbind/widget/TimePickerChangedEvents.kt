@@ -51,7 +51,7 @@ data class TimeChangedEvent(
  * *Warning:* The created actor uses [TimePicker.setOnTimeChangedListener]. Only one actor can be
  * used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -76,7 +76,7 @@ fun TimePicker.timeChangeEvents(
 }
 
 /**
- * Perform an action on [time changed events][TimeChangedEvent] on [TimePicker], inside new
+ * Perform an action on [time changed events][TimeChangedEvent] on [TimePicker], in a new
  * [CoroutineScope].
  *
  * *Warning:* The created actor uses [TimePicker.setOnTimeChangedListener]. Only one actor can be
@@ -96,12 +96,12 @@ suspend fun TimePicker.timeChangeEvents(
 }
 
 /**
- * Create a channel which emits on [time changed events][TimeChangedEvent] on [TimePicker].
+ * Create a channel that emits [time changed events][TimeChangedEvent] on [TimePicker].
  *
  * *Warning:* The created channel uses [TimePicker.setOnTimeChangedListener]. Only one channel can
  * be used at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Example:
  *
@@ -112,7 +112,7 @@ suspend fun TimePicker.timeChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -128,12 +128,12 @@ fun TimePicker.timeChangeEvents(
 }
 
 /**
- * Create a flow which emits on [time changed events][TimeChangedEvent] on [TimePicker].
+ * Create a flow that emits [time changed events][TimeChangedEvent] on [TimePicker].
  *
  * *Warning:* The created flow uses [TimePicker.setOnTimeChangedListener]. Only one flow can be used
  * at a time.
  *
- * *Note:* A value will be emitted immediately.
+ * *Note:* An initial value is emitted before subsequent events.
  *
  * Examples:
  *

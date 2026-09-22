@@ -46,7 +46,7 @@ data class OnBackProgressed(val backEvent: BackEventCompat) : OnBackEvent
 /**
  * Perform an action on back events.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -72,7 +72,7 @@ fun OnBackPressedDispatcher.backEvents(
 }
 
 /**
- * Perform an action on back events, inside new [CoroutineScope].
+ * Perform an action on back events, in a new [CoroutineScope].
  *
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -89,7 +89,7 @@ suspend fun OnBackPressedDispatcher.backEvents(
 }
 
 /**
- * Create a channel which emit back events.
+ * Create a channel that emits back events.
  *
  * Example:
  *
@@ -114,7 +114,7 @@ suspend fun OnBackPressedDispatcher.backEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param lifecycleOwner The LifecycleOwner which controls when the callback should be invoked
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -130,7 +130,7 @@ fun OnBackPressedDispatcher.backEvents(
 }
 
 /**
- * Create a flow which emit back events.
+ * Create a flow that emits back events.
  *
  * Example:
  *

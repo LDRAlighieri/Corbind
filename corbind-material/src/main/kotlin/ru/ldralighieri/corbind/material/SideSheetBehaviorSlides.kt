@@ -39,7 +39,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
 /**
  * Perform an action on the slide offset events from [View] on [SideSheetBehavior].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -64,7 +64,7 @@ fun View.sideSheetSlides(
 }
 
 /**
- * Perform an action on the slide offset events from [View] on [SideSheetBehavior], inside new
+ * Perform an action on the slide offset events from [View] on [SideSheetBehavior], in a new
  * [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
@@ -86,12 +86,12 @@ suspend fun View.sideSheetSlides(
  *
  * ```
  * launch {
- *      sideSheetBehavior.sideSheetSlides(scope)
+ *      sideSheetView.sideSheetSlides(scope)
  *          .consumeEach { /* handle slide offset */ }
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
@@ -112,7 +112,7 @@ fun View.sideSheetSlides(
  * Example:
  *
  * ```
- * sideSheetBehavior.sideSheetSlides()
+ * sideSheetView.sideSheetSlides()
  *      .onEach { /* handle slide offset */ }
  *      .flowWithLifecycle(lifecycle)
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx

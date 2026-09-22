@@ -54,7 +54,7 @@ data class RecyclerViewChildDetachEvent(
  * Perform an action on [child attach state change events][RecyclerViewChildAttachStateChangeEvent]
  * on [RecyclerView].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -82,7 +82,7 @@ fun RecyclerView.childAttachStateChangeEvents(
 
 /**
  * Perform an action on [child attach state change events][RecyclerViewChildAttachStateChangeEvent]
- * on [RecyclerView], inside new [CoroutineScope].
+ * on [RecyclerView], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -122,7 +122,7 @@ suspend fun RecyclerView.childAttachStateChangeEvents(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */

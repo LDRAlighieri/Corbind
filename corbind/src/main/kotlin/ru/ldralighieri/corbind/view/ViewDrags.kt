@@ -41,7 +41,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  *
  * *Warning:* The created actor uses [View.setOnDragListener]. Only one actor can be used at a time.
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying
@@ -67,7 +67,7 @@ fun View.drags(
 }
 
 /**
- * Perform an action on [DragEvent] for [View], inside new [CoroutineScope].
+ * Perform an action on [DragEvent] for [View], in a new [CoroutineScope].
  *
  * *Warning:* The created actor uses [View.setOnDragListener]. Only one actor can be used at a time.
  *
@@ -101,7 +101,7 @@ suspend fun View.drags(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param handled Predicate invoked with each value to determine the return value of the underlying

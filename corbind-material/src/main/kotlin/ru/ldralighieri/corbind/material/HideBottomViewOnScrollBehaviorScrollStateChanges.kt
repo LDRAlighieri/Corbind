@@ -42,7 +42,7 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * Perform an action on the bottom view scroll state change events from [View] on
  * [HideBottomViewOnScrollBehavior].
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
@@ -72,7 +72,7 @@ fun View.bottomViewScrollStateChanges(
 
 /**
  * Perform an action on the bottom view scroll state change events from [View] on
- * [HideBottomViewOnScrollBehavior], inside new [CoroutineScope].
+ * [HideBottomViewOnScrollBehavior], in a new [CoroutineScope].
  *
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
@@ -103,7 +103,7 @@ suspend fun View.bottomViewScrollStateChanges(
  * }
  * ```
  *
- * @param scope Root coroutine scope
+ * @param scope Coroutine scope that owns the binding
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
