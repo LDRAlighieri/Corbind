@@ -29,7 +29,7 @@ public final class ru/ldralighieri/corbind/appcompat/PopupMenuItemClicksKt {
 }
 
 public final class ru/ldralighieri/corbind/appcompat/SearchViewQueryTextChangeEventsKt {
-	public static final fun queryTextChangeEvents (Landroidx/appcompat/widget/SearchView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun queryTextChangeEvents (Landroidx/appcompat/widget/SearchView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun queryTextChangeEvents (Landroidx/appcompat/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun queryTextChangeEvents (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun queryTextChangeEvents (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -39,7 +39,7 @@ public final class ru/ldralighieri/corbind/appcompat/SearchViewQueryTextChangeEv
 }
 
 public final class ru/ldralighieri/corbind/appcompat/SearchViewQueryTextChangesKt {
-	public static final fun queryTextChanges (Landroidx/appcompat/widget/SearchView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun queryTextChanges (Landroidx/appcompat/widget/SearchView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun queryTextChanges (Landroidx/appcompat/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun queryTextChanges (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun queryTextChanges (Landroidx/appcompat/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V

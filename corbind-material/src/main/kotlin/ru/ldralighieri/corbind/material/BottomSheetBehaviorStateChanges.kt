@@ -29,7 +29,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
-import ru.ldralighieri.corbind.internal.InitialValueFlow
+import ru.ldralighieri.corbind.InitialValueFlow
 import ru.ldralighieri.corbind.internal.asInitialValueFlow
 import ru.ldralighieri.corbind.internal.checkMainThread
 import ru.ldralighieri.corbind.internal.corbindCallbackFlow

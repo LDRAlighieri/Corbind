@@ -1,3 +1,10 @@
+public final class ru/ldralighieri/corbind/InitialValueFlow : kotlinx/coroutines/flow/Flow {
+	public fun <init> (Lkotlinx/coroutines/flow/Flow;)V
+	public final fun asStateFlow (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun collect (Lkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun dropInitialValue ()Lkotlinx/coroutines/flow/Flow;
+}
+
 public final class ru/ldralighieri/corbind/app/DatePickerDialogDateSetEventsKt {
 	public static final fun dateSetEvents (Landroid/app/DatePickerDialog;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun dateSetEvents (Landroid/app/DatePickerDialog;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -33,13 +40,6 @@ public final class ru/ldralighieri/corbind/content/ContextReceivesBroadcastKt {
 	public static synthetic fun receivesBroadcast$default (Landroid/content/Context;Landroid/content/IntentFilter;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun receivesBroadcast$default (Landroid/content/Context;Lkotlinx/coroutines/CoroutineScope;Landroid/content/IntentFilter;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static synthetic fun receivesBroadcast$default (Landroid/content/Context;Lkotlinx/coroutines/CoroutineScope;Landroid/content/IntentFilter;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
-}
-
-public final class ru/ldralighieri/corbind/internal/InitialValueFlow : kotlinx/coroutines/flow/Flow {
-	public fun <init> (Lkotlinx/coroutines/flow/Flow;)V
-	public final fun asStateFlow (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun collect (Lkotlinx/coroutines/flow/FlowCollector;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun dropInitialValue ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class ru/ldralighieri/corbind/view/MenuItemActionViewCollapseEvent : ru/ldralighieri/corbind/view/MenuItemActionViewEvent {
@@ -165,7 +165,7 @@ public final class ru/ldralighieri/corbind/view/ViewDragsKt {
 }
 
 public final class ru/ldralighieri/corbind/view/ViewFocusChangesKt {
-	public static final fun focusChanges (Landroid/view/View;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun focusChanges (Landroid/view/View;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun focusChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun focusChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun focusChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -428,7 +428,7 @@ public final class ru/ldralighieri/corbind/widget/AbsListViewScrollEventsKt {
 }
 
 public final class ru/ldralighieri/corbind/widget/AdapterDataChangesKt {
-	public static final fun dataChanges (Landroid/widget/Adapter;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun dataChanges (Landroid/widget/Adapter;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun dataChanges (Landroid/widget/Adapter;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun dataChanges (Landroid/widget/Adapter;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun dataChanges (Landroid/widget/Adapter;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -531,7 +531,7 @@ public final class ru/ldralighieri/corbind/widget/AdapterViewItemSelectionEvent 
 }
 
 public final class ru/ldralighieri/corbind/widget/AdapterViewItemSelectionsKt {
-	public static final fun itemSelections (Landroid/widget/AdapterView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun itemSelections (Landroid/widget/AdapterView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun itemSelections (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun itemSelections (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun itemSelections (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -556,7 +556,7 @@ public abstract interface class ru/ldralighieri/corbind/widget/AdapterViewSelect
 }
 
 public final class ru/ldralighieri/corbind/widget/AdapterViewSelectionEventsKt {
-	public static final fun selectionEvents (Landroid/widget/AdapterView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun selectionEvents (Landroid/widget/AdapterView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun selectionEvents (Landroid/widget/AdapterView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun selectionEvents (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun selectionEvents (Landroid/widget/AdapterView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -603,7 +603,7 @@ public final class ru/ldralighieri/corbind/widget/CalendarViewDateChangeEvent {
 }
 
 public final class ru/ldralighieri/corbind/widget/CalendarViewDateChangeEventsKt {
-	public static final fun dateChangeEvents (Landroid/widget/CalendarView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun dateChangeEvents (Landroid/widget/CalendarView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun dateChangeEvents (Landroid/widget/CalendarView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun dateChangeEvents (Landroid/widget/CalendarView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun dateChangeEvents (Landroid/widget/CalendarView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -613,7 +613,7 @@ public final class ru/ldralighieri/corbind/widget/CalendarViewDateChangeEventsKt
 }
 
 public final class ru/ldralighieri/corbind/widget/CompoundButtonCheckedChangesKt {
-	public static final fun checkedChanges (Landroid/widget/CompoundButton;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Landroid/widget/CompoundButton;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun checkedChanges (Landroid/widget/CompoundButton;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun checkedChanges (Landroid/widget/CompoundButton;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun checkedChanges (Landroid/widget/CompoundButton;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -640,7 +640,7 @@ public final class ru/ldralighieri/corbind/widget/DateChangedEvent {
 }
 
 public final class ru/ldralighieri/corbind/widget/DatePickerChangedEventsKt {
-	public static final fun dateChangeEvents (Landroid/widget/DatePicker;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun dateChangeEvents (Landroid/widget/DatePicker;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun dateChangeEvents (Landroid/widget/DatePicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun dateChangeEvents (Landroid/widget/DatePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun dateChangeEvents (Landroid/widget/DatePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -675,7 +675,7 @@ public final class ru/ldralighieri/corbind/widget/NumberPickerValueChangeEvent {
 }
 
 public final class ru/ldralighieri/corbind/widget/NumberPickerValueChangeEventsKt {
-	public static final fun valueChangeEvents (Landroid/widget/NumberPicker;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valueChangeEvents (Landroid/widget/NumberPicker;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun valueChangeEvents (Landroid/widget/NumberPicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun valueChangeEvents (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun valueChangeEvents (Landroid/widget/NumberPicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -705,7 +705,7 @@ public final class ru/ldralighieri/corbind/widget/PopupMenuItemClicksKt {
 }
 
 public final class ru/ldralighieri/corbind/widget/RadioGroupCheckedChangesKt {
-	public static final fun checkedChanges (Landroid/widget/RadioGroup;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Landroid/widget/RadioGroup;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun checkedChanges (Landroid/widget/RadioGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun checkedChanges (Landroid/widget/RadioGroup;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun checkedChanges (Landroid/widget/RadioGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -730,7 +730,7 @@ public final class ru/ldralighieri/corbind/widget/RatingBarChangeEvent {
 }
 
 public final class ru/ldralighieri/corbind/widget/RatingBarRatingChangeEventsKt {
-	public static final fun ratingChangeEvents (Landroid/widget/RatingBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun ratingChangeEvents (Landroid/widget/RatingBar;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun ratingChangeEvents (Landroid/widget/RatingBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun ratingChangeEvents (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun ratingChangeEvents (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -740,7 +740,7 @@ public final class ru/ldralighieri/corbind/widget/RatingBarRatingChangeEventsKt 
 }
 
 public final class ru/ldralighieri/corbind/widget/RatingBarRatingChangesKt {
-	public static final fun ratingChanges (Landroid/widget/RatingBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun ratingChanges (Landroid/widget/RatingBar;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun ratingChanges (Landroid/widget/RatingBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun ratingChanges (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun ratingChanges (Landroid/widget/RatingBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -750,7 +750,7 @@ public final class ru/ldralighieri/corbind/widget/RatingBarRatingChangesKt {
 }
 
 public final class ru/ldralighieri/corbind/widget/SearchViewQueryTextChangeEventsKt {
-	public static final fun queryTextChangeEvents (Landroid/widget/SearchView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun queryTextChangeEvents (Landroid/widget/SearchView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun queryTextChangeEvents (Landroid/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun queryTextChangeEvents (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun queryTextChangeEvents (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -760,7 +760,7 @@ public final class ru/ldralighieri/corbind/widget/SearchViewQueryTextChangeEvent
 }
 
 public final class ru/ldralighieri/corbind/widget/SearchViewQueryTextChangesKt {
-	public static final fun queryTextChanges (Landroid/widget/SearchView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun queryTextChanges (Landroid/widget/SearchView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun queryTextChanges (Landroid/widget/SearchView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun queryTextChanges (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun queryTextChanges (Landroid/widget/SearchView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -789,7 +789,7 @@ public abstract interface class ru/ldralighieri/corbind/widget/SeekBarChangeEven
 }
 
 public final class ru/ldralighieri/corbind/widget/SeekBarChangeEventsKt {
-	public static final fun changeEvents (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun changeEvents (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun changeEvents (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun changeEvents (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun changeEvents (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -799,21 +799,21 @@ public final class ru/ldralighieri/corbind/widget/SeekBarChangeEventsKt {
 }
 
 public final class ru/ldralighieri/corbind/widget/SeekBarChangesKt {
-	public static final fun changes (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun changes (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun changes (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun changes (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun changes (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
 	public static synthetic fun changes$default (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun changes$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static synthetic fun changes$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
-	public static final fun systemChanges (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun systemChanges (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun systemChanges (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun systemChanges (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun systemChanges (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
 	public static synthetic fun systemChanges$default (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun systemChanges$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static synthetic fun systemChanges$default (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
-	public static final fun userChanges (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun userChanges (Landroid/widget/SeekBar;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun userChanges (Landroid/widget/SeekBar;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun userChanges (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun userChanges (Landroid/widget/SeekBar;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -873,7 +873,7 @@ public final class ru/ldralighieri/corbind/widget/TextViewAfterTextChangeEvent {
 }
 
 public final class ru/ldralighieri/corbind/widget/TextViewAfterTextChangeEventsKt {
-	public static final fun afterTextChangeEvents (Landroid/widget/TextView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun afterTextChangeEvents (Landroid/widget/TextView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun afterTextChangeEvents (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun afterTextChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun afterTextChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -902,7 +902,7 @@ public final class ru/ldralighieri/corbind/widget/TextViewBeforeTextChangeEvent 
 }
 
 public final class ru/ldralighieri/corbind/widget/TextViewBeforeTextChangeEventsKt {
-	public static final fun beforeTextChangeEvents (Landroid/widget/TextView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun beforeTextChangeEvents (Landroid/widget/TextView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun beforeTextChangeEvents (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun beforeTextChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun beforeTextChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -968,7 +968,7 @@ public final class ru/ldralighieri/corbind/widget/TextViewTextChangeEvent {
 }
 
 public final class ru/ldralighieri/corbind/widget/TextViewTextChangeEventsKt {
-	public static final fun textChangeEvents (Landroid/widget/TextView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun textChangeEvents (Landroid/widget/TextView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun textChangeEvents (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun textChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun textChangeEvents (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -978,7 +978,7 @@ public final class ru/ldralighieri/corbind/widget/TextViewTextChangeEventsKt {
 }
 
 public final class ru/ldralighieri/corbind/widget/TextViewTextChangesKt {
-	public static final fun textChanges (Landroid/widget/TextView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun textChanges (Landroid/widget/TextView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun textChanges (Landroid/widget/TextView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun textChanges (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun textChanges (Landroid/widget/TextView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -1003,7 +1003,7 @@ public final class ru/ldralighieri/corbind/widget/TimeChangedEvent {
 }
 
 public final class ru/ldralighieri/corbind/widget/TimePickerChangedEventsKt {
-	public static final fun timeChangeEvents (Landroid/widget/TimePicker;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun timeChangeEvents (Landroid/widget/TimePicker;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun timeChangeEvents (Landroid/widget/TimePicker;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun timeChangeEvents (Landroid/widget/TimePicker;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun timeChangeEvents (Landroid/widget/TimePicker;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V

@@ -36,7 +36,7 @@ public final class ru/ldralighieri/corbind/viewpager2/ViewPager2PageScrollStateC
 }
 
 public final class ru/ldralighieri/corbind/viewpager2/ViewPager2PageSelectionsKt {
-	public static final fun pageSelections (Landroidx/viewpager2/widget/ViewPager2;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun pageSelections (Landroidx/viewpager2/widget/ViewPager2;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun pageSelections (Landroidx/viewpager2/widget/ViewPager2;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun pageSelections (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun pageSelections (Landroidx/viewpager2/widget/ViewPager2;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V

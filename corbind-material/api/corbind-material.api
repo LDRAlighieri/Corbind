@@ -19,7 +19,7 @@ public final class ru/ldralighieri/corbind/material/BottomSheetBehaviorSlidesKt 
 }
 
 public final class ru/ldralighieri/corbind/material/BottomSheetBehaviorStateChangesKt {
-	public static final fun stateChanges (Landroid/view/View;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun stateChanges (Landroid/view/View;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun stateChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun stateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun stateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -39,7 +39,7 @@ public final class ru/ldralighieri/corbind/material/ChipCloseIconClicksKt {
 }
 
 public final class ru/ldralighieri/corbind/material/ChipGroupCheckedChangesKt {
-	public static final fun checkedChanges (Lcom/google/android/material/chip/ChipGroup;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Lcom/google/android/material/chip/ChipGroup;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun checkedChanges (Lcom/google/android/material/chip/ChipGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun checkedChanges (Lcom/google/android/material/chip/ChipGroup;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun checkedChanges (Lcom/google/android/material/chip/ChipGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -92,7 +92,7 @@ public final class ru/ldralighieri/corbind/material/MaterialButtonCheckedChangeE
 }
 
 public final class ru/ldralighieri/corbind/material/MaterialButtonCheckedChangesKt {
-	public static final fun checkedChanges (Lcom/google/android/material/button/MaterialButton;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Lcom/google/android/material/button/MaterialButton;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun checkedChanges (Lcom/google/android/material/button/MaterialButton;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun checkedChanges (Lcom/google/android/material/button/MaterialButton;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun checkedChanges (Lcom/google/android/material/button/MaterialButton;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -112,7 +112,7 @@ public final class ru/ldralighieri/corbind/material/MaterialButtonToggleGroupChe
 }
 
 public final class ru/ldralighieri/corbind/material/MaterialButtonToggleGroupCheckedChangesKt {
-	public static final fun buttonCheckedChanges (Lcom/google/android/material/button/MaterialButtonToggleGroup;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun buttonCheckedChanges (Lcom/google/android/material/button/MaterialButtonToggleGroup;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun buttonCheckedChanges (Lcom/google/android/material/button/MaterialButtonToggleGroup;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun buttonCheckedChanges (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun buttonCheckedChanges (Lcom/google/android/material/button/MaterialButtonToggleGroup;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -122,7 +122,7 @@ public final class ru/ldralighieri/corbind/material/MaterialButtonToggleGroupChe
 }
 
 public final class ru/ldralighieri/corbind/material/MaterialCardViewCheckedChangesKt {
-	public static final fun checkedChanges (Lcom/google/android/material/card/MaterialCardView;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun checkedChanges (Lcom/google/android/material/card/MaterialCardView;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun checkedChanges (Lcom/google/android/material/card/MaterialCardView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun checkedChanges (Lcom/google/android/material/card/MaterialCardView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun checkedChanges (Lcom/google/android/material/card/MaterialCardView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -280,7 +280,7 @@ public final class ru/ldralighieri/corbind/material/RangeSliderTouchesKt {
 }
 
 public final class ru/ldralighieri/corbind/material/RangeSliderValuesChangeEventsKt {
-	public static final fun valuesChangeEvents (Lcom/google/android/material/slider/RangeSlider;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valuesChangeEvents (Lcom/google/android/material/slider/RangeSlider;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun valuesChangeEvents (Lcom/google/android/material/slider/RangeSlider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun valuesChangeEvents (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun valuesChangeEvents (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -290,7 +290,7 @@ public final class ru/ldralighieri/corbind/material/RangeSliderValuesChangeEvent
 }
 
 public final class ru/ldralighieri/corbind/material/RangeSliderValuesChangesKt {
-	public static final fun valuesChanges (Lcom/google/android/material/slider/RangeSlider;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valuesChanges (Lcom/google/android/material/slider/RangeSlider;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun valuesChanges (Lcom/google/android/material/slider/RangeSlider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun valuesChanges (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun valuesChanges (Lcom/google/android/material/slider/RangeSlider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -355,7 +355,7 @@ public final class ru/ldralighieri/corbind/material/SideSheetBehaviorSlidesKt {
 }
 
 public final class ru/ldralighieri/corbind/material/SideSheetBehaviorStateChangesKt {
-	public static final fun sideSheetStateChanges (Landroid/view/View;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun sideSheetStateChanges (Landroid/view/View;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun sideSheetStateChanges (Landroid/view/View;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun sideSheetStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun sideSheetStateChanges (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -392,7 +392,7 @@ public final class ru/ldralighieri/corbind/material/SliderTouchesKt {
 }
 
 public final class ru/ldralighieri/corbind/material/SliderValueChangeEventsKt {
-	public static final fun valueChangeEvents (Lcom/google/android/material/slider/Slider;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valueChangeEvents (Lcom/google/android/material/slider/Slider;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun valueChangeEvents (Lcom/google/android/material/slider/Slider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun valueChangeEvents (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun valueChangeEvents (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
@@ -402,7 +402,7 @@ public final class ru/ldralighieri/corbind/material/SliderValueChangeEventsKt {
 }
 
 public final class ru/ldralighieri/corbind/material/SliderValueChangesKt {
-	public static final fun valueChanges (Lcom/google/android/material/slider/Slider;)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun valueChanges (Lcom/google/android/material/slider/Slider;)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun valueChanges (Lcom/google/android/material/slider/Slider;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun valueChanges (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun valueChanges (Lcom/google/android/material/slider/Slider;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
