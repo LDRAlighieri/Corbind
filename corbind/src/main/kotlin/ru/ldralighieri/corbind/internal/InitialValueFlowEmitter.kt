@@ -17,20 +17,11 @@
 package ru.ldralighieri.corbind.internal
 
 import androidx.annotation.RestrictTo
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
+import ru.ldralighieri.corbind.InitialValueFlow
 import java.util.ArrayDeque
-
-class InitialValueFlow<T>(private val flow: Flow<T>) : Flow<T> by flow {
-    fun dropInitialValue(): Flow<T> = drop(1)
-    suspend fun asStateFlow(scope: CoroutineScope): StateFlow<T> = stateIn(scope)
-}
 
 /**
  * Buffers callback values until the initial value has been queued. This keeps the initial snapshot
@@ -77,13 +68,3 @@ fun <T> ProducerScope<T>.initialValueFlowEmitter(): InitialValueFlowEmitter<T> =
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 fun <T> Flow<T>.asInitialValueFlow(): InitialValueFlow<T> = InitialValueFlow(this)
-
-/** Binary compatibility bridge for previously compiled Corbind integration modules. */
-@Deprecated(
-    message = "Initial values must be emitted from inside the callbackFlow builder.",
-    level = DeprecationLevel.HIDDEN,
-)
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-fun <T> Flow<T>.asInitialValueFlow(value: T): InitialValueFlow<T> = InitialValueFlow(
-    onStart { emit(value) },
-)

@@ -1,5 +1,5 @@
 public final class ru/ldralighieri/corbind/drawerlayout/DrawerLayoutDrawerOpenKt {
-	public static final fun drawerOpens (Landroidx/drawerlayout/widget/DrawerLayout;I)Lru/ldralighieri/corbind/internal/InitialValueFlow;
+	public static final fun drawerOpens (Landroidx/drawerlayout/widget/DrawerLayout;I)Lru/ldralighieri/corbind/InitialValueFlow;
 	public static final fun drawerOpens (Landroidx/drawerlayout/widget/DrawerLayout;IILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun drawerOpens (Landroidx/drawerlayout/widget/DrawerLayout;Lkotlinx/coroutines/CoroutineScope;II)Lkotlinx/coroutines/channels/ReceiveChannel;
 	public static final fun drawerOpens (Landroidx/drawerlayout/widget/DrawerLayout;Lkotlinx/coroutines/CoroutineScope;IILkotlin/jvm/functions/Function2;)V
