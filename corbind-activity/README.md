@@ -29,8 +29,8 @@ onBackPressedDispatcher.backEvents(lifecycleOwner = this)
             is OnBackProgressed -> { /* handle back progressed event */ }
         }
     }
-        .flowWithLifecycle(lifecycle)
-        .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+    .flowWithLifecycle(lifecycle)
+    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```
 
 More examples in source code

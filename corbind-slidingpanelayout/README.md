@@ -21,7 +21,7 @@ dependencies {
 ```kotlin
 slider.panelOpens() // Flow<Boolean>
     .onEach { isOpen ->
-      tvMessage = "Panel completely ${ if (isOpen) "open" else "close"}"
+        tvMessage.text = "Panel completely ${if (isOpen) "open" else "closed"}"
     }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx

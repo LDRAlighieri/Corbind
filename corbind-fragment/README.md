@@ -22,8 +22,8 @@ parentFragmentManager.resultEvents(
     requestKey = FRAGMENT_REQUEST_KEY,
     lifecycleOwner = viewLifecycleOwner,
 ) // Flow<FragmentResultEvent>
-    .flowWithLifecycle(viewLifecycleOwner.lifecycle)
     .onEach { event -> /* handle result event */ }
+    .flowWithLifecycle(viewLifecycleOwner.lifecycle)
     .launchIn(viewLifecycleOwner.lifecycleScope) // lifecycle-runtime-ktx
 ```
 

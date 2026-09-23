@@ -21,7 +21,7 @@ dependencies {
 
 ```kotlin
 search.searchQueryChanges() // Flow<String>
-    .map { it.toLowerCase(Locale.getDefault()) }
+    .map { it.lowercase(Locale.getDefault()) }
     .onEach { query -> filter.updateItems(query) }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx

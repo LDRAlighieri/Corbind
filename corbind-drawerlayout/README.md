@@ -20,7 +20,7 @@ dependencies {
 ```kotlin
 drawer.drawerOpens() // Flow<Boolean>
     .onEach { isOpen ->
-      tvMessage = "Drawer completely ${ if (isOpen) "open" else "close"}"
+        tvMessage.text = "Drawer completely ${if (isOpen) "open" else "closed"}"
     }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
