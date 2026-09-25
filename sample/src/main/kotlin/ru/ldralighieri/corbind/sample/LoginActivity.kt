@@ -40,7 +40,6 @@ import ru.ldralighieri.corbind.activity.OnBackProgressed
 import ru.ldralighieri.corbind.activity.OnBackStarted
 import ru.ldralighieri.corbind.activity.backEvents
 import ru.ldralighieri.corbind.sample.core.extensions.hideSoftInput
-import ru.ldralighieri.corbind.sample.core.extensions.toPx
 import ru.ldralighieri.corbind.sample.databinding.ActivityLoginBinding
 import ru.ldralighieri.corbind.swiperefreshlayout.refreshes
 import ru.ldralighieri.corbind.view.clicks
@@ -49,13 +48,10 @@ import ru.ldralighieri.corbind.widget.textChanges
 
 class LoginActivity : AppCompatActivity() {
 
-    private companion object {
-        const val TRANSITION_X_THRESHOLD_DP = 40
-    }
-
     private lateinit var binding: ActivityLoginBinding
 
-    private val transitionXThresholdPx: Float by lazy { TRANSITION_X_THRESHOLD_DP.toPx }
+    private val transitionXThresholdPx: Float
+        get() = binding.tvTitle.resources.getDimension(R.dimen.login_title_back_translation)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
