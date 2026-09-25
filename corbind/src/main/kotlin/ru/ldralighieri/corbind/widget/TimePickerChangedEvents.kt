@@ -16,11 +16,9 @@
 
 package ru.ldralighieri.corbind.widget
 
-import android.os.Build
 import android.widget.TimePicker
 import androidx.annotation.CheckResult
 import androidx.annotation.MainThread
-import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -56,7 +54,6 @@ data class TimeChangedEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.M)
 @MainThread
 fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
@@ -86,7 +83,6 @@ fun TimePicker.timeChangeEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.M)
 @MainThread
 suspend fun TimePicker.timeChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
@@ -116,7 +112,6 @@ suspend fun TimePicker.timeChangeEvents(
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
-@RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun TimePicker.timeChangeEvents(
     scope: CoroutineScope,
@@ -152,7 +147,6 @@ fun TimePicker.timeChangeEvents(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
-@RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun TimePicker.timeChangeEvents(): InitialValueFlow<TimeChangedEvent> = corbindCallbackFlow {
     val emitter = initialValueFlowEmitter()

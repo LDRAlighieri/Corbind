@@ -16,12 +16,10 @@
 
 package ru.ldralighieri.corbind.view
 
-import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import androidx.annotation.CheckResult
 import androidx.annotation.MainThread
-import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -50,7 +48,6 @@ data class WindowInsetsEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 @MainThread
 fun View.windowInsetsApplyEvents(
     scope: CoroutineScope,
@@ -76,7 +73,6 @@ fun View.windowInsetsApplyEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 @MainThread
 suspend fun View.windowInsetsApplyEvents(
     capacity: Int = Channel.RENDEZVOUS,
@@ -101,7 +97,6 @@ suspend fun View.windowInsetsApplyEvents(
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
-@RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 @CheckResult
 fun View.windowInsetsApplyEvents(
     scope: CoroutineScope,
@@ -138,14 +133,12 @@ fun View.windowInsetsApplyEvents(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
-@RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 @CheckResult
 fun View.windowInsetsApplyEvents(): Flow<WindowInsetsEvent> = corbindCallbackFlow {
     setOnApplyWindowInsetsListener(listener(this, corbindEventEmitter()))
     awaitClose { setOnApplyWindowInsetsListener(null) }
 }
 
-@RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
 @CheckResult
 private fun listener(
     scope: CoroutineScope,

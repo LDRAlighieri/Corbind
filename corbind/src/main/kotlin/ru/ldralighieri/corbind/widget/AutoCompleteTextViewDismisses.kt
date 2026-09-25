@@ -16,11 +16,9 @@
 
 package ru.ldralighieri.corbind.widget
 
-import android.os.Build
 import android.widget.AutoCompleteTextView
 import androidx.annotation.CheckResult
 import androidx.annotation.MainThread
-import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -47,7 +45,6 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @MainThread
 fun AutoCompleteTextView.dismisses(
     scope: CoroutineScope,
@@ -75,7 +72,6 @@ fun AutoCompleteTextView.dismisses(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @MainThread
 suspend fun AutoCompleteTextView.dismisses(
     capacity: Int = Channel.RENDEZVOUS,
@@ -103,7 +99,6 @@ suspend fun AutoCompleteTextView.dismisses(
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @CheckResult
 fun AutoCompleteTextView.dismisses(
     scope: CoroutineScope,
@@ -128,7 +123,6 @@ fun AutoCompleteTextView.dismisses(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 @CheckResult
 fun AutoCompleteTextView.dismisses(): Flow<Unit> = corbindCallbackFlow {
     setOnDismissListener(listener(this, corbindEventEmitter()))

@@ -37,5 +37,8 @@ jobs:
       - name: Check binary compatibility
         run: ./gradlew apiCheck
 
+      - name: Check Android lint
+        run: ./gradlew lint
+
       - name: Build and verify all modules
         run: ./gradlew build

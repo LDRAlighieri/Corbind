@@ -1,7 +1,7 @@
 ﻿[![Corbind](logo.svg)](https://ldralighieri.github.io/Corbind)
 
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-v2.3.10-blue.svg?logo=kotlin)](https://kotlinlang.org)
-[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.10.2-blue.svg)](https://kotlinlang.org/docs/reference/coroutines-overview.html)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-v2.4.20-blue.svg?logo=kotlin)](https://kotlinlang.org)
+[![Kotlin Coroutines Version](https://img.shields.io/badge/Coroutines-v1.11.0-blue.svg)](https://kotlinlang.org/docs/coroutines-overview.html)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a1c9a1b1d1ce4ca7a201ab93492bf6e0)](https://app.codacy.com/gh/LDRAlighieri/Corbind)
@@ -13,19 +13,16 @@
 
 <br>
 
-⚡ Kotlin Coroutines binding APIs for Android UI widgets from the platform and support libraries. **Supports Flow, ReceiveChannel and Actor**.
-
+⚡ Kotlin Coroutines binding APIs for Android UI widgets from the platform, AndroidX, and Material libraries. Use cold [Flow][flow] bindings for new code; hot [ReceiveChannel][channel] and [actor][actor]-based action overloads remain available for existing integrations.
 
 ## Description
 
-This library is for Android applications only. Help you to transform Android UI events into cold [Flow][flow], hot [ReceiveChannel][channel] or just perform an action through an [Actor][actor].  
+Corbind turns Android UI callbacks into cold [Flow][flow] bindings or hot [ReceiveChannel][channel] bindings. The action overloads use the [actor][actor] coroutine API, which is marked obsolete upstream.
 Please consider giving this repository a star ⭐ if you like the project.
-
 
 ## Articles
 * [⚡ Kotlin Coroutine binding with Flow support][kotlin-coroutine-binding]
 * [What’s up Corbind! Release 1.7.0 🎉. It’s been a long road][release-1.7.0]
-
 
 ## Current versions
 
@@ -47,7 +44,6 @@ Please consider giving this repository a star ⭐ if you like the project.
 | [corbind-swiperefreshlayout] | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-swiperefreshlayout.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-swiperefreshlayout) |
 | [corbind-viewpager] (legacy) | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-viewpager.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-viewpager)                   |
 | [corbind-viewpager2]         | [![Maven Central](https://img.shields.io/maven-central/v/ru.ldralighieri.corbind/corbind-viewpager2.svg)](https://mvnrepository.com/artifact/ru.ldralighieri.corbind/corbind-viewpager2)                 |
-
 
 ## Using in your projects
 
@@ -79,6 +75,8 @@ dependencies {
 }
 ```
 
+Use `corbind-viewpager2` for new screens. The `corbind-viewpager` module supports the older `androidx.viewpager.widget.ViewPager`; see the [ViewPager2 migration guide][viewpager2-migration].
+
 Google 'material' library bindings:
 ```kotlin
 dependencies { 
@@ -99,7 +97,6 @@ dependencies {
 }
 ```
 
-
 ## List of extensions
 
 You can find a list of extensions in the description of each module:  
@@ -119,76 +116,77 @@ You can find a list of extensions in the description of each module:
 * [corbind-viewpager] (legacy)
 * [corbind-viewpager2]
 
-
 ## How to use it?
 
-If you need to get a text change events of EditText widget, simple use case with cold [Flow][flow] will look something like this:
+For one cold Flow, `flowWithLifecycle` restarts collection when the Activity reaches `STARTED`. `textChanges()` returns `InitialValueFlow`, so each new collection begins with the current text:
+
 ```kotlin
 findViewById<EditText>(R.id.etName)
-    .textChanges() // Flow<CharSequence>
-    .onEach { /* handle text change events */ }
-    .flowWithLifecycle(lifecycle)
-    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+    .textChanges()
+    .onEach { text -> /* handle the current text and later changes */ }
+    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+    .launchIn(lifecycleScope)
 ```
 
-If you prefer hot [ReceiveChannel][channel] and you need to get ViewPager2 page selection events, then the use case will transform in something like this:
+Use `repeatOnLifecycle` to scope collection explicitly, especially when collecting several flows in parallel ([Android lifecycle guidance][lifecycle-aware-collection]). In a Fragment, use `viewLifecycleOwner.lifecycle` and `viewLifecycleOwner.lifecycleScope` so collection ends when the view is destroyed:
+
 ```kotlin
-launch {
-    findViewById<ViewPager2>(R.id.vpSlides)
-        .pageSelections(scope) // ReceiveChannel<Int>
-        .consumeEach {
-            /* handle ViewPager2 events */
-        }
+lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        combine(
+            etEmail.textChanges().map { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
+            etPassword.textChanges().map { it.length > 7 },
+        ) { email, password -> email && password }
+            .collect { btLogin.isEnabled = it }
+    }
 }
 ```
 
-Hot channel bindings live with the passed `CoroutineScope`'s `Job`; cancelling the returned channel
-also removes its listener without cancelling the scope. Cold `Flow` bindings may be collected on any
-dispatcher. Android listeners are registered and removed on the main thread, and already-cancelled
-bindings register nothing. Synchronous action overloads must be called on the main thread.
+Each resumed Flow collection registers a new listener and reads the current value again. Use `dropInitialValue()` on an `InitialValueFlow` when only later changes matter.
 
-By default, `Channel.RENDEZVOUS` preserves events in order without blocking Android callbacks. Slow
-consumers can accumulate pending sends; use `Channel.CONFLATED` or an explicit drop policy when a
-source may outpace its consumer. For flows, choose a policy with `buffer` or `conflate`.
+### Existing channel and action overloads
 
-And if you just need to perform an action on button click, the easiest way will be:
+A `ReceiveChannel` is hot: the binding starts when the channel is created, not when it is consumed. Create it inside the lifecycle block and pass that block's scope so its listener is removed at `STOPPED`:
+
 ```kotlin
-launch {
-    findViewById<AppCompatButton>(R.id.btConfirm)
-        .clicks {
-            /* perform an action on View click events */
-        }
+lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        findViewById<ViewPager2>(R.id.vpSlides)
+            .pageSelections(this) // ReceiveChannel<Int>
+            .consumeEach { page -> /* handle the selected page */ }
+    }
 }
 ```
 
-Just one more traditional example of login button enabling/disabling by email and password field validation:
+The passed scope's `Job` owns the channel. Cancelling that job or the returned channel removes the listener; cancelling the channel does not cancel the scope. A scope that is already cancelled registers nothing. Flow and channel bindings can be collected or created from any dispatcher, while Android listener registration and cleanup run on the main thread. Synchronous action overloads must be called on the main thread.
+
+For new code, replace `view.clicks(scope)` with `view.clicks()` and collect the Flow. Replace actor-based `view.clicks(scope) { action() }` with a Flow collector:
+
 ```kotlin
-combine(
-    etEmail.textChanges() // Flow<CharSequence>
-        .map { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
-
-    etPassword.textChanges() // Flow<CharSequence>
-        .map { it.length > 7 },
-
-    transform = { email, password -> email && password }
-)
-    .onEach { btLogin.isEnabled = it }
-    .flowWithLifecycle(lifecycle)
-    .launchIn(lifecycleScope) // lifecycle-runtime-ktx
+findViewById<AppCompatButton>(R.id.btConfirm)
+    .clicks()
+    .onEach { /* perform the action */ }
+    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+    .launchIn(lifecycleScope)
 ```
 
-More examples in module descriptions and in source code
+Some bindings use Android's single-listener `setOn...Listener` methods, such as `View.clicks()`. Give each such callback one active owner: a second binding or direct listener assignment can replace the first listener, and cleanup can clear the replacement. Share events downstream of one binding if several consumers need them.
 
+Channel overloads default to `Channel.RENDEZVOUS`; Flow producers use a buffered channel. Both default to suspending overflow: when the buffer is full, Corbind queues sends in order without blocking Android callbacks. A slow consumer can therefore accumulate pending sends without bound. Use `Channel.CONFLATED` for channel bindings, or Flow `conflate()` / `buffer(..., onBufferOverflow = ...)` when discarding intermediate events is acceptable. Choose this explicitly for each event source.
+
+More examples are in module descriptions and source code.
+
+## Lint policy
+
+Run `./gradlew lint --console=plain --quiet` to check the Android modules locally. CI runs the same task. Every library module and the sample app treat lint warnings as errors, with no lint baseline or globally disabled checks. Fix new findings; when a warning is intentional, explain it beside a narrowly scoped suppression.
 
 ## Missed or forgot something?
 
 If I forgot something or you have any ideas what can be added or corrected, please create an issue or contact me directly.
 
-
 ## Special thanks to
 
 [Jake Wharton][jw]. This project is inspired by [RxBinding][rx].
-
 
 ## License
 
@@ -208,16 +206,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-
 [jw]: https://github.com/JakeWharton
 [rx]: https://github.com/JakeWharton/RxBinding
-[flow]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html
-[channel]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/index.html
-[actor]: https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
+[flow]: https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/
+[channel]: https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/-receive-channel/
+[actor]: https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.channels/actor.html
 
 [kotlin-coroutine-binding]: https://medium.com/@ldralighieri/kotlin-coroutine-binding-with-flow-support-68499492a89c
 [release-1.7.0]: https://medium.com/@ldralighieri/whats-up-corbind-release-1-7-0-it-s-been-a-long-road-eadf84db19c1
 [viewpager2-migration]: https://developer.android.com/develop/ui/views/animations/vp2-migration
+[lifecycle-aware-collection]: https://developer.android.com/topic/libraries/architecture/views/coroutines-views
 
 [corbind-bom]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind-bom
 [corbind]: https://github.com/LDRAlighieri/Corbind/tree/master/corbind

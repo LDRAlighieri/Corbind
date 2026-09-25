@@ -39,6 +39,11 @@ internal fun Project.configureKotlinAndroid(
             this.minSdk = minSdk.toInt()
         }
 
+        lint.apply {
+            abortOnError = true
+            warningsAsErrors = true
+        }
+
         compileOptions.apply {
             sourceCompatibility = JavaVersion.VERSION_17
             targetCompatibility = JavaVersion.VERSION_17

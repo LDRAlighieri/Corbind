@@ -16,8 +16,6 @@
 
 package ru.ldralighieri.corbind.sample
 
-import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.view.inputmethod.EditorInfo
@@ -56,12 +54,9 @@ class LoginActivity : AppCompatActivity() {
 
     private val transitionXThresholdPx: Float by lazy { TRANSITION_X_THRESHOLD_DP.toPx }
 
-    @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-        }
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)

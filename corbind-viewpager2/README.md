@@ -20,8 +20,8 @@ dependencies {
 ## Simple examples
 
 ```kotlin
-vpSlides.pageSelections() // Flow<Int>
-    .onEach { tvMessage = "Page #$it selected" }
+vpSlides.pageSelections() // InitialValueFlow<Int>
+    .onEach { tvMessage.text = "Page #$it selected" }
     .flowWithLifecycle(lifecycle)
     .launchIn(lifecycleScope) // lifecycle-runtime-ktx
 ```

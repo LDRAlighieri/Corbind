@@ -16,11 +16,9 @@
 
 package ru.ldralighieri.corbind.material
 
-import android.os.Build
 import android.view.View
 import androidx.annotation.CheckResult
 import androidx.annotation.MainThread
-import androidx.annotation.RequiresApi
 import com.google.android.material.search.SearchBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +46,6 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @MainThread
 fun SearchBar.navigationClicks(
     scope: CoroutineScope,
@@ -76,7 +73,6 @@ fun SearchBar.navigationClicks(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @MainThread
 suspend fun SearchBar.navigationClicks(
     capacity: Int = Channel.RENDEZVOUS,
@@ -104,7 +100,6 @@ suspend fun SearchBar.navigationClicks(
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
 fun SearchBar.navigationClicks(
     scope: CoroutineScope,
@@ -129,7 +124,6 @@ fun SearchBar.navigationClicks(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 @CheckResult
 fun SearchBar.navigationClicks(): Flow<Unit> = corbindCallbackFlow {
     setNavigationOnClickListener(listener(this, corbindEventEmitter()))
