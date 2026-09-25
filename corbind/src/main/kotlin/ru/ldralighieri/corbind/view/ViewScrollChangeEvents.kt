@@ -16,11 +16,9 @@
 
 package ru.ldralighieri.corbind.view
 
-import android.os.Build
 import android.view.View
 import androidx.annotation.CheckResult
 import androidx.annotation.MainThread
-import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -55,7 +53,6 @@ data class ViewScrollChangeEvent(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.M)
 @MainThread
 fun View.scrollChangeEvents(
     scope: CoroutineScope,
@@ -84,7 +81,6 @@ fun View.scrollChangeEvents(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.M)
 @MainThread
 suspend fun View.scrollChangeEvents(
     capacity: Int = Channel.RENDEZVOUS,
@@ -112,7 +108,6 @@ suspend fun View.scrollChangeEvents(
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
-@RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun View.scrollChangeEvents(
     scope: CoroutineScope,
@@ -137,7 +132,6 @@ fun View.scrollChangeEvents(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
-@RequiresApi(Build.VERSION_CODES.M)
 @CheckResult
 fun View.scrollChangeEvents(): Flow<ViewScrollChangeEvent> = corbindCallbackFlow {
     setOnScrollChangeListener(listener(this, corbindEventEmitter()))

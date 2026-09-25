@@ -19,6 +19,7 @@ package ru.ldralighieri.corbind.material
 import android.view.MenuItem
 import androidx.annotation.CheckResult
 import androidx.annotation.MainThread
+import androidx.core.view.iterator
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -153,9 +154,7 @@ private fun setInitialValue(
     navigationView: NavigationView,
     emitter: (MenuItem) -> Boolean,
 ) {
-    val menu = navigationView.menu
-    for (i in 0 until menu.size()) {
-        val item = menu.getItem(i)
+    for (item in navigationView.menu) {
         if (item.isChecked) {
             emitter(item)
             break

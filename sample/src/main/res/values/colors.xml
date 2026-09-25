@@ -20,7 +20,6 @@
     <!-- Theme colors -->
     <color name="colorPrimary">#03A9F4</color>
     <color name="colorPrimaryVariant">#1976D2</color>
-    <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorOnPrimary">#FFFFFF</color>
 
     <color name="colorSecondary">#64B5F6</color>
@@ -40,7 +39,6 @@
     <color name="system_ui_scrim_light">#B3FFFFFF</color>
     <color name="system_ui_scrim_black">#40000000</color>
 
-    <color name="status_bar_scrim">@color/system_ui_scrim_black</color>
     <color name="nav_bar_scrim">@color/system_ui_scrim_black</color>
 
 </resources>

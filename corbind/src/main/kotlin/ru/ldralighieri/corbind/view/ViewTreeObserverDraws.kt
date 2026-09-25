@@ -16,12 +16,10 @@
 
 package ru.ldralighieri.corbind.view
 
-import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.annotation.CheckResult
 import androidx.annotation.MainThread
-import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -45,7 +43,6 @@ import ru.ldralighieri.corbind.internal.invokeOnCloseOnMain
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @MainThread
 fun View.draws(
     scope: CoroutineScope,
@@ -71,7 +68,6 @@ fun View.draws(
  * events wait for delivery without blocking the Android callback thread.
  * @param action An action to perform
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @MainThread
 suspend fun View.draws(
     capacity: Int = Channel.RENDEZVOUS,
@@ -96,7 +92,6 @@ suspend fun View.draws(
  * @param capacity Capacity of the channel's buffer (no buffer by default). With suspending overflow,
  * events wait for delivery without blocking the Android callback thread.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
 fun View.draws(
     scope: CoroutineScope,
@@ -119,7 +114,6 @@ fun View.draws(
  *      .launchIn(lifecycleScope) // lifecycle-runtime-ktx
  * ```
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 @CheckResult
 fun View.draws(): Flow<Unit> = corbindCallbackFlow {
     val listener = listener(this, corbindEventEmitter())

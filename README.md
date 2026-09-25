@@ -176,6 +176,10 @@ Channel overloads default to `Channel.RENDEZVOUS`; Flow producers use a buffered
 
 More examples are in module descriptions and source code.
 
+## Lint policy
+
+Run `./gradlew lint --console=plain --quiet` to check the Android modules locally. CI runs the same task. Every library module and the sample app treat lint warnings as errors, with no lint baseline or globally disabled checks. Fix new findings; when a warning is intentional, explain it beside a narrowly scoped suppression.
+
 ## Missed or forgot something?
 
 If I forgot something or you have any ideas what can be added or corrected, please create an issue or contact me directly.
