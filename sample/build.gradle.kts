@@ -51,6 +51,7 @@ android {
             isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
+            // This demo APK uses the debug key for local and CI builds; it is not a production release.
             signingConfig = debug.signingConfig
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }

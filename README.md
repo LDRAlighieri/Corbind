@@ -176,9 +176,9 @@ Channel overloads default to `Channel.RENDEZVOUS`; Flow producers use a buffered
 
 More examples are in module descriptions and source code.
 
-## Lint policy
+## Sample app
 
-Run `./gradlew lint --console=plain --quiet` to check the Android modules locally. CI runs the same task. Every library module and the sample app treat lint warnings as errors, with no lint baseline or globally disabled checks. Fix new findings; when a warning is intentional, explain it beside a narrowly scoped suppression.
+The `sample` module is a demonstration app. Its `release` variant uses the Android debug signing configuration so local and CI builds can produce an installable APK without a release key. The resulting `sample-release.apk` is for demonstration and build checks only; it is not a production release and should not be distributed as one. A production app needs its own release signing key and release process.
 
 ## Missed or forgot something?
 
