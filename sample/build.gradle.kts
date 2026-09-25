@@ -21,27 +21,21 @@ plugins {
 android {
     namespace = "ru.ldralighieri.corbind.sample"
 
-    val buildTools: String by project
-    val compileSdk: String by project
-    val minSdk: String by project
-    val targetSdk: String by project
-    @Suppress("LocalVariableName") val VERSION_NAME: String by project
+    buildToolsVersion = providers.gradleProperty("buildTools").get()
+    compileSdk = providers.gradleProperty("compileSdk").get().toInt()
 
-    buildToolsVersion = buildTools
-
-    this.compileSdk = compileSdk.toInt()
     defaultConfig {
         applicationId = "ru.ldralighieri.corbind.example"
-        this.minSdk = minSdk.toInt()
-        this.targetSdk = targetSdk.toInt()
+        minSdk = providers.gradleProperty("minSdk").get().toInt()
+        targetSdk = providers.gradleProperty("targetSdk").get().toInt()
         versionCode = 1
-        versionName = VERSION_NAME
+        versionName = providers.gradleProperty("VERSION_NAME").get()
 
         vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
-        val debug by getting {
+        val debug = getByName("debug") {
             isDebuggable = true
             isMinifyEnabled = false
             isShrinkResources = false
@@ -51,6 +45,7 @@ android {
             isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
+            // This demo APK uses the debug key for local and CI builds; it is not a production release.
             signingConfig = debug.signingConfig
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }

@@ -31,13 +31,15 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import ru.ldralighieri.corbind.activity.OnBackCanceled
 import ru.ldralighieri.corbind.activity.OnBackPressed
 import ru.ldralighieri.corbind.activity.OnBackProgressed
+import ru.ldralighieri.corbind.activity.OnBackStarted
 import ru.ldralighieri.corbind.activity.backEvents
 import ru.ldralighieri.corbind.sample.core.extensions.hideSoftInput
-import ru.ldralighieri.corbind.sample.core.extensions.toPx
 import ru.ldralighieri.corbind.sample.databinding.ActivityLoginBinding
 import ru.ldralighieri.corbind.swiperefreshlayout.refreshes
 import ru.ldralighieri.corbind.view.clicks
@@ -46,13 +48,10 @@ import ru.ldralighieri.corbind.widget.textChanges
 
 class LoginActivity : AppCompatActivity() {
 
-    private companion object {
-        const val TRANSITION_X_THRESHOLD_DP = 40
-    }
-
     private lateinit var binding: ActivityLoginBinding
 
-    private val transitionXThresholdPx: Float by lazy { TRANSITION_X_THRESHOLD_DP.toPx }
+    private val transitionXThresholdPx: Float
+        get() = binding.tvTitle.resources.getDimension(R.dimen.login_title_back_translation)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,20 +108,23 @@ class LoginActivity : AppCompatActivity() {
 
                     onBackPressedDispatcher.backEvents(lifecycleOwner = this@LoginActivity)
                         .onEach { event ->
-                            when {
-                                event is OnBackPressed -> finish()
-                                event is OnBackProgressed -> {
-                                    with (event) {
-                                        val direction: Int =
-                                            if (backEvent.swipeEdge == BackEventCompat.EDGE_LEFT) 1
-                                            else -1
-                                        
-                                        tvTitle.translationX =
-                                            direction * transitionXThresholdPx * backEvent.progress
-                                    }
+                            when (event) {
+                                OnBackCanceled, is OnBackStarted -> tvTitle.translationX = 0f
+                                OnBackPressed -> {
+                                    tvTitle.translationX = 0f
+                                    finish()
+                                }
+                                is OnBackProgressed -> {
+                                    val direction =
+                                        if (event.backEvent.swipeEdge == BackEventCompat.EDGE_LEFT) 1
+                                        else -1
+
+                                    tvTitle.translationX =
+                                        direction * transitionXThresholdPx * event.backEvent.progress
                                 }
                             }
                         }
+                        .onCompletion { tvTitle.translationX = 0f }
                         .launchIn(this)
                 }
             }
