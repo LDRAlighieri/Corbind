@@ -18,7 +18,6 @@ package ru.ldralighieri.corbind.material
 
 import android.content.Context
 import android.os.Build
-import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.junit.Test
@@ -26,6 +25,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import ru.ldralighieri.corbind.material.views.TrackingTabLayout
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE, sdk = [Build.VERSION_CODES.VANILLA_ICE_CREAM])
@@ -60,7 +60,7 @@ class TabLayoutSelectionEventsTest {
 }
 
 private class TabSelectionEventsFixture(context: Context) : InitialEmittingFlowFixture {
-    private val view = TrackingSelectionEventsTabLayout(context)
+    private val view = TrackingTabLayout(context)
 
     override val registrationCount: Int get() = view.registrationCount
     override val cleanupCount: Int get() = view.cleanupCount
@@ -82,49 +82,5 @@ private class TabSelectionEventsFixture(context: Context) : InitialEmittingFlowF
     }
     override fun dispatchSelectionDuringNextRegistration(itemId: Int) {
         view.dispatchSelectionDuringNextRegistration(itemId)
-    }
-}
-
-private class TrackingSelectionEventsTabLayout(context: Context) : TabLayout(context) {
-    var registrationCount = 0
-        private set
-    var cleanupCount = 0
-        private set
-    var tabSelectedListener: OnTabSelectedListener? = null
-        private set
-    private var selectionDuringRegistration: Int? = null
-
-    init {
-        addTab(newTab().apply { tag = FIRST_MATERIAL_ITEM })
-        addTab(newTab().apply { tag = SECOND_MATERIAL_ITEM })
-        selectTab(tab(FIRST_MATERIAL_ITEM))
-        resetTracking()
-    }
-
-    fun tab(itemId: Int): Tab = (0 until tabCount).mapNotNull(::getTabAt).first { it.tag == itemId }
-
-    override fun addOnTabSelectedListener(listener: OnTabSelectedListener) {
-        super.addOnTabSelectedListener(listener)
-        registrationCount++
-        tabSelectedListener = listener
-        selectionDuringRegistration?.let { itemId ->
-            selectionDuringRegistration = null
-            listener.onTabSelected(tab(itemId))
-        }
-    }
-
-    override fun removeOnTabSelectedListener(listener: OnTabSelectedListener) {
-        super.removeOnTabSelectedListener(listener)
-        cleanupCount++
-        if (tabSelectedListener === listener) tabSelectedListener = null
-    }
-
-    fun dispatchSelectionDuringNextRegistration(itemId: Int) {
-        selectionDuringRegistration = itemId
-    }
-    fun resetTracking() {
-        registrationCount = 0
-        cleanupCount = 0
-        tabSelectedListener = null
     }
 }

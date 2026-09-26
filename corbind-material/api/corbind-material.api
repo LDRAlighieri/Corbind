@@ -68,6 +68,53 @@ public final class ru/ldralighieri/corbind/material/HideViewOnScrollBehaviorScro
 	public static synthetic fun hideOnScrollStateChanges$default (Landroid/view/View;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
+public final class ru/ldralighieri/corbind/material/ListItemCardViewSwipeOffsetsKt {
+	public static final fun swipeOffsets (Lcom/google/android/material/listitem/ListItemCardView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun swipeOffsets (Lcom/google/android/material/listitem/ListItemCardView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun swipeOffsets (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun swipeOffsets (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun swipeOffsets$default (Lcom/google/android/material/listitem/ListItemCardView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun swipeOffsets$default (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun swipeOffsets$default (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/ListItemCardViewSwipeStateChangeEventsKt {
+	public static final fun swipeStateChangeEvents (Lcom/google/android/material/listitem/ListItemCardView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun swipeStateChangeEvents (Lcom/google/android/material/listitem/ListItemCardView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun swipeStateChangeEvents (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun swipeStateChangeEvents (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun swipeStateChangeEvents$default (Lcom/google/android/material/listitem/ListItemCardView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun swipeStateChangeEvents$default (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun swipeStateChangeEvents$default (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/ListItemCardViewSwipeStateChangesKt {
+	public static final fun swipeStateChanges (Lcom/google/android/material/listitem/ListItemCardView;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun swipeStateChanges (Lcom/google/android/material/listitem/ListItemCardView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun swipeStateChanges (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;I)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static final fun swipeStateChanges (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)V
+	public static synthetic fun swipeStateChanges$default (Lcom/google/android/material/listitem/ListItemCardView;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun swipeStateChanges$default (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;IILjava/lang/Object;)Lkotlinx/coroutines/channels/ReceiveChannel;
+	public static synthetic fun swipeStateChanges$default (Lcom/google/android/material/listitem/ListItemCardView;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class ru/ldralighieri/corbind/material/ListItemSwipeStateChangeEvent {
+	public fun <init> (Lcom/google/android/material/listitem/ListItemCardView;ILandroid/view/View;I)V
+	public final fun component1 ()Lcom/google/android/material/listitem/ListItemCardView;
+	public final fun component2 ()I
+	public final fun component3 ()Landroid/view/View;
+	public final fun component4 ()I
+	public final fun copy (Lcom/google/android/material/listitem/ListItemCardView;ILandroid/view/View;I)Lru/ldralighieri/corbind/material/ListItemSwipeStateChangeEvent;
+	public static synthetic fun copy$default (Lru/ldralighieri/corbind/material/ListItemSwipeStateChangeEvent;Lcom/google/android/material/listitem/ListItemCardView;ILandroid/view/View;IILjava/lang/Object;)Lru/ldralighieri/corbind/material/ListItemSwipeStateChangeEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCardView ()Lcom/google/android/material/listitem/ListItemCardView;
+	public final fun getNewState ()I
+	public final fun getRevealGravity ()I
+	public final fun getRevealableView ()Landroid/view/View;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class ru/ldralighieri/corbind/material/MaskableFrameLayoutMaskChangesKt {
 	public static final fun maskChanges (Lcom/google/android/material/carousel/MaskableFrameLayout;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun maskChanges (Lcom/google/android/material/carousel/MaskableFrameLayout;ILkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

@@ -17,35 +17,44 @@
 package ru.ldralighieri.corbind.material
 
 import android.os.Build
-import android.view.View
+import android.view.Gravity
+import app.cash.turbine.test
+import com.google.android.material.listitem.ListItemCardView
+import com.google.android.material.listitem.ListItemRevealLayout
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import ru.ldralighieri.corbind.material.views.TrackingSwipeDismissBehavior
+import ru.ldralighieri.corbind.material.views.TrackingListItemCardView
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE, sdk = [Build.VERSION_CODES.VANILLA_ICE_CREAM])
 @LooperMode(LooperMode.Mode.PAUSED)
-class SwipeDismissBehaviorDesmissesTest {
+class ListItemCardViewSwipeStateChangesTest {
 
     @Test
-    fun `dismiss callback emits view and cancellation clears behavior listener`() = runBlocking {
-        val behavior = TrackingSwipeDismissBehavior()
-        val view = View(materialTestContext()).apply { installBehavior(behavior) }
-        val dismisses = view.dismisses()
-        assertEquals(0, behavior.registered)
+    fun `flow emits state changes and removes callback`() = runBlocking {
+        val card = TrackingListItemCardView(material3TestContext())
+        val reveal = ListItemRevealLayout(card.context)
+        val states = card.swipeStateChanges()
+        assertNull(card.callback)
 
-        dismisses.assertEventAndCleanup(
-            expected = view,
-            isRegistered = { behavior.capturedListener != null },
-            fire = { requireNotNull(behavior.capturedListener).onDismiss(view) },
-            isRemoved = {
-                behavior.capturedListener == null && behavior.registered == 1 && behavior.removed == 1
-            },
-        )
+        states.test {
+            assertNotNull(card.callback)
+            expectNoEvents()
+            card.onSwipe(18)
+            expectNoEvents()
+            card.onSwipeStateChanged(ListItemCardView.STATE_OPEN, reveal, Gravity.END)
+            assertEquals(ListItemCardView.STATE_OPEN, awaitItem())
+            expectNoEvents()
+        }
+
+        assertNull(card.callback)
+        assertEquals(1, card.removed)
     }
 }

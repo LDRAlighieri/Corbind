@@ -17,33 +17,38 @@
 package ru.ldralighieri.corbind.material
 
 import android.os.Build
-import com.google.android.material.search.SearchView
+import app.cash.turbine.test
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import ru.ldralighieri.corbind.material.views.TrackingSearchView
+import ru.ldralighieri.corbind.material.views.TrackingListItemCardView
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE, sdk = [Build.VERSION_CODES.VANILLA_ICE_CREAM])
 @LooperMode(LooperMode.Mode.PAUSED)
-class SearchViewTransitionStateChangeEventsTest {
+class ListItemCardViewSwipeOffsetsTest {
+
     @Test
-    fun `flow is cold emits transition and removes listener`() {
-        val view = TrackingSearchView(material3TestContext())
-        assertCallbackFlowContract(
-            flow = view.transitionStateChangeEvents(),
-            isRegistered = { view.listener != null },
-            dispatch = {
-                checkNotNull(view.listener).onStateChanged(
-                    view,
-                    SearchView.TransitionState.HIDDEN,
-                    SearchView.TransitionState.SHOWN,
-                )
-            },
-            expected = SearchViewTransitionStateChangeEvent(view, SearchView.TransitionState.HIDDEN, SearchView.TransitionState.SHOWN),
-            isCleaned = { view.listener == null && view.cleanupCount == 1 },
-        )
+    fun `flow is cold emits swipe offset and removes callback`() = runBlocking {
+        val card = TrackingListItemCardView(material3TestContext())
+        val offsets = card.swipeOffsets()
+        assertNull(card.callback)
+
+        offsets.test {
+            assertNotNull(card.callback)
+            expectNoEvents()
+            card.onSwipe(-24)
+            assertEquals(-24, awaitItem())
+            expectNoEvents()
+        }
+
+        assertNull(card.callback)
+        assertEquals(1, card.removed)
     }
 }

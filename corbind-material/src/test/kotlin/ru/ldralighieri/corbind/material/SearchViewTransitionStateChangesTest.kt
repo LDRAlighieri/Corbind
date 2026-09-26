@@ -16,7 +16,6 @@
 
 package ru.ldralighieri.corbind.material
 
-import android.content.Context
 import android.os.Build
 import com.google.android.material.search.SearchView
 import org.junit.Test
@@ -24,6 +23,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import ru.ldralighieri.corbind.material.views.TrackingSearchView
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE, sdk = [Build.VERSION_CODES.VANILLA_ICE_CREAM])
@@ -45,23 +45,5 @@ class SearchViewTransitionStateChangesTest {
             expected = SearchView.TransitionState.SHOWN,
             isCleaned = { view.listener == null && view.cleanupCount == 1 },
         )
-    }
-
-    private class TrackingSearchView(context: Context) : SearchView(context) {
-        var listener: TransitionListener? = null
-            private set
-        var cleanupCount = 0
-            private set
-
-        override fun addTransitionListener(listener: TransitionListener) {
-            super.addTransitionListener(listener)
-            this.listener = listener
-        }
-
-        override fun removeTransitionListener(listener: TransitionListener) {
-            super.removeTransitionListener(listener)
-            if (this.listener === listener) this.listener = null
-            cleanupCount++
-        }
     }
 }

@@ -26,6 +26,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import ru.ldralighieri.corbind.material.views.TrackingSwipeDismissBehavior
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE, sdk = [Build.VERSION_CODES.VANILLA_ICE_CREAM])
@@ -34,7 +35,7 @@ class SwipeDismissBehaviorDragStateChangesTest {
 
     @Test
     fun `drag callback emits state and cancellation clears behavior listener`() = runBlocking {
-        val behavior = DragTrackingBehavior()
+        val behavior = TrackingSwipeDismissBehavior()
         val view = View(materialTestContext()).apply { installBehavior(behavior) }
         val changes = view.dragStateChanges()
         assertEquals(0, behavior.registered)
@@ -51,21 +52,5 @@ class SwipeDismissBehaviorDragStateChangesTest {
                 behavior.capturedListener == null && behavior.registered == 1 && behavior.removed == 1
             },
         )
-    }
-
-    private class DragTrackingBehavior : SwipeDismissBehavior<View>() {
-
-        var capturedListener: OnDismissListener? = null
-            private set
-        var registered = 0
-            private set
-        var removed = 0
-            private set
-
-        override fun setListener(listener: OnDismissListener?) {
-            capturedListener = listener
-            if (listener == null) removed++ else registered++
-            super.setListener(listener)
-        }
     }
 }
