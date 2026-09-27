@@ -5,7 +5,7 @@ To add androidx fragment bindings, import `corbind-fragment` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-fragment:1.12.1")
+    implementation("ru.ldralighieri.corbind:corbind-fragment:1.13.0")
 }
 ```
 

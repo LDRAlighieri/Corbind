@@ -1,6 +1,17 @@
 # ChangeLog
 
 
+## Version 1.13.0
+
+* New: Material `ListItemCardView` bindings for swipe offsets and state changes.
+* Update: `InitialValueFlow` is now public in `ru.ldralighieri.corbind`, with `dropInitialValue()` and `asStateFlow()` helpers. Its package change alters binary method signatures; consumers should recompile against this release.
+* Fix: Flow and ReceiveChannel bindings register and remove listeners on the main thread, and channels follow the owning `CoroutineScope` lifecycle.
+* Fix: Preserve event order under suspending backpressure without blocking Android callbacks, and preserve initial values in ReceiveChannel bindings.
+* Fix: Correct listener cleanup for MaterialCardView, Chip, and PopupMenu bindings, plus toggle group state and predictive back event handling.
+* Update: Kotlin to v2.4.20, coroutines to v1.11.0, compileSdk to 37, Gradle to v9.8.0, and AGP to v9.4.1.
+* Update: Minor update of other libraries.
+
+
 ## Version 1.12.1
 
 * Update: minSdk is now 23.

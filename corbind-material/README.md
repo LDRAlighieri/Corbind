@@ -5,7 +5,7 @@ To add material bindings, import `corbind-material` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-material:1.12.1")
+    implementation("ru.ldralighieri.corbind:corbind-material:1.13.0")
 }
 ```
 

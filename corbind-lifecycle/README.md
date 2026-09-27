@@ -5,7 +5,7 @@ To add androidx lifecycle bindings, import `corbind-lifecycle` module:
 
 ```kotlin
 dependencies {
-    implementation("ru.ldralighieri.corbind:corbind-lifecycle:1.12.1")
+    implementation("ru.ldralighieri.corbind:corbind-lifecycle:1.13.0")
 }
 ```
 

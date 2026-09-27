@@ -50,7 +50,7 @@ Please consider giving this repository a star ⭐ if you like the project.
 Platform bindings:
 ```kotlin
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.02.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.09.00"))
     implementation("ru.ldralighieri.corbind:corbind")
 }
 ```
@@ -58,7 +58,7 @@ dependencies {
 AndroidX library bindings:
 ```kotlin
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.02.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.09.00"))
     implementation("ru.ldralighieri.corbind:corbind-activity")
     implementation("ru.ldralighieri.corbind:corbind-appcompat")
     implementation("ru.ldralighieri.corbind:corbind-core")
@@ -80,7 +80,7 @@ Use `corbind-viewpager2` for new screens. The `corbind-viewpager` module support
 Google 'material' library bindings:
 ```kotlin
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.02.00"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.09.00"))
     implementation("ru.ldralighieri.corbind:corbind-material")
 }
 ```
