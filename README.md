@@ -92,7 +92,7 @@ repositories {
 }
 
 dependencies { 
-    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.03.00-SNAPSHOT"))
+    implementation(platform("ru.ldralighieri.corbind:corbind-bom:2026.10.00-SNAPSHOT"))
     implementation("ru.ldralighieri.corbind:{module}")
 }
 ```
